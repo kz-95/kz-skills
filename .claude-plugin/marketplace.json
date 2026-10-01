@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "kz-skills",
+  "description": "UI rules for AI coding agents, with checks that measure them.",
+  "owner": {
+    "name": "kz-95",
+    "url": "https://github.com/kz-95"
+  },
+  "plugins": [
+    {
+      "name": "kz-skills",
+      "description": "Stack-neutral UI/UX rules for AI coding agents with browser checks that measure them: 57 UI rules, 21 chart rules, 16 principles, in eight skills.",
+      "source": "./",
+      "category": "development"
+    }
+  ]
+}

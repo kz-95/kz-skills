@@ -1,0 +1,51 @@
+# kz-skills
+
+> Stack-neutral UI/UX rules for AI coding agents, with eight paste-in browser checks that measure them. 57 UI rules, 21 chart rules and 16 design principles, in eight installable Claude Code skills. Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. Licence: Apache-2.0 with Commons Clause (free to use, modify and use commercially; not to be sold). Usable by any agent that reads Markdown.
+
+Facts: 78 rules in all (57 UI + 21 chart). 25 recorded agent mistakes (Appendix Z of the UI rules). Every rule has a wrong sample and a right sample on the live reference page. Rules are numbered by category letter and number (T1, F9, N2, C5) and the numbers never change.
+
+To find the rule for a task, match its words in the keyword index; it names the two or three sections that apply, so the whole rule set need not be read.
+
+## Start here
+
+- [README](https://raw.githubusercontent.com/kz-95/kz-skills/main/README.md): what this is, install, the rules most often missed
+- [AGENTS.md](https://raw.githubusercontent.com/kz-95/kz-skills/main/AGENTS.md): how an agent uses and works in this repository
+- [Router skill](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-skill/SKILL.md): which skill fits which request
+- [Keyword index](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/INDEX.md): task words to the sections that apply
+- [Rule index](https://raw.githubusercontent.com/kz-95/kz-skills/main/docs/rule-index.md): every rule, one line each
+
+## Skills
+
+- [kz-uiuxrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/SKILL.md): building, changing or reviewing any UI; four modes (adopt, review, build, loop)
+- [kz-uicheck](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/SKILL.md): eight paste-in browser checks
+- [kz-reflect](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-reflect/SKILL.md): records what went wrong, classifies it, proposes the rule change; a person approves
+- [kz-engrules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/SKILL.md): engineering rules for any code work
+- [kz-askcard](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-askcard/SKILL.md): the one-card rule for asking a user anything
+- [kz-crew021](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-crew021/SKILL.md): a whole project with a costed multi-agent crew
+- [kz-loopfix](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-loopfix/SKILL.md): critic, fixer and gate for one stubborn defect
+- [ui-glance](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/skills/ui-glance/SKILL.md): a screenshot reviewed in one pass
+
+## Rules
+
+- [UI rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/ui-rules.md): 57 rules by category, with appendices and 25 lessons
+- [Chart rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/chart-rules.md): 21 rules for anything that renders data as marks
+- [Design principles](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/design-principles.md): the 16 principles behind the rules
+- [Engineering rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/rules/engineering-rules.md): the floor under every task
+
+## Checks
+
+- [layout-audit.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/layout-audit.js): overflow, overlap, clipped text, tap targets, SVG focus rings, undefined CSS variables
+- [table-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/table-check.js): text-box filters, columns with no filter or sort, header spacing
+- [typing-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/typing-check.js): fields rebuilt, caret-jumped, moved or zoomed while typed into
+- [popover-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/popover-check.js): a panel that cannot be closed
+- [contrast-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/contrast-check.js): text under 4.5:1 on its real background, both themes
+- [modal-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/modal-check.js): scroll lock, focus, backdrop, Escape, focus return
+- [focus-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/focus-check.js): every control shows where focus is
+- [form-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/form-check.js): labels, input types, nudge, submit
+
+## Optional
+
+- [Live reference page](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html): a wrong and a right sample for each rule
+- [Using with impeccable](https://raw.githubusercontent.com/kz-95/kz-skills/main/docs/with-impeccable.md): how these rules combine with a style skill
+- [Install guide](https://raw.githubusercontent.com/kz-95/kz-skills/main/docs/install.md): Claude Code, manual copy, other agents
+- [Changelog](https://raw.githubusercontent.com/kz-95/kz-skills/main/CHANGELOG.md)

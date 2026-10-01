@@ -1,0 +1,22 @@
+{
+  "name": "kz-skills",
+  "version": "0.1.0",
+  "description": "Stack-neutral UI/UX rules for AI coding agents with browser checks that measure them: 57 UI rules, 21 chart rules, 16 principles, in eight skills (router, rules, checks, reflect loop, engineering rules, ask card, crew workflow, fix loop).",
+  "author": {
+    "name": "kz-95",
+    "url": "https://github.com/kz-95"
+  },
+  "homepage": "https://kz-95.github.io/kz-skills/",
+  "repository": "https://github.com/kz-95/kz-skills",
+  "license": "SEE LICENSE IN LICENSE",
+  "keywords": [
+    "ui",
+    "ux",
+    "design-system",
+    "accessibility",
+    "frontend",
+    "charts",
+    "skills",
+    "agent-skills"
+  ]
+}

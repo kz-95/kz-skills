@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>kz-skills: UI rules for AI coding agents, with checks that measure them</title>
+<meta name="description" content="Stack-neutral UI/UX rules for AI coding agents, with browser checks that measure them: 57 UI rules, 21 chart rules and 16 principles in eight installable skills. Live wrong/right examples for every rule.">
+<link rel="canonical" href="https://kz-95.github.io/kz-skills/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="kz-skills: UI rules for AI coding agents, with checks that measure them">
+<meta property="og:description" content="57 UI rules, 21 chart rules and 16 principles for AI coding agents, each with the failure it prevents and a browser check that catches it.">
+<meta property="og:url" content="https://kz-95.github.io/kz-skills/">
+<meta property="og:image" content="https://kz-95.github.io/kz-skills/assets/carousel-poster.png">
+<meta property="og:image:alt" content="Four UI rules shown wrong, then right: a filter panel, a shape-following focus ring, a label contrast decision, and a hover halo.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kz-95.github.io/kz-skills/assets/carousel-poster.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": "kz-skills",
+  "description": "Stack-neutral UI/UX rules for AI coding agents, with browser checks that measure them.",
+  "codeRepository": "https://github.com/kz-95/kz-skills",
+  "license": "https://github.com/kz-95/kz-skills/blob/main/LICENSE",
+  "programmingLanguage": "JavaScript",
+  "author": { "@type": "Person", "name": "kz-95", "url": "https://github.com/kz-95" }
+}
+</script>
+<style>
+:root{
+  --bg:#fbfaf9; --surface:#ffffff; --text:#1c1a18; --muted:#5d554e; --line:#e3dfda;
+  --accent:#3b6ef5; --accent-ink:#2a51b8; --on-accent:#ffffff;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:40px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#16140f; --surface:#1e1d23; --text:#ece9e6; --muted:#a09a94; --line:#33313a;
+         --accent:#8aa8ff; --accent-ink:#8aa8ff; --on-accent:#10131c; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:var(--s6) var(--s4)}
+h1{font-size:30px;line-height:1.2;margin:0 0 var(--s3)}
+h2{font-size:19px;margin:var(--s6) 0 var(--s3)}
+p{margin:0 0 var(--s4)}
+.lede{font-size:18px;color:var(--muted)}
+.cta{display:flex;flex-wrap:wrap;gap:var(--s3);margin:var(--s5) 0}
+.cta a{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--s4);border-radius:10px;
+  border:1px solid var(--line);color:var(--text);text-decoration:none;font-weight:600;background:var(--surface)}
+.cta a.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.cta a:hover{box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent)}
+.cta a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+table{width:100%;border-collapse:collapse;font-size:15px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+th,td{text-align:left;padding:var(--s3);border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-size:13px;font-weight:600}
+tr:last-child td{border-bottom:0}
+code{font:13px ui-monospace,Menlo,Consolas,monospace;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:0 var(--s1)}
+a{color:var(--accent-ink)}
+footer{margin-top:var(--s6);color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+  <h1>kz-skills: UI rules for AI coding agents, with checks that measure them</h1>
+  <p class="lede">Stack-neutral UI/UX rules that tell an AI agent what any interface must do, what breaks when it does not, and a browser check that fails it. 57 UI rules, 21 chart rules and 16 principles, in eight installable skills.</p>
+
+  <div class="cta">
+    <a class="primary" href="reference/ui-rules-visual.html">See every rule, live</a>
+    <a href="https://github.com/kz-95/kz-skills#quick-start">Install</a>
+    <a href="https://github.com/kz-95/kz-skills">GitHub</a>
+  </div>
+
+  <h2>What agents get wrong, and the rule that catches it</h2>
+  <table>
+    <thead><tr><th scope="col">What the agent shipped</th><th scope="col">Rule</th><th scope="col">Check</th></tr></thead>
+    <tbody>
+      <tr><td>A filter row that is an empty typed box under every column</td><td><code>T1</code></td><td><code>table-check.js</code></td></tr>
+      <tr><td>A focus ring that is a rectangle round a curved chart wedge</td><td><code>C5</code></td><td><code>layout-audit.js</code></td></tr>
+      <tr><td>A search field that re-renders on every keystroke, closing the phone keyboard</td><td><code>F8</code></td><td><code>typing-check.js</code></td></tr>
+      <tr><td>A label that is dark on dark, 1.04:1, in the dark theme only</td><td><code>Y2</code></td><td>measured in both themes</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Where to go</h2>
+  <p><a href="reference/ui-rules-visual.html">The live reference</a>: a wrong and a right sample for each rule. <a href="https://github.com/kz-95/kz-skills/blob/main/docs/rule-index.md">All 78 rules</a> on one page. <a href="https://github.com/kz-95/kz-skills/blob/main/docs/install.md">Install guide</a> for Claude Code, GPT, Codex and Cursor. <a href="https://github.com/kz-95/kz-skills/blob/main/llms.txt">llms.txt</a> for crawlers.</p>
+
+  <footer>Apache-2.0 with the Commons Clause: free to use, change and use commercially; not for sale. Rule IDs are stable and never renumbered.</footer>
+</main>
+</body>
+</html>
