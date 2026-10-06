@@ -111,6 +111,7 @@ removes one of those is a bug in the convention, so raise it rather than followi
 | # | Rule |
 |---|---|
 | 29 | **Update tests when behavior changes.** Non-trivial logic leaves behind one runnable check that fails if the logic breaks. Trivial one-liners need none. |
+| 29d | **A run leaves the project tree as it found it.** Tests and tools write scratch data only in the OS temp folder and remove it, even when they fail (a `finally`, `afterEach` or `afterAll`, never only the happy path). After any run the tree holds only the intended changes: no stray folders, logs, copies or build output outside the ignored build folder. A scratch folder made beside the code piles up one per run (4 October 2026: eleven `.cms-data-realcopy-*` folders, git-ignored and so invisible to every review). The final review (32) lists the top-level folders and looks. |
 | 30 | **Update documentation when behavior changes.** |
 | 31 | **Mark deliberate corners** with a comment naming the ceiling and upgrade path (e.g. global lock, O(n^2) scan, naive heuristic). |
 | 32a | **A scripted edit that matches nothing must fail loudly.** Assert on every replacement and stop on the first miss, so a silent no-match cannot report success. Re-run the thing being edited afterwards: a clean scan does not prove the file still works. |
@@ -119,7 +120,7 @@ removes one of those is a bug in the convention, so raise it rather than followi
 | 29a1 | **A check needs something independent to check against.** Comparing a value with another view of the same value always passes: a flow diagram that summed its own links twice and compared the totals "verified" conservation that it could not have detected breaking. Introduce the second, declared figure, or admit there is no check. |
 | 29a | **A check has to be shown failing.** Break the thing it guards, watch it fail, then put it back. A check that has never failed is a check that has never run the path it claims to cover: three assertions written for defects found in review passed against the page that still had those defects, because they never executed in the state that breaks them. |
 | 32b | **A captured default is a copy, not a reference.** Snapshotting an array or object to restore later and then holding the live reference means every change to the state also changes the "default", and the reset quietly restores whatever the user last did. `d.slice()` / `{...d}` at capture time, not only at restore time. |
-| 32 | **Final review before done**, correctness, consistency, regressions, unfinished work, leftover placeholders. |
+| 32 | **Final review before done**, correctness, consistency, regressions, unfinished work, leftover placeholders, leftover files and folders (29d). |
 
 ---
 
