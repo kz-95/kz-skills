@@ -4338,6 +4338,18 @@ function closeFilterPanel() {
   fpop.removeAttribute('data-show');
 }
 
+function placeFilterPanel() {
+  /* position the panel under its trigger. Runs on open AND on every scroll, because a panel
+     that follows its trigger never needs to be dismissed to stay correct (rule N2). */
+  if (!fpopFor) { return; }
+  var r = fpopFor.getBoundingClientRect(), pr = fpop.getBoundingClientRect();
+  var x = Math.min(Math.max(8, r.left), innerWidth - pr.width - 8);
+  var y = r.bottom + 6;
+  if (y + pr.height > innerHeight - 8) { y = Math.max(8, r.top - pr.height - 6); }
+  fpop.style.left = Math.round(x) + 'px';
+  fpop.style.top = Math.round(y) + 'px';
+}
+
 function openFilterPanel(api, col, btn) {
   closeFilterPanel();
   fpopFor = btn;
@@ -4481,12 +4493,7 @@ function openFilterPanel(api, col, btn) {
     var b = fpopFor; closeFilterPanel(); if (b) { b.focus(); }
   };
   fpop.setAttribute('data-show', '1');
-  var r = btn.getBoundingClientRect(), pr = fpop.getBoundingClientRect();
-  var x = Math.min(Math.max(8, r.left), innerWidth - pr.width - 8);
-  var y = r.bottom + 6;
-  if (y + pr.height > innerHeight - 8) { y = Math.max(8, r.top - pr.height - 6); }
-  fpop.style.left = Math.round(x) + 'px';
-  fpop.style.top = Math.round(y) + 'px';
+  placeFilterPanel();
   /* focus the search only where there is a hardware keyboard: on touch it raises the on-screen one
      over the very panel it belongs to */
   if (matchMedia('(hover: hover) and (pointer: fine)').matches) { fpop.querySelector('.fq').focus(); }
@@ -4501,11 +4508,17 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape' && fpopFor) { var b = fpopFor; closeFilterPanel(); b.focus(); }
 });
 window.addEventListener('scroll', function (e) {
-  /* a capture listener on window sees scrolls from ANY descendant, including the
-     panel's own value list. Scrolling to find a value must not close the panel
-     (rule N2). */
+  /* A capture listener on window sees scrolls from ANY descendant, including the panel's own
+     value list - and including a scroll the panel's own action caused. Applying a filter that
+     empties the table collapses the card, the page reflows and scrolls, and dismissing on that
+     closes the panel the moment the user ticks the first value (rule N2, Appendix J). So the
+     panel FOLLOWS its trigger rather than being dismissed; it closes only when the trigger it
+     belongs to has left the viewport, where there is nothing left to point at. */
+  if (!fpopFor) { return; }
   if (e.target && e.target.nodeType === 1 && fpop.contains(e.target)) { return; }
-  if (fpopFor) { closeFilterPanel(); }
+  var r = fpopFor.getBoundingClientRect();
+  if (r.bottom < 0 || r.top > innerHeight) { closeFilterPanel(); return; }
+  placeFilterPanel();
 }, true);
 
 /* ============================ toasts (rule A1) ============================ */

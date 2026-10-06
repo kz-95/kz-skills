@@ -21,7 +21,7 @@ They live inside the skills, in one place each, so a copy here could not drift:
 | Where | What |
 |---|---|
 | [`skills/kz-uiuxrule/rules/INDEX.md`](../skills/kz-uiuxrule/rules/INDEX.md) | The keyword router: task words to the sections that apply. **Start here for any UI task.** |
-| [`skills/kz-uiuxrule/rules/ui-rules.md`](../skills/kz-uiuxrule/rules/ui-rules.md) | The UI rules by category, with appendices and the 25 lessons |
+| [`skills/kz-uiuxrule/rules/ui-rules.md`](../skills/kz-uiuxrule/rules/ui-rules.md) | The UI rules by category, with appendices and the 26 lessons |
 | [`skills/kz-uiuxrule/rules/chart-rules.md`](../skills/kz-uiuxrule/rules/chart-rules.md) | The 21 chart rules |
 | [`skills/kz-uiuxrule/rules/design-principles.md`](../skills/kz-uiuxrule/rules/design-principles.md) | The 16 principles behind the rules |
 | [`skills/kz-engrules/rules/engineering-rules.md`](../skills/kz-engrules/rules/engineering-rules.md) | The engineering rules under every task |

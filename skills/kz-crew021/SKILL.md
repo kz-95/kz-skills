@@ -92,7 +92,7 @@ the one card that already goes to the user.
 
 A UI task's `--done-when` says which rules it was built against, and CR checks those
 rather than reading the screen for vibes. **Read `../kz-uiuxrule/rules/ui-rules.md` Appendix Z before the
-first UI task of a project**: twenty-five mistakes made while building the reference
+first UI task of a project**: twenty-six mistakes made while building the reference
 implementation for these rules, each written as the habit that prevents it. They are the
 ones that pass review - a green check that asserts the wrong thing, a measurement taken
 from a hidden viewport or a surface that never paints a frame, a highlight always one
