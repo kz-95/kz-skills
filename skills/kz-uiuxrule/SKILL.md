@@ -134,10 +134,13 @@ Then, for each chosen section:
 1. **Route** with `rules/INDEX.md`: the task's own words name the two or three sections
    that apply. Read those. Nothing else applies unless the work touches a second category.
 2. **Build.** Every rule in those sections is in force, plus the always-on set below.
-3. **Leave a check.** Non-trivial UI leaves one runnable assertion that fails if the rule
+3. **Leave a check.** Generated or static pages (reports, progress boards, exports) are UI too, and a
+   page copied from an older one is checked, not trusted. Non-trivial UI leaves one runnable assertion that fails if the rule
    is broken - a geometry check, a state sweep, a contrast measurement. A rule with no
    check is a rule that gets broken by the person who wrote it, which is documented, with
    examples, in `rules/ui-rules.md` Appendix Z.
+   For a table, start from `snippets/filter-table.html`: sort on every column, a filter button per column
+   opening a panel, a live count, every way to close the panel, and it passes all eight checks.
    Any table also gets `../kz-uicheck/checks/table-check.js`, which fails a filter that is a
    bare text box, a column with no filter, and a table with no sort.
    Anything with a text field also gets `../kz-uicheck/checks/typing-check.js`, pasted into the browser
@@ -227,7 +230,7 @@ line, at the time.
 |---|---|
 | `skills/ui-glance/SKILL.md` | The child skill: a screenshot reviewed in one pass, twenty-two checks, no rule-set read |
 | `rules/INDEX.md` | Route by keyword: which rules apply to which job. **Start here.** |
-| `rules/ui-rules.md` | The 57 UI rules by category, and the appendices carrying the detail and the figures. Appendix Z is twenty-five mistakes to have read before starting |
+| `rules/ui-rules.md` | The 57 UI rules by category, and the appendices carrying the detail and the figures. Appendix Z is twenty-six mistakes to have read before starting |
 | `rules/chart-rules.md` | `C1-C21`: anything that renders data as marks, and the table bound to it |
 | `../kz-engrules/rules/engineering-rules.md` | Sibling skill: non-UI rules for code work, where `S1` and `S2` are defined |
 | `rules/design-principles.md` | The sixteen principles behind the rules, and the close-out checklist |

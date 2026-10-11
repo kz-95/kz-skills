@@ -30,7 +30,14 @@
                el.tagName.toLowerCase() + (el.getAttribute('aria-label') ? '[' + el.getAttribute('aria-label') + ']' : '');
     problems.push(kind + ' | ' + name + ' | ' + msg);
   }
-  var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  var wait = function (ms) {
+    if (!document.hidden) { return new Promise(function (r) { setTimeout(r, ms); }); }
+    return new Promise(function (r) {          /* setTimeout is throttled in a hidden tab; a message channel is not */
+      var end = performance.now() + ms, ch = new MessageChannel();
+      ch.port1.onmessage = function () { if (performance.now() >= end) { r(); } else { ch.port2.postMessage(0); } };
+      ch.port2.postMessage(0);
+    });
+  };
 
   var TEXTY = /^(text|search|email|tel|url|)$/;
   var fields = Array.prototype.filter.call(

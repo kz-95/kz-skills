@@ -154,7 +154,7 @@ What claims the screen, what dismisses it, and what survives coming back.
 | # | Rule |
 |---|---|
 | N1 | **A modal claims the whole screen, and that is four separate things.** Nothing behind it scrolls, takes focus, or takes a click, and Escape closes it with focus returning to whatever opened it. `<dialog>.showModal()` gives you three of the four; the background scroll is the one it leaves, and the one that ships. A non-modal popover is the opposite contract and must lock nothing. See Appendix N. |
-| N2 | **A dropdown closes on choose only when the choice is single, and every panel can be closed by every route.** Multi-select and editable popovers stay open until the user dismisses them, so the ways to dismiss one are not optional: **tapping its own trigger again closes it** (a trigger that only opens is a trap: nothing else may be reachable, and a phone has no Escape), an outside tap closes it, Escape closes it and returns focus to the trigger, and on touch a visible **Done** at 44px, because a panel can cover its own trigger. Do not open the on-screen keyboard over a panel on touch by auto-focusing its search. Check: `popover-check.js` opens every panel and closes it each way. See Appendix J. |
+| N2 | **A dropdown closes on choose only when the choice is single, and every panel can be closed by every route.** Multi-select and editable popovers stay open until the user dismisses them, so the ways to dismiss one are not optional: **tapping its own trigger again closes it** (a trigger that only opens is a trap: nothing else may be reachable, and a phone has no Escape), an outside tap closes it, Escape closes it and returns focus to the trigger, and on touch a visible **Done** at 44px, because a panel can cover its own trigger. Do not open the on-screen keyboard over a panel on touch by auto-focusing its search. **A panel is never dismissed by a scroll it caused itself**: applying a choice can empty the region behind it, the page reflows, and a dismiss-on-scroll handler reads that reflow as a user scroll. A fixed panel follows its trigger on scroll instead of closing, and closes only when that trigger leaves the viewport. Check: `popover-check.js` opens every panel, clears it, picks a value, and closes it each way. See Appendix J. |
 | N3 | **When there are more destinations than slots, the user picks which ones and in what order.** Four or five slots plus a menu holding **every** destination, not just the leftovers. The bar and the menu do different jobs, and it is the menu being complete that makes a five slot bar safe. **The complete menu is the rule; the editable arrangement is not.** Where the destination set is large and which destinations matter differs by user, the arrangement becomes a preference, edited by dragging, with a keyboard route to the same thing. Where every user has the same job - a fixed-role internal tool - fixed slots plus the complete menu is the whole rule, and building the editor is two weeks spent on a preference nobody sets. See Appendix O. |
 | N5 | **The mark showing where you are belongs to the thing it marks.** A highlight built as a separate element - a sliding pill, an underline, a bar positioned by `left` and `width` from a measurement - is a second thing that has to agree with the first, and it drifts: it is measured before the font loads and sits a few pixels off forever, it is not recomputed when the container scrolls or the window resizes, it is measured against the wrong offset parent, or it animates to where the item *was*. The item's own background, border or weight cannot drift, because there is nothing to keep in sync. Where a moving indicator is genuinely wanted, it is derived from the marked element's box on every paint, and the paint runs on resize, on the container's own scroll, and after fonts settle - not once at load. This is rule T4 at the scale of a single control: one mechanism, not two that must be reconciled. See Appendix W. |
 | N4 | **Coming back is a state, not a fresh load.** Where the user was is part of what they were doing: the scroll position, the sort, the filters in the panel, what they had typed, what was expanded. Going forward and returning restores all of it, and any screen worth arriving at can be arrived at directly - addressable, shareable, survivable across a reload. **The address has three jobs and they do not mix**: the path names the thing, the query names what is selected inside it, and the fragment names the part being read - one record, the variant chosen within it, at the section being read. A selection that lives only in memory cannot be sent to anyone, and the test is whether a link pasted to a colleague opens on what the sender was looking at rather than on the default. Nothing resets the way back without saying so. See Appendix T. |
@@ -824,6 +824,49 @@ tap is enough there. It applies to every panel that holds controls.
 **The test:** open the panel, then close it four ways, one after another: tap the trigger again,
 press Escape, tap empty page, tap Done. Each must close it. `popover-check.js` does exactly this to
 every dropdown on a page and reports `STUCK`, `ESCAPE`, `OUTSIDE` or, at touch widths, `NODONE`.
+It also reports `PICKCLOSE` for the opposite failure - a multi-select that closed when one of its
+own values was chosen - and it makes that check with the region behind the panel scrolled first,
+because applying a choice can shrink that region, and the scrollTop clamp which follows is
+dispatched as an ordinary scroll event that a dismiss-on-scroll handler may act on.
+
+### The third way it closes by itself: a scroll it caused
+
+Reported from the reference page's own revenue table. The user opens a column filter, uses the
+panel's **Clear selection**, then ticks the first value to filter by it - and the panel vanishes
+without Done, Escape or an outside tap being pressed.
+
+Nothing in the panel closed it. The dismiss-on-scroll handler did:
+
+```
+clear selection  ->  0 of 13 selected  ->  table renders its no-matching-rows state
+                 ->  the card collapses (scrollHeight 495 -> 157)
+                 ->  the PAGE reflows and scrolls
+                 ->  scroll event, target outside the panel  ->  dismissed
+```
+
+The stack confirmed it: `closeFilterPanel` called from the `window` scroll listener, not from any
+handler the user touched. It is invisible on a table whose row count barely moves - the same panel on
+a table going 12 rows to 11 never reflows the page and never closes - which is why it survived review.
+
+**Dismissing on scroll is the bug.** The reason a fixed panel is dismissed on scroll is that it would
+otherwise float away from its trigger, so dismissal is standing in for repositioning. Reposition
+instead, and the whole class disappears - the panel's own list scrolling, a reflow the filter caused,
+a resize, a sticky header settling:
+
+```js
+window.addEventListener('scroll', function (e) {
+  if (!openFor) { return; }
+  if (e.target && e.target.nodeType === 1 && panel.contains(e.target)) { return; }  // its own list
+  var r = openFor.getBoundingClientRect();
+  if (r.bottom < 0 || r.top > innerHeight) { close(); return; }   // nothing left to point at
+  place();                                                        // follow the trigger
+}, true);
+```
+
+`popover-check.js` reports this as `PICKCLOSE`. It **clears the selection before picking a value**,
+because that is the transition that reflows: ticking one value out of a full set changes the result
+by one row and nothing moves. A version of the check that only ticked from a full set reported clean
+over a live instance of this defect.
 
 ### The failure that looks identical to a bug
 
@@ -2249,7 +2292,7 @@ still be broken for a human - dispatch the event, or scroll for real.
 
 ---
 
-## Appendix Z: Twenty-five things not to do, each one learned the expensive way
+## Appendix Z: Twenty-six things not to do, each one learned the expensive way
 
 Every item below was done - by a model, while building the reference page for these very
 rules, often within an hour of writing the rule it broke. They are here as instructions,
@@ -2437,6 +2480,17 @@ declaration is dropped. Two focus rings (`outline: 2px solid var(--fg)`) had nev
 every new rule written with the same wrong name silently did nothing. Before using a token,
 find where it is defined; the audit now fails any `var(--x)` that nothing declares
 (`UNDEFINED TOKEN`).
+
+**26. Never accept "clean" from a check that cannot say what it measured.** `popover-check.js`
+resolved its subject with a visibility test that rejects `opacity: 0`. A panel that fades in is
+laid out at opacity 0 for the length of its transition, so the panel was never found - and with
+no subject, the Escape, outside-click and Done routes were not reported as failing, they were
+skipped. The page printed `clean (7 triggers)` for seven filter panels it had not tested, and
+that line shipped as evidence in a release. Two habits come out of it. A check that cannot find
+its subject must fail (`NOPANEL`), never pass quietly: a skip and a pass are the same line of
+output, and only one of them is true. And measure the subject while the surface is painting - the
+same filter panel "closed on pick" in a hidden pane and stayed open with the pane visible, so the
+defect under investigation was an artifact of where it was measured, not a defect in the page.
 
 ### And the one that costs the most
 

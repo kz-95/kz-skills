@@ -5,7 +5,7 @@ One row per document: what it covers, what kind of document it is, and **when to
 | Document | Kind | Covers | Reach for it when |
 |---|---|---|---|
 | [install.md](install.md) | Guide | Installing in Claude Code (plugin and by hand) and in other agents; wiring the purpose hook; fixing "it does not show up" | You are setting this up, or a skill is not appearing as a command |
-| [how-they-fit.md](how-they-fit.md) | Guide | The eight skills, what each is for, and how a request is routed between them | You are not sure which skill a task needs |
+| [how-they-fit.md](how-they-fit.md) | Guide | The ten skills, what each is for, and how a request is routed between them | You are not sure which skill a task needs |
 | [with-impeccable.md](with-impeccable.md) | Guide | Using these skills alongside impeccable (a style skill): who decides what, where they agree, the three places they can pull against each other | You want a style from impeccable and correct behaviour from here |
 | [rule-index.md](rule-index.md) | Reference | Every rule, one line each, by category, with links to its live samples. **Generated** by `scripts/build-index.py` | You want to scan all rules, or find one by its statement |
 | [reference/ui-rules-visual.html](reference/ui-rules-visual.html) | Reference | A wrong and a right sample for every rule, live | You want to see a rule fail and pass |
@@ -21,7 +21,7 @@ They live inside the skills, in one place each, so a copy here could not drift:
 | Where | What |
 |---|---|
 | [`skills/kz-uiuxrule/rules/INDEX.md`](../skills/kz-uiuxrule/rules/INDEX.md) | The keyword router: task words to the sections that apply. **Start here for any UI task.** |
-| [`skills/kz-uiuxrule/rules/ui-rules.md`](../skills/kz-uiuxrule/rules/ui-rules.md) | The UI rules by category, with appendices and the 25 lessons |
+| [`skills/kz-uiuxrule/rules/ui-rules.md`](../skills/kz-uiuxrule/rules/ui-rules.md) | The UI rules by category, with appendices and the 26 lessons |
 | [`skills/kz-uiuxrule/rules/chart-rules.md`](../skills/kz-uiuxrule/rules/chart-rules.md) | The 21 chart rules |
 | [`skills/kz-uiuxrule/rules/design-principles.md`](../skills/kz-uiuxrule/rules/design-principles.md) | The 16 principles behind the rules |
 | [`skills/kz-engrules/rules/engineering-rules.md`](../skills/kz-engrules/rules/engineering-rules.md) | The engineering rules under every task |

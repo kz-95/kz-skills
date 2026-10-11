@@ -24,11 +24,17 @@ The entire workflow is in `references/`. Read the one you need, when you need it
 
 ## Step zero: ask what this run is for
 
+**First, is this a crew job at all?** One task that passes the `../kz-fastfix/` size test is
+not a run: no card, no `pb.py init`, no dispatch. Hand it to that skill and stop here. Inside
+a run that is already under way, tasks keep the pipeline: the locks and write-set checks are
+what make a parallel crew safe.
+
 **Before dispatching, planning or writing anything, ask the user what this run is** - one
 Ask Card, then work. This workflow spends a budget across a crew; pointing it at the wrong
 thing is the most expensive mistake available here.
 
-1. What is this run - new project, continuing one, a single task, or a retro?
+1. What is this run - new project, continuing one, a single task (one that fails the
+   `kz-fastfix` size test), or a retro?
 2. Which phase?
 3. Budget, which sets the gate and not just the report?
 4. Weight - fast (one attempt per task) or right (reviews and the fix loop)?
@@ -92,7 +98,7 @@ the one card that already goes to the user.
 
 A UI task's `--done-when` says which rules it was built against, and CR checks those
 rather than reading the screen for vibes. **Read `../kz-uiuxrule/rules/ui-rules.md` Appendix Z before the
-first UI task of a project**: twenty-five mistakes made while building the reference
+first UI task of a project**: twenty-six mistakes made while building the reference
 implementation for these rules, each written as the habit that prevents it. They are the
 ones that pass review - a green check that asserts the wrong thing, a measurement taken
 from a hidden viewport or a surface that never paints a frame, a highlight always one

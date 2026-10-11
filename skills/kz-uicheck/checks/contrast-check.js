@@ -86,6 +86,7 @@
       if (!el || /^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE)$/.test(el.tagName)) { continue; }
       if (el.closest('[data-contrast-check="skip"], [inert], [hidden], svg defs')) { continue; }
       if (!visible(el) || (el.closest('button, input, select, textarea, fieldset') || {}).disabled) { continue; }
+      if (opacityOf(el) < 0.05) { continue; }          /* fully transparent: a tooltip waiting to be shown, not text anyone reads */
       var cs = getComputedStyle(el), fg = parse(cs.color);
       if (!fg) { continue; }
       var bg = backdrop(el);
