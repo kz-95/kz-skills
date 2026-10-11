@@ -2,7 +2,7 @@
 
 <a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#t1-filter"><img src="docs/assets/carousel-improvements.gif" alt="Five usability mistakes, each shown wrong, then right. T1: a filter is a panel, not a text box. F1: a required field says so before it is missed. F4: a field is the shape of what goes in it. N2: a panel can always be closed. F9: Enter moves to the next field." width="100%"></a>
 
-**Stack-neutral UI/UX rules that tell an AI agent what any interface must do, what breaks when it does not, and a browser check that fails it.** 57 UI rules, 21 chart rules, 16 principles, in eight installable skills for Claude Code and any agent that reads Markdown.
+**Stack-neutral UI/UX rules that tell an AI agent what any interface must do, what breaks when it does not, and a browser check that fails it.** 57 UI rules, 21 chart rules, 16 principles, in nine installable skills for Claude Code and any agent that reads Markdown.
 
 [Install](#quick-start) · [Live reference](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html) · [All 78 rules](docs/rule-index.md) · [For agents: llms.txt](llms.txt) · [Changelog](CHANGELOG.md)
 
@@ -60,7 +60,7 @@ First public release.
 | Claude Code skills, plugin manifest provided | ✅ | Plain Markdown for GPT, Codex, Cursor and others | ✅ |
 | Picks a palette, typeface or framework for you | ❌ | Judges hover and press states from a screenshot | ❌ |
 
-## The eight skills
+## The nine skills
 
 | Skill | Reach for it when |
 |---|---|
@@ -68,6 +68,7 @@ First public release.
 | [`kz-uiuxrule`](skills/kz-uiuxrule/SKILL.md) | Building, changing or reviewing any UI: the rules, in four modes (adopt, review, build, loop). |
 | [`kz-uicheck`](skills/kz-uicheck/SKILL.md) | Before calling UI work done: eight paste-in browser checks that measure instead of judge. |
 | [`kz-engrules`](skills/kz-engrules/SKILL.md) | Any code task at all: the engineering floor everything else sits on. |
+| [`kz-fastfix`](skills/kz-fastfix/SKILL.md) | One small job (a typo, a style change, a one-line bug): a size test, then the change made directly and checked once. No crew, no loop. |
 | [`kz-askcard`](skills/kz-askcard/SKILL.md) | About to ask the user something: three to five decisions, one recommended, a custom option. |
 | [`kz-crew021`](skills/kz-crew021/SKILL.md) | A whole project, idea to maintenance, with a costed multi-agent crew. |
 | [`kz-reflect`](skills/kz-reflect/SKILL.md) | A mistake was noticed and the fix verified: log it, classify it, and propose the rule or check change for a person to approve. |
@@ -142,7 +143,7 @@ All 78 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 ## Repository map
 
 ```
-skills/        the eight skills, each a direct child
+skills/        the nine skills, each a direct child
 docs/          index, install guide, rule index, live reference page, history
 scripts/       build-index.py (generates the rule index), validate.py (CI)
 llms.txt       index for LLM crawlers          AGENTS.md  how any agent works here

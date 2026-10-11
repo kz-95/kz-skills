@@ -1,9 +1,10 @@
 # How the skills fit together
 
-Eight skills and one child. Each can be called on its own. `kz-skill` is the entry point for when a request spans several, or when it is not obvious which applies.
+Nine skills and one child. Each can be called on its own. `kz-skill` is the entry point for when a request spans several, or when it is not obvious which applies.
 
 ```
 kz-engrules      the floor: applies to every task, UI or not
+  kz-fastfix     the lane for one small job; escalates into the crew or the loop
   kz-uiuxrule    adds the interface rules on top of it
     kz-uicheck   the instruments its verification rules tell you to run
 kz-askcard       how any of them asks the user something
@@ -17,6 +18,7 @@ kz-crew021       the workflow that dispatches the rest across a crew
 | The request | Use | Why |
 |---|---|---|
 | Any code task at all | `kz-engrules` first | It is short and nothing scopes it out |
+| A typo, a wording or style change, a doc line, a one-line bug | `kz-fastfix` | A size test, then the change made directly and checked once; no crew, no loop |
 | Build, change or review a screen, table, form, chart, overlay | `kz-uiuxrule` | The rules, in four modes |
 | "Look at this screenshot and tell me what is wrong" | `ui-glance` (child of `kz-uiuxrule`) | One read, one pass, three to six findings |
 | "Is this UI done?" | `kz-uicheck` | Measures layout, tables and typing instead of judging them |
@@ -25,7 +27,7 @@ kz-crew021       the workflow that dispatches the rest across a crew
 | One defect, already fixed once, still broken | `kz-loopfix` | Critic and fixer to agreement, then a gate rules on whether the agreement is true |
 | About to ask the user something | `kz-askcard` | Three to five decisions, one recommended, a custom option, a default per line |
 
-Two at once is normal: a crew run that ships UI uses all eight. Opening the router first is not required. If the request names its own lane, go straight to that skill.
+Two at once is normal: a crew run that ships UI uses most of them. Opening the router first is not required. If the request names its own lane, go straight to that skill.
 
 ## The four modes of `kz-uiuxrule`
 

@@ -2,6 +2,11 @@
 
 All notable changes to this repository. Format follows [Keep a Changelog](https://keepachangelog.com/); versions follow [Semantic Versioning](https://semver.org/). **Rule IDs are never renumbered**, so a rule cited in 0.1.0 means the same thing in every later version.
 
+## [Unreleased]
+
+### Added
+- **`kz-fastfix`**, the fast lane for one small job. A six-line size test (at most 3 files and about 50 lines; no dependency, schema or contract change; no money, sign-in, permission, secret or cost data; nothing deployed, published or deleted; the cause known; no review required) decides. A small job is made directly, checked once by the tests that touch it and the automatic safety checks, and reported in three lines; it leaves the lane when it grows or a check fails twice. The router sends a passing job there before anything else, and `kz-crew021` step zero hands a single small task to it instead of starting a run.
+
 ## [0.1.0] - unreleased
 
 First public release.
