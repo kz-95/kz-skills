@@ -13,8 +13,7 @@ another once the page has loaded, and reads the results back from the DOM Chrome
 checks run on virtual time, so a check that pauses for 100ms costs no real time.
 
 Limits: a local file only (for a served page, save it or paste the checks into the console); one
-width per run; the page is in light theme unless it switches with data-theme (the contrast check then
-reads both); focus-check needs a focused page, which a headless run normally is.
+width per run; both colour schemes by default (--scheme); focus-check needs a focused page, which a headless run normally is.
 """
 import argparse
 import html
@@ -62,6 +61,8 @@ def main():
     ap.add_argument("--checks", default=",".join(ALL))
     ap.add_argument("--width", type=int, default=1280)
     ap.add_argument("--height", type=int, default=900)
+    ap.add_argument("--scheme", choices=["both", "light", "dark"], default="both",
+                    help="prefers-color-scheme to run under; both by default, since a colour verified in one says nothing about the other")
     a = ap.parse_args()
 
     page = os.path.abspath(a.page)
@@ -91,36 +92,40 @@ window.addEventListener('load', function () {
     doc = re.sub(r"(<head[^>]*>)", lambda m: m.group(1) + base, doc, count=1, flags=re.I) if re.search(r"<head[^>]*>", doc, re.I) else base + doc
     doc = re.sub(r"(</body>)", lambda m: runner + m.group(1), doc, count=1, flags=re.I) if re.search(r"</body>", doc, re.I) else doc + runner
 
-    tmp = tempfile.mkdtemp(prefix="kz-checks-")
-    try:
-        f = os.path.join(tmp, "page.html")
-        open(f, "w", encoding="utf-8").write(doc)
-        r = subprocess.run([find_chrome(), "--headless=new", "--disable-gpu", "--no-first-run", "--hide-scrollbars",
-                            "--allow-file-access-from-files", "--window-size=%d,%d" % (a.width, a.height),
-                            "--user-data-dir=" + os.path.join(tmp, "profile"),
-                            "--virtual-time-budget=300000", "--dump-dom", "file:///" + f.replace("\\", "/")],
-                           capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)    # leave nothing behind, even when Chrome fails
-
-    m = re.search(r'<pre id="kz-check-results">(.*?)</pre>', r.stdout, re.S)
-    if not m:
-        sys.exit("the checks did not finish (no results in the page). Chrome said:\n" + r.stderr[-800:])
-    results = json.loads(html.unescape(m.group(1)))
-
+    schemes = ["light", "dark"] if a.scheme == "both" else [a.scheme]
     bad = 0
-    print("%s at %dpx" % (os.path.basename(page), a.width))
-    for n in names:
-        res = results.get(n)
-        verdict = "FAIL" if failed(res) else "ok"
-        bad += verdict == "FAIL"
-        print("\n[%s] %s" % (verdict, n))
-        lines = res if isinstance(res, list) else (
-            (["failures:"] + ["  " + x for x in res.get("failures", [])] + ["advisory:"] + ["  " + x for x in res.get("advisory", [])])
-            if isinstance(res, dict) else [str(res)])
-        for line in lines:
-            print("  " + str(line))
-    print("\n%d of %d checks failed" % (bad, len(names)))
+    for scheme in schemes:
+        tmp = tempfile.mkdtemp(prefix="kz-checks-")
+        try:
+            f = os.path.join(tmp, "page.html")
+            open(f, "w", encoding="utf-8").write(doc)
+            r = subprocess.run([find_chrome(), "--headless=new", "--disable-gpu", "--no-first-run", "--hide-scrollbars",
+                                "--allow-file-access-from-files", "--window-size=%d,%d" % (a.width, a.height),
+                                "--blink-settings=preferredColorScheme=%d" % (0 if scheme == "dark" else 1),
+                                "--user-data-dir=" + os.path.join(tmp, "profile"),
+                                "--virtual-time-budget=300000", "--dump-dom", "file:///" + f.replace("\\", "/")],
+                               capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)    # leave nothing behind, even when Chrome fails
+
+        m = re.search(r'<pre id="kz-check-results">(.*?)</pre>', r.stdout, re.S)
+        if not m:
+            sys.exit("the checks did not finish (no results in the page). Chrome said:\n" + r.stderr[-800:])
+        results = json.loads(html.unescape(m.group(1)))
+
+        print("%s at %dpx, %s scheme" % (os.path.basename(page), a.width, scheme))
+        for n in names:
+            res = results.get(n)
+            verdict = "FAIL" if failed(res) else "ok"
+            bad += verdict == "FAIL"
+            print("\n[%s] %s" % (verdict, n))
+            lines = res if isinstance(res, list) else (
+                (["failures:"] + ["  " + x for x in res.get("failures", [])] + ["advisory:"] + ["  " + x for x in res.get("advisory", [])])
+                if isinstance(res, dict) else [str(res)])
+            for line in lines:
+                print("  " + str(line))
+        print()
+    print("%d failure(s) across %d check run(s)" % (bad, len(names) * len(schemes)))
     sys.exit(1 if bad else 0)
 
 

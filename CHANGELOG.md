@@ -24,6 +24,10 @@ All notable changes to this repository. Format follows [Keep a Changelog](https:
 - **`scripts/run-checks.py`** (in `kz-uicheck`): runs the checks on a local HTML file in headless Chrome and exits 1 on a failure, for generated pages, static reports and pre-commit.
 - **Checks wait on real timers when the page is visible** (so headless virtual time works) and on a message channel when it is hidden.
 
+- **`run-checks.py` runs both colour schemes by default** (`--scheme both|light|dark`): a colour verified in one says nothing about the other.
+- **`modal-check.js` reports `UNTESTED`** when a modal on the page was never opened because no opener could be found, instead of printing "clean (0 modals)". It also finds openers by `commandfor`.
+- **`kz-uiuxrule` treats generated pages as UI**: its description names reports, progress pages, exports and anything a script writes; its verify step gives the `run-checks.py` command; the filter-table snippet carries that command at the top, where an agent adapting it will see it. Measured with five agent runs on the same brief: bare filter boxes in the first two, clean pages from the third, and the agent ran the checks itself only once the command sat in the snippet.
+
 ### Fixed
 - **A column filter panel dismissed itself when a value was picked after clearing the selection.**
   Reported on the reference page's revenue table: clear the selection, tick the first value, and the

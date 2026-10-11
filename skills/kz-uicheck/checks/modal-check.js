@@ -64,12 +64,12 @@
   }
 
   var openers = Array.prototype.filter.call(
-    document.querySelectorAll('[aria-haspopup="dialog"], [aria-controls], [data-modal-check]'),
+    document.querySelectorAll('[aria-haspopup="dialog"], [aria-controls], [commandfor], [data-modal-check]'),
     function (el) {
       if (el.closest('[data-modal-check="skip"]') || el.getAttribute('data-modal-check') === 'skip') { return false; }
       if (!visible(el) || el.disabled || el.closest('[inert]')) { return false; }
       if (el.hasAttribute('data-modal-check') || el.getAttribute('aria-haspopup') === 'dialog') { return true; }
-      var t = document.getElementById(el.getAttribute('aria-controls'));
+      var t = document.getElementById(el.getAttribute('aria-controls') || el.getAttribute('commandfor'));
       return !!(t && (t.matches('dialog, [role="dialog"], [role="alertdialog"]')));
     });
 
@@ -143,7 +143,15 @@
   } else {
     console.log('%cmodal check: clean - ' + tested + ' modal(s) opened and closed', 'color:#1f7a4d;font-weight:700');
   }
-  if (!tested) { console.log('  no modal opener found: give an opener aria-haspopup="dialog" or data-modal-check'); }
+  /* "clean" from a check that tested nothing is a false pass (Appendix Z, lesson 26). A modal on the page whose opener
+     cannot be found is reported, not skipped. */
+  var modals = Array.prototype.filter.call(document.querySelectorAll('dialog, [aria-modal="true"]'), function (d) {
+    return !d.closest('[data-modal-check="skip"]');
+  });
+  if (modals.length > tested) {
+    problems.push('UNTESTED | ' + (modals.length - tested) + ' of ' + modals.length + ' modal(s) on the page were never opened: no opener found. Give each opener aria-haspopup="dialog" (screen readers need it too) or data-modal-check');
+  }
+  if (!tested && !modals.length) { notes.push('no modal on this page'); }
   notes.forEach(function (n) { console.log('  note: ' + n); });
-  return problems.length ? problems.concat(notes) : ['clean (' + tested + ' modals)'].concat(notes);
+  return problems.length ? problems.concat(notes) : [tested ? 'clean (' + tested + ' modals)' : 'clean (no modal on this page)'].concat(notes);
 })();
