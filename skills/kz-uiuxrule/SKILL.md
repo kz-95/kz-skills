@@ -139,6 +139,8 @@ Then, for each chosen section:
    is broken - a geometry check, a state sweep, a contrast measurement. A rule with no
    check is a rule that gets broken by the person who wrote it, which is documented, with
    examples, in `rules/ui-rules.md` Appendix Z.
+   For a table, start from `snippets/filter-table.html`: sort on every column, a filter button per column
+   opening a panel, a live count, every way to close the panel, and it passes all eight checks.
    Any table also gets `../kz-uicheck/checks/table-check.js`, which fails a filter that is a
    bare text box, a column with no filter, and a table with no sort.
    Anything with a text field also gets `../kz-uicheck/checks/typing-check.js`, pasted into the browser

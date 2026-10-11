@@ -40,7 +40,7 @@ Checks in backticks are [kz-uicheck](../kz-uicheck/SKILL.md) scripts: one at a t
 | ID | Rule | Fast check |
 |---|---|---|
 | S1 | Search, sort on every column, a filter per column (a button opening a panel, T1; never a bare box or select in the head), a live count, a no-match state. | `table-check.js` `NOSORT`, `NOSEARCH`, `NOCOUNT`; sort a number column: 9 before 10. |
-| T1 | A filter is a panel: sort, value list with counts, range. Never a text box. | `table-check.js` `BOX`. |
+| T1 | A filter is a panel: sort, value list with counts, range. Never a text box. Start from `kz-uiuxrule/snippets/filter-table.html`. | `table-check.js` `BOX`. |
 | T2 | Every column gets a filter, computed ones too; materialise the value onto the row. | `table-check.js` `NOFILTER`. |
 | S1 | Totals come from source values, rounded once; a filtered footer totals only shown rows. | Filter the table: the footer equals the shown rows' sum; shares total 100.0%. |
 

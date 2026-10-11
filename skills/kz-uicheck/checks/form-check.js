@@ -21,6 +21,7 @@
 (async function formCheck() {
   var problems = [], advisory = [];
   var wait = function (ms) {
+    if (!document.hidden) { return new Promise(function (r) { setTimeout(r, ms); }); }   /* a visible page, or a headless run with virtual time */
     return new Promise(function (r) {          /* setTimeout is throttled in a hidden tab; a message channel is not */
       var end = performance.now() + ms, ch = new MessageChannel();
       ch.port1.onmessage = function () { if (performance.now() >= end) { r(); } else { ch.port2.postMessage(0); } };

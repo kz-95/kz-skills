@@ -24,6 +24,17 @@ are checking. Nothing to install, no selectors to configure, no framework assume
 | `checks/focus-check.js` | A control whose focus changes nothing visible (`NOFOCUS`), a focus indicator under 3:1 (`WEAK`), `tabindex` above 0, a clickable thing the keyboard cannot reach. Needs the page focused | `A` |
 | `checks/form-check.js` | A field with no label, a phone or email field typed as text, an error shown while typing, a required field left with no nudge, a refused submit that does not land in the first empty field. Types into the page: reload after | `F1` `F2` |
 
+## Without a browser window: `scripts/run-checks.py`
+
+```bash
+python scripts/run-checks.py page.html                         # all eight, at 1280px
+python scripts/run-checks.py page.html --checks table-check,popover-check --width 390
+```
+
+Runs the checks on a local HTML file in headless Chrome (nothing to install beyond Python and Chrome)
+and exits 1 if any check fails, so a generated page or a static report can be checked in a script or
+a pre-commit step. One width per run; run it at a wide width and at 390.
+
 ## Done condition for any page with a table
 
 A page with a table is not done until `table-check.js` (and `popover-check.js` for its filter panels) has

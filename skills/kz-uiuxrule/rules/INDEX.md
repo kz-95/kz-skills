@@ -65,6 +65,7 @@ marked as such by their identity.
 value lists, counts, totals), Appendix L (bounded height and expand), Appendix T (what
 survives coming back).
 **Also:** [chart-rules.md](chart-rules.md) C2 and C10 if anything on screen plots these rows.
+**Start from:** [`snippets/filter-table.html`](../snippets/filter-table.html), a table that already passes every check.
 **Check:** `../../kz-uicheck/checks/table-check.js` (fails a filter that is a text box, a column with no filter, no sort, a filter glued to a header line - run it on ANY page), `state-check.js` (drives every table to 0, 1 and all rows, sorts every column).
 **The three most often missed:** a filter that is a single text box rather than a panel
 (T1); a computed column with no filter because the value only exists inside the formatter

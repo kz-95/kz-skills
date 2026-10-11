@@ -31,6 +31,9 @@ First public release.
 - **Lesson 26 / `N2`:** a column-filter panel must not be dismissed by a scroll the filter itself caused (a table that shrinks reflows the page); reposition on scroll instead of closing. `popover-check.js` gains `PICKCLOSE` (a multi-select that closed on choosing one of its values).
 - **Engineering rule `29d`:** a run leaves the project tree as it found it; tests write scratch data only in the OS temp folder and clean up on failure too.
 - **Done condition for any page with a table:** `table-check.js` and `popover-check.js` run in a real browser, output pasted in the report, including generated and static pages. A filter is a button opening a panel, never a bare box or select in the header (`S1` line in `kz-flashrule` now says so).
+- **`snippets/filter-table.html`** (in `kz-uiuxrule`): a dependency-free table to start from. Sort on every column, a filter button per column opening a panel, a live count, every way to close the panel; passes all eight checks at 1280px and 390px. Its header is updated in place, never rebuilt while a panel is open.
+- **`scripts/run-checks.py`** (in `kz-uicheck`): runs the checks on a local HTML file in headless Chrome and exits 1 on a failure, for generated pages, static reports and pre-commit.
+- **Checks wait on real timers when the page is visible** (so headless virtual time works) and on a message channel when it is hidden.
 - **Licence:** Apache-2.0 with the Commons Clause. Free to use, modify and use commercially; the software itself may not be sold, including hosting or consulting/support fees whose value derives substantially from it.
 - **Precedence over style skills:** `kz-uiuxrule` outranks a style or design skill such as impeccable. The style skill decides what the rules leave open; where they conflict, the rule wins. See `docs/with-impeccable.md`.
 - Plugin manifest (`.claude-plugin/`), `AGENTS.md`, `llms.txt`, generated `docs/rule-index.md`, and `scripts/validate.py`.

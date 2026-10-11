@@ -26,6 +26,7 @@
 (async function popoverCheck() {
   var problems = [], advisory = [], wait = function (ms) {
     /* setTimeout is throttled to about a second in a hidden tab or pane; a message channel is not */
+    if (!document.hidden) { return new Promise(function (r) { setTimeout(r, ms); }); }   /* a visible page, or a headless run with virtual time */
     return new Promise(function (r) {
       var end = performance.now() + ms, ch = new MessageChannel();
       ch.port1.onmessage = function () { if (performance.now() >= end) { r(); } else { ch.port2.postMessage(0); } };

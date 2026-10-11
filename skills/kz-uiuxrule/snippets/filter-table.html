@@ -1,0 +1,229 @@
+<!doctype html>
+<!-- filter-table.html - a reference table that passes the table rules (S1, T1, T2, T3, N2).
+
+     Copy the parts you need; it has no dependencies. What it shows:
+       - every column sorts (click its title; aria-sort marks the active one; numbers sort as numbers)
+       - every column has a filter BUTTON that opens a panel (T1): sort, a search over its values,
+         the value list with counts, Select all / Clear, and a number range on number columns.
+         Never a bare text box or select in the head.
+       - the title row and the filter row are one header block, one line under the filters (S1)
+       - one search over the whole table and a live "n of m" count in an aria-live region (S1)
+       - the panel closes every way (N2): its trigger again, Escape (focus returns), an outside tap,
+         Done. Ticking a value never closes it. A scroll moves it with its trigger rather than
+         closing it, so a filter that shrinks the table cannot dismiss its own panel.
+       - on touch the panel's search is not auto-focused, so the keyboard does not cover it
+     Checks it passes: table-check.js, popover-check.js, layout-audit.js, focus-check.js, contrast-check.js. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Filter table</title>
+<style>
+/* --field is the edge of anything typed into or pressed: 3:1 against its surface in both themes */
+:root{--bg:#f7f6f4;--surface:#fff;--text:#1c1a18;--muted:#5f5851;--line:#d9d4ce;--field:#8c857e;--accent:#3a6cf1;--accent-ink:#2a51b8;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px}
+@media (prefers-color-scheme:dark){:root{--bg:#141317;--surface:#1e1d23;--text:#ece9e6;--muted:#a09a94;--line:#35333c;--field:#7a7585;--accent:#8aa8ff;--accent-ink:#8aa8ff}}
+*{box-sizing:border-box}
+body{margin:0;padding:var(--s4);background:var(--bg);color:var(--text);font:14px/1.5 system-ui,sans-serif}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:var(--s3);max-width:900px}
+.bar{display:flex;gap:var(--s2);align-items:center;flex-wrap:wrap;margin-bottom:var(--s3)}
+.bar input::placeholder,.panel input::placeholder{color:var(--muted);opacity:1}
+.bar input{min-height:36px;padding:0 var(--s2);border:1px solid var(--field);border-radius:7px;background:var(--surface);color:var(--text);font:inherit;font-size:16px}
+.count{color:var(--muted)}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:var(--s2);white-space:nowrap}
+td.num,th.num{text-align:right}
+tbody tr{border-top:1px solid var(--line)}
+thead tr.titles th{padding-bottom:var(--s1)}
+thead tr.filters th{padding-top:var(--s1);padding-bottom:var(--s2);border-bottom:1px solid var(--line)}
+.sortbtn,.ftrig,.panel button{font:inherit;color:inherit;background:none;border:1px solid transparent;border-radius:6px;cursor:pointer}
+.sortbtn{font-weight:600;padding:2px var(--s1)}
+.sortbtn:hover,.ftrig:hover,.panel button:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ftrig{display:inline-flex;align-items:center;gap:var(--s1);min-height:30px;padding:0 var(--s2);border-color:var(--field);color:var(--muted);max-width:160px}
+.ftrig[data-on="1"]{border-color:var(--accent);color:var(--accent-ink)}
+.ftrig .cap{overflow:hidden;text-overflow:ellipsis}
+.panel{position:fixed;z-index:10;width:290px;max-width:calc(100vw - 16px);max-height:70vh;overflow:auto;background:var(--surface);color:var(--text);
+  border:1px solid var(--line);border-radius:10px;padding:var(--s3);box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.panel[hidden]{display:none}
+.panel .row{display:flex;gap:var(--s2);margin-bottom:var(--s2)}
+.panel .row button{flex:1;white-space:nowrap}
+.panel .range label{flex:1;display:grid;gap:2px;min-height:0;color:var(--muted);font-size:12px}
+.panel button{border-color:var(--line);min-height:32px;padding:0 var(--s2)}
+.panel input[type=search],.panel input[type=number]{width:100%;min-height:32px;padding:0 var(--s2);border:1px solid var(--field);border-radius:6px;background:var(--surface);color:var(--text);font:inherit;font-size:16px}
+.panel label{display:flex;gap:var(--s2);align-items:center;min-height:32px}
+.panel label .n{margin-left:auto;color:var(--muted)}
+.panel .done{display:flex;justify-content:flex-end;border-top:1px solid var(--line);margin-top:var(--s2);padding-top:var(--s2)}
+@media (hover:none),(pointer:coarse){.panel button,.panel label{min-height:44px}}
+.empty{padding:var(--s4);color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="bar">
+    <label for="q">Search</label>
+    <input id="q" type="search" placeholder="Any column" autocomplete="off">
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+  <div class="wrap">
+    <table id="tbl" aria-label="Jobs">
+      <thead>
+        <tr class="titles"></tr>
+        <tr class="filters"></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+<div class="panel" id="panel" role="dialog" aria-modal="false" aria-label="Column filter" hidden></div>
+<script>
+(function () {
+  /* ---- data and columns: replace with yours ---- */
+  var COLS = [
+    { key: 'site', label: 'Site', help: 'Where the job is' },
+    { key: 'type', label: 'Type', help: 'Kind of work' },
+    { key: 'status', label: 'Status', help: 'Where it stands today' },
+    { key: 'amount', label: 'Amount (RM)', help: 'Quoted value, ringgit', num: true }
+  ];
+  var ROWS = [
+    { site: 'Taman Sri Indah P2', type: 'Reroof', status: 'Quoted', amount: 12400 },
+    { site: 'Bandar Baru Lot 14', type: 'Kitchen', status: 'In progress', amount: 38600 },
+    { site: 'Seri Kembangan D3', type: 'Reroof', status: 'Done', amount: 9800 },
+    { site: 'Taman Sri Indah P2', type: 'Plumbing', status: 'In progress', amount: 2150 },
+    { site: 'Puchong Jaya 7', type: 'Kitchen', status: 'Quoted', amount: 41200 },
+    { site: 'Bandar Baru Lot 14', type: 'Wiring', status: 'Done', amount: 5600 }
+  ];
+
+  var tbl = document.getElementById('tbl'), panel = document.getElementById('panel');
+  var sort = { key: null, dir: 1 }, picked = {}, range = {}, query = '', openFor = null;
+  COLS.forEach(function (c) { picked[c.key] = null; range[c.key] = { min: '', max: '' }; });
+  var cmp = function (a, b) { return String(a).localeCompare(String(b), undefined, { numeric: true }); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]; }); };
+
+  function passes(r, skip) {
+    if (query && !COLS.some(function (c) { return String(r[c.key]).toLowerCase().indexOf(query) > -1; })) { return false; }
+    return COLS.every(function (c) {
+      if (c.key === skip) { return true; }
+      if (picked[c.key] && picked[c.key].indexOf(String(r[c.key])) < 0) { return false; }
+      var g = range[c.key];
+      if (g.min !== '' && r[c.key] < +g.min) { return false; }
+      if (g.max !== '' && r[c.key] > +g.max) { return false; }
+      return true;
+    });
+  }
+  /* The header is built once. After that it is updated in place: a control rebuilt while it is open or
+     focused loses focus, and anything holding it (a click in flight, a screen reader) holds a dead node. */
+  function build() {
+    tbl.querySelector('tr.titles').innerHTML = COLS.map(function (c) {
+      return '<th scope="col" class="' + (c.num ? 'num' : '') + '" aria-sort="none" title="' + esc(c.help) + '">' +
+        '<button type="button" class="sortbtn" data-key="' + c.key + '">' + esc(c.label) + '<span class="arrow"></span></button></th>';
+    }).join('');
+    tbl.querySelector('tr.filters').innerHTML = COLS.map(function (c) {
+      return '<th class="' + (c.num ? 'num' : '') + '"><button type="button" class="ftrig" data-key="' + c.key + '" data-on="0"' +
+        ' aria-haspopup="dialog" aria-expanded="false" aria-label="Filter ' + esc(c.label) + '"><span class="cap">All</span> &#9662;</button></th>';
+    }).join('');
+  }
+  function head() {
+    COLS.forEach(function (c, i) {
+      var s = sort.key === c.key ? (sort.dir > 0 ? 'ascending' : 'descending') : 'none';
+      var th = tbl.querySelector('tr.titles').cells[i];
+      th.setAttribute('aria-sort', s);
+      th.querySelector('.arrow').textContent = s === 'ascending' ? ' ▲' : s === 'descending' ? ' ▼' : '';
+      var on = !!(picked[c.key] || range[c.key].min !== '' || range[c.key].max !== '');
+      var f = tbl.querySelector('.ftrig[data-key="' + c.key + '"]');
+      f.setAttribute('data-on', on ? '1' : '0');
+      f.querySelector('.cap').textContent = on ? 'Filtered' : 'All';
+    });
+  }
+  function body() {
+    var rows = ROWS.filter(function (r) { return passes(r); });
+    if (sort.key) { rows.sort(function (a, b) { return sort.dir * cmp(a[sort.key], b[sort.key]); }); }
+    tbl.tBodies[0].innerHTML = rows.length ? rows.map(function (r) {
+      return '<tr>' + COLS.map(function (c) { return '<td class="' + (c.num ? 'num' : '') + '">' + esc(c.num ? r[c.key].toLocaleString() : r[c.key]) + '</td>'; }).join('') + '</tr>';
+    }).join('') : '<tr><td class="empty" colspan="' + COLS.length + '">No jobs match. Clear a filter or the search.</td></tr>';
+    document.getElementById('count').textContent = rows.length + ' of ' + ROWS.length + ' jobs';
+  }
+  function render() { head(); body(); }
+
+  /* ---- the panel ---- */
+  function place() {
+    var r = openFor.getBoundingClientRect(), w = panel.offsetWidth;
+    panel.style.left = Math.max(8, Math.min(r.left, innerWidth - w - 8)) + 'px';
+    panel.style.top = (r.bottom + 6) + 'px';
+  }
+  function fill(c) {
+    var counts = {};
+    ROWS.forEach(function (r) { if (passes(r, c.key)) { var v = String(r[c.key]); counts[v] = (counts[v] || 0) + 1; } });
+    var vals = Object.keys(counts).sort(cmp), cur = picked[c.key];
+    panel.setAttribute('aria-label', 'Filter ' + c.label);
+    panel.innerHTML =
+      '<div class="row"><button type="button" data-act="asc">Sort ascending</button><button type="button" data-act="desc">Sort descending</button></div>' +
+      (c.num ? '<div class="row range"><label>Min <input type="number" inputmode="decimal" data-r="min" value="' + esc(range[c.key].min) + '"></label>' +
+               '<label>Max <input type="number" inputmode="decimal" data-r="max" value="' + esc(range[c.key].max) + '"></label></div>' : '') +
+      '<input type="search" aria-label="Search ' + esc(c.label) + ' values" placeholder="Search values">' +
+      '<div class="row" style="margin-top:8px"><button type="button" data-act="all">Select all</button><button type="button" data-act="none">Clear</button></div>' +
+      '<div class="vals">' + vals.map(function (v) {
+        return '<label><input type="checkbox" value="' + esc(v) + '"' + (!cur || cur.indexOf(v) > -1 ? ' checked' : '') + '> ' + esc(v) + '<span class="n">' + counts[v] + '</span></label>';
+      }).join('') + '</div>' +
+      '<div class="done"><button type="button" data-act="done">Done</button></div>';
+  }
+  function open(btn) {
+    openFor = btn; btn.setAttribute('aria-expanded', 'true');
+    fill(COLS.filter(function (c) { return c.key === btn.getAttribute('data-key'); })[0]);
+    panel.hidden = false; place();
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) { panel.querySelector('input[type=search]').focus(); }   /* never raise a phone keyboard over the panel */
+  }
+  function close(refocus) {
+    if (!openFor) { return; }
+    var b = openFor; openFor = null; panel.hidden = true; b.setAttribute('aria-expanded', 'false');
+    if (refocus) { b.focus(); }
+  }
+
+  tbl.addEventListener('click', function (e) {
+    var s = e.target.closest('.sortbtn'), f = e.target.closest('.ftrig');
+    if (s) { var k = s.getAttribute('data-key'); sort = { key: k, dir: sort.key === k ? -sort.dir : 1 }; render(); }
+    if (f) {
+      e.stopPropagation();
+      if (openFor === f) { close(false); return; }        /* the trigger toggles: a trigger that only opens is a trap */
+      close(false); open(f);
+    }
+  });
+  panel.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var key = openFor.getAttribute('data-key'), act = e.target.getAttribute('data-act');
+    var boxes = panel.querySelectorAll('.vals input');
+    if (act === 'asc' || act === 'desc') { sort = { key: key, dir: act === 'asc' ? 1 : -1 }; render(); }
+    if (act === 'all' || act === 'none') { Array.prototype.forEach.call(boxes, function (b) { b.checked = act === 'all'; }); }
+    if (act === 'done') { close(true); return; }
+    if (act === 'all' || act === 'none' || e.target.type === 'checkbox') {
+      var on = Array.prototype.filter.call(boxes, function (b) { return b.checked; }).map(function (b) { return b.value; });
+      picked[key] = on.length === boxes.length ? null : on;
+      render();                                        /* ticking never closes: the next tick is the likely next action */
+    }
+  });
+  panel.addEventListener('input', function (e) {
+    if (e.target.type === 'search') {
+      var q = e.target.value.toLowerCase();
+      Array.prototype.forEach.call(panel.querySelectorAll('.vals label'), function (l) { l.hidden = l.textContent.toLowerCase().indexOf(q) < 0; });
+    }
+    if (e.target.hasAttribute('data-r')) { range[openFor.getAttribute('data-key')][e.target.getAttribute('data-r')] = e.target.value; render(); }
+  });
+  document.addEventListener('click', function (e) { if (openFor && !panel.contains(e.target)) { close(false); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openFor) { close(true); } });
+  /* follow the trigger on scroll and resize; close only when the trigger has left the screen */
+  ['scroll', 'resize'].forEach(function (t) {
+    window.addEventListener(t, function (e) {
+      if (!openFor || (e.target && e.target.nodeType === 1 && panel.contains(e.target))) { return; }
+      var r = openFor.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) { close(false); } else { place(); }
+    }, true);
+  });
+  document.getElementById('q').addEventListener('input', function (e) { query = e.target.value.toLowerCase().trim(); render(); });
+
+  build();
+  render();
+})();
+</script>
+</body>
+</html>
