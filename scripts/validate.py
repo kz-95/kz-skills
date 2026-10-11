@@ -77,6 +77,16 @@ for line in read(os.path.join(skills_dir, "kz-flashrule", "SKILL.md")).splitline
     elif not cell.startswith("kz-") and cell not in ids:
         fail("kz-flashrule: cites rule %s, which no rule file defines" % cell)
 
+# 1b. no merge conflict left in any text file -----------------------------------------------
+for base, _, files in os.walk(ROOT):
+    if ".git" in base.split(os.sep):
+        continue
+    for f in files:
+        if f.endswith((".md", ".js", ".py", ".json", ".html", ".txt", ".yml")):
+            text = open(os.path.join(base, f), encoding="utf-8", errors="replace").read()
+            if re.search(r"^(<<<<<<<|>>>>>>>) ", text, re.M):
+                fail("%s: an unresolved merge conflict marker" % os.path.relpath(os.path.join(base, f), ROOT))
+
 # 2. relative links ---------------------------------------------------------------------------
 LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
 IMG = re.compile(r'<img[^>]+src="([^"]+)"')

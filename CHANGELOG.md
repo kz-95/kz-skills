@@ -4,11 +4,26 @@ All notable changes to this repository. Format follows [Keep a Changelog](https:
 
 ## [Unreleased]
 
-<<<<<<< HEAD
 ### Added
 - **`kz-fastfix`**, the fast lane for one small job: a size test decides, then the change is made directly and checked once (see its `SKILL.md`). The router sends a passing job there first, and `kz-crew021` step zero hands a single small task to it instead of starting a run.
 - **`kz-flashrule`**, the most critical rules of the whole set on one page (37 lines: the safety floor, data and deletes, tables, forms, overlays, layout and theming, misread charts, asking), each with its rule ID and the fastest check. A summary only; the source rule wins. `scripts/validate.py` now fails if it cites a rule ID that no rule file defines.
-=======
+- **`PICKCLOSE` (`popover-check.js`)**: asserts a multi-select panel stays open when one of its own
+  options is chosen, which `N2` already required and nothing checked. Taken with the region behind the
+  panel scrolled first, because applying a choice can shrink that region and the scrollTop clamp which
+  follows is dispatched as an ordinary scroll event a dismiss-on-scroll handler may act on; at
+  scrollTop 0 nothing clamps and the failure is invisible. Proven on a fixture pair: it reports on a
+  panel whose change handler dismisses it, and is clean on the same panel with that handler removed.
+- **Appendix Z lesson 26**: never accept "clean" from a check that cannot say what it measured, and
+  measure while the surface is painting - the same panel "closed on pick" in a hidden browser pane and
+  stayed open with the pane visible, so the behaviour under investigation was an artifact of where it
+  was measured.
+
+- **Engineering rule `29d`:** a run leaves the project tree as it found it; tests write scratch data only in the OS temp folder and clean up on failure too.
+- **Done condition for any page with a table:** `table-check.js` and `popover-check.js` run in a real browser, output pasted in the report, including generated and static pages. A filter is a button opening a panel, never a bare box or select in the header (`S1` line in `kz-flashrule` now says so).
+- **`snippets/filter-table.html`** (in `kz-uiuxrule`): a dependency-free table to start from. Sort on every column, a filter button per column opening a panel, a live count, every way to close the panel; passes all eight checks at 1280px and 390px. Its header is updated in place, never rebuilt while a panel is open.
+- **`scripts/run-checks.py`** (in `kz-uicheck`): runs the checks on a local HTML file in headless Chrome and exits 1 on a failure, for generated pages, static reports and pre-commit.
+- **Checks wait on real timers when the page is visible** (so headless virtual time works) and on a message channel when it is hidden.
+
 ### Fixed
 - **A column filter panel dismissed itself when a value was picked after clearing the selection.**
   Reported on the reference page's revenue table: clear the selection, tick the first value, and the
@@ -26,18 +41,6 @@ All notable changes to this repository. Format follows [Keep a Changelog](https:
   opacity. Known limit: a panel parked at opacity 0 while closed is laid out even when closed, so the
   open/closed diff still cannot see it, and such triggers are skipped as before.
 
-### Added
-- **`PICKCLOSE` (`popover-check.js`)**: asserts a multi-select panel stays open when one of its own
-  options is chosen, which `N2` already required and nothing checked. Taken with the region behind the
-  panel scrolled first, because applying a choice can shrink that region and the scrollTop clamp which
-  follows is dispatched as an ordinary scroll event a dismiss-on-scroll handler may act on; at
-  scrollTop 0 nothing clamps and the failure is invisible. Proven on a fixture pair: it reports on a
-  panel whose change handler dismisses it, and is clean on the same panel with that handler removed.
-- **Appendix Z lesson 26**: never accept "clean" from a check that cannot say what it measured, and
-  measure while the surface is painting - the same panel "closed on pick" in a hidden browser pane and
-  stayed open with the pane visible, so the behaviour under investigation was an artifact of where it
-  was measured.
->>>>>>> origin/fix/filter-panel-dismissed-by-own-scroll
 
 ## [0.1.0] - unreleased
 
@@ -60,11 +63,6 @@ First public release.
   - `table-check.js`: `BOX`, `NOFILTER`, `NOSORT`, `FILTERGAP`, plus advisories for search, live count and header explainers.
   - `layout-audit.js`: `FOCUS BOX` (a focus ring that is a bounding box on an SVG shape) and `UNDEFINED TOKEN` (a `var(--x)` nothing defines).
 - **Lesson 26 / `N2`:** a column-filter panel must not be dismissed by a scroll the filter itself caused (a table that shrinks reflows the page); reposition on scroll instead of closing. `popover-check.js` gains `PICKCLOSE` (a multi-select that closed on choosing one of its values).
-- **Engineering rule `29d`:** a run leaves the project tree as it found it; tests write scratch data only in the OS temp folder and clean up on failure too.
-- **Done condition for any page with a table:** `table-check.js` and `popover-check.js` run in a real browser, output pasted in the report, including generated and static pages. A filter is a button opening a panel, never a bare box or select in the header (`S1` line in `kz-flashrule` now says so).
-- **`snippets/filter-table.html`** (in `kz-uiuxrule`): a dependency-free table to start from. Sort on every column, a filter button per column opening a panel, a live count, every way to close the panel; passes all eight checks at 1280px and 390px. Its header is updated in place, never rebuilt while a panel is open.
-- **`scripts/run-checks.py`** (in `kz-uicheck`): runs the checks on a local HTML file in headless Chrome and exits 1 on a failure, for generated pages, static reports and pre-commit.
-- **Checks wait on real timers when the page is visible** (so headless virtual time works) and on a message channel when it is hidden.
 - **Licence:** Apache-2.0 with the Commons Clause. Free to use, modify and use commercially; the software itself may not be sold, including hosting or consulting/support fees whose value derives substantially from it.
 - **Precedence over style skills:** `kz-uiuxrule` outranks a style or design skill such as impeccable. The style skill decides what the rules leave open; where they conflict, the rule wins. See `docs/with-impeccable.md`.
 - Plugin manifest (`.claude-plugin/`), `AGENTS.md`, `llms.txt`, generated `docs/rule-index.md`, and `scripts/validate.py`.
