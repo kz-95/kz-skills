@@ -5,7 +5,8 @@ All notable changes to this repository. Format follows [Keep a Changelog](https:
 ## [Unreleased]
 
 ### Added
-- **`kz-fastfix`**, the fast lane for one small job. A six-line size test (at most 3 files and about 50 lines; no dependency, schema or contract change; no money, sign-in, permission, secret or cost data; nothing deployed, published or deleted; the cause known; no review required) decides. A small job is made directly, checked once by the tests that touch it and the automatic safety checks, and reported in three lines; it leaves the lane when it grows or a check fails twice. The router sends a passing job there before anything else, and `kz-crew021` step zero hands a single small task to it instead of starting a run.
+- **`kz-fastfix`**, the fast lane for one small job: a size test decides, then the change is made directly and checked once (see its `SKILL.md`). The router sends a passing job there first, and `kz-crew021` step zero hands a single small task to it instead of starting a run.
+- **`kz-flashrule`**, the most critical rules of the whole set on one page (37 lines: the safety floor, data and deletes, tables, forms, overlays, layout and theming, misread charts, asking), each with its rule ID and the fastest check. A summary only; the source rule wins. `scripts/validate.py` now fails if it cites a rule ID that no rule file defines.
 
 ## [0.1.0] - unreleased
 

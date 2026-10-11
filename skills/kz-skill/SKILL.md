@@ -1,12 +1,12 @@
 ---
 name: kz-skill
-description: Router for the kz skillset - the fast lane for a single small job (kz-fastfix), running a whole project with a costed multi-agent crew (kz-crew021), engineering rules for any code work (kz-engrules), building and reviewing interfaces against a stack-neutral rule corpus (kz-uiuxrule), runnable browser checks that measure rather than judge (kz-uicheck), the one-card rule for asking a user anything (kz-askcard), and repairing one stubborn defect in a critic/fixer/gate loop (kz-loopfix). Use when a request spans more than one of those, or when it is unclear which applies. Triggers on "/kz-skill", "kz skill", "kz skillset".
+description: Router for the kz skillset - the fast lane for a single small job (kz-fastfix), a one-page check of the most critical rules (kz-flashrule), running a whole project with a costed multi-agent crew (kz-crew021), engineering rules for any code work (kz-engrules), building and reviewing interfaces against a stack-neutral rule corpus (kz-uiuxrule), runnable browser checks that measure rather than judge (kz-uicheck), the one-card rule for asking a user anything (kz-askcard), and repairing one stubborn defect in a critic/fixer/gate loop (kz-loopfix). Use when a request spans more than one of those, or when it is unclear which applies. Triggers on "/kz-skill", "kz skill", "kz skillset".
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 
 # kz-skill
 
-Nine skills, one entry point. This file picks; the named skill does the work. Read only
+Ten skills, one entry point. This file picks; the named skill does the work. Read only
 the one you need.
 
 Each is installed beside this one and can be called directly - `/kz-uiuxrule`,
@@ -17,7 +17,8 @@ read by its parent.
 | Skill | Reach for it when |
 |---|---|
 | `../kz-engrules/` | Any code task at all - L0 behaviour, L1 code work, the S standing rules, ASCII discipline and its hook. The floor everything else sits on |
-| `../kz-fastfix/` | One small job: a typo, a wording or style change, a doc line, a one-line bug. A six-line size test first; if it passes, the change is made directly and checked once, with no crew and no loop |
+| `../kz-fastfix/` | One small job: a typo, a wording or style change, a doc line, a one-line bug. A size test first; if it passes, the change is made directly and checked once, with no crew and no loop |
+| `../kz-flashrule/` | A fast rule check in one read: the 37 rules that break worst when missed, each with its ID and the fastest check. Use before calling work done; open the full rule when a line fails |
 | `../kz-askcard/` | About to ask the user something. Three to five decisions, one recommended, a custom option, a default per line, one card per turn |
 | `../kz-crew021/` | A whole project, idea to maintenance: phases, scope relay, PoC spike, contract-first parallel build, dispatch gates, budget, retro |
 | `../kz-uiuxrule/` | Anything that creates, changes, reviews or standardises UI - 57 UI rules, 21 chart rules, 16 principles, four modes |
@@ -29,7 +30,8 @@ read by its parent.
 
 ```
 kz-engrules      the floor: applies to every task, UI or not
-  kz-fastfix     the lane for one small job; escalates into the crew or the loop
+  kz-fastfix     the lane for one small job; escalates when it grows
+  kz-flashrule   the most critical rules of all of them, on one page, for a fast check
   kz-uiuxrule    adds the interface rules on top of it
     kz-uicheck   the instruments its V rules tell you to run
 kz-reflect       the learning loop: what went wrong becomes a better rule or check
@@ -41,8 +43,10 @@ kz-crew021       the workflow that dispatches the rest across a crew
 ## Routing
 
 - **Any code work** -> `kz-engrules` first. It is short and nothing scopes it out.
-- **One job that passes the size test** -> `kz-fastfix`, before anything below. Most jobs
-  are small; a "no" on any of its six lines sends the job on down this list.
+- **One job that passes the size test** (no crew run under way) -> `kz-fastfix`, before
+  anything below. Most jobs are small; a "no" on any line sends it on by its escalate routes.
+- **A quick rule check of finished work** -> `kz-flashrule`. One read; a failing line opens
+  the full rule.
 - **Project work** -> `kz-crew021`. It calls `kz-uiuxrule` for UI it ships and
   `kz-loopfix` for a defect that came back.
 - **UI only, no project scaffolding** -> `kz-uiuxrule` directly. Its own child,

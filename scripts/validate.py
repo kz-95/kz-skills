@@ -61,8 +61,21 @@ for base, dirs, files in os.walk(skills_dir):
         depth = len(os.path.relpath(base, skills_dir).split(os.sep))
         if depth > 1 and "ui-glance" not in base:
             fail("%s: a skill nested %d deep is read by its parent but is not registered as a command" % (rel, depth))
-if found < 8:
-    fail("expected at least 8 skills under skills/, found %d" % found)
+if found < 11:
+    fail("expected at least 11 skills under skills/ (ten plus ui-glance), found %d" % found)
+
+# 1b. kz-flashrule cites only rule IDs that exist, so the digest cannot drift ----------------
+rd = os.path.join(skills_dir, "kz-uiuxrule", "rules")
+srcs = [os.path.join(rd, f) for f in os.listdir(rd)] + [os.path.join(skills_dir, "kz-engrules", "rules", "engineering-rules.md")]
+ids = set(re.findall(r"^\| ([A-Z]?\d+[a-z]?\d*) \| \*\*", "\n".join(read(p) for p in srcs), re.M))
+for line in read(os.path.join(skills_dir, "kz-flashrule", "SKILL.md")).splitlines():
+    cell = line.split("|")[1].strip() if line.startswith("|") else ""
+    if cell in ("", "ID") or set(cell) <= set("-: "):
+        continue
+    if cell.startswith("kz-") and not os.path.isfile(os.path.join(skills_dir, cell, "SKILL.md")):
+        fail("kz-flashrule: cites skill %s, which does not exist" % cell)
+    elif not cell.startswith("kz-") and cell not in ids:
+        fail("kz-flashrule: cites rule %s, which no rule file defines" % cell)
 
 # 2. relative links ---------------------------------------------------------------------------
 LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")

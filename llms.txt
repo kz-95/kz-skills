@@ -1,6 +1,6 @@
 # kz-skills
 
-> Stack-neutral UI/UX rules for AI coding agents, with eight paste-in browser checks that measure them. 57 UI rules, 21 chart rules and 16 design principles, in nine installable Claude Code skills. Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. Licence: Apache-2.0 with Commons Clause (free to use, modify and use commercially; not to be sold). Usable by any agent that reads Markdown.
+> Stack-neutral UI/UX rules for AI coding agents, with eight paste-in browser checks that measure them. 57 UI rules, 21 chart rules and 16 design principles, in ten installable Claude Code skills. Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. Licence: Apache-2.0 with Commons Clause (free to use, modify and use commercially; not to be sold). Usable by any agent that reads Markdown.
 
 Facts: 78 rules in all (57 UI + 21 chart). 25 recorded agent mistakes (Appendix Z of the UI rules). Every rule has a wrong sample and a right sample on the live reference page. Rules are numbered by category letter and number (T1, F9, N2, C5) and the numbers never change.
 
@@ -21,6 +21,7 @@ To find the rule for a task, match its words in the keyword index; it names the 
 - [kz-reflect](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-reflect/SKILL.md): records what went wrong, classifies it, proposes the rule change; a person approves
 - [kz-engrules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/SKILL.md): engineering rules for any code work
 - [kz-fastfix](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-fastfix/SKILL.md): the fast lane for one small job; a size test, then the change made directly and checked once
+- [kz-flashrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-flashrule/SKILL.md): the most critical rules on one page, each with its ID and the fastest check
 - [kz-askcard](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-askcard/SKILL.md): the one-card rule for asking a user anything
 - [kz-crew021](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-crew021/SKILL.md): a whole project with a costed multi-agent crew
 - [kz-loopfix](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-loopfix/SKILL.md): critic, fixer and gate for one stubborn defect

@@ -26,14 +26,15 @@ The entire workflow is in `references/`. Read the one you need, when you need it
 
 **First, is this a crew job at all?** One task that passes the `../kz-fastfix/` size test is
 not a run: no card, no `pb.py init`, no dispatch. Hand it to that skill and stop here. Inside
-a run that is already under way, tasks keep the pipeline (the locks and write-set checks are
-what make a parallel crew safe), and the "fast" weight below gives them one attempt each.
+a run that is already under way, tasks keep the pipeline: the locks and write-set checks are
+what make a parallel crew safe.
 
 **Before dispatching, planning or writing anything, ask the user what this run is** - one
 Ask Card, then work. This workflow spends a budget across a crew; pointing it at the wrong
 thing is the most expensive mistake available here.
 
-1. What is this run - new project, continuing one, a single task, or a retro?
+1. What is this run - new project, continuing one, a single task (one that fails the
+   `kz-fastfix` size test), or a retro?
 2. Which phase?
 3. Budget, which sets the gate and not just the report?
 4. Weight - fast (one attempt per task) or right (reviews and the fix loop)?
