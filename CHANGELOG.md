@@ -14,7 +14,7 @@ First public release.
 
 ### Added
 - **Eight skills**, each a direct child of `skills/`: `kz-skill` (router), `kz-uiuxrule`, `kz-uicheck`, `kz-engrules`, `kz-askcard`, `kz-crew021`, `kz-loopfix`, `kz-reflect`; plus `ui-glance`, a child of `kz-uiuxrule`.
-- **56 UI rules, 21 chart rules and 16 principles**, stack-neutral and style-neutral, each with the failure it prevents and the check that catches it. 25 lessons in Appendix Z, each a habit to have.
+- **56 UI rules, 21 chart rules and 16 principles**, stack-neutral and style-neutral, each with the failure it prevents and the check that catches it. 26 lessons in Appendix Z, each a habit to have.
 - **Eight console checks that run on any page** (`kz-uicheck`): `layout-audit.js`, `table-check.js`, `typing-check.js`, `popover-check.js`, `contrast-check.js`, `modal-check.js`, `focus-check.js`, `form-check.js`. Each was proven to fail on a wrong sample before it was trusted.
 - **`kz-reflect`**, the self-improving loop: records a verified mistake, classifies it into one of seven outcomes (strengthen a summary, clarify a rule, new rule, new check, and so on), and proposes the change for a person to approve. Never edits a shared rule itself.
 - **Reference page** with a wrong and a right sample for each rule, and two checks bound to it (`rules-check.js`, `state-check.js`).
@@ -28,6 +28,9 @@ First public release.
 - **Checks**
   - `table-check.js`: `BOX`, `NOFILTER`, `NOSORT`, `FILTERGAP`, plus advisories for search, live count and header explainers.
   - `layout-audit.js`: `FOCUS BOX` (a focus ring that is a bounding box on an SVG shape) and `UNDEFINED TOKEN` (a `var(--x)` nothing defines).
+- **Lesson 26 / `N2`:** a column-filter panel must not be dismissed by a scroll the filter itself caused (a table that shrinks reflows the page); reposition on scroll instead of closing. `popover-check.js` gains `PICKCLOSE` (a multi-select that closed on choosing one of its values).
+- **Engineering rule `29d`:** a run leaves the project tree as it found it; tests write scratch data only in the OS temp folder and clean up on failure too.
+- **Done condition for any page with a table:** `table-check.js` and `popover-check.js` run in a real browser, output pasted in the report, including generated and static pages. A filter is a button opening a panel, never a bare box or select in the header (`S1` line in `kz-flashrule` now says so).
 - **Licence:** Apache-2.0 with the Commons Clause. Free to use, modify and use commercially; the software itself may not be sold, including hosting or consulting/support fees whose value derives substantially from it.
 - **Precedence over style skills:** `kz-uiuxrule` outranks a style or design skill such as impeccable. The style skill decides what the rules leave open; where they conflict, the rule wins. See `docs/with-impeccable.md`.
 - Plugin manifest (`.claude-plugin/`), `AGENTS.md`, `llms.txt`, generated `docs/rule-index.md`, and `scripts/validate.py`.

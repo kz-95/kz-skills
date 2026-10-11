@@ -27,7 +27,7 @@ AI agents ship the same interface mistakes, confidently, and a screenshot rarely
 | A label that is **dark on dark, 1.04:1**, in the dark theme only | `Y2` | `contrast-check.js` (both themes) |
 | A filter panel that **only opens**: tap its button again and nothing closes it, and a phone has no Escape | `N2` | `popover-check.js` |
 
-Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. A rule with no check gets broken by the person who wrote it; that happened repeatedly while these were written, and each case is recorded as a habit to have (25 lessons, [Appendix Z](skills/kz-uiuxrule/rules/ui-rules.md)).
+Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. A rule with no check gets broken by the person who wrote it; that happened repeatedly while these were written, and each case is recorded as a habit to have (26 lessons, [Appendix Z](skills/kz-uiuxrule/rules/ui-rules.md)).
 
 ## More mistakes agents make
 

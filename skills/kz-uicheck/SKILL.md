@@ -24,6 +24,14 @@ are checking. Nothing to install, no selectors to configure, no framework assume
 | `checks/focus-check.js` | A control whose focus changes nothing visible (`NOFOCUS`), a focus indicator under 3:1 (`WEAK`), `tabindex` above 0, a clickable thing the keyboard cannot reach. Needs the page focused | `A` |
 | `checks/form-check.js` | A field with no label, a phone or email field typed as text, an error shown while typing, a required field left with no nudge, a refused submit that does not land in the first empty field. Types into the page: reload after | `F1` `F2` |
 
+## Done condition for any page with a table
+
+A page with a table is not done until `table-check.js` (and `popover-check.js` for its filter panels) has
+been **run in a real browser and its output pasted into the report**. This includes generated pages and
+static reports: a progress page, an export, a status board. They are UI, the rules apply, and a
+copied older page is not evidence that the copy passes. A reviewer reads the output, not the wording: a
+bare text box or select in the header satisfies the sentence "every column has a filter" and fails the rule.
+
 ## Instrument traps (read before trusting a result)
 
 - **A hidden or unfocused tab** throttles `setTimeout` to about a second and never matches `:focus`. The
