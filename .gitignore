@@ -7,3 +7,17 @@ dist/
 node_modules/
 .DS_Store
 Thumbs.db
+
+# local and secret files
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+*.swp
+.vscode/
+.idea/
+
+# agent working state
+.omc/
+.claude/settings.local.json

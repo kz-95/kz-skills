@@ -4,9 +4,40 @@ All notable changes to this repository. Format follows [Keep a Changelog](https:
 
 ## [Unreleased]
 
+<<<<<<< HEAD
 ### Added
 - **`kz-fastfix`**, the fast lane for one small job: a size test decides, then the change is made directly and checked once (see its `SKILL.md`). The router sends a passing job there first, and `kz-crew021` step zero hands a single small task to it instead of starting a run.
 - **`kz-flashrule`**, the most critical rules of the whole set on one page (37 lines: the safety floor, data and deletes, tables, forms, overlays, layout and theming, misread charts, asking), each with its rule ID and the fastest check. A summary only; the source rule wins. `scripts/validate.py` now fails if it cites a rule ID that no rule file defines.
+=======
+### Fixed
+- **A column filter panel dismissed itself when a value was picked after clearing the selection.**
+  Reported on the reference page's revenue table: clear the selection, tick the first value, and the
+  panel vanished without Done, Escape or an outside tap. Clearing empties the table, the card collapses
+  (scrollHeight 495 to 157), the page reflows and scrolls, and the dismiss-on-scroll handler reads that
+  reflow as a user scroll - confirmed by a stack trace showing `closeFilterPanel` called from the window
+  scroll listener. The panel now follows its trigger on scroll and closes only when the trigger leaves
+  the viewport, which also removes the sibling cases (its own list scrolling, a resize, a sticky header
+  settling). `N2` states it and Appendix J documents the mechanism.
+- **`popover-check.js` was reporting panels it had not tested.** It resolved its subject with a
+  visibility test that rejects `opacity: 0`; a panel that fades in is laid out at opacity 0 for the
+  length of its transition, so no panel was found, and with no panel the Escape, outside-click and
+  `NODONE` routes were skipped rather than failed. Seven filter panels on the reference page printed
+  `clean (7 triggers)` without being exercised. Panels are now resolved with a predicate that ignores
+  opacity. Known limit: a panel parked at opacity 0 while closed is laid out even when closed, so the
+  open/closed diff still cannot see it, and such triggers are skipped as before.
+
+### Added
+- **`PICKCLOSE` (`popover-check.js`)**: asserts a multi-select panel stays open when one of its own
+  options is chosen, which `N2` already required and nothing checked. Taken with the region behind the
+  panel scrolled first, because applying a choice can shrink that region and the scrollTop clamp which
+  follows is dispatched as an ordinary scroll event a dismiss-on-scroll handler may act on; at
+  scrollTop 0 nothing clamps and the failure is invisible. Proven on a fixture pair: it reports on a
+  panel whose change handler dismisses it, and is clean on the same panel with that handler removed.
+- **Appendix Z lesson 26**: never accept "clean" from a check that cannot say what it measured, and
+  measure while the surface is painting - the same panel "closed on pick" in a hidden browser pane and
+  stayed open with the pane visible, so the behaviour under investigation was an artifact of where it
+  was measured.
+>>>>>>> origin/fix/filter-panel-dismissed-by-own-scroll
 
 ## [0.1.0] - unreleased
 
