@@ -23,6 +23,9 @@ All notable changes to this repository. Format follows [Keep a Changelog](https:
 - **`snippets/filter-table.html`** (in `kz-uiuxrule`): a dependency-free table to start from. Sort on every column, a filter button per column opening a panel, a live count, every way to close the panel; passes all eight checks at 1280px and 390px. Its header is updated in place, never rebuilt while a panel is open.
 - **`scripts/run-checks.py`** (in `kz-uicheck`): runs the checks on a local HTML file in headless Chrome and exits 1 on a failure, for generated pages, static reports and pre-commit.
 - **Checks wait on real timers when the page is visible** (so headless virtual time works) and on a message channel when it is hidden.
+- **`run-checks.py` runs both colour schemes by default** (`--scheme both|light|dark`): a colour verified in one says nothing about the other.
+- **`modal-check.js` reports `UNTESTED`** when a modal on the page was never opened because no opener could be found, instead of printing "clean (0 modals)". It also finds openers by `commandfor`.
+- **`kz-uiuxrule` treats generated pages as UI**: its description names reports, progress pages, exports and anything a script writes; its verify step gives the `run-checks.py` command; the filter-table snippet carries that command at the top, where an agent adapting it will see it. Measured with five agent runs on the same brief: bare filter boxes in the first two, clean pages from the third, and the agent ran the checks itself only once the command sat in the snippet.
 
 ### Fixed
 - **A column filter panel dismissed itself when a value was picked after clearing the selection.**
