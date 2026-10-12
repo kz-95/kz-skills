@@ -60,7 +60,7 @@ First public release.
 | Claude Code skills, plugin manifest provided | ✅ | Plain Markdown for GPT, Codex, Cursor and others | ✅ |
 | Picks a palette, typeface or framework for you | ❌ | Judges hover and press states from a screenshot | ❌ |
 
-## The ten skills
+## The eleven skills
 
 | Skill | Reach for it when |
 |---|---|
@@ -72,6 +72,7 @@ First public release.
 | [`kz-flashrule`](skills/kz-flashrule/SKILL.md) | A fast rule check in one read: the 37 rules that break worst when missed, each with its ID and the fastest check. |
 | [`kz-askcard`](skills/kz-askcard/SKILL.md) | About to ask the user something: three to five decisions, one recommended, a custom option. |
 | [`kz-crew021`](skills/kz-crew021/SKILL.md) | A whole project, idea to maintenance, with a costed multi-agent crew. |
+| [`kz-judge`](skills/kz-judge/SKILL.md) | After the checks: the wording rules a script cannot measure (errors, button labels, empty states, delete confirmations), judged by Jev or a local Laya, only on questions each has passed on labelled examples. Costs the agent no tokens. |
 | [`kz-reflect`](skills/kz-reflect/SKILL.md) | A mistake was noticed and the fix verified: log it, classify it, and propose the rule or check change for a person to approve. |
 | [`kz-loopfix`](skills/kz-loopfix/SKILL.md) | One defect that "fix it and move on" already failed once: critic, fixer, then a gate. |
 
@@ -144,7 +145,7 @@ All 78 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 ## Repository map
 
 ```
-skills/        the ten skills, each a direct child
+skills/        the eleven skills, each a direct child
 docs/          index, install guide, rule index, live reference page, history
 scripts/       build-index.py (generates the rule index), validate.py (CI)
 llms.txt       index for LLM crawlers          AGENTS.md  how any agent works here

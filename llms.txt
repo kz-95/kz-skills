@@ -18,6 +18,7 @@ To find the rule for a task, match its words in the keyword index; it names the 
 
 - [kz-uiuxrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/SKILL.md): building, changing or reviewing any UI; four modes (adopt, review, build, loop)
 - [kz-uicheck](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/SKILL.md): eight paste-in browser checks
+- [kz-judge](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-judge/SKILL.md): wording rules a script cannot measure, judged by Jev or a local Laya; no agent tokens
 - [kz-reflect](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-reflect/SKILL.md): records what went wrong, classifies it, proposes the rule change; a person approves
 - [kz-engrules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/SKILL.md): engineering rules for any code work
 - [kz-fastfix](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-fastfix/SKILL.md): the fast lane for one small job; a size test, then the change made directly and checked once

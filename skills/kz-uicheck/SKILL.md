@@ -35,6 +35,12 @@ Runs the checks on a local HTML file in headless Chrome (nothing to install beyo
 and exits 1 if any check fails, so a generated page or a static report can be checked in a script or
 a pre-commit step. One width per run; run it at a wide width and at 390.
 
+## What these cannot measure
+
+Whether an error says what to do next, a button names its action, an empty state says how to start, or a
+delete confirmation names its target: words, not geometry. `../kz-judge/` judges those with a small decision
+model, if one is available, and costs the agent no tokens.
+
 ## Done condition for any page with a table
 
 A page with a table is not done until `table-check.js` (and `popover-check.js` for its filter panels) has

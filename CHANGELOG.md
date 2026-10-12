@@ -5,6 +5,7 @@ All notable changes to this repository. Format follows [Keep a Changelog](https:
 ## [Unreleased]
 
 ### Added
+- **`kz-judge`**: judges the K1 and S2 wording rules a script cannot measure (an error says what to do next, a button names its action, an empty state says how to start, a delete confirmation names its target) with Jev or a local Laya, so the agent spends no tokens on them. Each engine is asked only the questions it has passed on labelled examples: each text is judged in its own request; on 12 Oct 2026 Jev (`jev-1.13.0`) passed all four with good >= 0.90 and bad <= 0.17; Laya 0.3.20 passed none, so it is gated off until a later version passes. `--strict` exits 1 on findings and 2 when nothing could be judged. Skips cleanly when neither is present.
 - **`kz-fastfix`**, the fast lane for one small job: a size test decides, then the change is made directly and checked once (see its `SKILL.md`). The router sends a passing job there first, and `kz-crew021` step zero hands a single small task to it instead of starting a run.
 - **`kz-flashrule`**, the most critical rules of the whole set on one page (37 lines: the safety floor, data and deletes, tables, forms, overlays, layout and theming, misread charts, asking), each with its rule ID and the fastest check. A summary only; the source rule wins. `scripts/validate.py` now fails if it cites a rule ID that no rule file defines.
 - **`PICKCLOSE` (`popover-check.js`)**: asserts a multi-select panel stays open when one of its own

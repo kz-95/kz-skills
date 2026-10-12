@@ -1,6 +1,6 @@
 # How the skills fit together
 
-Ten skills and one child. Each can be called on its own. `kz-skill` is the entry point for when a request spans several, or when it is not obvious which applies.
+Eleven skills and one child. Each can be called on its own. `kz-skill` is the entry point for when a request spans several, or when it is not obvious which applies.
 
 ```
 kz-engrules      the floor: applies to every task, UI or not
@@ -9,6 +9,7 @@ kz-engrules      the floor: applies to every task, UI or not
   kz-uiuxrule    adds the interface rules on top of it
     kz-uicheck   the instruments its verification rules tell you to run
 kz-askcard       how any of them asks the user something
+kz-judge         the wording judgements a script cannot make
 kz-reflect       the learning loop: a verified mistake becomes a better rule or check
 kz-crew021       the workflow that dispatches the rest across a crew
   kz-loopfix     what it escalates a repeat defect into
