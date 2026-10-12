@@ -37,7 +37,7 @@ Live samples: [Layout, spacing and the mobile shell](https://kz-95.github.io/kz-
 | L8 | A scrolling mobile screen is three bars and one scroller. |
 | L10 | A control strip that will not fit across can fit down, and which side it takes is a measurement. |
 | L9 | Count what the screen asks the user to hold at once. |
-| L11 | A sequence laid out across scrolls across. |
+| L11 | A sequence wraps only while all of it stays in view. |
 
 ## B - Buttons and their explainers
 

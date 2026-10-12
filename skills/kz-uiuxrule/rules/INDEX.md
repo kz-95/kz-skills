@@ -117,7 +117,7 @@ measurement, the arrange screen), Appendix T (scroll, view state, addressability
 absorbed the old responsive rule), L5 (controls in a row share one height), L6 (bounded
 height), L8 and N3 (mobile shell), P2 (text longer than the mock), L1 (hierarchy and the
 blur test), L3 (spacing is a rhythm), L4 (depth), L9 (what the user holds at once), L11 (a sequence
-laid out across scrolls across).
+wraps only while all of it stays in view).
 **Read:** Appendix F (control sizing, and never `display: flex` on a table cell), Appendix K
 (the layout audit and why the same failures recur), Appendix L, Appendix O.
 **Check:** `layout-audit.js`, at a wide width, a narrow one, and **375px with touch

@@ -1053,6 +1053,15 @@ tbody tr.offrow td:first-child::after{content:" (not drawn)";color:var(--muted);
 .seq-grid{display:grid;grid-template-columns:repeat(3,1fr)}
 .seq-grid>div{width:auto}
 .seq-row{overflow-x:auto;padding-bottom:var(--s2)}
+.seq-panel{max-height:300px;overflow-y:auto}
+.seq>.vcard{width:190px;display:flex;flex-direction:column;gap:2px}
+.seq-grid>.vcard{width:auto}
+.vcard .vdate{font-size:12px;color:var(--muted)}
+.vcard .vnote{font-size:13px;color:var(--text);line-height:1.4}
+.vcard .vstat{font-size:12px;color:var(--muted);margin-top:var(--s1)}
+.vcard[aria-current]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.l11-fits{margin-top:var(--s4)}
+.l11-fits .seq-grid{max-width:420px}
 .btnrow{display:flex;flex-wrap:wrap;gap:6px}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .btn.danger{color:var(--down);border-color:var(--down)}
@@ -1575,36 +1584,45 @@ section[id]{scroll-margin-top:56px}
 </section>
 
 <section id="l11-sequence">
-  <h2>Rule L11: a sequence laid out across scrolls across</h2>
-  <p class="rule">Items read in order left to right sit in one row that scrolls sideways,
-  its scrollbar in view, and the wheel moves it sideways. Never a grid that wraps the
-  sequence into rows and scrolls down.</p>
+  <h2>Rule L11: a sequence wraps only while all of it stays in view</h2>
+  <p class="rule">Items read in order may wrap into rows while the whole sequence fits the area that
+  shows it. When wrapping pushes the later ones out of sight, or the order is drawn as a line (a
+  kanban board, a timeline), lay it in one row that scrolls sideways, with a cue that more is to the
+  right. A short set that fits stays a grid: sideways scrolling hides things too.</p>
   <div class="pair">
     <div class="demo wrong">
-      <div class="tag">Wrong: the sequence wraps into rows</div>
+      <div class="tag">Wrong: the newest versions wrap out of sight</div>
       <div class="body">
-        <div class="seq seq-grid" id="l11Bad" data-orientation="horizontal" data-layout-check="skip">
-          <div><b>v1</b>Quotes</div><div><b>v1.1</b>Orders</div><div><b>v1.2</b>Stock</div>
-          <div><b>v1.3</b>Billing</div><div><b>v1.4</b>Reports</div><div><b>v1.5</b>Mobile</div>
+        <div class="seq-panel">
+          <div class="seq seq-grid" id="l11Bad" data-orientation="horizontal" data-layout-check="skip"><div class="vcard"><b>v1</b><span class="vdate">3 Feb</span><span class="vnote">Quotes: build, send and track quotations.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.1</b><span class="vdate">24 Feb</span><span class="vnote">Orders: a quotation becomes an order in one step.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.2</b><span class="vdate">17 Mar</span><span class="vnote">Stock: counts per showroom, low-stock warning.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.3</b><span class="vdate">7 Apr</span><span class="vnote">Billing: invoices and part payments.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.4</b><span class="vdate">5 May</span><span class="vnote">Reports: sales by showroom and by month.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.5</b><span class="vdate">2 Jun</span><span class="vnote">Mobile: the order screens on a phone.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.6</b><span class="vdate">30 Jun</span><span class="vnote">Delivery: routes and time slots for the vans.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.7</b><span class="vdate">4 Aug</span><span class="vnote">Warranty: claims linked to the original order.</span><span class="vstat">Testing</span></div><div class="vcard"><b>v1.8</b><span class="vdate">8 Sep</span><span class="vnote">Loyalty: points on every paid invoice.</span><span class="vstat">Building</span></div><div class="vcard"><b>v1.9</b><span class="vdate">13 Oct</span><span class="vnote">Supplier orders raised from low stock.</span><span class="vstat">Planned</span></div></div>
         </div>
       </div>
-      <p class="note">Six versions in a grid that wraps. v1.3 to v1.5 drop to a second row,
-      the order breaks at the wrap, and with more versions the panel grows downward until the
-      later ones are out of sight below.</p>
+      <p class="note">Ten versions with their notes in a 300px panel, wrapped three to a row. v1.7 to
+      v1.9 - the ones being worked on now - sit below the panel's edge, behind the six that are done,
+      and the order breaks at every wrap.</p>
     </div>
     <div class="demo right">
       <div class="tag">Right: one row that scrolls across</div>
       <div class="body">
-        <div class="seq seq-row" id="l11Good" data-orientation="horizontal">
-          <div><b>v1</b>Quotes</div><div><b>v1.1</b>Orders</div><div><b>v1.2</b>Stock</div>
-          <div><b>v1.3</b>Billing</div><div><b>v1.4</b>Reports</div><div><b>v1.5</b>Mobile</div>
+        <div class="seq-panel">
+          <div class="seq seq-row" id="l11Good" data-orientation="horizontal"><div class="vcard"><b>v1</b><span class="vdate">3 Feb</span><span class="vnote">Quotes: build, send and track quotations.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.1</b><span class="vdate">24 Feb</span><span class="vnote">Orders: a quotation becomes an order in one step.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.2</b><span class="vdate">17 Mar</span><span class="vnote">Stock: counts per showroom, low-stock warning.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.3</b><span class="vdate">7 Apr</span><span class="vnote">Billing: invoices and part payments.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.4</b><span class="vdate">5 May</span><span class="vnote">Reports: sales by showroom and by month.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.5</b><span class="vdate">2 Jun</span><span class="vnote">Mobile: the order screens on a phone.</span><span class="vstat">Done</span></div><div class="vcard"><b>v1.6</b><span class="vdate">30 Jun</span><span class="vnote">Delivery: routes and time slots for the vans.</span><span class="vstat">Done</span></div><div class="vcard" aria-current="step"><b>v1.7</b><span class="vdate">4 Aug</span><span class="vnote">Warranty: claims linked to the original order.</span><span class="vstat">Testing</span></div><div class="vcard"><b>v1.8</b><span class="vdate">8 Sep</span><span class="vnote">Loyalty: points on every paid invoice.</span><span class="vstat">Building</span></div><div class="vcard"><b>v1.9</b><span class="vdate">13 Oct</span><span class="vnote">Supplier orders raised from low stock.</span><span class="vstat">Planned</span></div></div>
         </div>
       </div>
-      <p class="note">The same six in one row with a sideways scrollbar, and the wheel over it
-      moves it across. The container carries <code>data-orientation="horizontal"</code> so
-      <code>layout-audit.js</code> can find it and fail a wrap.</p>
+      <p class="note">The same ten in one row, opened at v1.7, the version in progress, with the ones
+      before it to the left. The cards cut off at both edges and the scrollbar say there is more; the
+      wheel over the row moves it across, and at either end the page scrolls on.</p>
     </div>
   </div>
+  <div class="pair l11-fits"><div class="demo right">
+    <div class="tag">Also right: a short set that fits stays a grid</div>
+    <div class="body">
+      <div class="seq seq-grid" id="l11Fits" data-orientation="horizontal"><div><b>v1</b>Quotes</div><div><b>v1.1</b>Orders</div><div><b>v1.2</b>Stock</div><div><b>v1.3</b>Billing</div><div><b>v1.4</b>Reports</div><div><b>v1.5</b>Mobile</div></div>
+    </div>
+    <p class="note">Six small cards in two rows, all of them in view. Nothing is hidden, so a sideways
+    row would only add a scrollbar to miss. <code>layout-audit.js</code> passes it: a wrap is a failure
+    only when it pushes items out of the area that shows them, or the sequence is marked
+    <code>data-sequence="line"</code>.</p>
+  </div></div>
 </section>
 
 <h2 class="grp-hd" id="b">B - Buttons and their explainers</h2>
@@ -10396,6 +10414,9 @@ document.getElementById('f3Discard').onclick = function () {
 /* ---------- L11: the wheel moves a sequence sideways ------------------------ */
 (function () {
   var row = document.getElementById('l11Good');
+  /* open at the item that matters now, not at the start: the newest work is what the row is for */
+  var now = row.querySelector('[aria-current]');
+  if (now) { row.scrollLeft = Math.max(0, now.getBoundingClientRect().left - row.getBoundingClientRect().left - 24); }
   row.addEventListener('wheel', function (e) {
     var room = e.deltaY < 0 ? row.scrollLeft : row.scrollWidth - row.clientWidth - row.scrollLeft;
     if (e.deltaX || !e.deltaY || room < 1) { return; }   /* at an end the page scrolls on */

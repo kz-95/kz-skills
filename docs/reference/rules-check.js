@@ -4,7 +4,7 @@
    rule demonstrations that have behaviour of their own - the tables in T, the clear in
    A3, the modal in N1, the popovers in N2, the fields in F2 F4 F5 F6 F7 F8 F9, the draft in F3 - plus the
    geometric claims the rules make as figures (L3's two comparisons, L4's offset, L6's
-   cap, L11's one row, Y1's tabular figures, P1's zero shift).
+   cap, L11's wrap-only-while-it-fits, Y1's tabular figures, P1's zero shift).
 
    Every assertion here is written so that breaking the thing it guards makes it fail.
    It also asserts the WRONG side still demonstrates its defect: a sample that quietly
@@ -639,27 +639,42 @@
        'the expand control does not report its state');
   })();
 
-  /* ---- L11: a sequence scrolls across, it does not wrap ------------------- */
+  /* ---- L11: a sequence wraps only while all of it stays in view ----------- */
   (function () {
-    var good = $('l11Good'), wrong = $('l11Bad');
-    /* the test layout-audit.js runs for WRAPPED SEQUENCE: a second row is a child that
-       starts at or below another's bottom */
+    var good = $('l11Good'), wrong = $('l11Bad'), fits = $('l11Fits');
+    /* the tests layout-audit.js runs for WRAPPED SEQUENCE: a second row is a child that starts at or
+       below another's bottom; the area is the nearest ancestor that scrolls or clips vertically */
     function wraps(el) {
       var b = Array.prototype.map.call(el.children, function (k) { return k.getBoundingClientRect(); });
       return b.some(function (a, i) { return b.some(function (c, j) { return i !== j && a.top >= c.bottom - 1; }); });
+    }
+    function room(el) {
+      for (var p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+        if (/^(auto|scroll|hidden|clip)$/.test(cs(p).overflowY)) { return p.clientHeight; }
+      }
+      return window.innerHeight;
     }
     ok('L11', !wraps(good), 'the right sample wraps onto a second row');
     ok('L11', /^(auto|scroll)$/.test(cs(good).overflowX), 'the right sample cannot scroll sideways');
     ok('L11', good.scrollWidth > good.clientWidth + 1, 'the right sample has nothing to scroll');
     ok('L11', good.getAttribute('data-orientation') === 'horizontal',
        'the right sample is not marked, so layout-audit.js cannot find it');
+    var now = good.querySelector('[aria-current]'), g = good.getBoundingClientRect(), c = now && now.getBoundingClientRect();
+    ok('L11', c && c.left >= g.left - 1 && c.right <= g.right + 1,
+       'the right sample does not open with its current item in view: the newest work is off to the side');
+    var start = good.scrollLeft;
+    good.scrollLeft = 0;
     var wheel = new WheelEvent('wheel', { deltaY: 60, bubbles: true, cancelable: true });
     good.dispatchEvent(wheel);
     ok('L11', good.scrollLeft > 0 && wheel.defaultPrevented, 'the wheel did not move the right sample sideways');
-    good.scrollLeft = 0;
-    ok('L11 (wrong sample)', wraps(wrong), 'the wrong sample no longer wraps, so it no longer shows the defect');
+    good.scrollLeft = start;
+    ok('L11 (wrong sample)', wraps(wrong) && wrong.getBoundingClientRect().height > room(wrong) + 1,
+       'the wrong sample no longer wraps out of its panel, so it no longer shows the defect');
     ok('L11 (wrong sample)', wrong.getAttribute('data-orientation') === 'horizontal',
        'the wrong sample is not marked, so layout-audit.js would no longer fail it');
+    ok('L11 (fits)', wraps(fits) && fits.getBoundingClientRect().height <= room(fits) + 1 &&
+       fits.getAttribute('data-orientation') === 'horizontal' && fits.getAttribute('data-sequence') !== 'line',
+       'the short grid no longer shows the allowed case: a marked sequence that wraps and still fits');
   })();
 
   /* ---- Y1: tabular figures where numbers stack ---------------------------- */
@@ -719,11 +734,13 @@
     Array.prototype.forEach.call(document.querySelectorAll('section'), function (sec) {
       var pair = sec.querySelector('.pair');
       if (!pair) { return; }
+      /* a section may add a further example in a pair of its own; every demo still sits in a pair */
+      var held = Array.prototype.reduce.call(sec.querySelectorAll('.pair'), function (n, p) { return n + p.children.length; }, 0);
       var demos = sec.querySelectorAll('.demo').length;
       var name = (sec.querySelector('h2') || {}).textContent || 'a section';
-      ok('structure', pair.children.length === demos,
-         name.slice(0, 34) + ': ' + demos + ' demos but the pair holds ' +
-         pair.children.length + ' - one is nested inside another');
+      ok('structure', held === demos,
+         name.slice(0, 34) + ': ' + demos + ' demos but the pairs hold ' +
+         held + ' - one is nested inside another');
       ok('structure', pair.children.length >= 2,
          name.slice(0, 34) + ': a wrong/right pair with ' + pair.children.length + ' half');
     });
