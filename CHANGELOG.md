@@ -5,6 +5,7 @@ All notable changes to this repository. Format follows [Keep a Changelog](https:
 ## [Unreleased]
 
 ### Added
+- **Rule `L11`, a sequence laid out across scrolls across** (`kz-uiuxrule` 2.2.0, 58 UI rules). Items read in order left to right - versions, steps, a timeline, kanban columns - sit in one row that scrolls sideways, never a grid that wraps them into rows and scrolls down. Reported from a progress page whose eight version cards wrapped to two rows, so the later versions sat out of sight. `layout-audit.js` gains `WRAPPED SEQUENCE` (a container marked `data-orientation="horizontal"` whose children sit on more than one row, or overflow it with no sideways scroll), and the reference page gains an `L11` wrong/right sample whose wrong half `rules-check.js` asserts still wraps.
 - **`kz-fastfix`**, the fast lane for one small job: a size test decides, then the change is made directly and checked once (see its `SKILL.md`). The router sends a passing job there first, and `kz-crew021` step zero hands a single small task to it instead of starting a run.
 - **`kz-flashrule`**, the most critical rules of the whole set on one page (37 lines: the safety floor, data and deletes, tables, forms, overlays, layout and theming, misread charts, asking), each with its rule ID and the fastest check. A summary only; the source rule wins. `scripts/validate.py` now fails if it cites a rule ID that no rule file defines.
 - **`PICKCLOSE` (`popover-check.js`)**: asserts a multi-select panel stays open when one of its own

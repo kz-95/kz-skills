@@ -4,7 +4,7 @@ Instructions for any AI agent that **uses** or **works in** this repository: Cla
 
 ## What this repository is
 
-Ten skills, each a folder under `skills/` with a `SKILL.md`. The core is `kz-uiuxrule`: stack-neutral, style-neutral UI rules (57 UI rules, 21 chart rules, 16 principles), each with the failure it prevents and a browser check that catches it. `kz-uicheck` holds those checks as paste-in console scripts.
+Ten skills, each a folder under `skills/` with a `SKILL.md`. The core is `kz-uiuxrule`: stack-neutral, style-neutral UI rules (58 UI rules, 21 chart rules, 16 principles), each with the failure it prevents and a browser check that catches it. `kz-uicheck` holds those checks as paste-in console scripts.
 
 ## Using the skills when you are not Claude Code
 

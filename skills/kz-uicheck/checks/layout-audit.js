@@ -328,5 +328,34 @@
     });
   })();
 
+  /* 13. a sequence read left to right scrolls across; it does not wrap (rule L11). A container
+     marked data-orientation="horizontal" (or aria-orientation, where its role allows it) holds
+     items in order. On a second row the later ones drop out of sight below and the order breaks
+     at the wrap; overflowing with no sideways scroll cuts them off. Found when eight version
+     cards wrapped to two rows and the panel scrolled up and down. A second row is a child that
+     starts at or below another's bottom, so a row of unequal heights is not mistaken for one.
+     Opt a deliberately wrong sample out with data-layout-check="skip". */
+  Array.prototype.forEach.call(
+    document.querySelectorAll('[aria-orientation="horizontal"], [data-orientation="horizontal"]'),
+    function (seq) {
+      if (!seq.offsetParent || seq.closest('[data-layout-check="skip"]')) { return; }
+      var boxes = Array.prototype.filter.call(seq.children, function (k) {
+        return k.offsetParent && !k.hidden;
+      }).map(function (k) { return k.getBoundingClientRect(); }).filter(function (r) {
+        return r.width > 0 && r.height > 0;
+      });
+      if (boxes.length < 2) { return; }
+      var ox = getComputedStyle(seq).overflowX;
+      if (boxes.some(function (a, i) {
+        return boxes.some(function (b, j) { return i !== j && a.top >= b.bottom - 1; });
+      })) {
+        note('WRAPPED SEQUENCE', seq, boxes.length + ' items wrap onto more than one row - lay them ' +
+          'in one row that scrolls sideways');
+      } else if (seq.scrollWidth > seq.clientWidth + 1 && ox !== 'auto' && ox !== 'scroll') {
+        note('WRAPPED SEQUENCE', seq, 'items overflow by ' + (seq.scrollWidth - seq.clientWidth) +
+          'px and it cannot scroll sideways (overflow-x ' + ox + ')');
+      }
+    });
+
   return problems.length ? problems : ['clean'];
 })();

@@ -4,7 +4,7 @@
    rule demonstrations that have behaviour of their own - the tables in T, the clear in
    A3, the modal in N1, the popovers in N2, the fields in F2 F4 F5 F6 F7 F8 F9, the draft in F3 - plus the
    geometric claims the rules make as figures (L3's two comparisons, L4's offset, L6's
-   cap, Y1's tabular figures, P1's zero shift).
+   cap, L11's one row, Y1's tabular figures, P1's zero shift).
 
    Every assertion here is written so that breaking the thing it guards makes it fail.
    It also asserts the WRONG side still demonstrates its defect: a sample that quietly
@@ -637,6 +637,29 @@
     ok('L6', b.scrollHeight > b.clientHeight + 1, 'the bounded list has nothing to scroll');
     ok('L6', $('l6Expand').getAttribute('aria-expanded') === 'false',
        'the expand control does not report its state');
+  })();
+
+  /* ---- L11: a sequence scrolls across, it does not wrap ------------------- */
+  (function () {
+    var good = $('l11Good'), wrong = $('l11Bad');
+    /* the test layout-audit.js runs for WRAPPED SEQUENCE: a second row is a child that
+       starts at or below another's bottom */
+    function wraps(el) {
+      var b = Array.prototype.map.call(el.children, function (k) { return k.getBoundingClientRect(); });
+      return b.some(function (a, i) { return b.some(function (c, j) { return i !== j && a.top >= c.bottom - 1; }); });
+    }
+    ok('L11', !wraps(good), 'the right sample wraps onto a second row');
+    ok('L11', /^(auto|scroll)$/.test(cs(good).overflowX), 'the right sample cannot scroll sideways');
+    ok('L11', good.scrollWidth > good.clientWidth + 1, 'the right sample has nothing to scroll');
+    ok('L11', good.getAttribute('data-orientation') === 'horizontal',
+       'the right sample is not marked, so layout-audit.js cannot find it');
+    var wheel = new WheelEvent('wheel', { deltaY: 60, bubbles: true, cancelable: true });
+    good.dispatchEvent(wheel);
+    ok('L11', good.scrollLeft > 0 && wheel.defaultPrevented, 'the wheel did not move the right sample sideways');
+    good.scrollLeft = 0;
+    ok('L11 (wrong sample)', wraps(wrong), 'the wrong sample no longer wraps, so it no longer shows the defect');
+    ok('L11 (wrong sample)', wrong.getAttribute('data-orientation') === 'horizontal',
+       'the wrong sample is not marked, so layout-audit.js would no longer fail it');
   })();
 
   /* ---- Y1: tabular figures where numbers stack ---------------------------- */

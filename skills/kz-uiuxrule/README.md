@@ -1,6 +1,6 @@
 # kz-uiuxrule
 
-Stack-neutral, style-neutral UI rules: 57 UI rules, 21 chart rules, two standing rules and
+Stack-neutral, style-neutral UI rules: 58 UI rules, 21 chart rules, two standing rules and
 fifteen principles. Each rule states an obligation and the failure that follows when it is
 missed. Nothing here names a framework, a component library, a palette or a typeface.
 
@@ -61,7 +61,7 @@ than was asked.
 | `SKILL.md` | The entry point: how to route, the standing rules, the precedence ladder, the close-out list |
 | `skills/ui-glance/SKILL.md` | **Child skill** - paste a screenshot, get three to six findings by rule id in one read. No questions, no rule-set lookup |
 | `rules/INDEX.md` | Keyword to category to rules. Start every task here |
-| `rules/ui-rules.md` | The 57 UI rules and the appendices carrying their detail, including **Appendix Z: twenty-six things not to do**, each one learned by doing it |
+| `rules/ui-rules.md` | The 58 UI rules and the appendices carrying their detail, including **Appendix Z: twenty-six things not to do**, each one learned by doing it |
 | `rules/chart-rules.md` | C1-C21, for anything that renders data as marks |
 | `../kz-engrules/rules/engineering-rules.md` | Sibling skill: non-UI rules for code work, where S1 and S2 are defined |
 | `rules/design-principles.md` | The sixteen principles, and why each rule exists |

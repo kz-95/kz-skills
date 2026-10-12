@@ -2,9 +2,9 @@
 
 <a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#t1-filter"><img src="docs/assets/carousel-improvements.gif" alt="Five usability mistakes, each shown wrong, then right. T1: a filter is a panel, not a text box. F1: a required field says so before it is missed. F4: a field is the shape of what goes in it. N2: a panel can always be closed. F9: Enter moves to the next field." width="100%"></a>
 
-**Stack-neutral UI/UX rules that tell an AI agent what any interface must do, what breaks when it does not, and a browser check that fails it.** 57 UI rules, 21 chart rules, 16 principles, in ten installable skills for Claude Code and any agent that reads Markdown.
+**Stack-neutral UI/UX rules that tell an AI agent what any interface must do, what breaks when it does not, and a browser check that fails it.** 58 UI rules, 21 chart rules, 16 principles, in ten installable skills for Claude Code and any agent that reads Markdown.
 
-[Install](#quick-start) · [Live reference](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html) · [All 78 rules](docs/rule-index.md) · [For agents: llms.txt](llms.txt) · [Changelog](CHANGELOG.md)
+[Install](#quick-start) · [Live reference](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html) · [All 79 rules](docs/rule-index.md) · [For agents: llms.txt](llms.txt) · [Changelog](CHANGELOG.md)
 
 See the rules fail and pass, side by side:
 [Table filter](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#t1-filter) ·
@@ -54,7 +54,7 @@ First public release.
 
 | | | | |
 |---|:-:|---|:-:|
-| 57 UI rules, each with its failure and its check | ✅ | Works with any stack and any visual style | ✅ |
+| 58 UI rules, each with its failure and its check | ✅ | Works with any stack and any visual style | ✅ |
 | 21 chart rules | ✅ | 3 console checks that run on **any** page | ✅ |
 | A keyword router: task words to two or three sections | ✅ | Live wrong/right reference page | ✅ |
 | Claude Code skills, plugin manifest provided | ✅ | Plain Markdown for GPT, Codex, Cursor and others | ✅ |
@@ -118,7 +118,7 @@ The skills are plain Markdown. Point your agent at [`AGENTS.md`](AGENTS.md) and 
 
 `rules-check.js` runs against the [reference page](docs/reference/README.md): it proves each right sample passes and each wrong sample still fails. The eight checks in `kz-uicheck` run on any page.
 
-All 78 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
+All 79 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 
 ## FAQ
 
