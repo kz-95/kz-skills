@@ -1046,6 +1046,13 @@ tbody tr.offrow td:first-child::after{content:" (not drawn)";color:var(--muted);
 .pane h4{margin:0 0 var(--s2);font-size:12px}
 .loglist{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:11px;color:var(--muted)}
 .loglist.bounded{max-height:132px;overflow:auto}
+.seq{display:flex;gap:var(--s2)}
+.seq>div{flex:none;width:112px;box-sizing:border-box;padding:var(--s3);border:1px solid var(--line);
+  border-radius:8px;background:var(--surface-2);font-size:12px;color:var(--muted)}
+.seq>div b{display:block;font-size:13px;color:var(--text)}
+.seq-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.seq-grid>div{width:auto}
+.seq-row{overflow-x:auto;padding-bottom:var(--s2)}
 .btnrow{display:flex;flex-wrap:wrap;gap:6px}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .btn.danger{color:var(--down);border-color:var(--down)}
@@ -1563,6 +1570,39 @@ section[id]{scroll-margin-top:56px}
       <p class="note">The same nine actions, three of them visible. Delete is in the menu
       and marked, because a destructive action sitting beside Save is a mis-tap waiting to
       be reported as data loss.</p>
+    </div>
+  </div>
+</section>
+
+<section id="l11-sequence">
+  <h2>Rule L11: a sequence laid out across scrolls across</h2>
+  <p class="rule">Items read in order left to right sit in one row that scrolls sideways,
+  its scrollbar in view, and the wheel moves it sideways. Never a grid that wraps the
+  sequence into rows and scrolls down.</p>
+  <div class="pair">
+    <div class="demo wrong">
+      <div class="tag">Wrong: the sequence wraps into rows</div>
+      <div class="body">
+        <div class="seq seq-grid" id="l11Bad" data-orientation="horizontal" data-layout-check="skip">
+          <div><b>v1</b>Quotes</div><div><b>v1.1</b>Orders</div><div><b>v1.2</b>Stock</div>
+          <div><b>v1.3</b>Billing</div><div><b>v1.4</b>Reports</div><div><b>v1.5</b>Mobile</div>
+        </div>
+      </div>
+      <p class="note">Six versions in a grid that wraps. v1.3 to v1.5 drop to a second row,
+      the order breaks at the wrap, and with more versions the panel grows downward until the
+      later ones are out of sight below.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: one row that scrolls across</div>
+      <div class="body">
+        <div class="seq seq-row" id="l11Good" data-orientation="horizontal">
+          <div><b>v1</b>Quotes</div><div><b>v1.1</b>Orders</div><div><b>v1.2</b>Stock</div>
+          <div><b>v1.3</b>Billing</div><div><b>v1.4</b>Reports</div><div><b>v1.5</b>Mobile</div>
+        </div>
+      </div>
+      <p class="note">The same six in one row with a sideways scrollbar, and the wheel over it
+      moves it across. The container carries <code>data-orientation="horizontal"</code> so
+      <code>layout-audit.js</code> can find it and fail a wrap.</p>
     </div>
   </div>
 </section>
@@ -10351,6 +10391,17 @@ document.getElementById('f3Discard').onclick = function () {
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     btn.textContent = open ? 'Show fewer' : 'Show all 24';
   };
+})();
+
+/* ---------- L11: the wheel moves a sequence sideways ------------------------ */
+(function () {
+  var row = document.getElementById('l11Good');
+  row.addEventListener('wheel', function (e) {
+    var room = e.deltaY < 0 ? row.scrollLeft : row.scrollWidth - row.clientWidth - row.scrollLeft;
+    if (e.deltaX || !e.deltaY || room < 1) { return; }   /* at an end the page scrolls on */
+    row.scrollLeft += e.deltaY;
+    e.preventDefault();
+  }, { passive: false });
 })();
 
 /* ---------- L9: the overflow menu ------------------------------------------- */

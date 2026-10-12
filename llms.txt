@@ -1,8 +1,8 @@
 # kz-skills
 
-> Stack-neutral UI/UX rules for AI coding agents, with eight paste-in browser checks that measure them. 57 UI rules, 21 chart rules and 16 design principles, in ten installable Claude Code skills. Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. Licence: Apache-2.0 with Commons Clause (free to use, modify and use commercially; not to be sold). Usable by any agent that reads Markdown.
+> Stack-neutral UI/UX rules for AI coding agents, with eight paste-in browser checks that measure them. 58 UI rules, 21 chart rules and 16 design principles, in ten installable Claude Code skills. Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. Licence: Apache-2.0 with Commons Clause (free to use, modify and use commercially; not to be sold). Usable by any agent that reads Markdown.
 
-Facts: 78 rules in all (57 UI + 21 chart). 26 recorded agent mistakes (Appendix Z of the UI rules). Every rule has a wrong sample and a right sample on the live reference page. Rules are numbered by category letter and number (T1, F9, N2, C5) and the numbers never change.
+Facts: 79 rules in all (58 UI + 21 chart). 26 recorded agent mistakes (Appendix Z of the UI rules). Every rule has a wrong sample and a right sample on the live reference page. Rules are numbered by category letter and number (T1, F9, N2, C5) and the numbers never change.
 
 To find the rule for a task, match its words in the keyword index; it names the two or three sections that apply, so the whole rule set need not be read.
 
@@ -30,14 +30,14 @@ To find the rule for a task, match its words in the keyword index; it names the 
 
 ## Rules
 
-- [UI rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/ui-rules.md): 57 rules by category, with appendices and 26 lessons
+- [UI rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/ui-rules.md): 58 rules by category, with appendices and 26 lessons
 - [Chart rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/chart-rules.md): 21 rules for anything that renders data as marks
 - [Design principles](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/design-principles.md): the 16 principles behind the rules
 - [Engineering rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/rules/engineering-rules.md): the floor under every task
 
 ## Checks
 
-- [layout-audit.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/layout-audit.js): overflow, overlap, clipped text, tap targets, SVG focus rings, undefined CSS variables
+- [layout-audit.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/layout-audit.js): overflow, overlap, clipped text, tap targets, SVG focus rings, undefined CSS variables, wrapped sequences
 - [table-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/table-check.js): text-box filters, columns with no filter or sort, header spacing
 - [typing-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/typing-check.js): fields rebuilt, caret-jumped, moved or zoomed while typed into
 - [popover-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/popover-check.js): a panel that cannot be closed
