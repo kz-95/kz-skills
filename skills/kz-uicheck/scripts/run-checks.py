@@ -13,7 +13,8 @@ another once the page has loaded, and reads the results back from the DOM Chrome
 checks run on virtual time, so a check that pauses for 100ms costs no real time.
 
 Limits: a local file only (for a served page, save it or paste the checks into the console); one
-width per run; both colour schemes by default (--scheme); focus-check needs a focused page, which a headless run normally is.
+width per run; both colour schemes by default (--scheme); each check gets a fresh page load, so one
+check cannot see what another left open; a page may not read other local files unless --local-fetch.
 """
 import argparse
 import html
@@ -24,9 +25,12 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CHECKS_DIR = os.path.join(os.path.dirname(HERE), "checks")
+for _s in (sys.stdout, sys.stderr):      # findings quote page text; a Windows pipe defaults to cp1252
+    _s.reconfigure(encoding="utf-8", errors="replace")
 ALL = ["layout-audit", "table-check", "typing-check", "popover-check", "contrast-check",
        "modal-check", "focus-check", "form-check"]
 
@@ -61,6 +65,8 @@ def main():
     ap.add_argument("--checks", default=",".join(ALL))
     ap.add_argument("--width", type=int, default=1280)
     ap.add_argument("--height", type=int, default=900)
+    ap.add_argument("--local-fetch", action="store_true",
+                    help="let the page read other local files (off by default: a page's script could read any file)")
     ap.add_argument("--scheme", choices=["both", "light", "dark"], default="both",
                     help="prefers-color-scheme to run under; both by default, since a colour verified in one says nothing about the other")
     a = ap.parse_args()
@@ -74,48 +80,49 @@ def main():
             sys.exit("no such check: " + n)
         sources[n] = open(p, encoding="utf-8").read()
 
-    runner = """<script>
-window.addEventListener('load', function () {
-  var SRC = %s, out = {};
-  (async function () {
-    for (var k in SRC) {
-      try { out[k] = await (0, eval)(SRC[k]); } catch (e) { out[k] = 'ERROR ' + e; }
-    }
-    var pre = document.createElement('pre'); pre.id = 'kz-check-results';
-    pre.textContent = JSON.stringify(out); document.body.appendChild(pre);
-  })();
-});
-</script>""" % json.dumps(sources).replace("</", "<\\/")     # a "</script>" inside a check must not end this tag
+    raw = open(page, encoding="utf-8", errors="replace").read()
+    base = '<base href="%s/">' % Path(page).parent.as_uri().rstrip("/")
+    m = re.search(r"<head[^>]*>", raw, re.I)
+    raw = raw[:m.end()] + base + raw[m.end():] if m else base + raw
 
-    doc = open(page, encoding="utf-8", errors="replace").read()
-    base = '<base href="%s/">' % ("file:///" + os.path.dirname(page).replace("\\", "/").lstrip("/"))
-    doc = re.sub(r"(<head[^>]*>)", lambda m: m.group(1) + base, doc, count=1, flags=re.I) if re.search(r"<head[^>]*>", doc, re.I) else base + doc
-    doc = re.sub(r"(</body>)", lambda m: runner + m.group(1), doc, count=1, flags=re.I) if re.search(r"</body>", doc, re.I) else doc + runner
+    def with_runner(src):
+        """The page with one check appended, run once it has loaded."""
+        runner = ("<script>window.addEventListener('load', function () { (async function () {"
+                  " var out; try { out = await (0, eval)(%s); } catch (e) { out = 'ERROR ' + e; }"
+                  " var pre = document.createElement('pre'); pre.id = 'kz-check-results';"
+                  " pre.textContent = JSON.stringify(out); document.body.appendChild(pre); })(); });</script>"
+                  % json.dumps(src).replace("</", "<\\/"))     # a "</script>" inside a check must not end this tag
+        k = raw.lower().rfind("</body>")
+        return raw[:k] + runner + raw[k:] if k >= 0 else raw + runner
+
+    def run_one(src, scheme):
+        """Each check gets a fresh page load: a check that opens panels or edits fields must not leave its
+        state for the next one (the 'one at a time, on a settled page' rule)."""
+        tmp = tempfile.mkdtemp(prefix="kz-checks-")
+        try:
+            f = os.path.join(tmp, "page.html")
+            open(f, "w", encoding="utf-8").write(with_runner(src))
+            flags = [find_chrome(), "--headless=new", "--disable-gpu", "--no-first-run", "--hide-scrollbars",
+                     "--window-size=%d,%d" % (a.width, a.height),
+                     "--blink-settings=preferredColorScheme=%d" % (0 if scheme == "dark" else 1),
+                     "--user-data-dir=" + os.path.join(tmp, "profile"),
+                     "--virtual-time-budget=300000", "--dump-dom", Path(f).as_uri()]
+            if a.local_fetch:
+                flags.insert(1, "--allow-file-access-from-files")
+            r = subprocess.run(flags, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)    # leave nothing behind, even when Chrome fails
+        m = re.search(r'<pre id="kz-check-results">(.*?)</pre>', r.stdout, re.S)
+        if not m:
+            return "ERROR the check did not finish. Chrome said: " + r.stderr[-400:]
+        return json.loads(html.unescape(m.group(1)))
 
     schemes = ["light", "dark"] if a.scheme == "both" else [a.scheme]
     bad = 0
     for scheme in schemes:
-        tmp = tempfile.mkdtemp(prefix="kz-checks-")
-        try:
-            f = os.path.join(tmp, "page.html")
-            open(f, "w", encoding="utf-8").write(doc)
-            r = subprocess.run([find_chrome(), "--headless=new", "--disable-gpu", "--no-first-run", "--hide-scrollbars",
-                                "--allow-file-access-from-files", "--window-size=%d,%d" % (a.width, a.height),
-                                "--blink-settings=preferredColorScheme=%d" % (0 if scheme == "dark" else 1),
-                                "--user-data-dir=" + os.path.join(tmp, "profile"),
-                                "--virtual-time-budget=300000", "--dump-dom", "file:///" + f.replace("\\", "/")],
-                               capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
-        finally:
-            shutil.rmtree(tmp, ignore_errors=True)    # leave nothing behind, even when Chrome fails
-
-        m = re.search(r'<pre id="kz-check-results">(.*?)</pre>', r.stdout, re.S)
-        if not m:
-            sys.exit("the checks did not finish (no results in the page). Chrome said:\n" + r.stderr[-800:])
-        results = json.loads(html.unescape(m.group(1)))
-
         print("%s at %dpx, %s scheme" % (os.path.basename(page), a.width, scheme))
         for n in names:
-            res = results.get(n)
+            res = run_one(sources[n], scheme)
             verdict = "FAIL" if failed(res) else "ok"
             bad += verdict == "FAIL"
             print("\n[%s] %s" % (verdict, n))
