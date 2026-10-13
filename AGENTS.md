@@ -30,6 +30,6 @@ If your host can run a command before a skill is invoked, `skills/kz-askcard/hoo
 ## Git
 
 - Work on a feature branch named after the work in kebab-case (`docs/`, `fix/`, `feat/`, `chore/` prefix). Never commit or push directly to `main`, and never put a tool, model or agent name in a branch name.
-- Commits are authored **and committed** by the human making them, with the identity in the project's history (`git log --format='%an <%ae>'`). An agent sandbox often defaults to its own name: set the owner's per command with `git -c user.name=... -c user.email=...`. Do not add `Co-authored-by` or any trailer naming an AI, a tool or a model.
+- Commits are authored **and committed** by the git account connected to the session. Read it from the connection at commit time (`gh api user`, or the host's GitHub `get_me`): login as the name, the account's email (or its `<id>+<login>@users.noreply.github.com` address) as the email. Never hard-code it and never accept a sandbox default, which is often the tool's own name; set it per command with `git -c user.name=... -c user.email=...`. Do not add `Co-authored-by` or any trailer naming an AI, a tool or a model.
 - Before the first push, read `git log origin/main..HEAD --format='%an <%ae> | %cn <%ce> | %s'` and fix anything wrong while the branch is still yours alone. A generated branch name is renamed before it is pushed.
 - Merging, deleting a remote branch and force-pushing need the owner's explicit say-so. The full rules are 33-33c in `skills/kz-engrules/rules/engineering-rules.md`.
