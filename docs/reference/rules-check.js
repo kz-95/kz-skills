@@ -4,7 +4,8 @@
    rule demonstrations that have behaviour of their own - the tables in T, the clear in
    A3, the modal in N1, the popovers in N2, the fields in F2 F4 F5 F6 F7 F8 F9, the draft in F3 - plus the
    geometric claims the rules make as figures (L3's two comparisons, L4's offset, L6's
-   cap, L11's wrap-only-while-it-fits, Y1's tabular figures, P1's zero shift).
+   cap, L11's wrap-only-while-it-fits, Y1's tabular figures, P1's zero shift), and the
+   motion samples in M2-M6.
 
    Every assertion here is written so that breaking the thing it guards makes it fail.
    It also asserts the WRONG side still demonstrates its defect: a sample that quietly
@@ -830,6 +831,76 @@
       ok('N5', r.top >= n.top - 1 && r.bottom <= n.bottom + 1,
          'the marked entry is outside its own nav box');
     }
+  })();
+
+  /* ---- M2-M6: section M, each right sample passes and each wrong one still fails --- */
+  (function () {
+    function moving(el) { return el.getAnimations({ subtree: true }).length; }
+    function key(id) { $(id).dispatchEvent(new KeyboardEvent('keydown', { key: 'k', bubbles: true })); }
+    /* M2: opened from the keyboard, the right palette has nothing running on the next frame */
+    key('m2Good');
+    ok('M2', $('m2GoodPal').getAttribute('data-open') === '1', 'K did not open the right palette');
+    ok('M2', moving($('m2GoodPal')) === 0, 'the keyboard-opened palette is animating (' + moving($('m2GoodPal')) + ')');
+    key('m2Good');
+    key('m2Bad');
+    ok('M2 (wrong sample)', moving($('m2BadPal')) > 0, 'the wrong palette no longer animates, so it shows nothing');
+    key('m2Bad');
+
+    /* M3: start scale and origin, read from the closed state */
+    function scaleOf(el) { var m = /matrix\(([-\d.e]+)/.exec(cs(el).transform); return m ? Math.abs(+m[1]) : 1; }
+    var good = $('m3GoodPop'), badp = $('m3BadPop');
+    ok('M3', scaleOf(good) >= 0.9 && scaleOf(good) < 1, 'the right menu starts at scale ' + scaleOf(good).toFixed(2) + ', not 0.9-0.97');
+    ok('M3', /^0px 0px/.test(cs(good).transformOrigin), 'the right menu does not grow from its top left: ' + cs(good).transformOrigin);
+    ok('M3 (wrong sample)', scaleOf(badp) < 0.05, 'the wrong menu no longer starts at scale(0)');
+
+    /* M4: the property list and the curve */
+    var g = cs($('m4Good')), b = cs($('m4Bad'));
+    ok('M4', !/\ball\b/.test(g.transitionProperty), 'the right card transitions all');
+    ok('M4', !/ease-in\b/.test(g.transitionTimingFunction), 'the right card is timed ease-in');
+    ok('M4 (wrong sample)', /\ball\b/.test(b.transitionProperty) && /ease-in/.test(b.transitionTimingFunction),
+       'the wrong card is no longer all + ease-in');
+
+    /* M5: an :active rule that reaches the button and changes something */
+    function pressed(el) {
+      var hit = false;
+      Array.prototype.forEach.call(document.styleSheets, function (sh) {
+        var rules; try { rules = sh.cssRules; } catch (e) { return; }
+        (function walk(rs) {
+          Array.prototype.forEach.call(rs, function (r) {
+            if (r.cssRules) { walk(r.cssRules); }
+            if (!r.selectorText || !/:active/.test(r.selectorText)) { return; }
+            r.selectorText.split(',').forEach(function (sel) {
+              if (!/:active/.test(sel)) { return; }
+              try { if (el.matches(sel.replace(/:active/g, '')) && /transform|box-shadow|background/.test(r.style.cssText)) { hit = true; } } catch (e) {}
+            });
+          });
+        })(rules);
+      });
+      return hit;
+    }
+    ok('M5', pressed($('m5Good')), 'the right button has no :active rule that changes it');
+    ok('M5 (wrong sample)', !pressed($('m5Bad')), 'the wrong button gained a press state');
+
+    /* M6: hover one, wait past the delay, move to the next: the right bar shows it at once */
+    function over(el) { el.dispatchEvent(new PointerEvent('pointerover', { bubbles: true })); }
+    function out(el) { el.dispatchEvent(new PointerEvent('pointerout', { bubbles: true })); }
+    ['m6Good', 'm6Bad'].forEach(function (id) {
+      var btns = $(id).querySelectorAll('[data-mtip]');
+      over(btns[0]);
+      setTimeout(function () {
+        out(btns[0]); over(btns[1]);
+        setTimeout(function () {
+          var shown = $(id + 'Tip').getAttribute('data-show') === '1';
+          out(btns[1]);
+          if (id === 'm6Good' ? !shown : shown) {
+            console.warn('rules check | ' + (id === 'm6Good' ? 'M6 | the next tooltip waited the full delay'
+                                                             : 'M6 (wrong sample) | the wrong bar opened the next tooltip at once'));
+          } else {
+            console.log('%crules check | ' + (id === 'm6Good' ? 'M6' : 'M6 (wrong sample)') + ' | asserted', 'color:#1f7a4d');
+          }
+        }, 60);
+      }, 450);
+    });
   })();
 
   if (!problems.length) {

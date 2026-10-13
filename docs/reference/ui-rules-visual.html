@@ -508,8 +508,13 @@ tfoot td{font-weight:600;border-top:2px solid var(--line);border-bottom:0;
   /* narrow enough to sit beside content rather than across it */
   max-width:220px}
 #tip[data-show="1"]{opacity:1}
+#tip[data-instant="1"]{transition:none}
 @media (hover:none){#tip{display:none}}
-@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+/* M1: reduced motion keeps the fade and the colour change and drops the travel. A blanket
+   transition:none deletes the feedback with the movement. */
+@media (prefers-reduced-motion:reduce){
+  *{transition-property:opacity,color,background-color,border-color,box-shadow !important;
+    animation:none !important}}
 /* A note inside a demo box is content, so it is inset like the content above it. With
    no horizontal padding it sat 1px from the border while its sibling .body was inset by
    --s4, which gave one box two different left edges (rule L2). */
@@ -1144,6 +1149,43 @@ tbody tr{transition:background var(--mo-state) var(--mo-ease)}
 .fpop,.pop,.dlg{animation:mo-in var(--mo-enter) var(--mo-ease) both}
 @keyframes mo-in{from{opacity:0;transform:translateY(-4px) scale(.985)}
   to{opacity:1;transform:none}}
+/* ---- section M samples. The wrong halves carry data-motion-check="skip" so
+   motion-check.js reads the page clean; rules-check.js asserts they still fail. */
+:root{--ease-out:cubic-bezier(.23,1,.32,1)}
+.mo-stage{position:relative;min-height:150px;display:flex;flex-direction:column;align-items:flex-start;gap:var(--s2)}
+.mo-pal{position:absolute;left:0;right:0;top:44px;border:1px solid var(--line);border-radius:var(--r);
+  background:var(--surface);box-shadow:0 8px 24px rgba(0,0,0,.12);padding:var(--s2) var(--s3);
+  font-size:13px;visibility:hidden;opacity:0}
+.mo-pal[data-open="1"]{visibility:visible;opacity:1;transform:none}
+.mo-pal-bad{transform:translateY(-12px) scale(.9);
+  transition:opacity 400ms ease-in-out,transform 400ms ease-in-out,visibility 0s 400ms}
+.mo-pal-bad[data-open="1"]{transition:opacity 400ms ease-in-out,transform 400ms ease-in-out}
+.mo-pop{position:absolute;left:0;top:44px;width:200px;border:1px solid var(--line);border-radius:var(--r);
+  background:var(--surface);box-shadow:0 8px 24px rgba(0,0,0,.12);padding:var(--s2) var(--s3);font-size:13px;
+  visibility:hidden;opacity:0}
+.mo-pop[data-open="1"]{visibility:visible;opacity:1;transform:none}
+.mo-pop-bad{transform:scale(0);transform-origin:50% 50%;
+  transition:transform 300ms var(--ease-out),opacity 300ms var(--ease-out),visibility 0s 300ms}
+.mo-pop-good{transform:scale(.96);transform-origin:top left;
+  transition:transform 180ms var(--ease-out),opacity 180ms var(--ease-out),visibility 0s 120ms}
+.mo-pop-bad[data-open="1"],.mo-pop-good[data-open="1"]{transition-delay:0s}
+.mo-card{border:1px solid var(--line);border-radius:var(--r);padding:var(--s3);background:var(--surface);
+  font-size:13px;cursor:pointer;max-width:240px}
+.mo-card-bad{transition:all 450ms ease-in}
+.mo-card-good{transition:transform 180ms var(--ease-out),box-shadow 180ms var(--ease-out)}
+@media (hover:hover){.mo-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.12);
+  border-color:var(--accent);padding:calc(var(--s3) + 2px)}
+  .mo-card-good:hover{padding:var(--s3)}}
+.mo-fakebtn{display:inline-flex;align-items:center;height:var(--ctl);padding:0 var(--s3);
+  border:1px solid var(--line);border-radius:7px;background:var(--surface);font-size:13px;cursor:pointer;user-select:none}
+.mo-tipbar{display:flex;gap:var(--s2)}
+.mo-tip{position:absolute;top:-34px;left:0;font-size:12px;padding:4px var(--s2);border-radius:6px;
+  background:var(--text);color:var(--bg);white-space:nowrap;pointer-events:none;opacity:0;
+  transition:opacity 120ms var(--ease-out)}
+.mo-tip[data-show="1"]{opacity:1}
+.mo-tip[data-instant="1"]{transition:none}
+.mo-tipwrap{position:relative;padding-top:40px}
+.mo-muted{color:var(--muted)}
 .toast{animation:mo-toast var(--mo-enter) var(--mo-ease) both}
 @keyframes mo-toast{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 .fill{transition:width var(--mo-enter) var(--mo-ease)}
@@ -1231,7 +1273,8 @@ section[id]{scroll-margin-top:56px}
     <a href="#f"><span class="k">F</span>Forms</a>
     <a href="#a"><span class="k">A</span>Actions</a>
     <a href="#n"><span class="k">N</span>Overlays</a>
-    <a href="#y"><span class="k">Y</span>Type, theme &amp; motion</a>
+    <a href="#y"><span class="k">Y</span>Type &amp; theme</a>
+    <a href="#m"><span class="k">M</span>Motion</a>
     <a href="#p"><span class="k">P</span>Performance</a>
     <a href="#x"><span class="k">X</span>Accessibility</a>
     <a href="#k"><span class="k">K</span>Copy</a>
@@ -2835,6 +2878,178 @@ section[id]{scroll-margin-top:56px}
     </div>
   </div>
 </section>
+
+<h2 class="grp-hd" id="m">M - Motion</h2>
+<p class="grp-lede">Whether something moves, how it moves, and how fast the interface answers.
+The rules live in <code>motion-rules.md</code>; M1 is shown with Y3 above.</p>
+
+<section id="m2-frequency">
+  <h2>Rule M2: how often it is seen decides whether it moves</h2>
+  <p class="rule">Something opened from the keyboard, or used many times an hour, appears in its
+  final state. Animation on a hundred-times-a-day action is felt as latency.</p>
+  <div class="pair">
+    <div class="demo wrong" data-motion-check="skip">
+      <div class="tag">Wrong: the palette glides in every time</div>
+      <div class="body mo-stage" id="m2Bad" tabindex="0" aria-label="Command palette sample, press K">
+        <button type="button" class="btn" data-m2-open>Open palette (K)</button>
+        <div class="mo-pal mo-pal-bad" id="m2BadPal">Search commands...</div>
+      </div>
+      <p class="note">Focus the box and press K a few times. Each open spends 400ms easing in and
+      out - long enough that the next keystroke lands on a panel still on its way.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: the palette is simply there</div>
+      <div class="body mo-stage" id="m2Good" tabindex="0" aria-label="Command palette sample, press K">
+        <button type="button" class="btn" data-m2-open>Open palette (K)</button>
+        <div class="mo-pal" id="m2GoodPal">Search commands...</div>
+      </div>
+      <p class="note">The same panel with no transition. A toast or a first-run moment can move;
+      the thing reached for all day does not.</p>
+    </div>
+  </div>
+</section>
+
+<section id="m3-origin">
+  <h2>Rule M3: nothing enters from nothing, and a panel grows from what opened it</h2>
+  <p class="rule">An entrance starts at a scale of 0.9 to 0.97 with opacity 0, never
+  <code>scale(0)</code>. An anchored panel grows from the side facing its trigger; a modal stays
+  centred.</p>
+  <div class="pair">
+    <div class="demo wrong" data-motion-check="skip">
+      <div class="tag">Wrong: swells out of a point in its own middle</div>
+      <div class="body mo-stage">
+        <button type="button" class="btn" id="m3BadBtn" aria-expanded="false">Options</button>
+        <div class="mo-pop mo-pop-bad" id="m3BadPop" role="menu" aria-label="Options">Rename<br>Duplicate<br>Archive</div>
+      </div>
+      <p class="note">It starts at nothing and grows from its centre, so for a moment it is a dot
+      floating away from the button that asked for it.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: starts nearly full size, from the button</div>
+      <div class="body mo-stage">
+        <button type="button" class="btn" id="m3GoodBtn" aria-expanded="false">Options</button>
+        <div class="mo-pop mo-pop-good" id="m3GoodPop" role="menu" aria-label="Options">Rename<br>Duplicate<br>Archive</div>
+      </div>
+      <p class="note">Scale 0.96 and opacity 0, origin at the top left where the button is, 180ms
+      in and 120ms out.</p>
+    </div>
+  </div>
+</section>
+
+<section id="m4-named">
+  <h2>Rule M4: a transition names what it moves, and it starts fast</h2>
+  <p class="rule">Never <code>transition: all</code>, never <code>ease-in</code> on interface
+  motion. Name the properties and use a curve that decelerates.</p>
+  <div class="pair">
+    <div class="demo wrong" data-motion-check="skip">
+      <div class="tag">Wrong: all, 450ms, ease-in</div>
+      <div class="body"><div class="mo-card mo-card-bad" id="m4Bad" tabindex="0">Quarterly report<br><span class="mo-muted">Hover me</span></div></div>
+      <p class="note">The hover lags before it moves, and <code>all</code> also animates the padding,
+      so the text reflows on every hover - and the colours crawl when the theme switches.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: transform and shadow, 180ms, ease-out</div>
+      <div class="body"><div class="mo-card mo-card-good" id="m4Good" tabindex="0">Quarterly report<br><span class="mo-muted">Hover me</span></div></div>
+      <p class="note">Only the lift and the shadow move, starting at full speed and settling.</p>
+    </div>
+  </div>
+</section>
+
+<section id="m5-press">
+  <h2>Rule M5: a press answers before the action does</h2>
+  <p class="rule">Every button shows a pressed state while it is held, at once. Without it, an
+  action that takes a moment looks like a click that missed.</p>
+  <div class="pair">
+    <div class="demo wrong" data-motion-check="skip">
+      <div class="tag">Wrong: nothing happens until the work is done</div>
+      <div class="body"><span class="mo-fakebtn" role="button" tabindex="0" id="m5Bad">Export</span> <span class="mo-muted" id="m5BadOut"></span></div>
+      <p class="note">Press and hold: no change. The export takes 600ms, so the second click is
+      already on its way.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: it gives under the finger</div>
+      <div class="body"><button type="button" class="btn" id="m5Good">Export</button> <span class="mo-muted" id="m5GoodOut"></span></div>
+      <p class="note">Scale 0.97 while held, in the press band. The result still takes 600ms; the
+      press was acknowledged in the first frame.</p>
+    </div>
+  </div>
+</section>
+
+<section id="m6-warm">
+  <h2>Rule M6: once one tooltip is open, the next one opens at once</h2>
+  <p class="rule">The first tooltip waits about 400ms. While one is open, and for about 300ms
+  after, a neighbour opens with no delay and no fade.</p>
+  <div class="pair">
+    <div class="demo wrong">
+      <div class="tag">Wrong: every button waits the full delay</div>
+      <div class="body mo-tipwrap"><div class="mo-tipbar" id="m6Bad">
+        <button type="button" class="btn" data-mtip="Bold">B</button>
+        <button type="button" class="btn" data-mtip="Italic">I</button>
+        <button type="button" class="btn" data-mtip="Underline">U</button>
+      </div><div class="mo-tip" id="m6BadTip"></div></div>
+      <p class="note">Hover B, then slide across. Each button makes you wait again.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: the toolbar is warm once one is open</div>
+      <div class="body mo-tipwrap"><div class="mo-tipbar" id="m6Good">
+        <button type="button" class="btn" data-mtip="Bold">B</button>
+        <button type="button" class="btn" data-mtip="Italic">I</button>
+        <button type="button" class="btn" data-mtip="Underline">U</button>
+      </div><div class="mo-tip" id="m6GoodTip"></div></div>
+      <p class="note">The first waits; sliding across, each label is there the moment you arrive.</p>
+    </div>
+  </div>
+</section>
+<script>
+/* Section M samples. Self-contained so rules-check.js can drive them by id. */
+(function () {
+  function $(id) { return document.getElementById(id); }
+  /* M2: K, or the button, toggles each palette */
+  ['m2Bad', 'm2Good'].forEach(function (id) {
+    var box = $(id), pal = $(id + 'Pal');
+    function toggle() { pal.setAttribute('data-open', pal.getAttribute('data-open') === '1' ? '0' : '1'); }
+    box.addEventListener('keydown', function (e) { if (e.key === 'k' || e.key === 'K') { e.preventDefault(); toggle(); } });
+    box.querySelector('[data-m2-open]').addEventListener('click', toggle);
+  });
+  /* M3: a menu on its trigger; outside click and Escape close it */
+  ['m3Bad', 'm3Good'].forEach(function (id) {
+    var btn = $(id + 'Btn'), pop = $(id + 'Pop');
+    function set(open) { pop.setAttribute('data-open', open ? '1' : '0'); btn.setAttribute('aria-expanded', String(open)); }
+    btn.addEventListener('click', function () { set(pop.getAttribute('data-open') !== '1'); });
+    document.addEventListener('click', function (e) { if (!btn.contains(e.target) && !pop.contains(e.target)) { set(false); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { set(false); } });
+  });
+  /* M5: the same slow action behind both */
+  [['m5Bad', 'm5BadOut'], ['m5Good', 'm5GoodOut']].forEach(function (p) {
+    function run() { $(p[1]).textContent = 'Exporting...'; setTimeout(function () { $(p[1]).textContent = 'Exported'; }, 600); }
+    $(p[0]).addEventListener('click', run);
+    $(p[0]).addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); run(); } });
+  });
+  /* M6: the wrong bar always waits; the right bar is warm while open and 300ms after */
+  function bar(id, warmup) {
+    var tip = $(id + 'Tip'), timer, warmUntil = 0;
+    function show(el) {
+      tip.textContent = el.getAttribute('data-mtip');
+      tip.style.left = el.offsetLeft + 'px';
+      tip.setAttribute('data-show', '1');
+    }
+    $(id).addEventListener('pointerover', function (e) {
+      var el = e.target.closest('[data-mtip]'); if (!el) { return; }
+      clearTimeout(timer);
+      var warm = warmup && (tip.getAttribute('data-show') === '1' || Date.now() < warmUntil);
+      tip.setAttribute('data-instant', warm ? '1' : '0');
+      if (warm) { show(el); } else { timer = setTimeout(function () { show(el); }, 400); }
+    });
+    $(id).addEventListener('pointerout', function (e) {
+      if (!e.target.closest('[data-mtip]')) { return; }
+      if (tip.getAttribute('data-show') === '1') { warmUntil = Date.now() + 300; }
+      clearTimeout(timer); tip.setAttribute('data-show', '0');
+    });
+  }
+  bar('m6Bad', false); bar('m6Good', true);
+}());
+</script>
+
 
 <h2 class="grp-hd" id="p">P - Performance and content</h2>
 <p class="grp-lede">What arrives after the reader has started reading, and content that is
@@ -6024,15 +6239,22 @@ var HAS_HOVER = hoverMQ.matches;
   if (hoverMQ.addEventListener) { hoverMQ.addEventListener('change', onPointerChange); }
   else if (hoverMQ.addListener) { hoverMQ.addListener(onPointerChange); }
 }());
-var btnTipTimer;
+/* M6: the first tooltip waits 400ms; while one is open, or for 300ms after it closed, the
+   next opens at once and with no fade, so reading a toolbar costs the delay once. */
+var btnTipTimer, tipWarmUntil = 0;
 document.addEventListener('pointerover', function (e) {
   var el = e.target.closest && e.target.closest('[data-tip]');
   if (!el || !HAS_HOVER) { return; }
   clearTimeout(btnTipTimer);
+  var warm = tip.getAttribute('data-show') === '1' || Date.now() < tipWarmUntil;
+  tip.setAttribute('data-instant', warm ? '1' : '0');
+  if (warm) { showTipFor(el, el.getAttribute('data-tip')); return; }
   btnTipTimer = setTimeout(function () { showTipFor(el, el.getAttribute('data-tip')); }, 400);
 });
 document.addEventListener('pointerout', function (e) {
-  if (e.target.closest && e.target.closest('[data-tip]')) { clearTimeout(btnTipTimer); hideTip(); }
+  if (!(e.target.closest && e.target.closest('[data-tip]'))) { return; }
+  if (tip.getAttribute('data-show') === '1') { tipWarmUntil = Date.now() + 300; }
+  clearTimeout(btnTipTimer); hideTip();
 });
 document.addEventListener('focusin', function (e) {
   var el = e.target.closest && e.target.closest('[data-tip]');

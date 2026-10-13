@@ -5,7 +5,7 @@
     python scripts/build-index.py --check  exit 1 if the file on disk is out of date (used by CI)
 
 It reads the first bold sentence of every table row whose first cell is a rule ID
-(`| T1 | **A column filter is a panel...** ...`) in ui-rules.md and chart-rules.md.
+(`| T1 | **A column filter is a panel...** ...`) in ui-rules.md, chart-rules.md and motion-rules.md.
 """
 import io
 import os
@@ -14,7 +14,8 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGES = "https://kz-95.github.io/kz-skills"
-SOURCES = ["skills/kz-uiuxrule/rules/ui-rules.md", "skills/kz-uiuxrule/rules/chart-rules.md"]
+SOURCES = ["skills/kz-uiuxrule/rules/ui-rules.md", "skills/kz-uiuxrule/rules/chart-rules.md",
+           "skills/kz-uiuxrule/rules/motion-rules.md"]
 OUT = os.path.join(ROOT, "docs", "rule-index.md")
 
 CAT = {"D": "Fitting the design system", "L": "Layout, spacing and the mobile shell",
@@ -22,8 +23,8 @@ CAT = {"D": "Fitting the design system", "L": "Layout, spacing and the mobile sh
        "A": "Actions and feedback", "N": "Overlays and navigation", "Y": "Type, colour and theming",
        "M": "Motion", "P": "Performance and content", "X": "Accessibility and semantics", "K": "Copy",
        "V": "Verification", "S": "Standing rules", "C": "Charts and data"}
-# the reference page groups motion under type/theme, and charts under one summary anchor
-ANCHOR = {"D": "d", "L": "l", "B": "b", "T": "t", "F": "f", "A": "a", "N": "n", "Y": "y", "M": "y",
+# the reference page groups charts under one summary anchor
+ANCHOR = {"D": "d", "L": "l", "B": "b", "T": "t", "F": "f", "A": "a", "N": "n", "Y": "y", "M": "m",
           "P": "p", "X": "x", "K": "k", "V": "v", "S": "summary", "C": "summary"}
 
 
@@ -39,7 +40,8 @@ def build():
     out = ["# Rule index", "",
            "Every rule in `kz-uiuxrule`, one line each, with the category it lives in. **Generated from the rule files**",
            "by `scripts/build-index.py` - do not edit by hand. The full text of each rule, with the failure it prevents and",
-           "the check that catches it, is in [`ui-rules.md`](../skills/kz-uiuxrule/rules/ui-rules.md) and",
+           "the check that catches it, is in [`ui-rules.md`](../skills/kz-uiuxrule/rules/ui-rules.md),",
+           "[`motion-rules.md`](../skills/kz-uiuxrule/rules/motion-rules.md) and",
            "[`chart-rules.md`](../skills/kz-uiuxrule/rules/chart-rules.md). To find a rule by the words of your task rather",
            "than its letter, use the keyword router, [`INDEX.md`](../skills/kz-uiuxrule/rules/INDEX.md).", "",
            "%d rules. Each category links to its live wrong/right samples." % total, ""]

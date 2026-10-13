@@ -37,7 +37,7 @@ scoped out by anything.
 | modal, dialog, dropdown, popover, tooltip, sheet, drawer, menu, tab, route, back, deep link | Overlays and navigation | [N](#n-overlays-and-navigation) |
 | layout, responsive, breakpoint, mobile, phone, safe area, bottom bar, scroll, overflow, column, horizontal, sideways, timeline, kanban, carousel, strip, stepper | Layout | [L](#l-layout-spacing-and-the-mobile-shell) |
 | colour, contrast, dark mode, theme, token, font, typography, size, spacing, shadow, elevation | Type, colour, theming | [Y](#y-type-colour-and-theming) |
-| animation, transition, motion, reduced motion, duration, easing | Motion | [M](#m-motion) |
+| animation, transition, motion, reduced motion, duration, easing, press, scale, stagger, drag, gesture | Motion | [M](#m-motion) |
 | slow, performance, lazy, skeleton, virtualise, jank, layout shift, images, fonts loading | Performance | [P](#p-performance-and-what-arrives-late) |
 | accessibility, a11y, screen reader, keyboard, focus, aria, label, i18n, translation, RTL | Accessibility | [X](#x-accessibility-semantics-and-language) |
 | copy, wording, label, message, error text, empty state, explainer, tooltip text | Copy | [K](#k-copy-and-explainers) |
@@ -51,8 +51,8 @@ behaves, moves or is interacted with**, read [D](#d-fitting-the-design-system) a
 
 **The section letter is the rule letter.** Section T holds the rules called `T1`, `T2`, `T3`;
 section Y holds `Y1` to `Y3`. A rule cited anywhere in the corpus can be found by reading its
-first character and coming here. Two sections carry no rules of their own: **C** points at
-[chart-rules.md](chart-rules.md), and **E** at [engineering-rules.md](../../kz-engrules/rules/engineering-rules.md).
+first character and coming here. Three sections keep their rules in a file of their own: **C** points at
+[chart-rules.md](chart-rules.md), **M** at [motion-rules.md](motion-rules.md), and **E** at [engineering-rules.md](../../kz-engrules/rules/engineering-rules.md).
 Rules appearing under a section that is not their own letter are cross-references, and are
 marked as such by their identity.
 
@@ -136,9 +136,15 @@ secondary text on a coloured surface.
 
 ## M. Motion
 
-**Rules:** M1 (functional or absent, with the duration bands), D6 (no generic styling).
-**Read:** Appendix Q, motion section - durations, exit faster than entry, interruptible, and
-why the resting state of an animated element must already be visible.
+**Rules:** M1-M6 in [motion-rules.md](motion-rules.md) - functional or absent (M1), how
+often it is seen decides whether it moves (M2), nothing from nothing and grow from the
+trigger (M3), name the property and start fast (M4), a press answers at once (M5), the
+next tooltip opens at once (M6). Plus B4 (the hover halo) and D6 (no generic styling).
+**Read:** motion-rules.md in full - one short file, with the duration bands, the named
+curves, reduced motion, stagger, gestures and performance. Motion-only work can use the
+`kz-motionrule` skill, which reads that file and nothing else.
+**Check:** `../../kz-uicheck/checks/motion-check.js` (transition all, ease-in, a transitioned
+layout property, scale(0), a popover growing from its centre, a button with no press state).
 **The trap:** honouring reduced motion by deleting the feedback rather than replacing the
 transition.
 
