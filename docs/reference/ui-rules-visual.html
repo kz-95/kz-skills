@@ -1243,6 +1243,23 @@ tbody tr{transition:background var(--mo-state) var(--mo-ease)}
 .n2c-pop label{display:flex;gap:var(--s2);align-items:center;min-height:32px;font-size:13px}
 @media (hover:none),(pointer:coarse){.n2c-pop label{min-height:44px}}
 section[id]{scroll-margin-top:56px}
+/* G - diagrams. Lines first, then label plates, then boxes (paint order, G6). Every colour is a token,
+   so the samples hold in both themes; a right sample holds its native width and scrolls (G8). */
+.dg-scroll{width:100%;overflow-x:auto}
+.dg-scroll>svg{display:block;width:100%}
+.dg{display:block;width:100%;height:auto;font-size:11px}
+.dg .box{fill:var(--surface);stroke:var(--muted);stroke-width:1}
+.dg .box.acc{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.dg .ln{fill:none;stroke:var(--muted);stroke-width:1.2}
+.dg .ln.dash,.dg .kl.dash{stroke-dasharray:5 4}
+.dg .kl{stroke:var(--muted);stroke-width:1.2}
+.dg .rulel{stroke:var(--line);stroke-width:1}
+.dg .plate{fill:var(--surface)}
+.dg text{fill:var(--text);font-weight:600}
+.dg .sub,.dg .lbl{fill:var(--muted);font-size:9px;font-weight:600;letter-spacing:.06em}
+.dg-defs{position:absolute}
+.dg-defs .head{fill:var(--muted)}
+@media print{.dg-scroll{overflow-x:visible}.dg-scroll>svg{min-width:0 !important}}
 </style>
 </head>
 <body>
@@ -1275,6 +1292,7 @@ section[id]{scroll-margin-top:56px}
     <a href="#n"><span class="k">N</span>Overlays</a>
     <a href="#y"><span class="k">Y</span>Type &amp; theme</a>
     <a href="#m"><span class="k">M</span>Motion</a>
+    <a href="#g"><span class="k">G</span>Diagrams</a>
     <a href="#p"><span class="k">P</span>Performance</a>
     <a href="#x"><span class="k">X</span>Accessibility</a>
     <a href="#k"><span class="k">K</span>Copy</a>
@@ -3050,6 +3068,134 @@ The rules live in <code>motion-rules.md</code>; M1 is shown with Y3 above.</p>
 }());
 </script>
 
+
+<h2 class="grp-hd" id="g">G - Diagrams</h2>
+<p class="grp-lede">Boxes, the lines between them and the labels on those lines. The rules live in
+<code>diagram-rules.md</code>; <code>diagram-check.js</code> measures every right sample below at a
+wide width and at 375px, and <code>rules-check.js</code> asserts every wrong one still fails. Each
+diagram here is a named figure (G9): <code>role="img"</code> with a title and a description.</p>
+<svg class="dg-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs>
+  <marker id="dgHead" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L8 4L0 8z"/></marker>
+</defs></svg>
+
+<section id="g1-earn">
+  <h2>Rule G1: a diagram earns its place</h2>
+  <p class="rule">Before drawing, ask whether a sentence or a table says the same thing. Two boxes and an arrow are a sentence.</p>
+  <div class="pair">
+    <div class="demo wrong" data-diagram-check="skip">
+      <div class="tag">Wrong: two boxes that restate a sentence</div>
+      <div class="body"><svg class="dg" id="g1Bad" viewBox="0 0 300 80"><rect class="box" x="16" y="18" width="100" height="44" rx="6"/><text x="66" y="44" text-anchor="middle">Browser</text><path class="ln" d="M116 40 H184" marker-end="url(#dgHead)"/><rect class="box" x="184" y="18" width="100" height="44" rx="6"/><text x="234" y="44" text-anchor="middle">API</text></svg></div>
+      <p class="note">A picture the reader has to decode, carrying one fact.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: the sentence</div>
+      <div class="body"><p id="g1Good" style="margin:0">The browser calls the API over HTTPS.</p></div>
+      <p class="note">Same fact, read in a second. Draw when the shape of the connections is the point.</p>
+    </div>
+  </div>
+</section>
+
+<section id="g3-lines">
+  <h2>Rules G3 and G4: lines run on two axes, and each can be traced alone</h2>
+  <p class="rule">Bends are rounded corners, never slants. No two lines share a stroke, and lines meeting one edge each get their own point, 12px or more apart.</p>
+  <div class="pair">
+    <div class="demo wrong" data-diagram-check="skip">
+      <div class="tag">Wrong: a slant, two lines drawn as one, a shared point</div>
+      <div class="body"><svg class="dg" id="g3Bad" viewBox="0 0 460 180"><path class="ln" d="M116 38 L344 142" marker-end="url(#dgHead)"/><path class="ln" d="M116 38 H344" marker-end="url(#dgHead)"/><path class="ln" d="M116 38 H344" marker-end="url(#dgHead)"/><path class="ln" d="M116 52 H260 V142 H344" marker-end="url(#dgHead)"/><rect class="box" x="16" y="16" width="100" height="44" rx="6"/><text x="66" y="42" text-anchor="middle">Ingest</text><rect class="box" x="344" y="16" width="100" height="44" rx="6"/><text x="394" y="42" text-anchor="middle">Queue</text><rect class="box" x="344" y="120" width="100" height="44" rx="6"/><text x="394" y="146" text-anchor="middle">Store</text></svg></div>
+      <p class="note">Ingest seems to send one thing to Queue; it sends two, stacked. The slant and the elbow both arrive at one point on Store.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: two routes, two ports, rounded bends</div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g3Good" viewBox="0 0 460 180" role="img" aria-labelledby="g3Good-title g3Good-desc" style="min-width:460px"><title id="g3Good-title">Ingest fan-out</title><desc id="g3Good-desc">Ingest sends work to a queue and writes to a store.</desc><path class="ln" d="M116 83 H212 Q220 83 220 75 V46 Q220 38 228 38 H344" marker-end="url(#dgHead)"/><path class="ln" d="M116 97 H228 Q236 97 236 105 V134 Q236 142 244 142 H344" marker-end="url(#dgHead)"/><rect class="box" x="16" y="68" width="100" height="44" rx="6"/><text x="66" y="94" text-anchor="middle">Ingest</text><rect class="box" x="344" y="16" width="100" height="44" rx="6"/><text x="394" y="42" text-anchor="middle">Queue</text><rect class="box" x="344" y="120" width="100" height="44" rx="6"/><text x="394" y="146" text-anchor="middle">Store</text></svg></div></div>
+      <p class="note">Each line leaves Ingest from its own point and turns on the grid, so both can be followed end to end.</p>
+    </div>
+  </div>
+</section>
+
+<section id="g5-behind">
+  <h2>Rule G5: a line never passes behind a box that is not one of its ends</h2>
+  <p class="rule">Route around it. A line disappearing into a box reads as that box being on the path.</p>
+  <div class="pair">
+    <div class="demo wrong" data-diagram-check="skip">
+      <div class="tag">Wrong: Client to Origin through Cache</div>
+      <div class="body"><svg class="dg" id="g5Bad" viewBox="0 0 460 160"><path class="ln" d="M116 62 H344" marker-end="url(#dgHead)"/><rect class="box" x="16" y="40" width="100" height="44" rx="6"/><text x="66" y="66" text-anchor="middle">Client</text><rect class="box" x="180" y="40" width="100" height="44" rx="6"/><text x="230" y="66" text-anchor="middle">Cache</text><rect class="box" x="344" y="40" width="100" height="44" rx="6"/><text x="394" y="66" text-anchor="middle">Origin</text></svg></div>
+      <p class="note">This says the call goes through the cache. It does not: the cache is skipped.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: the bypass is routed around</div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g5Good" viewBox="0 0 460 160" role="img" aria-labelledby="g5Good-title g5Good-desc" style="min-width:460px"><title id="g5Good-title">Cache bypass</title><desc id="g5Good-desc">Client reads from the cache, and calls the origin directly on a bypass.</desc><path class="ln" d="M116 55 H180" marker-end="url(#dgHead)"/><path class="ln" d="M116 70 H136 Q144 70 144 78 V124 Q144 132 152 132 H386 Q394 132 394 124 V84" marker-end="url(#dgHead)"/><rect class="box" x="16" y="40" width="100" height="44" rx="6"/><text x="66" y="66" text-anchor="middle">Client</text><rect class="box" x="180" y="40" width="100" height="44" rx="6"/><text x="230" y="66" text-anchor="middle">Cache</text><rect class="box" x="344" y="40" width="100" height="44" rx="6"/><text x="394" y="66" text-anchor="middle">Origin</text></svg></div></div>
+      <p class="note">Two lines, two meanings: one stops at Cache, the other goes under it to Origin.</p>
+    </div>
+  </div>
+</section>
+
+<section id="g6-labels">
+  <h2>Rule G6: a label sits beside its line, on a plate, clear of the line and of every box</h2>
+  <p class="rule">An opaque plate with a visible gap to the line - never under 4px, best at 6 to 10 - and never partly under a box drawn after it.</p>
+  <div class="pair">
+    <div class="demo wrong" data-diagram-check="skip">
+      <div class="tag">Wrong: a label on its line, a plate under a box</div>
+      <div class="body"><svg class="dg" id="g6Bad" viewBox="0 0 460 124"><path class="ln" d="M116 55 H344" marker-end="url(#dgHead)"/><path class="ln dash" d="M344 70 H116" marker-end="url(#dgHead)"/><rect class="plate" x="208" y="49" width="43" height="12"/><text class="lbl" x="229.5" y="58" text-anchor="middle">WRITE</text><rect class="plate" x="326" y="35" width="29" height="12"/><text class="lbl" x="340.5" y="44" text-anchor="middle">ACK</text><rect class="box" x="16" y="40" width="100" height="44" rx="6"/><text x="66" y="66" text-anchor="middle">Service</text><rect class="box" x="344" y="40" width="100" height="44" rx="6"/><text x="394" y="66" text-anchor="middle">Database</text></svg></div>
+      <p class="note">WRITE cuts its own line in two. ACK slid under Database, which was drawn after it, and shows half a word.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: beside the line, 6px clear</div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g6Good" viewBox="0 0 460 124" role="img" aria-labelledby="g6Good-title g6Good-desc" style="min-width:460px"><title id="g6Good-title">Write and acknowledge</title><desc id="g6Good-desc">Service writes to the database and the database acknowledges.</desc><path class="ln" d="M116 55 H344" marker-end="url(#dgHead)"/><path class="ln dash" d="M344 70 H116" marker-end="url(#dgHead)"/><rect class="plate" x="208" y="37" width="43" height="12"/><text class="lbl" x="229.5" y="46" text-anchor="middle">WRITE</text><rect class="plate" x="215" y="76" width="29" height="12"/><text class="lbl" x="229.5" y="85" text-anchor="middle">ACK</text><rect class="box" x="16" y="40" width="100" height="44" rx="6"/><text x="66" y="66" text-anchor="middle">Service</text><rect class="box" x="344" y="40" width="100" height="44" rx="6"/><text x="394" y="66" text-anchor="middle">Database</text></svg></div></div>
+      <p class="note">The line stays whole, and each label sits next to the line it names.</p>
+    </div>
+  </div>
+</section>
+
+<section id="g7-key">
+  <h2>Rule G7: every kind of mark is explained, in a key below the drawing</h2>
+  <p class="rule">One entry per box treatment, line style and badge used, and nothing unused. The key is a strip under the diagram, never inside it.</p>
+  <div class="pair">
+    <div class="demo wrong" data-diagram-check="skip">
+      <div class="tag">Wrong: the key floats among the boxes</div>
+      <div class="body"><svg class="dg" id="g7Bad" viewBox="0 0 460 150"><path class="ln" d="M116 39 H344" marker-end="url(#dgHead)"/><path class="ln dash" d="M344 53 H116" marker-end="url(#dgHead)"/><rect class="box" x="16" y="24" width="100" height="44" rx="6"/><text x="66" y="50" text-anchor="middle">Checkout</text><rect class="box" x="344" y="24" width="100" height="44" rx="6"/><text x="394" y="50" text-anchor="middle">Payments</text><g class="legend"><line class="kl" x1="130" y1="98" x2="154" y2="98"/><text class="sub" x="160" y="101">CALL</text><line class="kl dash" x1="230" y1="98" x2="254" y2="98"/><text class="sub" x="260" y="101">ASYNC REPLY</text></g><rect class="box" x="180" y="92" width="100" height="44" rx="6"/><text x="230" y="118" text-anchor="middle">Ledger</text></svg></div>
+      <p class="note">The first box added under it lands on it, and the key reads as part of the system.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: a strip under the drawing</div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g7Good" viewBox="0 0 460 150" role="img" aria-labelledby="g7Good-title g7Good-desc" style="min-width:460px"><title id="g7Good-title">Checkout calls payments</title><desc id="g7Good-desc">Checkout calls payments, which replies asynchronously.</desc><path class="ln" d="M116 39 H344" marker-end="url(#dgHead)"/><path class="ln dash" d="M344 53 H116" marker-end="url(#dgHead)"/><rect class="box" x="16" y="24" width="100" height="44" rx="6"/><text x="66" y="50" text-anchor="middle">Checkout</text><rect class="box" x="344" y="24" width="100" height="44" rx="6"/><text x="394" y="50" text-anchor="middle">Payments</text><line class="rulel" x1="16" y1="104" x2="444" y2="104"/><g class="legend"><line class="kl" x1="16" y1="128" x2="40" y2="128"/><text class="sub" x="46" y="131">CALL</text><line class="kl dash" x1="116" y1="128" x2="140" y2="128"/><text class="sub" x="146" y="131">ASYNC REPLY</text></g></svg></div></div>
+      <p class="note">Found where captions are always found, and it never competes with the boxes for space.</p>
+    </div>
+  </div>
+</section>
+
+<section id="g8-phone">
+  <h2>Rule G8: a wide diagram keeps its size on a narrow screen and scrolls inside its own box</h2>
+  <p class="rule">Its minimum width equals its native width, inside a container that scrolls sideways, inside anything that clips. Narrow the window to 375px to see the difference.</p>
+  <div class="pair">
+    <div class="demo wrong" data-diagram-check="skip">
+      <div class="tag">Wrong: allowed to shrink with the screen</div>
+      <div class="body"><svg class="dg" id="g8Bad" viewBox="0 0 760 120"><rect class="box" x="16" y="38" width="112" height="44" rx="6"/><text x="72" y="64" text-anchor="middle">Source</text><rect class="box" x="164" y="38" width="112" height="44" rx="6"/><text x="220" y="64" text-anchor="middle">Parse</text><rect class="box" x="312" y="38" width="112" height="44" rx="6"/><text x="368" y="64" text-anchor="middle">Enrich</text><rect class="box" x="460" y="38" width="112" height="44" rx="6"/><text x="516" y="64" text-anchor="middle">Score</text><rect class="box" x="608" y="38" width="112" height="44" rx="6"/><text x="664" y="64" text-anchor="middle">Publish</text><path class="ln" d="M128 60 H164" marker-end="url(#dgHead)"/><path class="ln" d="M276 60 H312" marker-end="url(#dgHead)"/><path class="ln" d="M424 60 H460" marker-end="url(#dgHead)"/><path class="ln" d="M572 60 H608" marker-end="url(#dgHead)"/></svg></div>
+      <p class="note">At 375px the whole drawing is scaled to about 40%: the 11px names become 4px.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: holds its size and scrolls</div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g8Good" viewBox="0 0 760 120" role="img" aria-labelledby="g8Good-title g8Good-desc" style="min-width:760px"><title id="g8Good-title">Scoring pipeline</title><desc id="g8Good-desc">Records pass through parse, enrich and score before they are published.</desc><rect class="box" x="16" y="38" width="112" height="44" rx="6"/><text x="72" y="64" text-anchor="middle">Source</text><rect class="box" x="164" y="38" width="112" height="44" rx="6"/><text x="220" y="64" text-anchor="middle">Parse</text><rect class="box" x="312" y="38" width="112" height="44" rx="6"/><text x="368" y="64" text-anchor="middle">Enrich</text><rect class="box" x="460" y="38" width="112" height="44" rx="6"/><text x="516" y="64" text-anchor="middle">Score</text><rect class="box" x="608" y="38" width="112" height="44" rx="6"/><text x="664" y="64" text-anchor="middle">Publish</text><path class="ln" d="M128 60 H164" marker-end="url(#dgHead)"/><path class="ln" d="M276 60 H312" marker-end="url(#dgHead)"/><path class="ln" d="M424 60 H460" marker-end="url(#dgHead)"/><path class="ln" d="M572 60 H608" marker-end="url(#dgHead)"/></svg></div></div>
+      <p class="note">At 375px the names stay 11px and the diagram scrolls sideways inside its card.</p>
+    </div>
+  </div>
+</section>
+
+<section id="g2-budget">
+  <h2>Rules G2 and G10: nine boxes at most, and emphasis on one or two</h2>
+  <p class="rule">Past nine boxes or twelve lines, cut in the fixed order or split into an overview and details. The accent marks the point; on five boxes it marks nothing.</p>
+  <div class="pair">
+    <div class="demo wrong" data-diagram-check="skip">
+      <div class="tag">Wrong: twelve boxes, thirteen lines, five accents</div>
+      <div class="body"><svg class="dg" id="g2Bad" viewBox="0 0 460 220"><path class="ln" d="M108 38 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 38 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 38 H352" marker-end="url(#dgHead)"/><path class="ln" d="M108 110 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 110 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 110 H352" marker-end="url(#dgHead)"/><path class="ln" d="M108 182 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 182 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 182 H352" marker-end="url(#dgHead)"/><path class="ln" d="M62 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M174 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M286 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M398 60 V88" marker-end="url(#dgHead)"/><rect class="box" x="16" y="16" width="92" height="44" rx="6"/><text x="62" y="42" text-anchor="middle">Web</text><rect class="box acc" x="128" y="16" width="92" height="44" rx="6"/><text x="174" y="42" text-anchor="middle">Mobile</text><rect class="box" x="240" y="16" width="92" height="44" rx="6"/><text x="286" y="42" text-anchor="middle">Partner</text><rect class="box acc" x="352" y="16" width="92" height="44" rx="6"/><text x="398" y="42" text-anchor="middle">Gateway</text><rect class="box" x="16" y="88" width="92" height="44" rx="6"/><text x="62" y="114" text-anchor="middle">Auth</text><rect class="box acc" x="128" y="88" width="92" height="44" rx="6"/><text x="174" y="114" text-anchor="middle">Orders</text><rect class="box acc" x="240" y="88" width="92" height="44" rx="6"/><text x="286" y="114" text-anchor="middle">Stock</text><rect class="box" x="352" y="88" width="92" height="44" rx="6"/><text x="398" y="114" text-anchor="middle">Pricing</text><rect class="box" x="16" y="160" width="92" height="44" rx="6"/><text x="62" y="186" text-anchor="middle">Search</text><rect class="box acc" x="128" y="160" width="92" height="44" rx="6"/><text x="174" y="186" text-anchor="middle">Mail</text><rect class="box" x="240" y="160" width="92" height="44" rx="6"/><text x="286" y="186" text-anchor="middle">Ledger</text><rect class="box" x="352" y="160" width="92" height="44" rx="6"/><text x="398" y="186" text-anchor="middle">Audit</text></svg></div>
+      <p class="note">Searched rather than read, and the accent no longer says which box matters.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: an overview of five, one accent</div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g2Good" viewBox="0 0 460 176" role="img" aria-labelledby="g2Good-title g2Good-desc" style="min-width:460px"><title id="g2Good-title">Platform overview</title><desc id="g2Good-desc">Clients reach orders through the gateway, which checks auth; orders hand off to fulfilment.</desc><path class="ln" d="M116 46 H180" marker-end="url(#dgHead)"/><path class="ln" d="M280 46 H344" marker-end="url(#dgHead)"/><path class="ln" d="M230 68 V112" marker-end="url(#dgHead)"/><path class="ln" d="M280 134 H344" marker-end="url(#dgHead)"/><rect class="box" x="16" y="24" width="100" height="44" rx="6"/><text x="66" y="50" text-anchor="middle">Clients</text><rect class="box acc" x="180" y="24" width="100" height="44" rx="6"/><text x="230" y="50" text-anchor="middle">Gateway</text><rect class="box" x="344" y="24" width="100" height="44" rx="6"/><text x="394" y="50" text-anchor="middle">Auth</text><rect class="box" x="180" y="112" width="100" height="44" rx="6"/><text x="230" y="138" text-anchor="middle">Orders</text><rect class="box" x="344" y="112" width="100" height="44" rx="6"/><text x="394" y="138" text-anchor="middle">Fulfilment</text></svg></div></div>
+      <p class="note">The gateway is the point. Orders and fulfilment each get a detail diagram of their own.</p>
+    </div>
+  </div>
+</section>
 
 <h2 class="grp-hd" id="p">P - Performance and content</h2>
 <p class="grp-lede">What arrives after the reader has started reading, and content that is
