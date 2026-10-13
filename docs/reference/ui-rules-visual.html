@@ -16,7 +16,27 @@
 <meta property="og:description" content="Live wrong/right examples for 57 stack-neutral UI rules, 6 motion rules, 21 chart rules and 10 diagram rules for AI coding agents: tables, filters, forms, charts, overlays, motion, diagrams. Every rule is demonstrated and checked in the browser.">
 <meta property="og:url" content="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html">
 <meta property="og:image" content="https://kz-95.github.io/kz-skills/assets/carousel-poster.png">
+<meta property="og:image:alt" content="Wrong and right UI samples side by side from the UI Rules, Seen reference page">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="UI rules for AI agents, seen: live wrong/right examples">
+<meta name="twitter:description" content="Live wrong/right examples for 57 stack-neutral UI rules, 6 motion rules, 21 chart rules and 10 diagram rules for AI coding agents: tables, filters, forms, charts, overlays, motion, diagrams. Every rule is demonstrated and checked in the browser.">
+<meta name="twitter:image" content="https://kz-95.github.io/kz-skills/assets/carousel-poster.png">
+<meta name="twitter:image:alt" content="Wrong and right UI samples side by side from the UI Rules, Seen reference page">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "UI Rules, Seen",
+  "description": "Live wrong/right examples for 57 stack-neutral UI rules, 6 motion rules, 21 chart rules and 10 diagram rules for AI coding agents: tables, filters, forms, charts, overlays, motion, diagrams. Every rule is demonstrated and checked in the browser.",
+  "author": { "@type": "Person", "name": "kz-95", "url": "https://github.com/kz-95" },
+  "isPartOf": { "@type": "WebSite", "url": "https://kz-95.github.io/kz-skills/" },
+  "url": "https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html",
+  "mainEntityOfPage": "https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html",
+  "image": "https://kz-95.github.io/kz-skills/assets/carousel-poster.png",
+  "inLanguage": "en",
+  "dateModified": "2026-10-14"
+}
+</script>
 <style>
 :root{
   --bg:#fbfaf9; --surface:#fff; --surface-2:#f4f2f0; --line:#e3dfdb;
@@ -37,15 +57,19 @@
   :root:not([data-theme="light"]){
     --bg:#16151a; --surface:#1e1d23; --surface-2:#26252c; --line:#35333c;
     --text:#ece9e6; --muted:#a09a94; --accent:#8aa8ff; --accent-soft:#22283a;
-  --on-accent:#10131c; --accent-ink:#8aa8ff;
-    --on-accent:#10131c;
+    --on-accent:#10131c; --accent-ink:#8aa8ff;
     --up:#6fd39c; --up-soft:#16261e; --down:#ff8a7a; --down-soft:#2a1d1c;
     --c1:#8aa8ff; --c2:#f0a56b; --c3:#6fd39c; --c4:#c194e8; --c5:#ff8a7a; --c6:#a09a94;
   }
 }
+/* The toggle's dark block must carry every token the media block does. It once lacked
+   --on-accent and --accent-ink, so dark chosen by the toggle on a light-scheme system kept
+   white text on the light dark-theme accent (2.30:1 on every primary button), while dark
+   from the system was fine - which is why contrast-check failed only in the light-scheme run. */
 :root[data-theme="dark"]{
   --bg:#16151a; --surface:#1e1d23; --surface-2:#26252c; --line:#35333c;
   --text:#ece9e6; --muted:#a09a94; --accent:#8aa8ff; --accent-soft:#22283a;
+  --on-accent:#10131c; --accent-ink:#8aa8ff;
   --up:#6fd39c; --up-soft:#16261e; --down:#ff8a7a; --down-soft:#2a1d1c;
   --c1:#8aa8ff; --c2:#f0a56b; --c3:#6fd39c; --c4:#c194e8; --c5:#ff8a7a; --c6:#a09a94;
 }
@@ -70,6 +94,9 @@ body{margin:0;background:var(--bg);color:var(--text);
 .wrap{max-width:1060px;margin:0 auto}
 h1{font-size:clamp(28px,5vw,40px);line-height:1.1;margin:0 0 var(--s3);letter-spacing:-.02em}
 .lede{color:var(--muted);margin:0;max-width:62ch}
+.crumbs{margin:var(--s3) 0 0;font-size:14px;color:var(--muted)}
+.crumbs a{color:var(--accent-ink);text-underline-offset:2px}
+@media (hover:none),(pointer:coarse){.crumbs a{display:inline-flex;align-items:center;min-height:44px}}
 .toolbar{display:flex;gap:var(--s2);align-items:center;flex-wrap:wrap;margin-top:var(--s4)}
 button{font:inherit;cursor:pointer}
 .btn{background:var(--surface);color:var(--text);border:1px solid var(--line);
@@ -929,9 +956,12 @@ tbody tr.offrow td:first-child::after{content:" (not drawn)";color:var(--muted);
    it changes except the axis - same links, same current marking, same order - because a
    reader who learned it at one width should not have to learn it again at another. */
 @media (min-width:1180px){
-  /* the page reserves the width the rail rests at, not the width it expands to: the
-     expansion is an overlay, and reserving for it leaves 130px of dead margin all day */
-  body{padding-right:72px}
+  /* the page reserves the width the rail expands to, plus a gutter. Reserving only its
+     resting 54px let the awake rail (190px, awake on arrival and on every scroll) sit on
+     the right 52px of every card at 1280px, hiding their borders; layout-audit's COVERED
+     finding measures it. The column centres in what is left, so at wide widths the
+     reservation costs nothing. */
+  body{padding-right:calc(190px + var(--s4))}
   /* The rail takes the whole height and distributes its items down it, so there is no
      empty box to explain: instead of a bordered card that ends somewhere arbitrary, the
      surface washes out at both edges. The fade is the boundary - softer than a line, and
@@ -1033,11 +1063,11 @@ tbody tr.offrow td:first-child::after{content:" (not drawn)";color:var(--muted);
   background:var(--surface-2);font-size:13px}
 .bad-dir{margin-left:18px;border-left:3px solid var(--accent)}
 .good-dir{margin-inline-start:18px;border-inline-start:3px solid var(--accent)}
-.rhythm-bad h4,.rhythm-bad p{margin:0 0 var(--s3)}
-.rhythm-good h4{margin:var(--s5) 0 var(--s2)}
-.rhythm-good h4:first-child{margin-top:0}
+.rhythm-bad h3,.rhythm-bad p{margin:0 0 var(--s3)}
+.rhythm-good h3{margin:var(--s5) 0 var(--s2)}
+.rhythm-good h3:first-child{margin-top:0}
 .rhythm-good p{margin:0 0 2px}
-.rhythm-bad h4,.rhythm-good h4{font-size:13px}
+.rhythm-bad h3,.rhythm-good h3{font-size:13px}
 .rhythm-bad p,.rhythm-good p{font-size:12px;color:var(--muted)}
 .lift{padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:12px;
   margin-bottom:var(--s3)}
@@ -1048,7 +1078,7 @@ tbody tr.offrow td:first-child::after{content:" (not drawn)";color:var(--muted);
 .e2{box-shadow:0 3px 8px rgba(0,0,0,.30)}
 .e3{box-shadow:0 10px 24px rgba(0,0,0,.34)}
 .sidebyside{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4);align-items:start}
-.pane h4{margin:0 0 var(--s2);font-size:12px}
+.pane h3{margin:0 0 var(--s2);font-size:12px}
 .loglist{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:11px;color:var(--muted)}
 .loglist.bounded{max-height:132px;overflow:auto}
 .seq{display:flex;gap:var(--s2)}
@@ -1247,8 +1277,21 @@ tbody tr{transition:background var(--mo-state) var(--mo-ease)}
 section[id]{scroll-margin-top:56px}
 /* G - diagrams. Lines first, then label plates, then boxes (paint order, G6). Every colour is a token,
    so the samples hold in both themes; a right sample holds its native width and scrolls (G8). */
-.dg-scroll{width:100%;overflow-x:auto}
+/* G8: a diagram that scrolls says so. A scrollbar in theme colours that can be seen (the page-wide
+   thin --line bar all but vanishes on a card), and a shadow on each side that has more: the two
+   --surface covers scroll with the drawing and hide a shadow once its side is reached. */
+.dg-scroll{width:100%;overflow-x:auto;scrollbar-width:auto;scrollbar-color:var(--muted) var(--surface-2);
+  background:
+    linear-gradient(to right,var(--surface) 50%,transparent) left center/48px 200% no-repeat local,
+    linear-gradient(to left,var(--surface) 50%,transparent) right center/48px 200% no-repeat local,
+    linear-gradient(to right,color-mix(in srgb,var(--muted) 35%,transparent),transparent) left center/20px calc(100% - 2px) no-repeat scroll,
+    linear-gradient(to left,color-mix(in srgb,var(--muted) 35%,transparent),transparent) right center/20px calc(100% - 2px) no-repeat scroll,
+    var(--surface)}
+.dg-scroll::-webkit-scrollbar{height:12px}
+.dg-scroll::-webkit-scrollbar-track{background:var(--surface-2);border-radius:6px}
+.dg-scroll::-webkit-scrollbar-thumb{background:var(--muted);border:2px solid var(--surface-2);border-radius:6px}
 .dg-scroll>svg{display:block;width:100%}
+.dg-cue{margin:var(--s2) 0 0;font-size:12px;color:var(--muted)}
 .dg{display:block;width:100%;height:auto;font-size:11px}
 .dg .box{fill:var(--surface);stroke:var(--muted);stroke-width:1}
 .dg .box.acc{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
@@ -1264,7 +1307,7 @@ section[id]{scroll-margin-top:56px}
 .dg-pair{align-items:stretch}
 .dg-pair>.demo{display:flex;flex-direction:column}
 .dg-pair>.demo>.body{flex:1;display:flex;flex-direction:column;justify-content:center}
-@media print{.dg-scroll{overflow-x:visible}.dg-scroll>svg{min-width:0 !important}}
+@media print{.dg-scroll{overflow-x:visible;background:none}.dg-scroll>svg{min-width:0 !important}.dg-cue{display:none}}
 </style>
 </head>
 <body>
@@ -1276,6 +1319,8 @@ section[id]{scroll-margin-top:56px}
   pattern they all share. One file, one set of tokens, one table component, so the samples
   cannot drift out of step with each other. Sections are being filled in category order;
   the jump list below is what is built so far.</p>
+  <p class="crumbs"><a href="../">kz-skills home</a> <span aria-hidden="true">/</span>
+  <a href="https://github.com/kz-95/kz-skills">Source on GitHub</a></p>
   <div class="toolbar">
     <button class="btn ibtn" id="theme" type="button" aria-label="Toggle dark mode" data-tip="Switch between the light and dark theme"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-theme"></use></svg><span class="lbl">Toggle dark mode</span></button>
     <button class="btn ibtn" id="toastPos" type="button"
@@ -1305,6 +1350,7 @@ section[id]{scroll-margin-top:56px}
     <a href="#summary"><span class="k">C</span>Charts</a>
     <a href="#mobile"><span class="k"></span>Mobile shell</a>
   </nav>
+<main id="main">
 
 
 <h2 class="grp-hd" id="d">D - Fitting the design system</h2>
@@ -1510,10 +1556,10 @@ section[id]{scroll-margin-top:56px}
     <div class="demo wrong">
       <div class="tag">Wrong: one step, everywhere</div>
       <div class="body rhythm-bad">
-        <h4>Contract</h4>
+        <h3>Contract</h3>
         <p>Taman Sri Indah P2</p>
         <p>RM 412,000</p>
-        <h4>Progress</h4>
+        <h3>Progress</h3>
         <p>62% claimed</p>
         <p>Last claim 14 Aug</p>
       </div>
@@ -1524,10 +1570,10 @@ section[id]{scroll-margin-top:56px}
     <div class="demo right">
       <div class="tag">Right: two steps, doing different jobs</div>
       <div class="body rhythm-good">
-        <h4>Contract</h4>
+        <h3>Contract</h3>
         <p>Taman Sri Indah P2</p>
         <p>RM 412,000</p>
-        <h4>Progress</h4>
+        <h3>Progress</h3>
         <p>62% claimed</p>
         <p>Last claim 14 Aug</p>
       </div>
@@ -1578,10 +1624,10 @@ section[id]{scroll-margin-top:56px}
       <div class="tag">Wrong: the list sets the height of the row</div>
       <div class="body sidebyside">
         <div class="pane">
-          <h4>Activity</h4>
+          <h3>Activity</h3>
           <ul class="loglist" id="l6BadLog"></ul>
         </div>
-        <div class="pane"><h4>Summary</h4><p class="note" style="margin:0">Three lines of
+        <div class="pane"><h3>Summary</h3><p class="note" style="margin:0">Three lines of
         summary, and then a column of nothing, because the neighbour decided how tall this
         row is.</p></div>
       </div>
@@ -1590,11 +1636,11 @@ section[id]{scroll-margin-top:56px}
       <div class="tag">Right: bounded, with a way to see the rest</div>
       <div class="body sidebyside">
         <div class="pane">
-          <h4>Activity</h4>
+          <h3>Activity</h3>
           <ul class="loglist bounded" id="l6GoodLog"></ul>
           <button class="btn" id="l6Expand" type="button" aria-expanded="false" data-tip="Expand the list to its full height">Show all 24</button>
         </div>
-        <div class="pane"><h4>Summary</h4><p class="note" style="margin:0">The same summary,
+        <div class="pane"><h3>Summary</h3><p class="note" style="margin:0">The same summary,
         beside a list that is capped rather than endless. Expand when the list is the thing
         being read.</p></div>
       </div>
@@ -1854,7 +1900,7 @@ section[id]{scroll-margin-top:56px}
       <div class="body">
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="tQ" placeholder="Search sites..." aria-label="Search sites"></span>
-          <button class="btn ibtn" id="tClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="tClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="tCount" aria-live="polite"></span>
         </div>
         <div class="tablescroll"><table id="tTbl"></table></div>
@@ -2046,7 +2092,7 @@ section[id]{scroll-margin-top:56px}
   <p class="rule">Check on blur, clear on input, never on keystroke - and take the input
   type that brings the right keyboard and the right autofill on a phone.</p>
   <div class="pair">
-    <div class="demo wrong">
+    <div class="demo wrong" data-form-check="skip">
       <div class="tag">Wrong: red before the word is finished</div>
       <div class="body">
         <label class="fld"><span>Email</span>
@@ -2084,7 +2130,7 @@ section[id]{scroll-margin-top:56px}
     <div class="demo wrong">
       <div class="tag">Wrong: closing throws the work away</div>
       <div class="body">
-        <button class="btn" id="f3BadOpen" type="button" data-tip="Open the editor that keeps a draft">Open the note editor</button>
+        <button class="btn" id="f3BadOpen" type="button" aria-haspopup="dialog" data-modal-check data-tip="Open the editor that keeps a draft">Open the note editor</button>
         <p class="note" style="margin-top:var(--s2)">Type something, close it, open it
         again. The afternoon is gone and nothing warned anyone. This is the same defect as
         a tab closing on a half-filled form.</p>
@@ -2093,7 +2139,7 @@ section[id]{scroll-margin-top:56px}
     <div class="demo right">
       <div class="tag">Right: a draft, and a question on the way out</div>
       <div class="body">
-        <button class="btn" id="f3GoodOpen" type="button" data-tip="Open the editor that keeps a draft">Open the note editor</button>
+        <button class="btn" id="f3GoodOpen" type="button" aria-haspopup="dialog" data-modal-check data-tip="Open the editor that keeps a draft">Open the note editor</button>
         <span class="chip" id="f3Draft">no draft</span>
         <p class="note" style="margin-top:var(--s2)">Typing keeps a draft as you go. Closing
         with unsaved changes asks first, and the question names what is at stake rather than
@@ -2256,7 +2302,7 @@ section[id]{scroll-margin-top:56px}
   formatting, and check the whole value's shape when the user is done - with a pattern
   anchored at both ends, written once, and used by the field and the server alike.</p>
   <div class="pair">
-    <div class="demo wrong">
+    <div class="demo wrong" data-form-check="skip">
       <div class="tag">Wrong: strict where it hurts, loose where it matters</div>
       <div class="body f7grid">
         <label class="fld"><span>Name</span><input type="text" id="f7b-name" value="O'Brien"></label>
@@ -2400,11 +2446,11 @@ section[id]{scroll-margin-top:56px}
     <div class="demo right">
       <div class="tag">Right: named target, clear cancel, undo</div>
       <div class="body stack">
-        <button class="btn btn-danger ibtn" id="del1" type="button"
+        <button class="btn btn-danger ibtn" id="del1" type="button" aria-haspopup="dialog" data-modal-check
                 data-tip="Permanently delete this project and its quotations">
           <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg>
           <span class="lbl">Delete project</span></button>
-        <button class="btn btn-danger ibtn" id="del2" type="button"
+        <button class="btn btn-danger ibtn" id="del2" type="button" aria-haspopup="dialog"
                 data-tip="Permanently delete the 14 selected invoices">
           <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg>
           <span class="lbl">Delete 14 selected invoices</span></button>
@@ -2560,7 +2606,7 @@ section[id]{scroll-margin-top:56px}
     <div class="demo wrong">
       <div class="tag">Wrong: three of four</div>
       <div class="body">
-        <button class="btn" id="n1BadOpen" type="button" aria-haspopup="dialog" data-modal-check data-tip="The dialog that leaves the page scrolling">Open the leaky one</button>
+        <button class="btn" id="n1BadOpen" type="button" aria-haspopup="dialog" data-modal-check="skip" data-tip="The dialog that leaves the page scrolling">Open the leaky one</button>
         <p class="note" style="margin-top:var(--s2)">Open it, then scroll with the wheel
         or swipe. The page behind moves under the dialog, so the thing you came back to is
         not where you left it - and on a phone the dialog appears to drift off the screen.</p>
@@ -2576,7 +2622,7 @@ section[id]{scroll-margin-top:56px}
       </div>
     </div>
   </div>
-  <dialog id="n1Bad" class="dlg">
+  <dialog id="n1Bad" class="dlg" data-modal-check="skip">
     <h3>Leaky dialog</h3>
     <p>Scroll now. The page behind is still scrolling.</p>
     <div class="dlgbtns"><button class="btn" type="button" data-close="n1Bad">Close</button></div>
@@ -3104,6 +3150,23 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
   </div>
 </section>
 
+<section id="g2-budget">
+  <h2>Rules G2 and G10: nine boxes at most, and emphasis on one or two</h2>
+  <p class="rule">Past nine boxes or twelve lines, cut in the fixed order or split into an overview and details. The accent marks the point; on five boxes it marks nothing.</p>
+  <div class="pair dg-pair">
+    <div class="demo wrong" data-diagram-check="skip">
+      <div class="tag">Wrong: twelve boxes, thirteen lines, five accents</div>
+      <div class="body"><svg class="dg" id="g2Bad" viewBox="0 0 460 220"><path class="ln" d="M108 38 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 38 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 38 H352" marker-end="url(#dgHead)"/><path class="ln" d="M108 110 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 110 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 110 H352" marker-end="url(#dgHead)"/><path class="ln" d="M108 182 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 182 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 182 H352" marker-end="url(#dgHead)"/><path class="ln" d="M62 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M174 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M286 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M398 60 V88" marker-end="url(#dgHead)"/><rect class="box" x="16" y="16" width="92" height="44" rx="6"/><text x="62" y="42" text-anchor="middle">Web</text><rect class="box acc" x="128" y="16" width="92" height="44" rx="6"/><text x="174" y="42" text-anchor="middle">Mobile</text><rect class="box" x="240" y="16" width="92" height="44" rx="6"/><text x="286" y="42" text-anchor="middle">Partner</text><rect class="box acc" x="352" y="16" width="92" height="44" rx="6"/><text x="398" y="42" text-anchor="middle">Gateway</text><rect class="box" x="16" y="88" width="92" height="44" rx="6"/><text x="62" y="114" text-anchor="middle">Auth</text><rect class="box acc" x="128" y="88" width="92" height="44" rx="6"/><text x="174" y="114" text-anchor="middle">Orders</text><rect class="box acc" x="240" y="88" width="92" height="44" rx="6"/><text x="286" y="114" text-anchor="middle">Stock</text><rect class="box" x="352" y="88" width="92" height="44" rx="6"/><text x="398" y="114" text-anchor="middle">Pricing</text><rect class="box" x="16" y="160" width="92" height="44" rx="6"/><text x="62" y="186" text-anchor="middle">Search</text><rect class="box acc" x="128" y="160" width="92" height="44" rx="6"/><text x="174" y="186" text-anchor="middle">Mail</text><rect class="box" x="240" y="160" width="92" height="44" rx="6"/><text x="286" y="186" text-anchor="middle">Ledger</text><rect class="box" x="352" y="160" width="92" height="44" rx="6"/><text x="398" y="186" text-anchor="middle">Audit</text></svg></div>
+      <p class="note">Searched rather than read, and the accent no longer says which box matters.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: an overview of five, one accent</div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g2Good" viewBox="0 0 460 176" role="img" aria-labelledby="g2Good-title g2Good-desc" style="min-width:460px"><title id="g2Good-title">Platform overview</title><desc id="g2Good-desc">Clients reach orders through the gateway, which checks auth; orders hand off to fulfilment.</desc><path class="ln" d="M116 46 H180" marker-end="url(#dgHead)"/><path class="ln" d="M280 46 H344" marker-end="url(#dgHead)"/><path class="ln" d="M230 68 V112" marker-end="url(#dgHead)"/><path class="ln" d="M280 134 H344" marker-end="url(#dgHead)"/><rect class="box" x="16" y="24" width="100" height="44" rx="6"/><text x="66" y="50" text-anchor="middle">Clients</text><rect class="box acc" x="180" y="24" width="100" height="44" rx="6"/><text x="230" y="50" text-anchor="middle">Gateway</text><rect class="box" x="344" y="24" width="100" height="44" rx="6"/><text x="394" y="50" text-anchor="middle">Auth</text><rect class="box" x="180" y="112" width="100" height="44" rx="6"/><text x="230" y="138" text-anchor="middle">Orders</text><rect class="box" x="344" y="112" width="100" height="44" rx="6"/><text x="394" y="138" text-anchor="middle">Fulfilment</text></svg></div><p class="dg-cue" data-diagram="cue" hidden>Scroll sideways to see all of it</p></div>
+      <p class="note">The gateway is the point. Orders and fulfilment each get a detail diagram of their own.</p>
+    </div>
+  </div>
+</section>
+
 <section id="g3-lines">
   <h2>Rules G3 and G4: lines run on two axes, and each can be traced alone</h2>
   <p class="rule">Bends are rounded corners, never slants. No two lines share a stroke, and lines meeting one edge each get their own point, 12px or more apart.</p>
@@ -3115,7 +3178,7 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
     </div>
     <div class="demo right">
       <div class="tag">Right: two routes, two ports, rounded bends</div>
-      <div class="body"><div class="dg-scroll"><svg class="dg" id="g3Good" viewBox="0 0 460 180" role="img" aria-labelledby="g3Good-title g3Good-desc" style="min-width:460px"><title id="g3Good-title">Ingest fan-out</title><desc id="g3Good-desc">Ingest sends work to a queue and writes to a store.</desc><path class="ln" d="M116 83 H212 Q220 83 220 75 V46 Q220 38 228 38 H344" marker-end="url(#dgHead)"/><path class="ln" d="M116 97 H228 Q236 97 236 105 V134 Q236 142 244 142 H344" marker-end="url(#dgHead)"/><rect class="box" x="16" y="68" width="100" height="44" rx="6"/><text x="66" y="94" text-anchor="middle">Ingest</text><rect class="box" x="344" y="16" width="100" height="44" rx="6"/><text x="394" y="42" text-anchor="middle">Queue</text><rect class="box" x="344" y="120" width="100" height="44" rx="6"/><text x="394" y="146" text-anchor="middle">Store</text></svg></div></div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g3Good" viewBox="0 0 460 180" role="img" aria-labelledby="g3Good-title g3Good-desc" style="min-width:460px"><title id="g3Good-title">Ingest fan-out</title><desc id="g3Good-desc">Ingest sends work to a queue and writes to a store.</desc><path class="ln" d="M116 83 H212 Q220 83 220 75 V46 Q220 38 228 38 H344" marker-end="url(#dgHead)"/><path class="ln" d="M116 97 H228 Q236 97 236 105 V134 Q236 142 244 142 H344" marker-end="url(#dgHead)"/><rect class="box" x="16" y="68" width="100" height="44" rx="6"/><text x="66" y="94" text-anchor="middle">Ingest</text><rect class="box" x="344" y="16" width="100" height="44" rx="6"/><text x="394" y="42" text-anchor="middle">Queue</text><rect class="box" x="344" y="120" width="100" height="44" rx="6"/><text x="394" y="146" text-anchor="middle">Store</text></svg></div><p class="dg-cue" data-diagram="cue" hidden>Scroll sideways to see all of it</p></div>
       <p class="note">Each line leaves Ingest from its own point and turns on the grid, so both can be followed end to end.</p>
     </div>
   </div>
@@ -3132,7 +3195,7 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
     </div>
     <div class="demo right">
       <div class="tag">Right: the bypass is routed around</div>
-      <div class="body"><div class="dg-scroll"><svg class="dg" id="g5Good" viewBox="0 0 460 160" role="img" aria-labelledby="g5Good-title g5Good-desc" style="min-width:460px"><title id="g5Good-title">Cache bypass</title><desc id="g5Good-desc">Client reads from the cache, and calls the origin directly on a bypass.</desc><path class="ln" d="M116 55 H180" marker-end="url(#dgHead)"/><path class="ln" d="M116 70 H136 Q144 70 144 78 V124 Q144 132 152 132 H386 Q394 132 394 124 V84" marker-end="url(#dgHead)"/><rect class="box" x="16" y="40" width="100" height="44" rx="6"/><text x="66" y="66" text-anchor="middle">Client</text><rect class="box" x="180" y="40" width="100" height="44" rx="6"/><text x="230" y="66" text-anchor="middle">Cache</text><rect class="box" x="344" y="40" width="100" height="44" rx="6"/><text x="394" y="66" text-anchor="middle">Origin</text></svg></div></div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g5Good" viewBox="0 0 460 160" role="img" aria-labelledby="g5Good-title g5Good-desc" style="min-width:460px"><title id="g5Good-title">Cache bypass</title><desc id="g5Good-desc">Client reads from the cache, and calls the origin directly on a bypass.</desc><path class="ln" d="M116 55 H180" marker-end="url(#dgHead)"/><path class="ln" d="M116 70 H136 Q144 70 144 78 V124 Q144 132 152 132 H386 Q394 132 394 124 V84" marker-end="url(#dgHead)"/><rect class="box" x="16" y="40" width="100" height="44" rx="6"/><text x="66" y="66" text-anchor="middle">Client</text><rect class="box" x="180" y="40" width="100" height="44" rx="6"/><text x="230" y="66" text-anchor="middle">Cache</text><rect class="box" x="344" y="40" width="100" height="44" rx="6"/><text x="394" y="66" text-anchor="middle">Origin</text></svg></div><p class="dg-cue" data-diagram="cue" hidden>Scroll sideways to see all of it</p></div>
       <p class="note">Two lines, two meanings: one stops at Cache, the other goes under it to Origin.</p>
     </div>
   </div>
@@ -3149,7 +3212,7 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
     </div>
     <div class="demo right">
       <div class="tag">Right: beside the line, 6px clear</div>
-      <div class="body"><div class="dg-scroll"><svg class="dg" id="g6Good" viewBox="0 0 460 124" role="img" aria-labelledby="g6Good-title g6Good-desc" style="min-width:460px"><title id="g6Good-title">Write and acknowledge</title><desc id="g6Good-desc">Service writes to the database and the database acknowledges.</desc><path class="ln" d="M116 55 H344" marker-end="url(#dgHead)"/><path class="ln dash" d="M344 70 H116" marker-end="url(#dgHead)"/><rect class="plate" x="208" y="37" width="43" height="12"/><text class="lbl" x="229.5" y="46" text-anchor="middle">WRITE</text><rect class="plate" x="215" y="76" width="29" height="12"/><text class="lbl" x="229.5" y="85" text-anchor="middle">ACK</text><rect class="box" x="16" y="40" width="100" height="44" rx="6"/><text x="66" y="66" text-anchor="middle">Service</text><rect class="box" x="344" y="40" width="100" height="44" rx="6"/><text x="394" y="66" text-anchor="middle">Database</text></svg></div></div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g6Good" viewBox="0 0 460 124" role="img" aria-labelledby="g6Good-title g6Good-desc" style="min-width:460px"><title id="g6Good-title">Write and acknowledge</title><desc id="g6Good-desc">Service writes to the database and the database acknowledges.</desc><path class="ln" d="M116 55 H344" marker-end="url(#dgHead)"/><path class="ln dash" d="M344 70 H116" marker-end="url(#dgHead)"/><rect class="plate" x="208" y="37" width="43" height="12"/><text class="lbl" x="229.5" y="46" text-anchor="middle">WRITE</text><rect class="plate" x="215" y="76" width="29" height="12"/><text class="lbl" x="229.5" y="85" text-anchor="middle">ACK</text><rect class="box" x="16" y="40" width="100" height="44" rx="6"/><text x="66" y="66" text-anchor="middle">Service</text><rect class="box" x="344" y="40" width="100" height="44" rx="6"/><text x="394" y="66" text-anchor="middle">Database</text></svg></div><p class="dg-cue" data-diagram="cue" hidden>Scroll sideways to see all of it</p></div>
       <p class="note">The line stays whole, and each label sits next to the line it names.</p>
     </div>
   </div>
@@ -3166,15 +3229,15 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
     </div>
     <div class="demo right">
       <div class="tag">Right: a strip under the drawing</div>
-      <div class="body"><div class="dg-scroll"><svg class="dg" id="g7Good" viewBox="0 0 460 150" role="img" aria-labelledby="g7Good-title g7Good-desc" style="min-width:460px"><title id="g7Good-title">Checkout calls payments</title><desc id="g7Good-desc">Checkout calls payments, which replies asynchronously.</desc><path class="ln" d="M116 39 H344" marker-end="url(#dgHead)"/><path class="ln dash" d="M344 53 H116" marker-end="url(#dgHead)"/><rect class="box" x="16" y="24" width="100" height="44" rx="6"/><text x="66" y="50" text-anchor="middle">Checkout</text><rect class="box" x="344" y="24" width="100" height="44" rx="6"/><text x="394" y="50" text-anchor="middle">Payments</text><line class="rulel" x1="16" y1="104" x2="444" y2="104"/><g class="legend"><line class="kl" x1="16" y1="128" x2="40" y2="128"/><text class="sub" x="46" y="131">CALL</text><line class="kl dash" x1="116" y1="128" x2="140" y2="128"/><text class="sub" x="146" y="131">ASYNC REPLY</text></g></svg></div></div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g7Good" viewBox="0 0 460 150" role="img" aria-labelledby="g7Good-title g7Good-desc" style="min-width:460px"><title id="g7Good-title">Checkout calls payments</title><desc id="g7Good-desc">Checkout calls payments, which replies asynchronously.</desc><path class="ln" d="M116 39 H344" marker-end="url(#dgHead)"/><path class="ln dash" d="M344 53 H116" marker-end="url(#dgHead)"/><rect class="box" x="16" y="24" width="100" height="44" rx="6"/><text x="66" y="50" text-anchor="middle">Checkout</text><rect class="box" x="344" y="24" width="100" height="44" rx="6"/><text x="394" y="50" text-anchor="middle">Payments</text><line class="rulel" x1="16" y1="104" x2="444" y2="104"/><g class="legend"><line class="kl" x1="16" y1="128" x2="40" y2="128"/><text class="sub" x="46" y="131">CALL</text><line class="kl dash" x1="116" y1="128" x2="140" y2="128"/><text class="sub" x="146" y="131">ASYNC REPLY</text></g></svg></div><p class="dg-cue" data-diagram="cue" hidden>Scroll sideways to see all of it</p></div>
       <p class="note">Found where captions are always found, and it never competes with the boxes for space.</p>
     </div>
   </div>
 </section>
 
 <section id="g8-phone">
-  <h2>Rule G8: a wide diagram keeps its size on a narrow screen and scrolls inside its own box</h2>
-  <p class="rule">Its minimum width equals its native width, inside a container that scrolls sideways, inside anything that clips. Both cards here are narrower than this 760px drawing; at 375px the wrong one falls to about 40%.</p>
+  <h2>Rule G8: a wide diagram keeps its size on a narrow screen, scrolls inside its own box, and says so</h2>
+  <p class="rule">Its minimum width equals its native width, inside a container that scrolls sideways, inside anything that clips, with a visible cue that more is to the side (as L11 asks of a row). Both cards here are narrower than this 760px drawing; at 375px the wrong one falls to about 40%.</p>
   <div class="pair dg-pair">
     <div class="demo wrong" data-diagram-check="skip">
       <div class="tag">Wrong: allowed to shrink with the screen</div>
@@ -3182,29 +3245,29 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
       <p class="note">At 375px the whole drawing is scaled to about 40%: the 11px names become 4px.</p>
     </div>
     <div class="demo right">
-      <div class="tag">Right: holds its size and scrolls</div>
-      <div class="body"><div class="dg-scroll"><svg class="dg" id="g8Good" viewBox="0 0 760 120" role="img" aria-labelledby="g8Good-title g8Good-desc" style="min-width:760px"><title id="g8Good-title">Scoring pipeline</title><desc id="g8Good-desc">Records pass through parse, enrich and score before they are published.</desc><rect class="box" x="28" y="38" width="112" height="44" rx="6"/><text x="84" y="64" text-anchor="middle">Source</text><rect class="box" x="176" y="38" width="112" height="44" rx="6"/><text x="232" y="64" text-anchor="middle">Parse</text><rect class="box" x="324" y="38" width="112" height="44" rx="6"/><text x="380" y="64" text-anchor="middle">Enrich</text><rect class="box" x="472" y="38" width="112" height="44" rx="6"/><text x="528" y="64" text-anchor="middle">Score</text><rect class="box" x="620" y="38" width="112" height="44" rx="6"/><text x="676" y="64" text-anchor="middle">Publish</text><path class="ln" d="M140 60 H176" marker-end="url(#dgHead)"/><path class="ln" d="M288 60 H324" marker-end="url(#dgHead)"/><path class="ln" d="M436 60 H472" marker-end="url(#dgHead)"/><path class="ln" d="M584 60 H620" marker-end="url(#dgHead)"/></svg></div></div>
-      <p class="note">At 375px the names stay 11px and the diagram scrolls sideways inside its card.</p>
+      <div class="tag">Right: holds its size, scrolls, and says so</div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g8Good" viewBox="0 0 760 120" role="img" aria-labelledby="g8Good-title g8Good-desc" style="min-width:760px"><title id="g8Good-title">Scoring pipeline</title><desc id="g8Good-desc">Records pass through parse, enrich and score before they are published.</desc><rect class="box" x="28" y="38" width="112" height="44" rx="6"/><text x="84" y="64" text-anchor="middle">Source</text><rect class="box" x="176" y="38" width="112" height="44" rx="6"/><text x="232" y="64" text-anchor="middle">Parse</text><rect class="box" x="324" y="38" width="112" height="44" rx="6"/><text x="380" y="64" text-anchor="middle">Enrich</text><rect class="box" x="472" y="38" width="112" height="44" rx="6"/><text x="528" y="64" text-anchor="middle">Score</text><rect class="box" x="620" y="38" width="112" height="44" rx="6"/><text x="676" y="64" text-anchor="middle">Publish</text><path class="ln" d="M140 60 H176" marker-end="url(#dgHead)"/><path class="ln" d="M288 60 H324" marker-end="url(#dgHead)"/><path class="ln" d="M436 60 H472" marker-end="url(#dgHead)"/><path class="ln" d="M584 60 H620" marker-end="url(#dgHead)"/></svg></div><p class="dg-cue" data-diagram="cue" hidden>Scroll sideways to see all of it</p></div>
+      <p class="note">The names stay 11px, and the card says the drawing goes on: a shadow on the side with more, a scrollbar you can see, and a line under it while it overflows.</p>
     </div>
   </div>
 </section>
 
-<section id="g2-budget">
-  <h2>Rules G2 and G10: nine boxes at most, and emphasis on one or two</h2>
-  <p class="rule">Past nine boxes or twelve lines, cut in the fixed order or split into an overview and details. The accent marks the point; on five boxes it marks nothing.</p>
-  <div class="pair dg-pair">
-    <div class="demo wrong" data-diagram-check="skip">
-      <div class="tag">Wrong: twelve boxes, thirteen lines, five accents</div>
-      <div class="body"><svg class="dg" id="g2Bad" viewBox="0 0 460 220"><path class="ln" d="M108 38 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 38 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 38 H352" marker-end="url(#dgHead)"/><path class="ln" d="M108 110 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 110 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 110 H352" marker-end="url(#dgHead)"/><path class="ln" d="M108 182 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 182 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 182 H352" marker-end="url(#dgHead)"/><path class="ln" d="M62 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M174 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M286 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M398 60 V88" marker-end="url(#dgHead)"/><rect class="box" x="16" y="16" width="92" height="44" rx="6"/><text x="62" y="42" text-anchor="middle">Web</text><rect class="box acc" x="128" y="16" width="92" height="44" rx="6"/><text x="174" y="42" text-anchor="middle">Mobile</text><rect class="box" x="240" y="16" width="92" height="44" rx="6"/><text x="286" y="42" text-anchor="middle">Partner</text><rect class="box acc" x="352" y="16" width="92" height="44" rx="6"/><text x="398" y="42" text-anchor="middle">Gateway</text><rect class="box" x="16" y="88" width="92" height="44" rx="6"/><text x="62" y="114" text-anchor="middle">Auth</text><rect class="box acc" x="128" y="88" width="92" height="44" rx="6"/><text x="174" y="114" text-anchor="middle">Orders</text><rect class="box acc" x="240" y="88" width="92" height="44" rx="6"/><text x="286" y="114" text-anchor="middle">Stock</text><rect class="box" x="352" y="88" width="92" height="44" rx="6"/><text x="398" y="114" text-anchor="middle">Pricing</text><rect class="box" x="16" y="160" width="92" height="44" rx="6"/><text x="62" y="186" text-anchor="middle">Search</text><rect class="box acc" x="128" y="160" width="92" height="44" rx="6"/><text x="174" y="186" text-anchor="middle">Mail</text><rect class="box" x="240" y="160" width="92" height="44" rx="6"/><text x="286" y="186" text-anchor="middle">Ledger</text><rect class="box" x="352" y="160" width="92" height="44" rx="6"/><text x="398" y="186" text-anchor="middle">Audit</text></svg></div>
-      <p class="note">Searched rather than read, and the accent no longer says which box matters.</p>
-    </div>
-    <div class="demo right">
-      <div class="tag">Right: an overview of five, one accent</div>
-      <div class="body"><div class="dg-scroll"><svg class="dg" id="g2Good" viewBox="0 0 460 176" role="img" aria-labelledby="g2Good-title g2Good-desc" style="min-width:460px"><title id="g2Good-title">Platform overview</title><desc id="g2Good-desc">Clients reach orders through the gateway, which checks auth; orders hand off to fulfilment.</desc><path class="ln" d="M116 46 H180" marker-end="url(#dgHead)"/><path class="ln" d="M280 46 H344" marker-end="url(#dgHead)"/><path class="ln" d="M230 68 V112" marker-end="url(#dgHead)"/><path class="ln" d="M280 134 H344" marker-end="url(#dgHead)"/><rect class="box" x="16" y="24" width="100" height="44" rx="6"/><text x="66" y="50" text-anchor="middle">Clients</text><rect class="box acc" x="180" y="24" width="100" height="44" rx="6"/><text x="230" y="50" text-anchor="middle">Gateway</text><rect class="box" x="344" y="24" width="100" height="44" rx="6"/><text x="394" y="50" text-anchor="middle">Auth</text><rect class="box" x="180" y="112" width="100" height="44" rx="6"/><text x="230" y="138" text-anchor="middle">Orders</text><rect class="box" x="344" y="112" width="100" height="44" rx="6"/><text x="394" y="138" text-anchor="middle">Fulfilment</text></svg></div></div>
-      <p class="note">The gateway is the point. Orders and fulfilment each get a detail diagram of their own.</p>
-    </div>
-  </div>
-</section>
+<script>
+/* G8: a diagram that scrolls says so. The edge shadows and the scrollbar are CSS and need nothing;
+   this only shows the line under a scroller while its drawing is wider than it. */
+(function () {
+  var list = document.querySelectorAll('.dg-scroll');
+  function fit() {
+    Array.prototype.forEach.call(list, function (s) {
+      var cue = s.nextElementSibling;
+      if (cue && cue.getAttribute('data-diagram') === 'cue') { cue.hidden = !(s.scrollWidth > s.clientWidth + 1); }
+    });
+  }
+  fit();
+  if (window.ResizeObserver) { var ro = new ResizeObserver(fit); Array.prototype.forEach.call(list, function (s) { ro.observe(s); }); }
+  else { window.addEventListener('resize', fit); }
+}());
+</script>
 
 <h2 class="grp-hd" id="p">P - Performance and content</h2>
 <p class="grp-lede">What arrives after the reader has started reading, and content that is
@@ -3284,7 +3347,7 @@ bigger than the mock.</p>
   <p class="rule">Real <code>&lt;button&gt;</code> and <code>&lt;a&gt;</code>, visible
   focus, labels tied to inputs, sensible tab order.</p>
   <div class="pair">
-    <div class="demo wrong">
+    <div class="demo wrong" data-form-check="skip">
       <div class="tag">Wrong: divs pretending</div>
       <div class="body stack">
         <div class="fake-btn">Save</div><div>Email</div><input class="field">
@@ -3500,7 +3563,7 @@ bigger than the mock.</p>
       <div class="tableside">
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="barQ" placeholder="Search periods..." aria-label="Search periods"></span>
-          <button class="btn ibtn" id="barClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="barClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <button class="btn ibtn" id="barsClearSel" type="button" hidden data-tip="Clear the marks selected in this chart"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button><span class="chip" id="barCount" aria-live="polite"></span>
         </div>
         <table id="barTbl"></table>
@@ -3541,7 +3604,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="stackQ" placeholder="Search quarters..." aria-label="Search quarters"></span>
           <button class="btn ibtn" id="stackClearSel" type="button" hidden data-tip="Clear the selected quarters"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="stackClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="stackClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="stackCount" aria-live="polite"></span>
         </div>
         <table id="stackTbl"></table>
@@ -3570,7 +3633,7 @@ bigger than the mock.</p>
       <div class="tableside">
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="cQ" placeholder="Search sessions..." aria-label="Search sessions"></span>
-          <button class="btn ibtn" id="cClear" type="button" aria-label="Clear all filters" data-tip="Clear the search, the column filters, the legend and any selected marks"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="cClear" type="button" aria-label="Clear filters" data-tip="Clear the search, the column filters, the legend and any selected marks"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <button class="btn ibtn" id="candleClearSel" type="button" hidden data-tip="Clear the marks selected in this chart"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button><span class="chip" id="cCount" aria-live="polite"></span>
         </div>
         <table id="cTbl"></table>
@@ -3603,7 +3666,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="wfQ" placeholder="Search steps..." aria-label="Search steps"></span>
           <button class="btn ibtn" id="wfClearSel" type="button" hidden data-tip="Clear the selected steps"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="wfClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="wfClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="wfCount" aria-live="polite"></span>
         </div>
         <table id="wfTbl"></table>
@@ -3635,7 +3698,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="ixQ" placeholder="Search customers..." aria-label="Search customers..."></span>
           <button class="btn ibtn" id="ixClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="ixClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="ixClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="ixCount" aria-live="polite"></span>
         </div>
         <table id="ixTbl"></table>
@@ -3664,7 +3727,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="scQ" placeholder="Search customers..." aria-label="Search customers..."></span>
           <button class="btn ibtn" id="scClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="scClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="scClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="scCount" aria-live="polite"></span>
         </div>
         <table id="scTbl"></table>
@@ -3697,7 +3760,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="areaQ" placeholder="Search months..." aria-label="Search months"></span>
           <button class="btn ibtn" id="areaClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="areaClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="areaClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="areaCount" aria-live="polite"></span>
         </div>
         <table id="areaTbl"></table>
@@ -3731,7 +3794,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="streamQ" placeholder="Search months..." aria-label="Search months"></span>
           <button class="btn ibtn" id="streamClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="streamClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="streamClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="streamCount" aria-live="polite"></span>
         </div>
         <table id="streamTbl"></table>
@@ -3762,7 +3825,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="stepQ" placeholder="Search events..." aria-label="Search events..."></span>
           <button class="btn ibtn" id="stepClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="stepClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="stepClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="stepCount" aria-live="polite"></span>
         </div>
         <table id="stepTbl"></table>
@@ -3789,7 +3852,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="bumpQ" placeholder="Search customers..." aria-label="Search customers..."></span>
           <button class="btn ibtn" id="bumpClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="bumpClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="bumpClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="bumpCount" aria-live="polite"></span>
         </div>
         <table id="bumpTbl"></table>
@@ -3825,7 +3888,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="hbarQ" placeholder="Search customers..." aria-label="Search customers"></span>
           <button class="btn ibtn" id="hbarClearSel" type="button" hidden data-tip="Clear the selected bars"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="hbarClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="hbarClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="hbarCount" aria-live="polite"></span>
         </div>
         <table id="hbarTbl"></table>
@@ -3858,7 +3921,7 @@ bigger than the mock.</p>
           <button class="btn ibtn" id="bulletsClearSel" type="button" hidden
                   data-tip="Clear the selected projects"><svg viewBox="0 0 18 18"
                   aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="bulClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="bulClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="bulCount" aria-live="polite"></span>
         </div>
         <table id="bulTbl"></table>
@@ -3891,7 +3954,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="dvQ" placeholder="Search projects..." aria-label="Search projects"></span>
           <button class="btn ibtn" id="dvClearSel" type="button" hidden data-tip="Clear the selected projects"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="dvClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="dvClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="dvCount" aria-live="polite"></span>
         </div>
         <table id="dvTbl"></table>
@@ -3922,7 +3985,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="gtQ" placeholder="Search tasks..." aria-label="Search tasks..."></span>
           <button class="btn ibtn" id="gtClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="gtClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="gtClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="gtCount" aria-live="polite"></span>
         </div>
         <table id="gtTbl"></table>
@@ -3989,7 +4052,7 @@ bigger than the mock.</p>
       <div class="tableside">
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="pieQ" placeholder="Search categories..." aria-label="Search categories"></span>
-          <button class="btn ibtn" id="pieClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="pieClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <button class="btn ibtn" id="pieClearSel" type="button" hidden data-tip="Clear the marks selected in this chart"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button><span class="chip" id="pieCount" aria-live="polite"></span>
         </div>
         <table id="pieTbl"></table>
@@ -4022,7 +4085,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="roseQ" placeholder="Search categories..." aria-label="Search categories..."></span>
           <button class="btn ibtn" id="roseClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="roseClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="roseClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="roseCount" aria-live="polite"></span>
         </div>
         <table id="roseTbl"></table>
@@ -4049,7 +4112,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="radarQ" placeholder="Search criteria..." aria-label="Search criteria..."></span>
           <button class="btn ibtn" id="radarClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="radarClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="radarClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="radarCount" aria-live="polite"></span>
         </div>
         <table id="radarTbl"></table>
@@ -4076,7 +4139,7 @@ bigger than the mock.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="sunQ" placeholder="Search tasks..." aria-label="Search tasks..."></span>
           <button class="btn ibtn" id="sunClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="sunClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="sunClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="sunCount" aria-live="polite"></span>
         </div>
         <table id="sunTbl"></table>
@@ -4109,7 +4172,7 @@ what was lost, and a flow chart that does not add up is worse than a table.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="funQ" placeholder="Search stages..." aria-label="Search stages..."></span>
           <button class="btn ibtn" id="funClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="funClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="funClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="funCount" aria-live="polite"></span>
         </div>
         <table id="funTbl"></table>
@@ -4137,7 +4200,7 @@ what was lost, and a flow chart that does not add up is worse than a table.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="sankQ" placeholder="Search flows..." aria-label="Search flows..."></span>
           <button class="btn ibtn" id="sankClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="sankClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="sankClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="sankCount" aria-live="polite"></span>
         </div>
         <table id="sankTbl"></table>
@@ -4178,7 +4241,7 @@ are</strong>.</p>
         <div class="tablebar">
           <span class="srch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-search"></use></svg><input type="search" id="geoQ" placeholder="Search states..." aria-label="Search states"></span>
           <button class="btn ibtn" id="geoClearSel" type="button" hidden data-tip="Clear the selection"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-x"></use></svg><span class="lbl">Clear selection</span></button>
-          <button class="btn ibtn" id="geoClear" type="button" aria-label="Clear all filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
+          <button class="btn ibtn" id="geoClear" type="button" aria-label="Clear filters" data-tip="Clear the search and every column filter"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-clear"></use></svg><span class="lbl">Clear filters</span></button>
           <span class="chip" id="geoCount" aria-live="polite"></span>
         </div>
         <table id="geoTbl"></table>
@@ -4229,7 +4292,7 @@ content was given the whole viewport and the bar was laid on top of it.</p>
               <span class="mtitle">Edit bar</span>
               <button class="btn mdone" type="button" id="mDone">Done</button>
             </header>
-            <main class="mcontent" id="mContent" data-screen="page"></main>
+            <div class="mcontent" id="mContent" data-screen="page"></div>
 
             <!-- the edit screen is a SCREEN, not a panel beside the phone: on a handset
                  the whole viewport is the only place this can live -->
@@ -4240,11 +4303,11 @@ content was given the whole viewport and the bar was laid on top of it.</p>
               <button type="button" id="navReset">Reset</button>
               <button type="button" id="navClear" data-tip="Empty the bar, then choose destinations again">Clear all</button>
             </div>
-            <main class="mcontent" id="mEdit" data-screen="edit" hidden>
+            <div class="mcontent" id="mEdit" data-screen="edit" hidden>
               <div class="appgrid" id="navGrid"></div>
               <p class="mhint" id="navHint">Drag a page down into the bar. Tap one for
               its options. Keyboard: Space to pick up, arrows to move, Space to drop.</p>
-            </main>
+            </div>
             <div class="mdock-sep" id="mDockSep" hidden></div>
             <div class="mtools" id="mTools">
               <button type="button" data-tip="Narrow the rows by a column value">Filter</button>
@@ -4275,6 +4338,7 @@ content was given the whole viewport and the bar was laid on top of it.</p>
   user keeps is theirs to decide: the pages people actually use differ enough that any
   fixed choice is wrong for most of them.</p>
 </section>
+</main>
 
 <footer>
   Companion to <code>skills/kz-uiuxrule/rules/ui-rules.md</code>. Tables follow standing rule S1, chrome
@@ -4441,7 +4505,7 @@ function makeTable(opts) {
       if (c.ctrl === 'none') { return '<td></td>'; }
       return '<td><button type="button" class="ftrig" data-col="' + c.key +
         '" aria-haspopup="dialog" aria-expanded="false" aria-label="Sort and filter ' +
-        esc(c.label) + '"><span class="cap">All</span>' +
+        esc(c.label) + ': All"><span class="cap">All</span>' +
         '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.5l4 4 4-4"/></svg>' +
         '</button></td>';
     }).join('') + '</tr></thead><tbody></tbody>' +
@@ -4595,6 +4659,8 @@ function draw() {
         on = true;
       }
       btn.querySelector('.cap').textContent = txt;
+      /* the name carries the caption it shows (label in name): a voice user says what they see */
+      btn.setAttribute('aria-label', 'Sort and filter ' + c.label + ': ' + txt);
       btn.setAttribute('data-on', on ? '1' : '0');
     });
   }
@@ -4841,13 +4907,21 @@ function openFilterPanel(api, col, btn) {
   }
 
   function apply() {
-    var f = {};
+    var f = {}, top0 = btn.getBoundingClientRect().top;
     /* everything ticked is the same as no filter, so store nothing */
     if (draft.sel.length !== all.length) { f.sel = draft.sel.slice(); }
     if (draft.min !== '') { f.min = draft.min; }
     if (draft.max !== '') { f.max = draft.max; }
     api.state.f[col.key] = Object.keys(f).length ? f : null;
     api.draw();
+    /* The panel's own action must not move its trigger (rule N2). On a phone the chart sits
+       above its table, so clearing the selection shrank the chart by 500px and dragged the
+       trigger off the top of the screen, where the scroll handler rightly closes a panel
+       with nothing left to point at - so the panel closed on the user's own tick. Hold the
+       trigger where it was; popover-check's PICKCLOSE caught it at 390px. */
+    var moved = btn.getBoundingClientRect().top - top0;
+    if (Math.abs(moved) > 0.5) { window.scrollTo({ top: window.scrollY + moved, behavior: 'instant' }); }
+    placeFilterPanel();
   }
 
   var isNum = col.ctrl === 'range';
@@ -8229,7 +8303,8 @@ function drawAreaLike(cid, rows, off, centred) {
 
   labelsX(fr, rows, X, function (r) { return r.month; });
   out.push('<text x="' + (L + iw / 2) + '" y="' + (H - 4) + '" text-anchor="middle">' +
-    (centred ? 'thickness is RM thousands; the baseline carries no meaning'
+    /* short enough for the 340-unit frame: the longer wording ran 2px past it (layout-audit) */
+    (centred ? 'thickness is RM thousands; the baseline means nothing'
              : 'RM thousands, total of the categories shown') + '</text>');
 
   svg.innerHTML = out.join('');
@@ -10718,15 +10793,25 @@ f2Good.oninput = function () {                   /* cleared the moment it is bei
 };
 
 /* ---------- F3: the draft, and the question on the way out ------------------ */
+/* Both editors are modals, so both take N1's lock: a wrong sample shows its own defect and
+   no other. Released from the element's open state, which changes however it closed. */
+function f3Seal(id) {
+  var d = document.getElementById(id);
+  new MutationObserver(function () { if (!d.open) { lockBackground(false); } })
+    .observe(d, { attributes: true, attributeFilter: ['open'] });
+  d.addEventListener('close', function () { lockBackground(false); });
+  return function () { lockBackground(true); d.showModal(); };
+}
+var f3BadShow = f3Seal('f3Bad'), f3GoodShow = f3Seal('f3Good');
 document.getElementById('f3BadOpen').onclick = function () {
   document.getElementById('f3BadTxt').value = '';   /* thrown away every time */
-  document.getElementById('f3Bad').showModal();
+  f3BadShow();
 };
 var f3Saved = '';
 var f3Txt = document.getElementById('f3GoodTxt');
 document.getElementById('f3GoodOpen').onclick = function () {
   f3Txt.value = f3Saved;
-  document.getElementById('f3Good').showModal();
+  f3GoodShow();
 };
 f3Txt.oninput = function () {
   document.getElementById('f3Draft').textContent =

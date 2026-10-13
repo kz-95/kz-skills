@@ -1,6 +1,6 @@
 ---
 name: ui-glance
-description: Review a UI screenshot in one pass against a twenty-two-point visual checklist, citing rule ids from kz-uiuxrule. Use when someone pastes or points at a screenshot and wants to know quickly what is wrong with it, or asks for a fast look, a sanity check, or a first impression of a screen. Costs one read - it does not open the rule set. Not for reviewing code, and not for anything a picture cannot show: contrast figures, keyboard paths, states and behaviour need the real thing.
+description: "Review a UI screenshot in one pass against a twenty-two-point visual checklist, citing rule ids from kz-uiuxrule. Use when someone pastes or points at a screenshot and wants to know quickly what is wrong with it, or asks for a fast look, a sanity check, or a first impression of a screen. Costs one read - it does not open the rule set. Not for reviewing code, and not for anything a picture cannot show: contrast figures, keyboard paths, states and behaviour need the real thing."
 version: 1.1.0
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---

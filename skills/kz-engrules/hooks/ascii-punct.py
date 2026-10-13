@@ -15,31 +15,31 @@ import sys
 
 # every mapping here is a punctuation mark with an exact ASCII counterpart
 SUBS = {
-    '—': '-',      # em dash
-    '–': '-',      # en dash
-    '−': '-',      # minus sign
-    '‐': '-',      # hyphen
-    '‘': "'",      # left single quote
-    '’': "'",      # right single quote / apostrophe
-    '‚': "'",      # single low quote
-    '“': '"',      # left double quote
-    '”': '"',      # right double quote
-    '„': '"',      # double low quote
-    '…': '...',    # ellipsis
-    ' ': ' ',      # non-breaking space
-    ' ': ' ',      # thin space
-    ' ': ' ',      # narrow no-break space
-    '→': '->',
-    '←': '<-',
-    '↔': '<->',
-    '⇒': '=>',
-    '≤': '<=',
-    '≥': '>=',
-    '×': 'x',
-    '•': '*',      # bullet
-    '·': '-',      # middot
-    '′': "'",      # prime
-    '″': '"',      # double prime
+    '\u2014': '-',      # em dash
+    '\u2013': '-',      # en dash
+    '\u2212': '-',      # minus sign
+    '\u2010': '-',      # hyphen
+    '\u2018': "'",      # left single quote
+    '\u2019': "'",      # right single quote / apostrophe
+    '\u201a': "'",      # single low quote
+    '\u201c': '"',      # left double quote
+    '\u201d': '"',      # right double quote
+    '\u201e': '"',      # double low quote
+    '\u2026': '...',    # ellipsis
+    '\u00a0': ' ',      # non-breaking space
+    '\u2009': ' ',      # thin space
+    '\u202f': ' ',      # narrow no-break space
+    '\u2192': '->',
+    '\u2190': '<-',
+    '\u2194': '<->',
+    '\u21d2': '=>',
+    '\u2264': '<=',
+    '\u2265': '>=',
+    '\u00d7': 'x',
+    '\u2022': '*',      # bullet
+    '\u00b7': '-',      # middot
+    '\u2032': "'",      # prime
+    '\u2033': '"',      # double prime
 }
 
 # only text we own; never touch data files, lockfiles or anything binary

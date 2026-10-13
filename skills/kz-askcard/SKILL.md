@@ -1,6 +1,6 @@
 ---
 name: kz-askcard
-description: The one-card rule for asking a user anything - three to five decisions that change the output, one marked recommended with four words of why, a custom option always open, and a stated default for every line so silence is still progress. Never two cards in one turn, never a trickle of questions, never a question the repo already answers. Use before asking a user for direction at the start of any run, and when a subagent hits a question mid-build. Triggers on "/kz-askcard", "ask card", "what should I ask the user".
+description: "The one-card rule for asking a user anything - three to five decisions that change the output, one marked recommended with four words of why, a custom option always open, and a stated default for every line so silence is still progress. Never two cards in one turn, never a trickle of questions, never a question the repo already answers. Use before asking a user for direction at the start of any run, and when a subagent hits a question mid-build. Triggers on \"/kz-askcard\", \"ask card\", \"what should I ask the user\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 

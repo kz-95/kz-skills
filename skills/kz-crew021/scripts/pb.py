@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""pb — the zero-token half of the crew-project workflow.
+"""pb - the zero-token half of the crew-project workflow.
 
 Ready queue, the six dispatch checks, write-set locks, done-when verification,
 ledger, velocity, re-queue on a changed decision, phase gate, session report.
@@ -23,7 +23,7 @@ No model is called from here.
     python pb.py report
     python pb.py selfcheck
 
-State lives in .pb/ at the main repo root — NOT inside an agent worktree, since
+State lives in .pb/ at the main repo root - NOT inside an agent worktree, since
 the locks, ledger and velocity are shared across every lane. Point at it with
 PB_ROOT when running from a worktree. Commit .pb/: the ledger is the only
 memory this workflow has between sessions.
@@ -141,7 +141,7 @@ def velocity():
 def estimate(task):
     """Plain expectation: points x velocity. No buffer.
 
-    The buffer belongs at the gate, not in the ledger — an est that has been
+    The buffer belongs at the gate, not in the ledger - an est that has been
     padded makes every est-vs-actual comparison lie, and that comparison is the
     only thing that re-sizes the DAG.
     """
@@ -278,7 +278,7 @@ def dispatch_checks(task, tasks, remaining):
     owners = cfg.get("owners", {})
     if not owners:
         results.append(("1 owner glob", False,
-                        "ownership map is empty — run `pb.py owners set`"))
+                        "ownership map is empty - run `pb.py owners set`"))
     else:
         bad = []
         for g in task.get("writes", []):
@@ -311,11 +311,11 @@ def dispatch_checks(task, tasks, remaining):
     elif not task.get("reads") and task.get("needs"):
         pack_ok, detail = False, "no reads declared but the task has deps"
     elif pack > ceiling:
-        pack_ok, detail = False, ("pack %dk > %d%% of est_in (%dk) — trim to "
+        pack_ok, detail = False, ("pack %dk > %d%% of est_in (%dk) - trim to "
                                   "Index + direct deps"
                                   % (pack / 1000, PACK_CEILING * 100, ceiling / 1000))
     else:
-        pack_ok, detail = True, "%d refs · %dk tok (ceiling %dk)" % (
+        pack_ok, detail = True, "%d refs | %dk tok (ceiling %dk)" % (
             len(task.get("reads", [])), pack / 1000, ceiling / 1000)
     results.append(("5 context pack", pack_ok, detail))
 
@@ -324,12 +324,12 @@ def dispatch_checks(task, tasks, remaining):
     if remaining is None:
         gate_ok, detail = True, "no budget tracked"
     elif need <= remaining:
-        gate_ok, detail = True, "need %dk ≤ remaining %dk" % (need / 1000, remaining / 1000)
+        gate_ok, detail = True, "need %dk <= remaining %dk" % (need / 1000, remaining / 1000)
     elif est <= remaining:
-        gate_ok, detail = True, ("AMBER · est %dk fits %dk remaining but the 1.3 "
+        gate_ok, detail = True, ("AMBER | est %dk fits %dk remaining but the 1.3 "
                                  "buffer does not" % (est / 1000, remaining / 1000))
     else:
-        gate_ok, detail = False, ("est %dk > remaining %dk — drop a tier, trim the "
+        gate_ok, detail = False, ("est %dk > remaining %dk - drop a tier, trim the "
                                   "pack, Musts only, then Ask Card"
                                   % (est / 1000, remaining / 1000))
     results.append(("6 budget gate", gate_ok, detail))
@@ -390,9 +390,9 @@ def cmd_init(a):
         save_tasks([])
     for d in ("updates", "contracts", "tasks"):
         os.makedirs(os.path.join(ROOT, d), exist_ok=True)
-    print("initialised %s · phase %s · budget %s · wip cap %d"
+    print("initialised %s | phase %s | budget %s | wip cap %d"
           % (DIR, a.phase, a.budget or "untracked", a.wip_cap))
-    print("owners seeded with %d default globs — `pb.py owners list` to check"
+    print("owners seeded with %d default globs - `pb.py owners list` to check"
           % len(DEFAULT_OWNERS))
     print("keep .pb/ at the main repo root and commit it; worktrees point at it "
           "with PB_ROOT")
@@ -409,7 +409,7 @@ def cmd_owners(a):
             raise SystemExit("usage: pb.py owners set <glob> <agent>")
         cfg.setdefault("owners", {})[a.glob] = a.agent
         save_config(cfg)
-        print("%s → %s" % (a.glob, a.agent))
+        print("%s -> %s" % (a.glob, a.agent))
         return
     if a.action == "import":
         added = 0
@@ -432,7 +432,7 @@ def cmd_musts(a):
     cfg["must_features"] = a.features
     save_config(cfg)
     if len(a.features) > 7:
-        print("WARNING: %d Must features — the cap is 7 (01-lifecycle.md)"
+        print("WARNING: %d Must features - the cap is 7 (01-lifecycle.md)"
               % len(a.features))
     print("MVP frozen at %d Must features: %s" % (len(a.features), ", ".join(a.features)))
 
@@ -452,7 +452,7 @@ def cmd_add(a):
     task["est"] = estimate(task)     # frozen here, never recomputed
     tasks.append(task)
     save_tasks(tasks)
-    print("%s · %s pts · est %dk tok" % (a.id, POINTS[a.size], task["est"] / 1000))
+    print("%s | %s pts | est %dk tok" % (a.id, POINTS[a.size], task["est"] / 1000))
     if not a.done_when:
         print("  no --done-when: this task cannot be script-verified")
 
@@ -490,7 +490,7 @@ def cmd_start(a):
     pack, _ = pack_tokens(t)
     t["pack_tokens"] = pack
     save_tasks(tasks)
-    print("%s in flight · attempt %d · %s · pack %dk"
+    print("%s in flight | attempt %d | %s | pack %dk"
           % (t["id"], t["attempts"], t["tier"], pack / 1000))
 
 
@@ -524,7 +524,7 @@ def cmd_done(a):
     mode = PHASES[config()["phase"]][1]
 
     if mode != "none" and not t.get("verified") and not a.force:
-        raise SystemExit("%s is not verified — run `pb.py verify %s` first "
+        raise SystemExit("%s is not verified - run `pb.py verify %s` first "
                          "(or --force and say so in the session report)"
                          % (t["id"], t["id"]))
     if mode == "script+review" and not a.reviewed and not a.force:
@@ -538,12 +538,12 @@ def cmd_done(a):
     save_tasks(tasks)
 
     drift = (a.actual - t["est"]) / t["est"] * 100 if t["est"] else 0
-    print("%s merged · est %dk actual %dk (%+.0f%%)"
+    print("%s merged | est %dk actual %dk (%+.0f%%)"
           % (t["id"], t["est"] / 1000, a.actual / 1000, drift))
     if abs(drift) > 100:
-        print("  ▲ over 2× est — the SIZE was wrong, re-size its siblings")
+        print("  ! over 2x est - the SIZE was wrong, re-size its siblings")
     if line["rework_for"]:
-        print("  rework for %s — excluded from velocity" % line["rework_for"])
+        print("  rework for %s - excluded from velocity" % line["rework_for"])
     unlocked = [x["id"] for x in ready(tasks) if a.task in x.get("needs", [])]
     if unlocked:
         print("  unlocked: " + ", ".join(unlocked))
@@ -555,10 +555,10 @@ def cmd_fail(a):
     retries, _ = PHASES[config()["phase"]]
     if t["attempts"] >= retries + 1:
         t["status"] = "abandoned"
-        print("%s abandoned · phase %s allows %d attempt(s)"
+        print("%s abandoned | phase %s allows %d attempt(s)"
               % (t["id"], config()["phase"], retries + 1))
         if t.get("mustness") == "Must":
-            print("  ▲ this is a Must — the phase gate will fail until it is "
+            print("  ! this is a Must - the phase gate will fail until it is "
                   "rebuilt or descoped by a D-id")
     else:
         t["status"] = "queued"
@@ -575,7 +575,7 @@ def cmd_decide(a):
     save_config(cfg)
     print("%s = %s" % (a.decision, a.answer))
     print("  this unblocks the queue only. The decision's record of truth is "
-          "Decisions.md — append it via updates/ so TW-Tessa writes it.")
+          "Decisions.md - append it via updates/ so TW-Tessa writes it.")
 
 
 def cmd_requeue(a):
@@ -587,7 +587,7 @@ def cmd_requeue(a):
         t["attempts"] = 0       # rework is not a failed attempt: no escalation
         t["verified"] = None
     save_tasks(tasks)
-    print("%s changed → re-queued %d task(s): %s"
+    print("%s changed -> re-queued %d task(s): %s"
           % (a.decision, len(hit), ", ".join(t["id"] for t in hit) or "none"))
 
 
@@ -607,19 +607,19 @@ def loop_path(task):
 def load_loop(task):
     loop = _read(loop_path(task), None)
     if loop is None:
-        raise SystemExit("no open loop for %s — run `pb.py loop open %s`" % (task, task))
+        raise SystemExit("no open loop for %s - run `pb.py loop open %s`" % (task, task))
     return loop
 
 
 def loop_next(loop):
     """Who speaks next. None means the gate ruled TRUE and the loop can close.
 
-    critic reject → fixer      (inner loop continues)
-    fixer  either → critic     (every fix gets re-reviewed; a fixer that could
+    critic reject -> fixer      (inner loop continues)
+    fixer  either -> critic     (every fix gets re-reviewed; a fixer that could
                                not reproduce hands back for a repro)
-    critic accept → gate       (inner loop done, A1 and A2 agree)
-    gate   reject → critic     (drop back into a fresh inner loop)
-    gate   accept → None       (all three agree)
+    critic accept -> gate       (inner loop done, A1 and A2 agree)
+    gate   reject -> critic     (drop back into a fresh inner loop)
+    gate   accept -> None       (all three agree)
     """
     ex = loop["exchanges"]
     if not ex:
@@ -633,7 +633,7 @@ def loop_next(loop):
 
 
 def loop_cycle(loop):
-    """Current outer cycle number — incremented by each FALSE ruling."""
+    """Current outer cycle number - incremented by each FALSE ruling."""
     return 1 + sum(1 for e in loop["exchanges"]
                    if e["agent"] == "gate" and e["verdict"] == "reject")
 
@@ -667,9 +667,9 @@ def cmd_loop(a):
         _write(loop_path(a.task), {"task": a.task, "scope": a.scope,
                                    "opened": int(time.time()), "exchanges": [],
                                    "status": "open", "tokens": 0})
-        print("loop open on %s · scope: %s" % (a.task, a.scope))
-        print("inner: critic ↔ fixer until the critic accepts · then the gate rules")
-        print("a FALSE ruling starts another inner loop · next: critic")
+        print("loop open on %s | scope: %s" % (a.task, a.scope))
+        print("inner: critic <-> fixer until the critic accepts | then the gate rules")
+        print("a FALSE ruling starts another inner loop | next: critic")
         return
 
     loop = load_loop(a.task)
@@ -683,7 +683,7 @@ def cmd_loop(a):
                              "without evidence is void.")
         expected = loop_next(loop)
         if expected is None:
-            raise SystemExit("the gate already ruled TRUE — close the loop")
+            raise SystemExit("the gate already ruled TRUE - close the loop")
         if a.agent != expected:
             raise SystemExit("expected %s next, got %s" % (expected, a.agent))
 
@@ -693,64 +693,64 @@ def cmd_loop(a):
                                   "cycle": cycle, "ts": int(time.time())})
         _write(loop_path(a.task), loop)
 
-        print("cycle %d · exchange %d · %s: %s"
+        print("cycle %d | exchange %d | %s: %s"
               % (cycle, sum(1 for e in loop["exchanges"] if e["cycle"] == cycle),
                  a.agent, a.verdict))
         nxt = loop_next(loop)
         if a.agent == "fixer" and a.verdict == "reject":
-            print("  fixer could not reproduce — the critic produces a repro or withdraws")
+            print("  fixer could not reproduce - the critic produces a repro or withdraws")
         if a.agent == "critic" and a.verdict == "accept":
-            print("  A1 and A2 agree — the gate rules on whether that is TRUE")
+            print("  A1 and A2 agree - the gate rules on whether that is TRUE")
         if a.agent == "gate" and a.verdict == "reject":
-            print("  GATE RULED FALSE — cycle %d starts, back to the critic with"
+            print("  GATE RULED FALSE - cycle %d starts, back to the critic with"
                   " what is wrong" % (cycle + 1))
         if nxt is None:
-            print("  all three agree — `pb.py loop close %s --tokens N`" % a.task)
+            print("  all three agree - `pb.py loop close %s --tokens N`" % a.task)
         else:
             print("  next: " + nxt)
 
         inner = loop_inner(loop)
         if inner >= INNER_WARN and nxt in ("critic", "fixer"):
-            print("  ▲ %d exchanges in this inner loop — A1 and A2 are circling."
+            print("  ! %d exchanges in this inner loop - A1 and A2 are circling."
                   " Escalate the fixer, or hand back: the defect may be"
                   " under-specified." % inner)
         rejects = sum(1 for e in loop["exchanges"]
                       if e["agent"] == "fixer" and e["verdict"] == "reject")
         if rejects >= 2:
-            print("  fixer rejected twice — escalate the fixer to frontier")
+            print("  fixer rejected twice - escalate the fixer to frontier")
         return
 
     if a.action == "status":
-        print("%s · %s · scope: %s" % (a.task, loop["status"], loop["scope"]))
-        print("cycle %d · %d exchange(s) in this inner loop · %d total · %dk tokens"
+        print("%s | %s | scope: %s" % (a.task, loop["status"], loop["scope"]))
+        print("cycle %d | %d exchange(s) in this inner loop | %d total | %dk tokens"
               % (loop_cycle(loop), loop_inner(loop), len(loop["exchanges"]),
                  loop["tokens"] / 1000))
         for e in loop["exchanges"]:
             print("  c%d %-7s %-7s %s" % (e["cycle"], e["agent"], e["verdict"],
                                           e["evidence"][:58]))
         nxt = loop_next(loop)
-        print("  waiting on: " + (nxt or "nothing — all three agree, close it"))
+        print("  waiting on: " + (nxt or "nothing - all three agree, close it"))
         stalled = loop_stalled(loop)
         if stalled:
-            print("\nSTALLED — the same finding across %d cycles: %s"
+            print("\nSTALLED - the same finding across %d cycles: %s"
                   % (STALL_CYCLES, "; ".join(stalled)))
             print("Hand back to the orchestrator. Repeated rounds are ritual now;")
             print("this is usually an under-specified requirement, i.e. a D-id.")
         rem = remaining_budget()
         if rem is not None and loop["tokens"] > rem * 0.5:
-            print("\nBUDGET — this loop has used %dk of %dk remaining. Check 6 "
+            print("\nBUDGET - this loop has used %dk of %dk remaining. Check 6 "
                   "applies to loops too." % (loop["tokens"] / 1000, rem / 1000))
         return
 
     if a.action == "close":
         agreed = loop_next(loop) is None and loop["exchanges"]
         if not agreed and not a.abandon:
-            raise SystemExit("the gate has not ruled TRUE — keep looping, or "
+            raise SystemExit("the gate has not ruled TRUE - keep looping, or "
                              "`--abandon` and hand the transcript back")
         loop["status"] = "agreed" if agreed else "abandoned"
         loop["tokens"] += a.tokens
         _write(loop_path(a.task), loop)
-        print("%s · %s after %d cycle(s), %d exchange(s) · %dk tokens"
+        print("%s | %s after %d cycle(s), %d exchange(s) | %dk tokens"
               % (a.task, loop["status"], loop_cycle(loop),
                  len(loop["exchanges"]), loop["tokens"] / 1000))
         print("Record the cost on the task's ledger line with `pb.py done "
@@ -769,8 +769,8 @@ def cmd_gate(a):
     unbuilt = [f for f in musts if f not in built]
 
     checks = [
-        ("Must count ≤ 7", len(musts) <= 7,
-         "%d declared" % len(musts) if musts else "none declared — run `pb.py musts`"),
+        ("Must count <= 7", len(musts) <= 7,
+         "%d declared" % len(musts) if musts else "none declared - run `pb.py musts`"),
         ("no open tasks", not open_, ", ".join(t["id"] for t in open_) or "ok"),
         ("no abandoned Musts", not abandoned_musts,
          ", ".join(abandoned_musts) or "ok"),
@@ -781,8 +781,8 @@ def cmd_gate(a):
     ]
     for name, ok, detail in checks:
         print("%s %-20s %s" % ("PASS" if ok else "FAIL", name, detail))
-    print("\nMechanical half only. The judgment half — is the Purpose clear, did")
-    print("the preview review pass — is TL-Theo's, logged as a D-id.")
+    print("\nMechanical half only. The judgment half - is the Purpose clear, did")
+    print("the preview review pass - is TL-Theo's, logged as a D-id.")
     sys.exit(0 if all(ok for _, ok, _ in checks) else 1)
 
 
@@ -798,7 +798,7 @@ def cmd_report(a):
     retried = [l for l in lines if l.get("attempts", 1) > 1]
     packs = [l["pack_tokens"] for l in lines if l.get("pack_tokens")]
 
-    print("SESSION · %s · %d tasks merged" % (cfg["phase"], len(lines)))
+    print("SESSION | %s | %d tasks merged" % (cfg["phase"], len(lines)))
     print("spent     %dk tokens   vs %dk planned   %+.0f%%"
           % (spent / 1000, planned / 1000,
              (spent - planned) / planned * 100 if planned else 0))
@@ -812,21 +812,21 @@ def cmd_report(a):
         act, est = by.get(l["assignee"] or "?", (0, 0))
         by[l["assignee"] or "?"] = (act + l["actual"], est + l["est"])
     for k, (act, est) in sorted(by.items(), key=lambda kv: -kv[1][0]):
-        flag = "  ▲" if est and (act - est) / est > 0.3 else ""
+        flag = "  !" if est and (act - est) / est > 0.3 else ""
         print("  %-22s %6dk %3.0f%%  %+4.0f%%%s"
               % (k, act / 1000, act / spent * 100 if spent else 0,
                  (act - est) / est * 100 if est else 0, flag))
 
-    print("\nQUALITY BESIDE COST   (the guardrail — never read the block above alone)")
+    print("\nQUALITY BESIDE COST   (the guardrail - never read the block above alone)")
     print("  rework        %dk  %.0f%% of spend   (changed decisions, pure waste)"
           % (rework / 1000, rework / spent * 100 if spent else 0))
     print("  retried       %d task(s) needed a second attempt" % len(retried))
     if packs:
         print("  context pack  avg %dk in, %d measured" % (sum(packs) / len(packs) / 1000, len(packs)))
-    print("  CR rejection  — track by hand; a falling token count with a rising")
+    print("  CR rejection  - track by hand; a falling token count with a rising")
     print("                  rejection rate is the loop eating the project")
 
-    print("\nWHY IT VARIED — write this half yourself. A number without a cause")
+    print("\nWHY IT VARIED - write this half yourself. A number without a cause")
     print("changes nothing next session. Then log ONE experiment in experiments.md.")
 
 
@@ -1326,7 +1326,7 @@ def cmd_selfcheck(a):
         _, r = dispatch_checks(t, [t], t["est"] - 1)
         assert not r[5][1], "over-budget task dispatched"
 
-        # est is not buffered — the ledger comparison stays honest
+        # est is not buffered - the ledger comparison stays honest
         tpp, _ = velocity()
         assert t["est"] == int(3 * tpp), "estimate() is padding the ledger"
 

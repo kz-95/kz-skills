@@ -21,6 +21,10 @@
      SHRUNK           the diagram drawn narrower than its native viewBox width on a narrow screen (G8).
      PAGE SCROLL      the page scrolls sideways because of the diagram, instead of the diagram scrolling (G8).
      CLIPPED          the diagram runs past an ancestor that clips it, with no scroller in between (G8).
+     NO CUE           the diagram is wider than its scroller and nothing says so (G8, as L11 asks of a row): no
+                      scrollbar 6px or thicker whose thumb has 3:1 against what it sits on (an OS-default
+                      scrollbar-color counts), no gradient on the scroller or on a ::before/::after of it or its
+                      parent (an edge shadow or fade), and no visible element marked data-diagram="cue" beside it.
      NO NAME          no role="img" with aria-labelledby naming a filled <title> and <desc> (G9).
      DUP ID           an id the diagram is named by is used more than once on the page (G9).
      EMPHASIS         more than two boxes stroked in a saturated accent colour (G10).
@@ -32,8 +36,9 @@
    a zone); a box drawn twice at one place (an opaque mask under a styled rect) counts once. A label plate
    is a filled, unstroked <rect> 20-200 wide and 8-14 tall. A line is a <path>, <line> or <polyline> with an
    arrow marker. Mark anything the shapes do not say with data-diagram="box", "label", "line" or "key", and
-   a whole <svg> with data-diagram to have it measured even with no lines. A line of class "spoke" (a radial
-   write-back in a loop) is exempt from DIAGONAL.
+   a whole <svg> with data-diagram to have it measured even with no lines. Mark the line that says a diagram
+   scrolls ("Scroll sideways to see all of it") with data-diagram="cue" and put it next to its scroller.
+   A line of class "spoke" (a radial write-back in a loop) is exempt from DIAGONAL.
    A deliberately wrong sample opts out with data-diagram-check="skip" on itself or an ancestor.
    Reads geometry only: it never clicks or moves anything. Run it at a wide width and at 375px. */
 (function diagramCheck() {
@@ -68,6 +73,40 @@
     return s > 0.45 && l > 0.2 && l < 0.8;
   }
   function inDefs(el) { return !!el.closest('defs,marker,pattern,clipPath,mask,symbol'); }
+  function lum(c) {
+    var v = c.map(function (x) { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
+    return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+  }
+  function contrast(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+  function opaque(v) { return painted(v) && !/rgba\([^)]*,\s*0?\.\d+\)$/.test(v); }
+  function surfaceOf(el) {
+    for (var n = el; n && n.nodeType === 1; n = n.parentElement) { var bg = getComputedStyle(n).backgroundColor; if (opaque(bg)) { return rgb(bg); } }
+    return [255, 255, 255];
+  }
+  function gradient(el, pseudo) { return /gradient\(/.test(getComputedStyle(el, pseudo || null).backgroundImage || ''); }
+  /* does a sideways scroller show that it has more: a scrollbar you can see, an edge gradient, or a cue line */
+  function cueOf(sc) {
+    var cs = getComputedStyle(sc), why = [];
+    var bar = sc.offsetHeight - sc.clientHeight - (parseFloat(cs.borderTopWidth) || 0) - (parseFloat(cs.borderBottomWidth) || 0);
+    var cols = (cs.scrollbarColor || 'auto').match(/rgba?\([^)]*\)/g);
+    if (bar >= 6) {
+      if (!cols) { return { ok: true }; }
+      var thumb = rgb(cols[0]), under = cols[1] && opaque(cols[1]) ? rgb(cols[1]) : surfaceOf(sc), k = contrast(thumb, under);
+      if (k >= 3) { return { ok: true }; }
+      why.push('its scrollbar thumb has ' + k.toFixed(1) + ':1 against what it sits on, 3 needed');
+    } else {
+      why.push(bar > 0 ? 'its scrollbar is ' + bar + 'px' : 'no scrollbar in view');
+    }
+    if (gradient(sc) || gradient(sc, '::before') || gradient(sc, '::after') ||
+        gradient(sc.parentElement, '::before') || gradient(sc.parentElement, '::after')) { return { ok: true }; }
+    var marks = sc.parentElement.querySelectorAll('[data-diagram="cue"]');
+    for (var i = 0; i < marks.length; i++) {
+      var mr = marks[i].getBoundingClientRect();
+      if (mr.width > 0 && mr.height > 0 && getComputedStyle(marks[i]).visibility !== 'hidden') { return { ok: true }; }
+    }
+    why.push('no edge shadow', 'no cue line');
+    return { ok: false, why: why.join(', ') };
+  }
 
   Array.prototype.forEach.call(document.querySelectorAll('svg'), function (svg) {
     if (skipped(svg) || svg.parentElement.closest('svg') || svg.closest('[aria-hidden="true"]')) { return; }
@@ -233,6 +272,16 @@
         if (/(auto|scroll)/.test(getComputedStyle(p).overflowX)) { scroller = p; break; }
       }
       if (!scroller) { add('PAGE SCROLL', 'the page is ' + page.scrollWidth + 'px wide in a ' + innerWidth + 'px window - wrap the diagram in its own sideways scroller'); }
+    }
+    /* G8: a diagram that scrolls says so. Without a cue the reader sees a drawing that stops at the card's
+       edge, with lines running to boxes that are not there, and takes it as broken or as all there is. */
+    var sc = null;
+    for (var u = svg.parentElement; u && u !== document.body; u = u.parentElement) {
+      if (/(auto|scroll)/.test(getComputedStyle(u).overflowX)) { sc = u; break; }
+    }
+    if (sc && sc.scrollWidth > sc.clientWidth + 1 && (R.right > box(sc).right + 1 || R.left < box(sc).left - 1)) {
+      var cueWhy = cueOf(sc);
+      if (!cueWhy.ok) { add('NO CUE', 'drawn ' + Math.round(R.width) + 'px wide in a ' + sc.clientWidth + 'px scroller with nothing saying it goes on (' + cueWhy.why + ') - show a scrollbar, an edge shadow or a line that says so (data-diagram="cue")'); }
     }
     for (var q = svg.parentElement; q && q !== document.body; q = q.parentElement) {
       var ox = getComputedStyle(q).overflowX;

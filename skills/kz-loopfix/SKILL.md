@@ -1,6 +1,6 @@
 ---
 name: kz-loopfix
-description: Nested three-party fix loop for one broken thing. A critic reviews and QAs and proposes fixes, a fixer verifies the critique and repairs it, and the two trade exchanges until the critic accepts - then a gatekeeper rules on whether what they agreed is actually true. A false ruling drops back into another critic-fixer inner loop. Cycles repeat until all three agree with evidence, then control returns to the orchestrator. Child skill of kz-skill, called by kz-crew021. Triggers on "/kz-loopfix", "loop fix", "fix it until it holds", "three party fix", "critic fixer gate".
+description: "Nested three-party fix loop for one broken thing. A critic reviews and QAs and proposes fixes, a fixer verifies the critique and repairs it, and the two trade exchanges until the critic accepts - then a gatekeeper rules on whether what they agreed is actually true. A false ruling drops back into another critic-fixer inner loop. Cycles repeat until all three agree with evidence, then control returns to the orchestrator. Child skill of kz-skill, called by kz-crew021. Triggers on \"/kz-loopfix\", \"loop fix\", \"fix it until it holds\", \"three party fix\", \"critic fixer gate\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 

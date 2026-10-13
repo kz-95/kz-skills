@@ -2,13 +2,16 @@
   "name": "kz-skills-hero",
   "version": "1.0.0",
   "private": true,
-  "description": "The README hero GIF: a diagram drawn wrong, measured by diagram-check.js, then fixed.",
+  "description": "The README hero GIF: a poster, then one rule per category caught by its real browser check and fixed.",
   "scripts": {
     "studio": "remotion studio",
-    "render": "remotion render src/index.ts Hero out/hero.gif --codec=gif --every-nth-frame=2 ${CHROME:+--browser-executable=$CHROME}"
+    "render": "remotion render src/index.ts Hero out/hero.gif --codec=gif --every-nth-frame=2 ${CHROME:+--browser-executable=$CHROME} && cp out/hero.gif ../../docs/assets/hero.gif",
+    "stills": "remotion render src/index.ts Hero out/frames --image-format=png ${CHROME:+--browser-executable=$CHROME} --frames"
   },
   "dependencies": {
     "@remotion/cli": "4.0.535",
+    "@remotion/fonts": "4.0.535",
+    "@remotion/transitions": "4.0.535",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "remotion": "4.0.535"

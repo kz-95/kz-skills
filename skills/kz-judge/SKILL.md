@@ -1,6 +1,6 @@
 ---
 name: kz-judge
-description: Judges the UI rules a script cannot measure - does an error message say what went wrong and what to do next, does a button name its action, does an empty state say how to start, does a delete confirmation name what it deletes (K1, S2) - with a small decision model instead of the agent, so it costs the agent no tokens. Uses Jev (TypeSafe, needs TYPESAFE_API_KEY) or a local Laya install, and asks each engine only the questions it has passed on labelled examples. Skips cleanly when neither is present. Use after kz-uicheck on any page with messages, buttons, empty states or delete confirmations. Triggers on "/kz-judge", "judge the copy", "check the wording", "check error messages".
+description: "Judges the UI rules a script cannot measure - does an error message say what went wrong and what to do next, does a button name its action, does an empty state say how to start, does a delete confirmation name what it deletes (K1, S2) - with a small decision model instead of the agent, so it costs the agent no tokens. Uses Jev (TypeSafe, needs TYPESAFE_API_KEY) or a local Laya install, and asks each engine only the questions it has passed on labelled examples. Skips cleanly when neither is present. Use after kz-uicheck on any page with messages, buttons, empty states or delete confirmations. Triggers on \"/kz-judge\", \"judge the copy\", \"check the wording\", \"check error messages\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 
@@ -36,7 +36,7 @@ Each text is judged in its own request, with nothing else in the state, so one s
 steer the answer about another, and the trust earned in calibration is earned the same way.
 
 Measured on 12 October 2026, one text per request: Jev (`jev-1.13.0`) passed all four questions, good
-≥ 0.90 and bad ≤ 0.17. Without its true/false criteria the button question did not pass (a bad label at
+>= 0.90 and bad <= 0.17. Without its true/false criteria the button question did not pass (a bad label at
 0.49), which is why criteria are there. Laya 0.3.20 passed none of the four, with or without criteria, so
 with Laya alone the judge asks nothing. That is the gate working, not a fault in the skill: re-run
 `calibrate` after a Laya update.

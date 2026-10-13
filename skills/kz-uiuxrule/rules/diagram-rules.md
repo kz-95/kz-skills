@@ -43,7 +43,7 @@ Cathryn Lavery (MIT). The checks and the browser measurement are this corpus's o
 | G5 | **A line never passes behind a box that is not one of its ends.** Route around it. Only where the box is geometrically unavoidable - a full-width bar between the two ends - does the line cross it, and then it is dashed, carries its label at the visible end, and has no arrowhead on the box it passes. The failure: a line disappearing into a box reads as that box being part of the path. Check: `diagram-check.js` `BEHIND BOX`. |
 | G6 | **A label sits beside its line, on an opaque plate, clear of the line and of every box.** The plate is a solid fill so the line does not show through the text; between the plate and the line there is a visible gap, never under 4px and best at 6 to 10px; beside a vertical line the label goes to the side. A plate is never partly under a box drawn after it. Short labels, one orientation (`C21`). The failure: a label on its line hides the line it names, so the reader cannot see where the connection goes, and a plate half under a box shows a fragment of a word. Check: `diagram-check.js` `LABEL ON LINE`, `LABEL GAP` and `PLATE UNDER BOX`. |
 | G7 | **Every kind of mark is explained, in a key below the drawing.** Each box treatment, line style and badge used has one entry; nothing in the key is unused. The key is a strip under the diagram, never floating inside it. This is `C11` for diagrams. The failure: a key inside the drawing collides with the boxes as soon as the diagram grows, and an unexplained dashed line is read as decoration or as an error. Check: `diagram-check.js` `KEY INSIDE` for a key marked `data-diagram="key"` or with a class or id containing `legend` or `key`; by hand, each style in the drawing has an entry. |
-| G8 | **A wide diagram keeps its size on a narrow screen and scrolls inside its own box.** Its minimum width equals its native width (the `viewBox` width), inside a container that scrolls sideways, and that container sits inside anything that clips. In print, both are released so it scales to the page. The failure: a diagram allowed to shrink takes its text with it - a 12px label on a 1280-wide drawing squeezed into a phone is under 4px - and a diagram inside a clipping card loses its right side with no scrollbar, which a page-overflow check reports as clean. Check: `diagram-check.js` `SHRUNK`, `PAGE SCROLL` and `CLIPPED`, at 375px. |
+| G8 | **A wide diagram keeps its size on a narrow screen, scrolls inside its own box, and says so.** Its minimum width equals its native width (the `viewBox` width), inside a container that scrolls sideways, and that container sits inside anything that clips. While the drawing is wider than its box, a visible cue says more is to the side, as `L11` asks of a row: a scrollbar that can be seen (6px or thicker, its thumb 3:1 against what it sits on), a shadow on each edge that has more, and a short line under it such as "Scroll sideways to see all of it", shown only while it overflows. Overlay scrollbars on phones and Macs show nothing until touched, so the shadow and the line carry the cue there. In print, all of it is released so the drawing scales to the page. The failure: a diagram allowed to shrink takes its text with it - a 12px label on a 1280-wide drawing squeezed into a phone is under 4px - and a diagram inside a clipping card loses its right side with no scrollbar, which a page-overflow check reports as clean. A diagram that scrolls with no cue stops at the card's edge with lines running to boxes that are not there, so it reads as broken, or as all there is. Check: `diagram-check.js` `SHRUNK`, `PAGE SCROLL`, `CLIPPED` and `NO CUE`, at a wide width and at 375px. |
 | G9 | **A diagram is a named figure.** The `<svg>` carries `role="img"` and `aria-labelledby` naming a `<title>` (its first child, the subject in 60 characters or fewer) and a `<desc>` (one sentence on what it shows, not on its shapes). Their ids are unique on the page. Decorative glyphs carry `aria-hidden="true"` instead. The failure: a screen reader announces "image" and nothing else, and with two diagrams sharing a `title` id, the second is announced with the first one's name. Check: `diagram-check.js` `NO NAME` and `DUP ID`. |
 | G10 | **Emphasis goes on one or two things, and meaning never rides on colour or motion alone.** The accent marks the point of the diagram; on five boxes it marks nothing. States and outcomes are words on the drawing, so a still frame and a greyscale print both carry the full meaning (`C7`, `M1`). The failure: emphasis on everything is emphasis on nothing, and a diagram whose "failed" path is only red says nothing to a reader who cannot see red. Check: `diagram-check.js` `EMPHASIS` (more than two boxes stroked in a colour the rest do not use). |
 
@@ -126,6 +126,35 @@ scroller never scrolls: give that item `max-width: 100%; min-width: 0`. And when
 clips (`overflow: hidden` - a card, a window frame), the scroller must sit **inside** it, or
 the drawing is cut off with no scrollbar at all. The print rule comes after the screen rule,
 because a media query adds no specificity.
+
+A scroller that hides its scrollbar, or carries the page's thin low-contrast one, needs its cue
+drawn. One way, with no script for the shadows - the two `local` covers scroll with the drawing
+and hide each shadow once its side is reached:
+
+```css
+.diagram-scroll {
+  scrollbar-width: auto; scrollbar-color: var(--muted) var(--surface-2);
+  background:
+    linear-gradient(to right, var(--surface) 50%, transparent) left center / 48px 200% no-repeat local,
+    linear-gradient(to left, var(--surface) 50%, transparent) right center / 48px 200% no-repeat local,
+    linear-gradient(to right, color-mix(in srgb, var(--muted) 35%, transparent), transparent) left center / 20px calc(100% - 2px) no-repeat scroll,
+    linear-gradient(to left, color-mix(in srgb, var(--muted) 35%, transparent), transparent) right center / 20px calc(100% - 2px) no-repeat scroll,
+    var(--surface);
+}
+```
+
+```html
+<p data-diagram="cue" hidden>Scroll sideways to see all of it</p>  <!-- right after the scroller -->
+```
+
+and three lines of script that set `hidden` to `!(scroller.scrollWidth > scroller.clientWidth)` on
+load and on resize. The shadows sit behind the drawing, so where a box is cut at the edge the cut
+box is the cue; between boxes the shadow is. Use the page's own surface tokens: a cover that does
+not match the card shows as a pale block.
+
+**Why say it scrolls:** a reader who sees a drawing stop at the edge of its card has no reason to
+think it goes on, and a lone arrow pointing off the edge reads as an error. A scrollbar alone is
+not enough - on a phone or a Mac it is invisible until touched.
 
 **Why not let it shrink:** a phone reader can scroll a drawing sideways; nobody can read 4px
 text. Fitting the width by shrinking trades a gesture the reader knows for a figure no one

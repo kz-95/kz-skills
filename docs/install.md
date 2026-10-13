@@ -2,6 +2,15 @@
 
 Thirteen skills, each a folder with a `SKILL.md`. Install all of them: `kz-uiuxrule` links to `kz-engrules`, `kz-askcard` and `kz-uicheck` as siblings, and `kz-crew021` calls most of the others.
 
+## Any agent, with the skills CLI
+
+```bash
+npx skills add kz-95/kz-skills
+```
+
+The [`skills` CLI](https://skills.sh) installs every skill into the skills folder of each agent you pick.
+Add `-l` to list the skills without installing, or `--skill kz-uiuxrule` to take one.
+
 ## Claude Code, as a plugin
 
 ```
@@ -9,9 +18,15 @@ Thirteen skills, each a folder with a `SKILL.md`. Install all of them: `kz-uiuxr
 /plugin install kz-skills@kz-skills
 ```
 
-Then `/kz-uiuxrule` for UI work, or `/kz-skill` when you are not sure which skill fits.
+From a terminal, the same two steps are:
 
-> **Status:** the manifest in `.claude-plugin/` follows the shape of other marketplace plugins, but this repository has not yet been installed from GitHub as a plugin. If the commands above fail, use the manual route below and open an issue.
+```bash
+claude plugin marketplace add kz-95/kz-skills
+claude plugin install kz-skills@kz-skills
+```
+
+The plugin installs and enables all thirteen skills.
+Then `/kz-uiuxrule` for UI work, or `/kz-skill` when you are not sure which skill fits.
 
 ## Claude Code, by hand
 

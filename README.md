@@ -2,104 +2,11 @@
 
 **Your agent learns what any interface must do, what breaks when it does not, and runs a browser check that proves it.**
 
-<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#g"><img src="docs/assets/hero.gif" alt="A diagram an agent drew wrong: a slanted line, a label sitting on its line, and a line passing behind a box. diagram-check.js runs and reports DIAGONAL, LABEL ON LINE and BEHIND BOX, outlining each fault in magenta. The diagram redraws with square routes, the label beside its line and the line routed around the box, and the check reports clean (1 diagram measured). Closing card: Rules your agent can't argue with. Checks that measure them. kz-skills." width="100%"></a>
-
-```bash
-npx skills add kz-95/kz-skills
-```
-
-In Claude Code, as a plugin:
-
-```text
-/plugin marketplace add kz-95/kz-skills
-/plugin install kz-skills@kz-skills
-```
+<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html"><img src="docs/assets/hero.gif" alt="kz-skills: UI rules for AI coding agents, each with a browser check that measures it. Tables, rule T1: a bare text box under each column, table-check.js reports BOX (3 of 3 column filters are a bare text box), the filters become buttons with an open value panel, and the check reports no failures. Contrast, rule Y2, dark theme: a card label at 1.05:1, contrast-check.js reports LOW in dark, the label takes the dark-theme token at 7.84:1, and the check is clean in both themes. Charts, rule C5: a focused donut wedge ringed by its bounding box, layout-audit.js reports FOCUS BOX, the ring follows the wedge and shows its value, and the audit is clean. Diagrams, rule G6: the WRITE label sits on its line, diagram-check.js reports LABEL ON LINE, the label moves beside the line, and the check is clean. Closing card: 94 rules. 10 checks. Any stack. npx skills add kz-95/kz-skills." width="100%"></a>
 
 94 rules (57 UI, 6 motion, 21 chart, 10 diagram) and 16 principles, in thirteen skills, with ten browser checks.
 Stack-neutral and style-neutral: they work with any framework and any look.
 Plain Markdown, so any agent that reads files can use them.
-
-[Install](#install) | [Live reference](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html) | [All 94 rules](docs/rule-index.md) | [For agents: llms.txt](llms.txt) | [Changelog](CHANGELOG.md)
-
----
-
-## Ask your agent in plain words
-
-- *"Build a table of orders with filters."*
-- *"Review this signup form."*
-- *"Is this chart right?"*
-- *"Draw the checkout flow as a diagram."*
-- *"Make this page work on a phone."*
-
-The agent finds the two or three rule sections that fit the request, builds or reviews against them, quotes the rule IDs it applied, and runs the checks before it says the work is done.
-You never have to name a rule or a skill.
-
-See the rules fail and pass, side by side:
-[Table filter](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#t1-filter) |
-[Chart selection ring](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#c5-ring) |
-[Typing on a phone](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#f8-typing) |
-[Label on a plate](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#y2-plate) |
-[Diagram lines](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#g3-lines) |
-[Every rule](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html)
-
----
-
-## Why this exists
-
-AI agents ship the same interface mistakes, confidently, and a screenshot rarely shows them.
-These five are real, from building this repo:
-
-| What the agent shipped | Rule | The check that fails it |
-|---|---|---|
-| A filter row that is an **empty typed box under every column**, where a button opening a value list with counts belongs | `T1`, `S1` | `table-check.js` |
-| A focus ring that is a **rectangle round a curved chart wedge** | `C5` | `layout-audit.js` (`FOCUS BOX`) |
-| A search field that **re-renders on every keystroke**, so the phone keyboard closes after one letter | `F8` | `typing-check.js` |
-| A label that is **dark on dark, 1.04:1**, in the dark theme only | `Y2` | `contrast-check.js` (both themes) |
-| A filter panel that **only opens**: tap its button again and nothing closes it, and a phone has no Escape | `N2` | `popover-check.js` |
-
-Each rule states the obligation, the failure that follows when it is missed, and the check that catches it.
-That second part is the point: an agent told only "do X" drops X the first time it is inconvenient, while an agent told what breaks without X keeps it.
-Where two approaches compete, the rule says why this one and not that one, so the agent does not reopen a settled question.
-
-A rule with no check gets broken by the person who wrote it.
-That happened repeatedly while these were written, and each case is recorded as a habit to have (26 lessons, [Appendix Z](skills/kz-uiuxrule/rules/ui-rules.md)).
-
-## More mistakes agents make
-
-**De-AI: what makes an interface look machine-made**
-
-<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#l1-hierarchy"><img src="docs/assets/carousel-de-ai.gif" alt="Five de-AI mistakes, each shown wrong, then right. L1: one thing wins and everything else steps back. B1: icon first, a label that fits. L5: controls in a row share one height. Y2: label contrast is a decision. B4: everything that acts answers the pointer." width="100%"></a>
-
-**Usability**
-
-<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#t1-filter"><img src="docs/assets/carousel-improvements.gif" alt="Five usability mistakes, each shown wrong, then right. T1: a filter is a panel, not a text box. F1: a required field says so before it is missed. F4: a field is the shape of what goes in it. N2: a panel can always be closed. F9: Enter moves to the next field." width="100%"></a>
-
-**Charts**
-
-<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#c5-ring"><img src="docs/assets/carousel-charts.gif" alt="Five chart rules. C5: a highlight follows the mark, not a box round it, shown wrong then right. Then four shown working: C5, select a mark and it shows its values; C6, aggregate with the right operation for the measure; C12, a chart type keeps the marks that define it; C4, a time chart ships range presets and derives its granularity." width="100%"></a>
-
----
-
-## How it compares
-
-| | No rules | A style skill, such as impeccable | kz-skills |
-|---|---|---|---|
-| What it decides | Whatever the model guesses | How the interface looks: type, colour, spacing, tone | What the interface must do: filters, closing, typing, focus, routes, contrast |
-| "Build a table with filters" gives you | A text box under each header, most of the time | A good-looking text box under each header | A filter button per column, opening a panel with a value list and counts (`T1`) |
-| How a mistake is caught | You notice it, later | You notice it, later | A paste-in browser check fails, with a code and a measurement |
-| Why the agent keeps to it | It does not | Taste, which is easy to argue with | Each rule names the failure it prevents, so dropping it has a visible cost |
-| Stack and look | Any | Its own look | Any stack, any look; your design system wins on style |
-| Charts and diagrams | Whatever the library draws | Styled | 21 chart rules and 10 diagram rules, each with a check |
-
-The two kinds mix well: the style skill decides how it looks, kz-skills decides what must happen, and the rules win where the two conflict ([how they combine](docs/with-impeccable.md)).
-
-The downsides are real:
-
-- **It does not pick a look.** There is no palette, typeface or component library here, so pair it with your design system or a style skill.
-- **The checks need a browser.** They are console scripts that measure the rendered page; a screenshot or a code review cannot run them, and hover, press and focus states need the live page.
-- **The plugin path is pre-release.** The plugin manifest has not yet been installed from GitHub; `npx skills` and the manual copy are the verified routes.
-
----
 
 ## Install
 
@@ -110,18 +17,16 @@ npx skills add kz-95/kz-skills
 The [`skills` CLI](https://skills.sh) finds every skill in this repository and installs it into the skills folder of each agent you pick (Claude Code, Cursor, Codex and others).
 Add `-l` to list the skills without installing, or `--skill kz-uiuxrule` to take one.
 
-<details>
-<summary><b>Claude Code</b>, as a plugin</summary>
+In Claude Code, as a plugin:
 
 ```text
 /plugin marketplace add kz-95/kz-skills
 /plugin install kz-skills@kz-skills
 ```
 
+From a terminal, the same two steps are `claude plugin marketplace add kz-95/kz-skills` and `claude plugin install kz-skills@kz-skills`.
+The plugin installs and enables all thirteen skills.
 Then `/kz-uiuxrule`, or `/kz-skill` if you are not sure which one.
-The plugin path is pre-release (see [Important notes](#important-notes)).
-
-</details>
 
 <details>
 <summary><b>Claude Code</b>, by hand (macOS, Linux, Windows)</summary>
@@ -161,7 +66,42 @@ The checks are `.js` files you paste into a browser console, so they need no hos
 
 </details>
 
+[Live reference](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html) | [All 94 rules](docs/rule-index.md) | [For agents: llms.txt](llms.txt) | [Changelog](CHANGELOG.md)
+
+**On this page:** [Ask in plain words](#ask-your-agent-in-plain-words) | [Why](#why-this-exists) | [What it covers](#what-it-covers) | [How it compares](#how-it-compares) | [The skills](#the-thirteen-skills) | [What loads when](#what-loads-when) | [Most missed](#the-rules-most-often-missed) | [FAQ](#faq) | [Contributing](#contributing) | [License](#license)
+
 ---
+
+## Ask your agent in plain words
+
+- *"Build a table of orders with filters."*
+- *"Review this signup form."*
+- *"Is this chart right?"*
+- *"Draw the checkout flow as a diagram."*
+- *"Make this page work on a phone."*
+
+The agent finds the two or three rule sections that fit the request, builds or reviews against them, quotes the rule IDs it applied, and runs the checks before it says the work is done.
+You never have to name a rule or a skill.
+
+## Why this exists
+
+AI agents ship the same interface mistakes, confidently, and a screenshot rarely shows them.
+These five are real, from building this repo:
+
+| What the agent shipped | Rule | The check that fails it |
+|---|---|---|
+| A filter row that is an **empty typed box under every column**, where a button opening a value list with counts belongs | `T1`, `S1` | `table-check.js` |
+| A focus ring that is a **rectangle round a curved chart wedge** | `C5` | `layout-audit.js` (`FOCUS BOX`) |
+| A search field that **re-renders on every keystroke**, so the phone keyboard closes after one letter | `F8` | `typing-check.js` |
+| A label that is **dark on dark, 1.04:1**, in the dark theme only | `Y2` | `contrast-check.js` (both themes) |
+| A filter panel that **only opens**: tap its button again and nothing closes it, and a phone has no Escape | `N2` | `popover-check.js` |
+
+Each rule states the obligation, the failure that follows when it is missed, and the check that catches it.
+That second part is the point: an agent told only "do X" drops X the first time it is inconvenient, while an agent told what breaks without X keeps it.
+Where two approaches compete, the rule says why this one and not that one, so the agent does not reopen a settled question.
+
+A rule with no check gets broken by the person who wrote it.
+That happened repeatedly while these were written, and each case is recorded as a habit to have (26 lessons, [Appendix Z](skills/kz-uiuxrule/rules/ui-rules.md)).
 
 ## What it covers
 
@@ -187,25 +127,59 @@ Every rule there has a wrong half beside it, and a check asserts the wrong half 
 </tr>
 </table>
 
+Also on the page: [Typing on a phone](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#f8-typing) | [Every rule, wrong beside right](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html)
+
+## More mistakes agents make
+
+**De-AI: what makes an interface look machine-made**
+
+<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#l1-hierarchy"><img src="docs/assets/carousel-de-ai.gif" alt="Five de-AI mistakes, each shown wrong, then right. L1: one thing wins and everything else steps back. B1: icon first, a label that fits. L5: controls in a row share one height. Y2: label contrast is a decision. B4: everything that acts answers the pointer." width="100%"></a>
+
+**Usability**
+
+<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#t1-filter"><img src="docs/assets/carousel-improvements.gif" alt="Five usability mistakes, each shown wrong, then right. T1: a filter is a panel, not a text box. F1: a required field says so before it is missed. F4: a field is the shape of what goes in it. N2: a panel can always be closed. F9: Enter moves to the next field." width="100%"></a>
+
+**Charts**
+
+<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#c5-ring"><img src="docs/assets/carousel-charts.gif" alt="Five chart rules. C5: a highlight follows the mark, not a box round it, shown wrong then right. Then four shown working: C5, select a mark and it shows its values; C6, aggregate with the right operation for the measure; C12, a chart type keeps the marks that define it; C4, a time chart ships range presets and derives its granularity." width="100%"></a>
+
+## How it compares
+
+| | No rules | A style skill, such as impeccable | kz-skills |
+|---|---|---|---|
+| What it decides | Whatever the model guesses | How the interface looks: type, colour, spacing, tone | What the interface must do: filters, closing, typing, focus, routes, contrast |
+| "Build a table with filters" gives you | A text box under each header, most of the time | A good-looking text box under each header | A filter button per column, opening a panel with a value list and counts (`T1`) |
+| How a mistake is caught | You notice it, later | You notice it, later | A paste-in browser check fails, with a code and a measurement |
+| Why the agent keeps to it | It does not | Taste, which is easy to argue with | Each rule names the failure it prevents, so dropping it has a visible cost |
+| Stack and look | Any | Its own look | Any stack, any look; your design system wins on style |
+| Charts and diagrams | Whatever the library draws | Styled | 21 chart rules and 10 diagram rules, each with a check |
+
+The two kinds mix well: the style skill decides how it looks, kz-skills decides what must happen, and the rules win where the two conflict ([how they combine](docs/with-impeccable.md)).
+
+The downsides are real:
+
+- **It does not pick a look.** There is no palette, typeface or component library here, so pair it with your design system or a style skill.
+- **The checks need a browser.** They are console scripts that measure the rendered page; a screenshot or a code review cannot run them, and hover, press and focus states need the live page.
+
 ---
 
 ## The thirteen skills
 
-| Skill | Reach for it when |
-|---|---|
-| [`kz-skill`](skills/kz-skill/SKILL.md) | A request spans several of these, or it is unclear which applies. The router. |
-| [`kz-uiuxrule`](skills/kz-uiuxrule/SKILL.md) | Building, changing or reviewing any UI: the rules, in four modes (adopt, review, build, loop). |
-| [`kz-motionrule`](skills/kz-motionrule/SKILL.md) | Work that only moves - an animation, a transition, a press effect: the six motion rules and their check, without the rest of the corpus. |
-| [`kz-diagramrule`](skills/kz-diagramrule/SKILL.md) | Only a diagram: boxes, lines and labels - the ten diagram rules and their check, without the rest of the corpus. |
-| [`kz-uicheck`](skills/kz-uicheck/SKILL.md) | Before calling UI work done: ten paste-in browser checks that measure instead of judge. |
-| [`kz-engrules`](skills/kz-engrules/SKILL.md) | Any code task at all: the engineering floor everything else sits on, including how branches, commits and merges are done (rules 33-33c). |
-| [`kz-fastfix`](skills/kz-fastfix/SKILL.md) | One small job (a typo, a style change, a one-line bug): a size test, then the change made directly and checked once. No crew, no loop. |
-| [`kz-flashrule`](skills/kz-flashrule/SKILL.md) | A fast rule check in one read: the rules that break worst when missed, each with its ID and the fastest check. |
-| [`kz-askcard`](skills/kz-askcard/SKILL.md) | About to ask the user something: three to five decisions, one recommended, a custom option. |
-| [`kz-crew021`](skills/kz-crew021/SKILL.md) | A whole project, idea to maintenance, with a costed multi-agent crew. |
-| [`kz-judge`](skills/kz-judge/SKILL.md) | After the checks: the wording rules a script cannot measure (errors, button labels, empty states, delete confirmations), judged by Jev or a local Laya, only on questions each has passed on labelled examples. Costs the agent no tokens. |
-| [`kz-reflect`](skills/kz-reflect/SKILL.md) | A mistake was noticed and the fix verified: log it, classify it, and propose the rule or check change for a person to approve. |
-| [`kz-loopfix`](skills/kz-loopfix/SKILL.md) | One defect that "fix it and move on" already failed once: critic, fixer, then a gate. |
+Each skill, and when to reach for it:
+
+- **[`kz-skill`](skills/kz-skill/SKILL.md)**: A request spans several of these, or it is unclear which applies. The router.
+- **[`kz-uiuxrule`](skills/kz-uiuxrule/SKILL.md)**: Building, changing or reviewing any UI: the rules, in four modes (adopt, review, build, loop).
+- **[`kz-motionrule`](skills/kz-motionrule/SKILL.md)**: Work that only moves - an animation, a transition, a press effect: the six motion rules and their check, without the rest of the corpus.
+- **[`kz-diagramrule`](skills/kz-diagramrule/SKILL.md)**: Only a diagram: boxes, lines and labels - the ten diagram rules and their check, without the rest of the corpus.
+- **[`kz-uicheck`](skills/kz-uicheck/SKILL.md)**: Before calling UI work done: ten paste-in browser checks that measure instead of judge.
+- **[`kz-engrules`](skills/kz-engrules/SKILL.md)**: Any code task at all: the engineering floor everything else sits on, including how branches, commits and merges are done (rules 33-33c).
+- **[`kz-fastfix`](skills/kz-fastfix/SKILL.md)**: One small job (a typo, a style change, a one-line bug): a size test, then the change made directly and checked once. No crew, no loop.
+- **[`kz-flashrule`](skills/kz-flashrule/SKILL.md)**: A fast rule check in one read: the rules that break worst when missed, each with its ID and the fastest check.
+- **[`kz-askcard`](skills/kz-askcard/SKILL.md)**: About to ask the user something: three to five decisions, one recommended, a custom option.
+- **[`kz-crew021`](skills/kz-crew021/SKILL.md)**: A whole project, idea to maintenance, with a costed multi-agent crew.
+- **[`kz-judge`](skills/kz-judge/SKILL.md)**: After the checks: the wording rules a script cannot measure (errors, button labels, empty states, delete confirmations), judged by Jev or a local Laya, only on questions each has passed on labelled examples. Costs the agent no tokens.
+- **[`kz-reflect`](skills/kz-reflect/SKILL.md)**: A mistake was noticed and the fix verified: log it, classify it, and propose the rule or check change for a person to approve.
+- **[`kz-loopfix`](skills/kz-loopfix/SKILL.md)**: One defect that "fix it and move on" already failed once: critic, fixer, then a gate.
 
 Plus [`ui-glance`](skills/kz-uiuxrule/skills/ui-glance/SKILL.md), a child of `kz-uiuxrule`: a screenshot reviewed in one pass against a 22-point checklist.
 
@@ -234,7 +208,7 @@ Any code task also reads the short always-on part of `kz-engrules` (L0 and the s
 
 ## The rules most often missed
 
-| ID | Rule | Check |
+| ID | Rule | The&nbsp;check&nbsp;that&nbsp;fails&nbsp;it |
 |---|---|---|
 | `S1` | Every table ships search, sort on every column and a filter per column. A "filter" is a panel, never a bare text box. | `table-check.js` |
 | `T1` | A column filter is a panel: sort, a value list with counts, a range for numbers. | `table-check.js` |
@@ -264,12 +238,9 @@ All 94 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 
 ## When not to use it
 
-- **Picking a visual style or a brand.** These rules say what must happen, not what it looks like; use your design system or a style skill for the look.
-- **Judging hover, press and focus from a screenshot.** A screenshot is one still; those states need the live page and the checks.
+- **Picking a visual style or a brand, or judging hover, press and focus from a screenshot.** Those are the two downsides under [How it compares](#how-it-compares): use your design system or a style skill for the look, and the live page with the checks for the states.
 - **A diagram that lives in Git and changes every sprint.** Mermaid fits that better: it is text, it diffs in a pull request, and GitHub renders it. The diagram rules are for a diagram drawn as SVG on a page.
 - **Non-UI work beyond the engineering floor.** For back-end, data or infrastructure work only `kz-engrules` applies; the rest of the set has nothing to add.
-
----
 
 ## FAQ
 
@@ -280,13 +251,13 @@ No. The rules say what must happen, not what it looks like. Where a project has 
 The agent never read `T1`. The line every agent sees is the summary, so the summary now defines the word "filter". If you keep your own always-on instructions, put the same definition there.
 
 **Does it mix with impeccable or another style skill?**
-Yes: the style skill decides how it looks, `kz-uiuxrule` decides what must happen, and **the rules win where the two conflict**. [`docs/with-impeccable.md`](docs/with-impeccable.md) lists where they agree and the three places they can pull against each other.
+Yes, and **the rules win where the two conflict** (see [How it compares](#how-it-compares)). [`docs/with-impeccable.md`](docs/with-impeccable.md) lists where they agree and the three places they can pull against each other.
 
 **Does it draw diagrams in a house style, like diagram-design?**
 No. [diagram-design](https://github.com/cathrynlavery/diagram-design) gives an agent a look for diagrams; `kz-diagramrule` gives it the rules any diagram must keep, whatever it looks like, and a check that measures them. They work together.
 
 **Can I use only the rules, not the crew?**
-Yes. `kz-uiuxrule` links to `kz-engrules`, `kz-askcard` and `kz-uicheck` as siblings, so install those four together.
+Yes: install `kz-uiuxrule`, `kz-engrules`, `kz-askcard` and `kz-uicheck` together (see **Only part of it** under [Install](#install)).
 
 **Do the checks need a framework or a build step?**
 No. Paste a file into the browser console.
@@ -296,12 +267,15 @@ The skills are Markdown and the hook script is host-neutral, but the hook has on
 
 ## Important notes
 
-- **Pre-release.** The plugin manifest follows the shape of other marketplace plugins, but this repository has not yet been installed from GitHub as a plugin. `npx skills` and the manual copy are the verified paths.
 - **The purpose hook is not in the plugin yet.** It asks what a skill is for before it acts. Wire it by hand from [`skills/kz-askcard/hooks/README.md`](skills/kz-askcard/hooks/README.md).
-- **Hover, press and focus states need the live page or the checks.** A screenshot is one still.
 - **Sample data uses Malaysian ringgit (`RM`).** It is sample data only.
 
+---
+
 ## Repository map
+
+<details>
+<summary>Where everything lives</summary>
 
 ```text
 skills/                          the thirteen skills, each a direct child of skills/
@@ -352,6 +326,8 @@ scripts/
 AGENTS.md                        how any agent uses and works in this repository
 llms.txt                         the index for LLM crawlers
 ```
+
+</details>
 
 ## Contributing
 

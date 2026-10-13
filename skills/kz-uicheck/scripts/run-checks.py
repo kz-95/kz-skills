@@ -109,6 +109,9 @@ def main():
                      "--virtual-time-budget=300000", "--dump-dom", Path(f).as_uri()]
             if a.local_fetch:
                 flags.insert(1, "--allow-file-access-from-files")
+            if hasattr(os, "geteuid") and os.geteuid() == 0:
+                # Chrome refuses to start as root (containers, CI runners) unless its sandbox is off
+                flags.insert(1, "--no-sandbox")
             r = subprocess.run(flags, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
         finally:
             shutil.rmtree(tmp, ignore_errors=True)    # leave nothing behind, even when Chrome fails

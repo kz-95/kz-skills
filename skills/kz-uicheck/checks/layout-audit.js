@@ -1,5 +1,6 @@
 /* Layout audit: run after every visual change, at more than one width.
-   Behaviour tests pass while layout silently breaks, so this checks the geometry. */
+   Behaviour tests pass while layout silently breaks, so this checks the geometry.
+   Includes COVERED: a fixed or sticky rail sitting on the content it should leave room for. */
 (function () {
   var problems = [];
   function note(kind, el, detail) {
@@ -372,6 +373,90 @@
           'px and it cannot scroll sideways (overflow-x ' + ox + ')');
       }
     });
+
+  /* 14. a fixed rail must not sit on the content (rules L8, L10). A fixed or sticky element that is
+     most of the window tall covers the same strip at every scroll position, so what is under it never
+     scrolls free: the reference page's jump rail hid the right 52px of every card at 1280px while this
+     audit said clean. Things meant to overlay are exempt: an open dialog, a popover, a tooltip, a toast
+     or status region, anything modal, and a bar spanning the full width (content scrolls under a
+     header by design). A short fixed element (a header, a back-to-top button) is not judged here:
+     content passes under it and out again. Sticky counts only when it sticks to the window, not inside
+     a scroller (a sticky table header covers rows by design). Reports what is under the rail and by
+     how many pixels. Opt an element out with data-layout-check="skip". */
+  (function () {
+    var vw = document.documentElement.clientWidth, vh = innerHeight, box;
+    var OVERLAY = 'dialog, [popover], [role="dialog"], [role="alertdialog"], [role="tooltip"], ' +
+      '[role="status"], [role="alert"], [aria-live], [aria-modal="true"], [data-layout-check="skip"]';
+    function scrollsInside(el) {
+      for (var p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+        if (/^(auto|scroll|hidden|clip)$/.test(getComputedStyle(p).overflowY)) { return true; }
+      }
+      return false;
+    }
+    function draws(e) {                 /* paints something a person would miss if it were covered */
+      if (/^(IMG|SVG|CANVAS|VIDEO|INPUT|BUTTON|SELECT|TEXTAREA|IFRAME)$/i.test(e.tagName)) { return true; }
+      var cs = getComputedStyle(e), bg = /rgba?\(([^)]+)\)/.exec(cs.backgroundColor);
+      if (bg && !/,\s*0\s*$/.test(bg[1])) { return true; }
+      if (cs.backgroundImage !== 'none' || cs.boxShadow !== 'none') { return true; }
+      if (['Top', 'Right', 'Bottom', 'Left'].every(function (s) {
+        return parseFloat(cs['border' + s + 'Width']) > 0 && cs['border' + s + 'Style'] !== 'none';
+      })) { return true; }
+      /* its own text, where the text actually is: a heading's box is the column's width, its words are not */
+      return Array.prototype.some.call(e.childNodes, function (n) {
+        if (n.nodeType !== 3 || !n.textContent.trim()) { return false; }
+        var rg = document.createRange(); rg.selectNodeContents(n);
+        return Array.prototype.some.call(rg.getClientRects(), function (q) {
+          return q.right > box.L && q.left < box.R && q.bottom > box.T && q.top < box.B;
+        });
+      });
+    }
+    function name(e) {
+      var c = (e.getAttribute('class') || '').trim().split(/\s+/)[0];
+      return e.id ? '#' + e.id : e.tagName.toLowerCase() + (c ? '.' + c : '');
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('body *'), function (bar) {
+      var cs = getComputedStyle(bar);
+      if (cs.position !== 'fixed' && cs.position !== 'sticky') { return; }
+      if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) { return; }
+      if (bar.matches(OVERLAY) || bar.closest(OVERLAY)) { return; }
+      if (cs.position === 'sticky' && scrollsInside(bar)) { return; }
+      var r = bar.getBoundingClientRect();
+      var L = Math.max(0, r.left), R = Math.min(vw, r.right), T = Math.max(0, r.top), B = Math.min(vh, r.bottom);
+      if (R - L < 2 || B - T < vh * 0.75) { return; }          /* not a rail: content passes under it */
+      if (R - L >= vw - 2) { return; }                          /* full width: a sheet or a menu, not a rail */
+      box = { L: L, R: R, T: T, B: B };
+      var hits = new Map();
+      for (var x = L + 2; x < R; x += 8) {
+        for (var y = T + 2; y < B; y += 8) {
+          var stack = document.elementsFromPoint(x, y);
+          for (var i = 0; i < stack.length; i++) {
+            var e = stack[i];
+            if (bar.contains(e) || e.contains(bar) || e === document.body || e === document.documentElement) { continue; }
+            if (e.closest(OVERLAY)) { break; }
+            for (var b = e; b && b !== document.body && !b.contains(bar); b = b.parentElement) {
+              if (draws(b)) { hits.set(b, true); break; }
+            }
+            break;
+          }
+        }
+      }
+      var found = [];
+      hits.forEach(function (v, e) {
+        var q = e.getBoundingClientRect();
+        var w = Math.min(q.right, R) - Math.max(q.left, L), h = Math.min(q.bottom, B) - Math.max(q.top, T);
+        if (w >= 2 && h >= 2) { found.push({ e: e, w: Math.round(w), h: Math.round(h) }); }
+      });
+      /* report the outermost boxes: a card and the paragraph inside it are one finding */
+      found = found.filter(function (f) {
+        return !found.some(function (g) { return g !== f && g.e.contains(f.e); });
+      }).sort(function (a, b) { return b.w * b.h - a.w * a.h; });
+      if (!found.length) { return; }
+      note('COVERED', bar, 'a ' + Math.round(R - L) + 'x' + Math.round(B - T) + 'px ' + cs.position +
+        ' rail sits on ' + found.length + ' element(s) of content, e.g. ' +
+        found.slice(0, 3).map(function (f) { return name(f.e) + ' by ' + f.w + 'x' + f.h + 'px'; }).join(', ') +
+        ' - reserve its width for the content column, or move it');
+    });
+  })();
 
   return problems.length ? problems : ['clean'];
 })();
