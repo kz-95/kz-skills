@@ -10,6 +10,8 @@ Checks, each of which has caught a real defect in this project:
   3. no CRLF line endings in text files (.gitattributes enforces LF)
   4. docs/rule-index.md is up to date with the rule files
   5. the plugin and marketplace manifests parse and agree on the plugin name
+  6. every published link (https://kz-95.github.io/kz-skills/...) names a file under docs/,
+     and its #anchor, on an .html page, names an id that page has
 Exit status is 0 only when every check passes.
 """
 import io
@@ -141,9 +143,39 @@ try:
 except Exception as e:  # noqa: BLE001 - report any parse failure plainly
     fail("manifest problem: %s" % e)
 
+# 6. published links ------------------------------------------------------------------------------
+# GitHub Pages serves docs/ at this address, so a link to it is a link into docs/ that the
+# relative-link check above cannot see. A trailing / means index.html.
+PUB = re.compile(r"https://kz-95\.github\.io/kz-skills/([^\s\"'<>()\[\]`]*)")
+ID_ATTR = re.compile(r"""\bid\s*=\s*["']([^"']+)["']""")
+ids_cache = {}
+tracked = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True).stdout.splitlines()
+for rel in tracked:
+    if not rel.endswith((".md", ".txt", ".html", ".json")):
+        continue
+    src = os.path.join(ROOT, rel)
+    if not os.path.isfile(src):
+        continue
+    for n, line in enumerate(read(src).splitlines(), 1):
+        for m in PUB.finditer(line):
+            target = m.group(1).rstrip(".,;:")
+            path, _, anchor = target.partition("#")
+            path = path.split("?")[0]
+            if path == "" or path.endswith("/"):
+                path += "index.html"
+            local = os.path.normpath(os.path.join(ROOT, "docs", path))
+            if not os.path.isfile(local):
+                fail("%s:%d: published link to a page that does not exist -> %s" % (rel, n, m.group(0)))
+                continue
+            if anchor and local.endswith(".html"):
+                if local not in ids_cache:
+                    ids_cache[local] = set(ID_ATTR.findall(read(local)))
+                if anchor not in ids_cache[local]:
+                    fail("%s:%d: published link to an anchor the page does not have -> %s" % (rel, n, m.group(0)))
+
 if problems:
     print("%d problem(s):" % len(problems))
     for p in problems:
         print("  - " + p)
     sys.exit(1)
-print("ok: %d skills, links resolve, LF endings, rule index current, manifests agree" % found)
+print("ok: %d skills, links resolve, LF endings, rule index current, manifests agree, published links resolve" % found)

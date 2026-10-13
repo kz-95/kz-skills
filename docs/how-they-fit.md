@@ -1,6 +1,6 @@
 # How the skills fit together
 
-Twelve skills and one child. Each can be called on its own. `kz-skill` is the entry point for when a request spans several, or when it is not obvious which applies.
+Thirteen skills and one child. Each can be called on its own. `kz-skill` is the entry point for when a request spans several, or when it is not obvious which applies.
 
 ```
 kz-engrules      the floor: applies to every task, UI or not
@@ -8,6 +8,7 @@ kz-engrules      the floor: applies to every task, UI or not
   kz-flashrule   the most critical rules of all of them, on one page, for a fast check
   kz-uiuxrule    adds the interface rules on top of it
     kz-motionrule  its motion rules alone, for work that only moves
+    kz-diagramrule its diagram rules alone, for work that is only a diagram
     kz-uicheck   the instruments its verification rules tell you to run
 kz-askcard       how any of them asks the user something
 kz-judge         the wording judgements a script cannot make
@@ -22,11 +23,12 @@ kz-crew021       the workflow that dispatches the rest across a crew
 |---|---|---|
 | Any code task at all | `kz-engrules` first | It is short and nothing scopes it out |
 | A typo, a wording or style change, a doc line, a one-line bug | `kz-fastfix` | A size test, then the change made directly and checked once; no crew, no loop |
-| "Quick check before I call this done" | `kz-flashrule` | The 40 rules that break worst when missed, one read, each with its fastest check |
+| "Quick check before I call this done" | `kz-flashrule` | The 42 rules that break worst when missed, one read, each with its fastest check |
 | Build, change or review a screen, table, form, chart, overlay | `kz-uiuxrule` | The rules, in four modes |
 | "Look at this screenshot and tell me what is wrong" | `ui-glance` (child of `kz-uiuxrule`) | One read, one pass, three to six findings |
 | An animation, a transition, a press effect, nothing else | `kz-motionrule` | The six motion rules and their check, without the rest of the corpus |
-| "Is this UI done?" | `kz-uicheck` | Measures layout, tables and typing instead of judging them |
+| An architecture diagram, a flowchart, a sequence, a state machine, nothing else | `kz-diagramrule` | The ten diagram rules and their check, without the rest of the corpus |
+| "Is this UI done?" | `kz-uicheck` | Ten checks that measure layout, tables, typing, forms, motion and diagrams instead of judging them |
 | A whole project, idea to maintenance | `kz-crew021` | Phases, scope relay, a proof of concept before any fan-out, a budget |
 | A mistake noticed and fixed, which should not recur | `kz-reflect` | Records it, classifies it into one of seven outcomes, proposes the change; a person approves |
 | One defect, already fixed once, still broken | `kz-loopfix` | Critic and fixer to agreement, then a gate rules on whether the agreement is true |

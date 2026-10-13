@@ -9,11 +9,11 @@
 <meta name="theme-color" content="#fbfaf9" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
 <title>UI rules for AI agents, seen: live wrong/right examples | kz-skills</title>
-<meta name="description" content="Live wrong/right examples for 56 stack-neutral UI rules and 21 chart rules for AI coding agents: tables, filters, forms, charts, overlays, motion. Every rule is demonstrated and checked in the browser.">
+<meta name="description" content="Live wrong/right examples for 57 stack-neutral UI rules, 6 motion rules, 21 chart rules and 10 diagram rules for AI coding agents: tables, filters, forms, charts, overlays, motion, diagrams. Every rule is demonstrated and checked in the browser.">
 <link rel="canonical" href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="UI rules for AI agents, seen: live wrong/right examples">
-<meta property="og:description" content="Live wrong/right examples for 56 stack-neutral UI rules and 21 chart rules for AI coding agents: tables, filters, forms, charts, overlays, motion. Every rule is demonstrated and checked in the browser.">
+<meta property="og:description" content="Live wrong/right examples for 57 stack-neutral UI rules, 6 motion rules, 21 chart rules and 10 diagram rules for AI coding agents: tables, filters, forms, charts, overlays, motion, diagrams. Every rule is demonstrated and checked in the browser.">
 <meta property="og:url" content="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html">
 <meta property="og:image" content="https://kz-95.github.io/kz-skills/assets/carousel-poster.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -1160,7 +1160,9 @@ tbody tr{transition:background var(--mo-state) var(--mo-ease)}
 .mo-pal-bad{transform:translateY(-12px) scale(.9);
   transition:opacity 400ms ease-in-out,transform 400ms ease-in-out,visibility 0s 400ms}
 .mo-pal-bad[data-open="1"]{transition:opacity 400ms ease-in-out,transform 400ms ease-in-out}
-.mo-pop{position:absolute;left:0;top:44px;width:200px;border:1px solid var(--line);border-radius:var(--r);
+/* the menu hangs from its own button, 4px under it, left edges aligned, at any button height */
+.mo-anchor{position:relative}
+.mo-pop{position:absolute;left:0;top:calc(100% + 4px);width:200px;border:1px solid var(--line);border-radius:var(--r);
   background:var(--surface);box-shadow:0 8px 24px rgba(0,0,0,.12);padding:var(--s2) var(--s3);font-size:13px;
   visibility:hidden;opacity:0}
 .mo-pop[data-open="1"]{visibility:visible;opacity:1;transform:none}
@@ -2939,8 +2941,10 @@ The rules live in <code>motion-rules.md</code>; M1 is shown with Y3 above.</p>
     <div class="demo wrong" data-motion-check="skip">
       <div class="tag">Wrong: swells out of a point in its own middle</div>
       <div class="body mo-stage">
-        <button type="button" class="btn" id="m3BadBtn" aria-expanded="false">Options</button>
-        <div class="mo-pop mo-pop-bad" id="m3BadPop" role="menu" aria-label="Options">Rename<br>Duplicate<br>Archive</div>
+        <div class="mo-anchor">
+          <button type="button" class="btn" id="m3BadBtn" aria-expanded="false">Options</button>
+          <div class="mo-pop mo-pop-bad" id="m3BadPop" role="menu" aria-label="Options">Rename<br>Duplicate<br>Archive</div>
+        </div>
       </div>
       <p class="note">It starts at nothing and grows from its centre, so for a moment it is a dot
       floating away from the button that asked for it.</p>
@@ -2948,8 +2952,10 @@ The rules live in <code>motion-rules.md</code>; M1 is shown with Y3 above.</p>
     <div class="demo right">
       <div class="tag">Right: starts nearly full size, from the button</div>
       <div class="body mo-stage">
-        <button type="button" class="btn" id="m3GoodBtn" aria-expanded="false">Options</button>
-        <div class="mo-pop mo-pop-good" id="m3GoodPop" role="menu" aria-label="Options">Rename<br>Duplicate<br>Archive</div>
+        <div class="mo-anchor">
+          <button type="button" class="btn" id="m3GoodBtn" aria-expanded="false">Options</button>
+          <div class="mo-pop mo-pop-good" id="m3GoodPop" role="menu" aria-label="Options">Rename<br>Duplicate<br>Archive</div>
+        </div>
       </div>
       <p class="note">Scale 0.96 and opacity 0, origin at the top left where the button is, 180ms
       in and 120ms out.</p>

@@ -580,7 +580,9 @@
     tap(btn);
     var done = open() && open().querySelector('.fdone');
     var minH = matchMedia('(hover: none), (pointer: coarse)').matches ? 44 : 24;      /* the rule's own figures */
-    ok('N2', !!done && done.getBoundingClientRect().height >= minH, 'the panel has no visible Done button of at least ' + minH + 'px');
+    /* offsetHeight, not the client rect: the panel has just opened and is still scaling in from 0.985,
+       so its rect reads a 44px button as 43.3 */
+    ok('N2', !!done && done.offsetHeight >= minH && done.getClientRects().length > 0, 'the panel has no visible Done button of at least ' + minH + 'px');
     if (done) { tap(done); }
     ok('N2', !open(), 'the Done button did not close the panel');
     ok('N2', document.activeElement === btn, 'Done did not return focus to the trigger that opened the panel');
@@ -854,6 +856,11 @@
     ok('M3', scaleOf(good) >= 0.9 && scaleOf(good) < 1, 'the right menu starts at scale ' + scaleOf(good).toFixed(2) + ', not 0.9-0.97');
     ok('M3', /^0px 0px/.test(cs(good).transformOrigin), 'the right menu does not grow from its top left: ' + cs(good).transformOrigin);
     ok('M3 (wrong sample)', scaleOf(badp) < 0.05, 'the wrong menu no longer starts at scale(0)');
+    /* the right menu opens on the button that opened it: left edges aligned, top just under it. The
+       origin is the top left, so the closed menu's box already sits where the open one will. */
+    var gb = $('m3GoodBtn').getBoundingClientRect(), gp = good.getBoundingClientRect();
+    ok('M3', Math.abs(gp.left - gb.left) <= 2 && gp.top >= gb.bottom - 1 && gp.top - gb.bottom <= 12,
+       'the right menu does not open on its button: ' + Math.round(gp.left - gb.left) + 'px across, ' + Math.round(gp.top - gb.bottom) + 'px below it');
 
     /* M4: the property list and the curve */
     var g = cs($('m4Good')), b = cs($('m4Bad'));
