@@ -141,6 +141,31 @@
     }, 0);
   })();
 
+  /* N1's wrong half opts out of modal-check (data-modal-check="skip"), so this is the only
+     thing that notices if it ever starts locking. */
+  (function () {
+    /* the sealed dialog above is released by an observer, which runs only after this
+       synchronous script: its lock is still on here, so measure from no lock and put it back */
+    var b = document.body.style.overflow, h = document.documentElement.style.overflow;
+    document.body.style.overflow = ''; document.documentElement.style.overflow = '';
+    $('n1BadOpen').click();
+    ok('N1 (wrong sample)', $('n1Bad').open, 'the leaky dialog did not open');
+    ok('N1 (wrong sample)', cs(document.body).overflow !== 'hidden' &&
+       cs(document.documentElement).overflow !== 'hidden',
+       'the leaky dialog now locks the scroll, so it shows nothing');
+    $('n1Bad').close();
+    document.body.style.overflow = b; document.documentElement.style.overflow = h;
+  })();
+
+  /* ---- X1: the wrong half's field has no label (it opts out of form-check) */
+  (function () {
+    var f = document.querySelector('[data-form-check="skip"] .fake-btn ~ input.field');
+    ok('X1 (wrong sample)', !!f && !f.labels.length && !f.getAttribute('aria-label') &&
+       !f.getAttribute('aria-labelledby'), 'the wrong field is gone or now has a label');
+    ok('X1 (wrong sample)', !!f && f.parentElement.querySelector('.fake-btn').tabIndex < 0,
+       'the fake button is now focusable, so it shows nothing');
+  })();
+
   /* ---- N2: multi-select stays open, single-pick closes -------------------- */
   (function () {
     $('n2GoodBtn').click();
@@ -172,6 +197,8 @@
     g.value = '';
 
     var b = $('f2BadEmail');
+    /* the wrong half opts out of form-check, which would report exactly this */
+    ok('F2 (wrong sample)', b.type === 'text', 'the wrong field is no longer type="text"');
     b.value = 'a'; b.dispatchEvent(new Event('input'));
     ok('F2 (wrong sample)', !$('f2BadErr').hidden,
        'the wrong sample stopped complaining on keystroke, so it shows nothing');
@@ -618,7 +645,7 @@
   (function () {
     var good = document.querySelector('.rhythm-good');
     if (!good) { bad('L3', 'the rhythm sample is missing'); return; }
-    var h = good.querySelectorAll('h4')[1];
+    var h = good.querySelectorAll('h3')[1];
     var inside = px(cs(h.previousElementSibling).marginBottom);
     var above = px(cs(h).marginTop), below = px(cs(h).marginBottom);
     ok('L3', above > below, 'the space above the heading is not larger than below it');
@@ -1028,6 +1055,22 @@
        'g8Bad gained a min-width or a sideways scroller, so it no longer shrinks');
     ok('G8', px(cs(g8).minWidth) === w8, 'g8Good min-width is ' + cs(g8).minWidth + ', its viewBox is ' + w8 + ' wide');
     ok('G8', !!g8.parentElement && cs(g8.parentElement).overflowX === 'auto', 'g8Good is not inside an overflow-x:auto parent');
+    /* G8: a right diagram that scrolls says so - an edge shadow, and the cue line while (and only while)
+       it overflows. g8Good is wider than its card at every width, so this always runs at least once. */
+    var overflowed = 0;
+    ['g2Good', 'g3Good', 'g5Good', 'g6Good', 'g7Good', 'g8Good'].forEach(function (id) {
+      var sc = scroller($(id)), cue = sc && sc.nextElementSibling, over = !!sc && sc.scrollWidth > sc.clientWidth + 1;
+      if (!sc) { bad('G8', id + ' has no sideways scroller'); return; }
+      var shown = !!cue && cue.getAttribute('data-diagram') === 'cue' && cue.getBoundingClientRect().height > 0;
+      if (over) {
+        overflowed++;
+        ok('G8', shown, id + ' overflows its card (' + sc.scrollWidth + ' in ' + sc.clientWidth + 'px) and shows no cue line under it');
+        ok('G8', /gradient\(/.test(cs(sc).backgroundImage), id + ' overflows its card with no edge shadow on its scroller');
+      } else {
+        ok('G8', !shown, id + ' fits its card but still says to scroll sideways');
+      }
+    });
+    ok('G8', overflowed > 0, 'no right diagram overflows its card, so the scroll cue was never exercised');
 
     /* G2 / G10 */
     var nb = $('g2Bad').querySelectorAll('rect.box').length, ab = $('g2Bad').querySelectorAll('rect.box.acc').length;
