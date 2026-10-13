@@ -1259,6 +1259,9 @@ section[id]{scroll-margin-top:56px}
 .dg .sub,.dg .lbl{fill:var(--muted);font-size:9px;font-weight:600;letter-spacing:.06em}
 .dg-defs{position:absolute}
 .dg-defs .head{fill:var(--muted)}
+.dg-pair{align-items:stretch}
+.dg-pair>.demo{display:flex;flex-direction:column}
+.dg-pair>.demo>.body{flex:1;display:flex;flex-direction:column;justify-content:center}
 @media print{.dg-scroll{overflow-x:visible}.dg-scroll>svg{min-width:0 !important}}
 </style>
 </head>
@@ -3081,10 +3084,10 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
 <section id="g1-earn">
   <h2>Rule G1: a diagram earns its place</h2>
   <p class="rule">Before drawing, ask whether a sentence or a table says the same thing. Two boxes and an arrow are a sentence.</p>
-  <div class="pair">
+  <div class="pair dg-pair">
     <div class="demo wrong" data-diagram-check="skip">
       <div class="tag">Wrong: two boxes that restate a sentence</div>
-      <div class="body"><svg class="dg" id="g1Bad" viewBox="0 0 300 80"><rect class="box" x="16" y="18" width="100" height="44" rx="6"/><text x="66" y="44" text-anchor="middle">Browser</text><path class="ln" d="M116 40 H184" marker-end="url(#dgHead)"/><rect class="box" x="184" y="18" width="100" height="44" rx="6"/><text x="234" y="44" text-anchor="middle">API</text></svg></div>
+      <div class="body"><svg class="dg" id="g1Bad" viewBox="0 0 460 80"><rect class="box" x="16" y="18" width="100" height="44" rx="6"/><text x="66" y="44" text-anchor="middle">Browser</text><path class="ln" d="M116 40 H344" marker-end="url(#dgHead)"/><rect class="box" x="344" y="18" width="100" height="44" rx="6"/><text x="394" y="44" text-anchor="middle">API</text></svg></div>
       <p class="note">A picture the reader has to decode, carrying one fact.</p>
     </div>
     <div class="demo right">
@@ -3098,7 +3101,7 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
 <section id="g3-lines">
   <h2>Rules G3 and G4: lines run on two axes, and each can be traced alone</h2>
   <p class="rule">Bends are rounded corners, never slants. No two lines share a stroke, and lines meeting one edge each get their own point, 12px or more apart.</p>
-  <div class="pair">
+  <div class="pair dg-pair">
     <div class="demo wrong" data-diagram-check="skip">
       <div class="tag">Wrong: a slant, two lines drawn as one, a shared point</div>
       <div class="body"><svg class="dg" id="g3Bad" viewBox="0 0 460 180"><path class="ln" d="M116 38 L344 142" marker-end="url(#dgHead)"/><path class="ln" d="M116 38 H344" marker-end="url(#dgHead)"/><path class="ln" d="M116 38 H344" marker-end="url(#dgHead)"/><path class="ln" d="M116 52 H260 V142 H344" marker-end="url(#dgHead)"/><rect class="box" x="16" y="16" width="100" height="44" rx="6"/><text x="66" y="42" text-anchor="middle">Ingest</text><rect class="box" x="344" y="16" width="100" height="44" rx="6"/><text x="394" y="42" text-anchor="middle">Queue</text><rect class="box" x="344" y="120" width="100" height="44" rx="6"/><text x="394" y="146" text-anchor="middle">Store</text></svg></div>
@@ -3115,7 +3118,7 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
 <section id="g5-behind">
   <h2>Rule G5: a line never passes behind a box that is not one of its ends</h2>
   <p class="rule">Route around it. A line disappearing into a box reads as that box being on the path.</p>
-  <div class="pair">
+  <div class="pair dg-pair">
     <div class="demo wrong" data-diagram-check="skip">
       <div class="tag">Wrong: Client to Origin through Cache</div>
       <div class="body"><svg class="dg" id="g5Bad" viewBox="0 0 460 160"><path class="ln" d="M116 62 H344" marker-end="url(#dgHead)"/><rect class="box" x="16" y="40" width="100" height="44" rx="6"/><text x="66" y="66" text-anchor="middle">Client</text><rect class="box" x="180" y="40" width="100" height="44" rx="6"/><text x="230" y="66" text-anchor="middle">Cache</text><rect class="box" x="344" y="40" width="100" height="44" rx="6"/><text x="394" y="66" text-anchor="middle">Origin</text></svg></div>
@@ -3132,7 +3135,7 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
 <section id="g6-labels">
   <h2>Rule G6: a label sits beside its line, on a plate, clear of the line and of every box</h2>
   <p class="rule">An opaque plate with a visible gap to the line - never under 4px, best at 6 to 10 - and never partly under a box drawn after it.</p>
-  <div class="pair">
+  <div class="pair dg-pair">
     <div class="demo wrong" data-diagram-check="skip">
       <div class="tag">Wrong: a label on its line, a plate under a box</div>
       <div class="body"><svg class="dg" id="g6Bad" viewBox="0 0 460 124"><path class="ln" d="M116 55 H344" marker-end="url(#dgHead)"/><path class="ln dash" d="M344 70 H116" marker-end="url(#dgHead)"/><rect class="plate" x="208" y="49" width="43" height="12"/><text class="lbl" x="229.5" y="58" text-anchor="middle">WRITE</text><rect class="plate" x="326" y="35" width="29" height="12"/><text class="lbl" x="340.5" y="44" text-anchor="middle">ACK</text><rect class="box" x="16" y="40" width="100" height="44" rx="6"/><text x="66" y="66" text-anchor="middle">Service</text><rect class="box" x="344" y="40" width="100" height="44" rx="6"/><text x="394" y="66" text-anchor="middle">Database</text></svg></div>
@@ -3149,7 +3152,7 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
 <section id="g7-key">
   <h2>Rule G7: every kind of mark is explained, in a key below the drawing</h2>
   <p class="rule">One entry per box treatment, line style and badge used, and nothing unused. The key is a strip under the diagram, never inside it.</p>
-  <div class="pair">
+  <div class="pair dg-pair">
     <div class="demo wrong" data-diagram-check="skip">
       <div class="tag">Wrong: the key floats among the boxes</div>
       <div class="body"><svg class="dg" id="g7Bad" viewBox="0 0 460 150"><path class="ln" d="M116 39 H344" marker-end="url(#dgHead)"/><path class="ln dash" d="M344 53 H116" marker-end="url(#dgHead)"/><rect class="box" x="16" y="24" width="100" height="44" rx="6"/><text x="66" y="50" text-anchor="middle">Checkout</text><rect class="box" x="344" y="24" width="100" height="44" rx="6"/><text x="394" y="50" text-anchor="middle">Payments</text><g class="legend"><line class="kl" x1="130" y1="98" x2="154" y2="98"/><text class="sub" x="160" y="101">CALL</text><line class="kl dash" x1="230" y1="98" x2="254" y2="98"/><text class="sub" x="260" y="101">ASYNC REPLY</text></g><rect class="box" x="180" y="92" width="100" height="44" rx="6"/><text x="230" y="118" text-anchor="middle">Ledger</text></svg></div>
@@ -3165,16 +3168,16 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
 
 <section id="g8-phone">
   <h2>Rule G8: a wide diagram keeps its size on a narrow screen and scrolls inside its own box</h2>
-  <p class="rule">Its minimum width equals its native width, inside a container that scrolls sideways, inside anything that clips. Narrow the window to 375px to see the difference.</p>
-  <div class="pair">
+  <p class="rule">Its minimum width equals its native width, inside a container that scrolls sideways, inside anything that clips. Both cards here are narrower than this 760px drawing; at 375px the wrong one falls to about 40%.</p>
+  <div class="pair dg-pair">
     <div class="demo wrong" data-diagram-check="skip">
       <div class="tag">Wrong: allowed to shrink with the screen</div>
-      <div class="body"><svg class="dg" id="g8Bad" viewBox="0 0 760 120"><rect class="box" x="16" y="38" width="112" height="44" rx="6"/><text x="72" y="64" text-anchor="middle">Source</text><rect class="box" x="164" y="38" width="112" height="44" rx="6"/><text x="220" y="64" text-anchor="middle">Parse</text><rect class="box" x="312" y="38" width="112" height="44" rx="6"/><text x="368" y="64" text-anchor="middle">Enrich</text><rect class="box" x="460" y="38" width="112" height="44" rx="6"/><text x="516" y="64" text-anchor="middle">Score</text><rect class="box" x="608" y="38" width="112" height="44" rx="6"/><text x="664" y="64" text-anchor="middle">Publish</text><path class="ln" d="M128 60 H164" marker-end="url(#dgHead)"/><path class="ln" d="M276 60 H312" marker-end="url(#dgHead)"/><path class="ln" d="M424 60 H460" marker-end="url(#dgHead)"/><path class="ln" d="M572 60 H608" marker-end="url(#dgHead)"/></svg></div>
+      <div class="body"><svg class="dg" id="g8Bad" viewBox="0 0 760 120"><rect class="box" x="28" y="38" width="112" height="44" rx="6"/><text x="84" y="64" text-anchor="middle">Source</text><rect class="box" x="176" y="38" width="112" height="44" rx="6"/><text x="232" y="64" text-anchor="middle">Parse</text><rect class="box" x="324" y="38" width="112" height="44" rx="6"/><text x="380" y="64" text-anchor="middle">Enrich</text><rect class="box" x="472" y="38" width="112" height="44" rx="6"/><text x="528" y="64" text-anchor="middle">Score</text><rect class="box" x="620" y="38" width="112" height="44" rx="6"/><text x="676" y="64" text-anchor="middle">Publish</text><path class="ln" d="M140 60 H176" marker-end="url(#dgHead)"/><path class="ln" d="M288 60 H324" marker-end="url(#dgHead)"/><path class="ln" d="M436 60 H472" marker-end="url(#dgHead)"/><path class="ln" d="M584 60 H620" marker-end="url(#dgHead)"/></svg></div>
       <p class="note">At 375px the whole drawing is scaled to about 40%: the 11px names become 4px.</p>
     </div>
     <div class="demo right">
       <div class="tag">Right: holds its size and scrolls</div>
-      <div class="body"><div class="dg-scroll"><svg class="dg" id="g8Good" viewBox="0 0 760 120" role="img" aria-labelledby="g8Good-title g8Good-desc" style="min-width:760px"><title id="g8Good-title">Scoring pipeline</title><desc id="g8Good-desc">Records pass through parse, enrich and score before they are published.</desc><rect class="box" x="16" y="38" width="112" height="44" rx="6"/><text x="72" y="64" text-anchor="middle">Source</text><rect class="box" x="164" y="38" width="112" height="44" rx="6"/><text x="220" y="64" text-anchor="middle">Parse</text><rect class="box" x="312" y="38" width="112" height="44" rx="6"/><text x="368" y="64" text-anchor="middle">Enrich</text><rect class="box" x="460" y="38" width="112" height="44" rx="6"/><text x="516" y="64" text-anchor="middle">Score</text><rect class="box" x="608" y="38" width="112" height="44" rx="6"/><text x="664" y="64" text-anchor="middle">Publish</text><path class="ln" d="M128 60 H164" marker-end="url(#dgHead)"/><path class="ln" d="M276 60 H312" marker-end="url(#dgHead)"/><path class="ln" d="M424 60 H460" marker-end="url(#dgHead)"/><path class="ln" d="M572 60 H608" marker-end="url(#dgHead)"/></svg></div></div>
+      <div class="body"><div class="dg-scroll"><svg class="dg" id="g8Good" viewBox="0 0 760 120" role="img" aria-labelledby="g8Good-title g8Good-desc" style="min-width:760px"><title id="g8Good-title">Scoring pipeline</title><desc id="g8Good-desc">Records pass through parse, enrich and score before they are published.</desc><rect class="box" x="28" y="38" width="112" height="44" rx="6"/><text x="84" y="64" text-anchor="middle">Source</text><rect class="box" x="176" y="38" width="112" height="44" rx="6"/><text x="232" y="64" text-anchor="middle">Parse</text><rect class="box" x="324" y="38" width="112" height="44" rx="6"/><text x="380" y="64" text-anchor="middle">Enrich</text><rect class="box" x="472" y="38" width="112" height="44" rx="6"/><text x="528" y="64" text-anchor="middle">Score</text><rect class="box" x="620" y="38" width="112" height="44" rx="6"/><text x="676" y="64" text-anchor="middle">Publish</text><path class="ln" d="M140 60 H176" marker-end="url(#dgHead)"/><path class="ln" d="M288 60 H324" marker-end="url(#dgHead)"/><path class="ln" d="M436 60 H472" marker-end="url(#dgHead)"/><path class="ln" d="M584 60 H620" marker-end="url(#dgHead)"/></svg></div></div>
       <p class="note">At 375px the names stay 11px and the diagram scrolls sideways inside its card.</p>
     </div>
   </div>
@@ -3183,7 +3186,7 @@ diagram here is a named figure (G9): <code>role="img"</code> with a title and a 
 <section id="g2-budget">
   <h2>Rules G2 and G10: nine boxes at most, and emphasis on one or two</h2>
   <p class="rule">Past nine boxes or twelve lines, cut in the fixed order or split into an overview and details. The accent marks the point; on five boxes it marks nothing.</p>
-  <div class="pair">
+  <div class="pair dg-pair">
     <div class="demo wrong" data-diagram-check="skip">
       <div class="tag">Wrong: twelve boxes, thirteen lines, five accents</div>
       <div class="body"><svg class="dg" id="g2Bad" viewBox="0 0 460 220"><path class="ln" d="M108 38 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 38 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 38 H352" marker-end="url(#dgHead)"/><path class="ln" d="M108 110 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 110 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 110 H352" marker-end="url(#dgHead)"/><path class="ln" d="M108 182 H128" marker-end="url(#dgHead)"/><path class="ln" d="M220 182 H240" marker-end="url(#dgHead)"/><path class="ln" d="M332 182 H352" marker-end="url(#dgHead)"/><path class="ln" d="M62 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M174 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M286 60 V88" marker-end="url(#dgHead)"/><path class="ln" d="M398 60 V88" marker-end="url(#dgHead)"/><rect class="box" x="16" y="16" width="92" height="44" rx="6"/><text x="62" y="42" text-anchor="middle">Web</text><rect class="box acc" x="128" y="16" width="92" height="44" rx="6"/><text x="174" y="42" text-anchor="middle">Mobile</text><rect class="box" x="240" y="16" width="92" height="44" rx="6"/><text x="286" y="42" text-anchor="middle">Partner</text><rect class="box acc" x="352" y="16" width="92" height="44" rx="6"/><text x="398" y="42" text-anchor="middle">Gateway</text><rect class="box" x="16" y="88" width="92" height="44" rx="6"/><text x="62" y="114" text-anchor="middle">Auth</text><rect class="box acc" x="128" y="88" width="92" height="44" rx="6"/><text x="174" y="114" text-anchor="middle">Orders</text><rect class="box acc" x="240" y="88" width="92" height="44" rx="6"/><text x="286" y="114" text-anchor="middle">Stock</text><rect class="box" x="352" y="88" width="92" height="44" rx="6"/><text x="398" y="114" text-anchor="middle">Pricing</text><rect class="box" x="16" y="160" width="92" height="44" rx="6"/><text x="62" y="186" text-anchor="middle">Search</text><rect class="box acc" x="128" y="160" width="92" height="44" rx="6"/><text x="174" y="186" text-anchor="middle">Mail</text><rect class="box" x="240" y="160" width="92" height="44" rx="6"/><text x="286" y="186" text-anchor="middle">Ledger</text><rect class="box" x="352" y="160" width="92" height="44" rx="6"/><text x="398" y="186" text-anchor="middle">Audit</text></svg></div>

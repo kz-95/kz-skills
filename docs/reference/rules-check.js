@@ -4,8 +4,10 @@
    rule demonstrations that have behaviour of their own - the tables in T, the clear in
    A3, the modal in N1, the popovers in N2, the fields in F2 F4 F5 F6 F7 F8 F9, the draft in F3 - plus the
    geometric claims the rules make as figures (L3's two comparisons, L4's offset, L6's
-   cap, L11's wrap-only-while-it-fits, Y1's tabular figures, P1's zero shift), and the
-   motion samples in M2-M6.
+   cap, L11's wrap-only-while-it-fits, Y1's tabular figures, P1's zero shift), the
+   motion samples in M2-M6, and the diagrams in G, measured as drawn (a slanted run,
+   stacked lines, a line behind a box, a plate on its line or under a box, the key's
+   place, the narrow-screen width, the box and accent budget, the figure's name).
 
    Every assertion here is written so that breaking the thing it guards makes it fail.
    It also asserts the WRONG side still demonstrates its defect: a sample that quietly
@@ -900,6 +902,143 @@
           }
         }, 60);
       }, 450);
+    });
+  })();
+
+  /* ---- G1-G10: section G, each wrong diagram still shows its defect and each right one does not ----
+     Measured as drawn: every line is sampled along its length with getPointAtLength and mapped to
+     the screen with getScreenCTM, boxes and plates are read with getBoundingClientRect, and
+     distances are turned back into viewBox units, so the figures hold at any width. */
+  (function () {
+    if (!$('g3Good')) { bad('G', 'section G is missing'); return; }
+    function unit(svg) { var w = svg.viewBox.baseVal.width; return w ? svg.getBoundingClientRect().width / w : 1; }
+    function line(el) {
+      var m = el.getScreenCTM(), len = el.getTotalLength(), arr = [];
+      for (var d = 0; d <= len; d += 1) { var q = el.getPointAtLength(d); arr.push(new DOMPoint(q.x, q.y).matrixTransform(m)); }
+      return arr;
+    }
+    function lines(svg) { return Array.prototype.map.call(svg.querySelectorAll('path.ln'), line); }
+    function rects(svg, sel) { return Array.prototype.slice.call(svg.querySelectorAll(sel)); }
+    function within(p, r, pad) { return p.x > r.left + pad && p.x < r.right - pad && p.y > r.top + pad && p.y < r.bottom - pad; }
+    function overlap(a, b) {
+      return Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
+             Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+    }
+    function contains(o, i) { return i.left >= o.left - 0.5 && i.right <= o.right + 0.5 && i.top >= o.top - 0.5 && i.bottom <= o.bottom + 0.5; }
+    /* the longest straight slanted run in a line, in viewBox units */
+    function slant(P, k) {
+      var run = 0, worst = 0, start = null;
+      for (var i = 4; i < P.length; i++) {
+        var dx = P[i].x - P[i - 4].x, dy = P[i].y - P[i - 4].y, diag = Math.abs(dx) > 0.6 * k && Math.abs(dy) > 0.6 * k, dir = Math.atan2(dy, dx);
+        if (diag && start !== null && Math.abs(dir - start) < 0.03) { run++; } else { run = 0; start = diag ? dir : null; }
+        worst = Math.max(worst, run);
+      }
+      return worst / k;
+    }
+    /* the most stroke any two lines share, in viewBox units */
+    function stacked(L, k) {
+      var most = 0;
+      for (var i = 0; i < L.length; i++) {
+        for (var j = i + 1; j < L.length; j++) {
+          var n = L[i].filter(function (a) { return L[j].some(function (b) { return Math.abs(a.x - b.x) < 1.5 && Math.abs(a.y - b.y) < 1.5; }); }).length;
+          most = Math.max(most, n / k);
+        }
+      }
+      return most;
+    }
+    /* how far, in viewBox units, a line runs inside a box that is neither of its ends */
+    function behind(svg) {
+      var k = unit(svg), boxes = rects(svg, 'rect.box').map(function (b) { return b.getBoundingClientRect(); }), most = 0;
+      lines(svg).forEach(function (P) {
+        function end(p) { return boxes.filter(function (r) { return p.x >= r.left - 12 && p.x <= r.right + 12 && p.y >= r.top - 12 && p.y <= r.bottom + 12; })[0]; }
+        var a = end(P[0]), z = end(P[P.length - 1]);
+        boxes.forEach(function (r) {
+          if (r === a || r === z) { return; }
+          most = Math.max(most, P.filter(function (p) { return within(p, r, 3 * k); }).length / k);
+        });
+      });
+      return most;
+    }
+    /* each plate: does it cover a line, how far is it from the nearest line, is it under a later box */
+    function plates(svg) {
+      var k = unit(svg), L = lines(svg), all = Array.prototype.slice.call(svg.querySelectorAll('*'));
+      return rects(svg, 'rect.plate').map(function (pl) {
+        var r = pl.getBoundingClientRect(), covers = false, gap = Infinity;
+        L.forEach(function (P) {
+          if (P.filter(function (p) { return within(p, r, 0); }).length > 6) { covers = true; }
+          P.forEach(function (p) { gap = Math.min(gap, Math.max(r.left - p.x, p.x - r.right, r.top - p.y, p.y - r.bottom) / k); });
+        });
+        var under = rects(svg, 'rect.box').some(function (b) {
+          var br = b.getBoundingClientRect();
+          return all.indexOf(b) > all.indexOf(pl) && overlap(br, r) > 0 && !contains(br, r);
+        });
+        return { name: (pl.nextElementSibling || {}).textContent, covers: covers, gap: gap, under: under };
+      });
+    }
+    function legend(svg) {
+      var key = svg.querySelector('g.legend').getBoundingClientRect(), boxes = rects(svg, 'rect.box').map(function (b) { return b.getBoundingClientRect(); });
+      return {
+        hits: boxes.some(function (b) { return overlap(b, key) > 0; }),
+        above: key.top < Math.max.apply(null, boxes.map(function (b) { return b.bottom; })) - 2
+      };
+    }
+    function scroller(svg) {
+      for (var p = svg.parentElement; p && !p.classList.contains('demo'); p = p.parentElement) {
+        if (/(auto|scroll)/.test(cs(p).overflowX)) { return p; }
+      }
+      return null;
+    }
+
+    /* G3 / G4 */
+    var b3 = $('g3Bad'), g3 = $('g3Good');
+    ok('G3 (wrong sample)', lines(b3).some(function (P) { return slant(P, unit(b3)) > 16; }), 'g3Bad no longer has a straight slanted run');
+    ok('G4 (wrong sample)', stacked(lines(b3), unit(b3)) >= 12, 'g3Bad no longer has two lines drawn on top of each other');
+    ok('G3', !lines(g3).some(function (P) { return slant(P, unit(g3)) > 16; }), 'g3Good has a straight slanted run');
+    ok('G4', stacked(lines(g3), unit(g3)) < 12, 'g3Good has two lines sharing ' + Math.round(stacked(lines(g3), unit(g3))) + 'px of stroke');
+
+    /* G5 */
+    ok('G5 (wrong sample)', behind($('g5Bad')) > 4, 'g5Bad no longer runs a line behind a box that is not its end');
+    ok('G5', behind($('g5Good')) <= 4, 'g5Good runs ' + Math.round(behind($('g5Good'))) + 'px of a line behind a box that is not its end');
+
+    /* G6 */
+    var p6b = plates($('g6Bad')), p6g = plates($('g6Good'));
+    ok('G6 (wrong sample)', p6b.some(function (p) { return p.covers; }), 'no plate in g6Bad covers its line any more');
+    ok('G6 (wrong sample)', p6b.some(function (p) { return p.under; }), 'no plate in g6Bad is under a box drawn after it any more');
+    p6g.forEach(function (p) {
+      ok('G6', !p.covers, 'g6Good: plate ' + p.name + ' covers its line');
+      ok('G6', !p.under, 'g6Good: plate ' + p.name + ' is partly under a box drawn after it');
+      ok('G6', p.covers || p.gap >= 4, 'g6Good: plate ' + p.name + ' is ' + p.gap.toFixed(1) + 'px from a line (4 or more)');
+    });
+
+    /* G7 */
+    var k7b = legend($('g7Bad')), k7g = legend($('g7Good'));
+    ok('G7 (wrong sample)', k7b.hits || k7b.above, 'the g7Bad key now sits clear below the drawing');
+    ok('G7', !k7g.hits && !k7g.above, 'the g7Good key ' + (k7g.hits ? 'overlaps a box' : 'sits above the lowest box'));
+
+    /* G8 */
+    var b8 = $('g8Bad'), g8 = $('g8Good'), w8 = g8.viewBox.baseVal.width;
+    ok('G8 (wrong sample)', px(cs(b8).minWidth) < b8.viewBox.baseVal.width && !scroller(b8),
+       'g8Bad gained a min-width or a sideways scroller, so it no longer shrinks');
+    ok('G8', px(cs(g8).minWidth) === w8, 'g8Good min-width is ' + cs(g8).minWidth + ', its viewBox is ' + w8 + ' wide');
+    ok('G8', !!g8.parentElement && cs(g8.parentElement).overflowX === 'auto', 'g8Good is not inside an overflow-x:auto parent');
+
+    /* G2 / G10 */
+    var nb = $('g2Bad').querySelectorAll('rect.box').length, ab = $('g2Bad').querySelectorAll('rect.box.acc').length;
+    var ng = $('g2Good').querySelectorAll('rect.box').length, ag = $('g2Good').querySelectorAll('rect.box.acc').length;
+    ok('G2 (wrong sample)', nb > 9, 'g2Bad is down to ' + nb + ' boxes');
+    ok('G10 (wrong sample)', ab > 2, 'g2Bad is down to ' + ab + ' accent boxes');
+    ok('G2', ng <= 9, 'g2Good holds ' + ng + ' boxes');
+    ok('G10', ag === 1, 'g2Good has ' + ag + ' accent boxes, not one');
+
+    /* G9: every right sample is a named figure */
+    ['g3Good', 'g5Good', 'g6Good', 'g7Good', 'g8Good', 'g2Good'].forEach(function (id) {
+      var svg = $(id), ids = (svg.getAttribute('aria-labelledby') || '').split(/\s+/).filter(Boolean);
+      var nodes = ids.map(function (x) { return document.getElementById(x); });
+      var filled = nodes.length > 0 && nodes.every(function (n) { return n && n.textContent.trim(); });
+      var title = nodes.some(function (n) { return n && n.tagName.toLowerCase() === 'title'; });
+      var desc = nodes.some(function (n) { return n && n.tagName.toLowerCase() === 'desc'; });
+      ok('G9', svg.getAttribute('role') === 'img' && filled && title && desc,
+         id + ' is not a named figure: needs role="img" and aria-labelledby naming a filled <title> and <desc>');
     });
   })();
 

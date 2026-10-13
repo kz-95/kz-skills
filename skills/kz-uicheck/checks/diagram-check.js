@@ -8,11 +8,14 @@
                       cards with no arrows between them may hold 12 (G2).
      DIAGONAL         a straight slanted run between boxes; a rounded bend or a wide arc is not one (G3).
      CORNER           a line that ends within 8px of a box corner, so it is unclear which edge it leaves (G3).
-     STACKED          two lines drawn on top of each other for 12px or more (G4).
-     SHARED PORT      two lines meeting one box less than 8px apart (G4; the rule asks 12, 8 on a small box).
+     STACKED          two lines drawn on top of each other for 12px or more (G4). Lines that start at one
+                      point and end apart (a tree fanning out from one trunk) are one bus, not stacked.
+     SHARED PORT      two lines meeting one box less than 8px apart (G4; the rule asks 12, 8 on a small box);
+                      not between lines of one fan.
      BEHIND BOX       a line running behind a box that is neither of its ends (G5).
      LABEL ON LINE    a label plate covering its own line (G6).
      LABEL GAP        a label plate under 4px from a line it does not cover (G6; 6 to 10 reads best).
+                      Neither applies to an ER/UML multiplicity plate ("1", "0..*", "1..n").
      PLATE UNDER BOX  a label plate partly covered by a box drawn after it (G6).
      KEY INSIDE       a key (legend) that overlaps a box or sits above the bottom of the drawing (G7).
      SHRUNK           the diagram drawn narrower than its native viewBox width on a narrow screen (G8).
@@ -26,9 +29,11 @@
      TRIVIAL          two boxes or fewer and at most one line - would a sentence do (G1)?
 
    What it reads as what. A box is a stroked <rect> at least 60x40 that holds no other box (one that does is
-   a zone). A label plate is a filled, unstroked <rect> 20-200 wide and 8-14 tall. A line is a <path>,
-   <line> or <polyline> with an arrow marker. Mark anything the shapes do not say with data-diagram="box",
-   "label", "line" or "key", and a whole <svg> with data-diagram to have it measured even with no lines; a line of class "spoke" (a radial write-back in a loop) is exempt from DIAGONAL.
+   a zone); a box drawn twice at one place (an opaque mask under a styled rect) counts once. A label plate
+   is a filled, unstroked <rect> 20-200 wide and 8-14 tall. A line is a <path>, <line> or <polyline> with an
+   arrow marker. Mark anything the shapes do not say with data-diagram="box", "label", "line" or "key", and
+   a whole <svg> with data-diagram to have it measured even with no lines. A line of class "spoke" (a radial
+   write-back in a loop) is exempt from DIAGONAL.
    A deliberately wrong sample opts out with data-diagram-check="skip" on itself or an ancestor.
    Reads geometry only: it never clicks or moves anything. Run it at a wide width and at 375px. */
 (function diagramCheck() {
@@ -41,10 +46,13 @@
     var t = svg.querySelector('title');
     return 'svg' + (svg.id ? '#' + svg.id : '') + (t && t.textContent.trim() ? ' "' + t.textContent.trim().slice(0, 40) + '"' : '');
   }
-  function text(el) {
+  function words(el) {
     var n = el.nextElementSibling;
-    return n && n.tagName.toLowerCase() === 'text' ? ' "' + n.textContent.trim().slice(0, 20) + '"' : '';
+    return n && n.tagName.toLowerCase() === 'text' ? n.textContent.trim() : '';
   }
+  function text(el) { var w = words(el); return w ? ' "' + w.slice(0, 20) + '"' : ''; }
+  function near(a, b, d) { return Math.abs(a.x - b.x) < d && Math.abs(a.y - b.y) < d; }
+  function same(a, b) { return Math.abs(a.left - b.left) <= 1 && Math.abs(a.top - b.top) <= 1 && Math.abs(a.right - b.right) <= 1 && Math.abs(a.bottom - b.bottom) <= 1; }
   function inside(p, r, pad) { return p.x > r.left + pad && p.x < r.right - pad && p.y > r.top + pad && p.y < r.bottom - pad; }
   function area(a, b) {
     return Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
@@ -79,6 +87,8 @@
       if (role(r)) { return false; }
       var u = unit(r); return u.w >= 60 && u.h >= 40 && painted(getComputedStyle(r).stroke);
     });
+    /* a box drawn twice (an opaque mask under a styled rect) is one box: keep the later one */
+    boxes = boxes.filter(function (b, i) { return !boxes.some(function (o, k) { return k > i && same(box(o), box(b)); }); });
     /* a box that holds another box is a zone, not a box */
     var zones = boxes.filter(function (z) { return role(z) !== 'box' && boxes.some(function (b) { return b !== z && holds(box(z), box(b)) && area(box(b), box(b)) < area(box(z), box(z)) * 0.9; }); });
     boxes = boxes.filter(function (b) { return zones.indexOf(b) < 0; });
@@ -153,9 +163,16 @@
       }
     });
 
-    /* G4: stacked lines, and shared ports ----------------------------------------------------------- */
+    /* G4: stacked lines, and shared ports. Two lines that start at one point and end apart are a fan from
+       one trunk (a tree bus): their common stem is one stroke on purpose. Two that also end together are
+       one line drawn twice, and still count. */
+    function fan(i, j) {
+      var A = pts[i], B = pts[j];
+      return near(A[0], B[0], 2) && !near(A[A.length - 1], B[B.length - 1], 2);
+    }
     for (var i = 0; i < pts.length; i++) {
       for (var j = i + 1; j < pts.length; j++) {
+        if (fan(i, j)) { continue; }
         var A = pts[i], B = pts[j], shared = 0;
         for (var s = 0; s < A.length; s += 2) {
           for (var t = 0; t < B.length; t++) { if (Math.abs(A[s].x - B[t].x) < 1.5 && Math.abs(A[s].y - B[t].y) < 1.5) { shared += 2; break; } }
@@ -167,7 +184,7 @@
     pts.forEach(function (P, li) { [P[0], P[P.length - 1]].forEach(function (p) { var b = boxAt(p); if (b) { ends.push({ l: li, p: p, b: b }); } }); });
     for (var e = 0; e < ends.length; e++) {
       for (var f = e + 1; f < ends.length; f++) {
-        if (ends[e].l === ends[f].l || ends[e].b !== ends[f].b) { continue; }
+        if (ends[e].l === ends[f].l || ends[e].b !== ends[f].b || fan(ends[e].l, ends[f].l)) { continue; }
         var d = Math.sqrt(Math.pow(ends[e].p.x - ends[f].p.x, 2) + Math.pow(ends[e].p.y - ends[f].p.y, 2)) / scale;
         if (d < 8) { add('SHARED PORT', 'two lines meet one box ' + d.toFixed(1) + 'px apart - give each its own point, 12px apart'); }
       }
@@ -176,7 +193,8 @@
     /* G6: label plates ------------------------------------------------------------------------------- */
     plates.forEach(function (m) {
       var r = box(m), inBox = boxes.some(function (b) { return holds(box(b), r); });
-      if (!inBox) {
+      var multiplicity = /^[0-9n*.,\s]+$/.test(words(m)); /* "1", "0..*", "1..n" sit on their line by convention */
+      if (!inBox && !multiplicity) {
         for (var li = 0; li < pts.length; li++) {
           var P = pts[li], over = P.filter(function (p) { return inside(p, r, 0); }).length;
           if (over > 6) { add('LABEL ON LINE', 'plate' + text(m) + ' covers its own line - move it 6-10px beside the line'); break; }
