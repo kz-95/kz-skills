@@ -148,13 +148,23 @@ All 84 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 ```
 skills/        the twelve skills, each a direct child
 docs/          index, install guide, rule index, live reference page, history
-scripts/       build-index.py (generates the rule index), validate.py (CI)
+scripts/       build-index.py (generates the rule index), validate.py and check-branch.py (CI)
 llms.txt       index for LLM crawlers          AGENTS.md  how any agent works here
 ```
 
 ## Contributing
 
 Rule IDs are stable: other people's agents cite them, so never renumber. Every new rule ships with a check that fails when it is broken, and with a wrong/right sample. Run `python scripts/validate.py` before opening a pull request. Commits are authored by the person making them, with no AI co-author lines.
+
+## Star history
+
+<a href="https://www.star-history.com/#kz-95/kz-skills&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=kz-95/kz-skills&type=Date&theme=dark">
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=kz-95/kz-skills&type=Date">
+    <img alt="Star history chart for kz-95/kz-skills" src="https://api.star-history.com/svg?repos=kz-95/kz-skills&type=Date">
+  </picture>
+</a>
 
 ## License
 

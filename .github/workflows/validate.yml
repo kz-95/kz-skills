@@ -16,6 +16,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      - name: Branch named after the work (rule 33)
+        if: github.event_name == 'pull_request'
+        run: python scripts/check-branch.py
       - name: Frontmatter, links, line endings, rule index, manifests
         run: python scripts/validate.py
       - name: The checks and the hook parse
