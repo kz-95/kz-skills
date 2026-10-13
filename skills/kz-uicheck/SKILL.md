@@ -1,6 +1,6 @@
 ---
 name: kz-uicheck
-description: Eight runnable browser checks that measure an interface instead of judging it: layout audit (overflow, overlap, clipped text, tap targets, SVG focus ring, undefined CSS variable), table check (text-box filters, missing filter or sort, header spacing), typing check (field rebuilt, caret-jumped or zoomed while typed), popover check (a panel that cannot be closed), contrast check (under 4.5:1 on the real background, both themes), modal check (scroll lock, focus, backdrop, Escape), focus check (every control shows focus) and form check (labels, types, nudge, submit). Paste into the console; no build step, no framework. Use before calling UI work done and once at phone width. Triggers on "/kz-uicheck", "check this page", "layout audit", "table check", "contrast check", "modal check", "focus check", "form check", "verify the UI".
+description: Eight runnable browser checks that measure an interface instead of judging it: layout audit (overflow, overlap, clipped text, tap targets, SVG focus ring, undefined CSS variable, wrapped sequence), table check (text-box filters, missing filter or sort, header spacing), typing check (field rebuilt, caret-jumped or zoomed while typed), popover check (a panel that cannot be closed), contrast check (under 4.5:1 on the real background, both themes), modal check (scroll lock, focus, backdrop, Escape), focus check (every control shows focus) and form check (labels, types, nudge, submit). Paste into the console; no build step, no framework. Use before calling UI work done and once at phone width. Triggers on "/kz-uicheck", "check this page", "layout audit", "table check", "contrast check", "modal check", "focus check", "form check", "verify the UI".
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 
@@ -15,7 +15,7 @@ are checking. Nothing to install, no selectors to configure, no framework assume
 
 | Check | Catches | Rule |
 |---|---|---|
-| `checks/layout-audit.js` | Horizontal page overflow, overlapping boxes, clipped text, ragged control rows, tap targets under 44px, SVG text outside its viewBox or landing on other text, a focus ring on an SVG shape that is a bounding box instead of the shape (`FOCUS BOX`), a `var(--x)` that nothing defines so its whole declaration silently drops (`UNDEFINED TOKEN`) | `V3`, `L5` |
+| `checks/layout-audit.js` | Horizontal page overflow, overlapping boxes, clipped text, ragged control rows, tap targets under 44px, SVG text outside its viewBox or landing on other text, a focus ring on an SVG shape that is a bounding box instead of the shape (`FOCUS BOX`), a `var(--x)` that nothing defines so its whole declaration silently drops (`UNDEFINED TOKEN`), a sequence marked `data-orientation="horizontal"` that wraps and is taller than the area showing it (or wraps while marked `data-sequence="line"`), or overflows with no sideways scroll (`WRAPPED SEQUENCE`; opt a deliberately wrong sample out with `data-layout-check="skip"`) | `V3`, `L5`, `L11` |
 | `checks/table-check.js` | A column filter that is a bare text box or select instead of a panel, a column with no filter, a table with no sort, a header whose title and filter rows are split by a line or whose filter sits under 4px from one (`FILTERGAP`, measured in px); and, as advisories, no search, no live count, headers with no explainer. Skip a deliberately wrong sample with `data-table-check="skip"` | `S1`, `T1`-`T3` |
 | `checks/typing-check.js` | A field rebuilt mid-word (the phone keyboard closes), a caret thrown to the end, a field that moves while typed into, text under 16px that makes the browser zoom on focus | `F8` |
 | `checks/popover-check.js` | A dropdown or panel that cannot be closed: its trigger only opens (`STUCK`), Escape or an outside click does nothing, no visible Done on touch | `N2` |
@@ -34,6 +34,12 @@ python scripts/run-checks.py page.html --checks table-check,popover-check --widt
 Runs the checks on a local HTML file in headless Chrome (nothing to install beyond Python and Chrome)
 and exits 1 if any check fails, so a generated page or a static report can be checked in a script or
 a pre-commit step. One width per run; run it at a wide width and at 390.
+
+## What these cannot measure
+
+Whether an error says what to do next, a button names its action, an empty state says how to start, or a
+delete confirmation names its target: words, not geometry. `../kz-judge/` judges those with a small decision
+model, if one is available, and costs the agent no tokens.
 
 ## Done condition for any page with a table
 

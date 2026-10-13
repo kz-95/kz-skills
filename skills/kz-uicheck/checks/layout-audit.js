@@ -328,5 +328,50 @@
     });
   })();
 
+  /* 13. a sequence wraps only while all of it stays in view (rule L11). A container marked
+     data-orientation="horizontal" (or aria-orientation, where its role allows it) holds items in
+     order. Wrapping is allowed while the whole wrapped sequence fits the area that shows it - the
+     nearest ancestor that scrolls or clips vertically, else the window. It fails when the wrap makes
+     it taller than that area (the later items are out of sight below), when it wraps while marked
+     data-sequence="line" (a kanban board, a timeline or stepper: the line breaks at the wrap), or
+     when it overflows sideways with nothing to scroll it. A second row is a child that starts at or
+     below another's bottom, so a row of unequal heights is not mistaken for two. Opt a deliberately
+     wrong sample out with data-layout-check="skip". */
+  function shownHeight(el) {
+    for (var p = el.parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
+      if (/^(auto|scroll|hidden|clip)$/.test(getComputedStyle(p).overflowY)) { return p.clientHeight; }
+    }
+    return window.innerHeight;
+  }
+  Array.prototype.forEach.call(
+    document.querySelectorAll('[aria-orientation="horizontal"], [data-orientation="horizontal"]'),
+    function (seq) {
+      if (!seq.offsetParent || seq.closest('[data-layout-check="skip"]')) { return; }
+      var boxes = Array.prototype.filter.call(seq.children, function (k) {
+        return k.offsetParent && !k.hidden;
+      }).map(function (k) { return k.getBoundingClientRect(); }).filter(function (r) {
+        return r.width > 0 && r.height > 0;
+      });
+      if (boxes.length < 2) { return; }
+      var ox = getComputedStyle(seq).overflowX;
+      var wrapped = boxes.some(function (a, i) {
+        return boxes.some(function (b, j) { return i !== j && a.top >= b.bottom - 1; });
+      });
+      if (wrapped) {
+        var tall = seq.getBoundingClientRect().height, room = shownHeight(seq);
+        if (seq.getAttribute('data-sequence') === 'line') {
+          note('WRAPPED SEQUENCE', seq, boxes.length + ' items drawn as a line wrap onto more than one row - ' +
+            'the line breaks at the wrap; lay them in one row that scrolls sideways');
+        } else if (tall > room + 1) {
+          note('WRAPPED SEQUENCE', seq, boxes.length + ' items wrap to ' + Math.round(tall) + 'px in an area ' +
+            Math.round(room) + 'px high, so the later ones are out of sight below - lay them in one row ' +
+            'that scrolls sideways');
+        }
+      } else if (seq.scrollWidth > seq.clientWidth + 1 && ox !== 'auto' && ox !== 'scroll') {
+        note('WRAPPED SEQUENCE', seq, 'items overflow by ' + (seq.scrollWidth - seq.clientWidth) +
+          'px and it cannot scroll sideways (overflow-x ' + ox + ')');
+      }
+    });
+
   return problems.length ? problems : ['clean'];
 })();

@@ -2,9 +2,9 @@
 
 <a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#t1-filter"><img src="docs/assets/carousel-improvements.gif" alt="Five usability mistakes, each shown wrong, then right. T1: a filter is a panel, not a text box. F1: a required field says so before it is missed. F4: a field is the shape of what goes in it. N2: a panel can always be closed. F9: Enter moves to the next field." width="100%"></a>
 
-**Stack-neutral UI/UX rules that tell an AI agent what any interface must do, what breaks when it does not, and a browser check that fails it.** 57 UI rules, 21 chart rules, 16 principles, in ten installable skills for Claude Code and any agent that reads Markdown.
+**Stack-neutral UI/UX rules that tell an AI agent what any interface must do, what breaks when it does not, and a browser check that fails it.** 58 UI rules, 21 chart rules, 16 principles, in ten installable skills for Claude Code and any agent that reads Markdown.
 
-[Install](#quick-start) · [Live reference](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html) · [All 78 rules](docs/rule-index.md) · [For agents: llms.txt](llms.txt) · [Changelog](CHANGELOG.md)
+[Install](#quick-start) · [Live reference](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html) · [All 79 rules](docs/rule-index.md) · [For agents: llms.txt](llms.txt) · [Changelog](CHANGELOG.md)
 
 See the rules fail and pass, side by side:
 [Table filter](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#t1-filter) ·
@@ -54,13 +54,13 @@ First public release.
 
 | | | | |
 |---|:-:|---|:-:|
-| 57 UI rules, each with its failure and its check | ✅ | Works with any stack and any visual style | ✅ |
+| 58 UI rules, each with its failure and its check | ✅ | Works with any stack and any visual style | ✅ |
 | 21 chart rules | ✅ | 3 console checks that run on **any** page | ✅ |
 | A keyword router: task words to two or three sections | ✅ | Live wrong/right reference page | ✅ |
 | Claude Code skills, plugin manifest provided | ✅ | Plain Markdown for GPT, Codex, Cursor and others | ✅ |
 | Picks a palette, typeface or framework for you | ❌ | Judges hover and press states from a screenshot | ❌ |
 
-## The ten skills
+## The eleven skills
 
 | Skill | Reach for it when |
 |---|---|
@@ -72,6 +72,7 @@ First public release.
 | [`kz-flashrule`](skills/kz-flashrule/SKILL.md) | A fast rule check in one read: the 37 rules that break worst when missed, each with its ID and the fastest check. |
 | [`kz-askcard`](skills/kz-askcard/SKILL.md) | About to ask the user something: three to five decisions, one recommended, a custom option. |
 | [`kz-crew021`](skills/kz-crew021/SKILL.md) | A whole project, idea to maintenance, with a costed multi-agent crew. |
+| [`kz-judge`](skills/kz-judge/SKILL.md) | After the checks: the wording rules a script cannot measure (errors, button labels, empty states, delete confirmations), judged by Jev or a local Laya, only on questions each has passed on labelled examples. Costs the agent no tokens. |
 | [`kz-reflect`](skills/kz-reflect/SKILL.md) | A mistake was noticed and the fix verified: log it, classify it, and propose the rule or check change for a person to approve. |
 | [`kz-loopfix`](skills/kz-loopfix/SKILL.md) | One defect that "fix it and move on" already failed once: critic, fixer, then a gate. |
 
@@ -118,7 +119,7 @@ The skills are plain Markdown. Point your agent at [`AGENTS.md`](AGENTS.md) and 
 
 `rules-check.js` runs against the [reference page](docs/reference/README.md): it proves each right sample passes and each wrong sample still fails. The eight checks in `kz-uicheck` run on any page.
 
-All 78 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
+All 79 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 
 ## FAQ
 
@@ -144,7 +145,7 @@ All 78 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 ## Repository map
 
 ```
-skills/        the ten skills, each a direct child
+skills/        the eleven skills, each a direct child
 docs/          index, install guide, rule index, live reference page, history
 scripts/       build-index.py (generates the rule index), validate.py (CI)
 llms.txt       index for LLM crawlers          AGENTS.md  how any agent works here

@@ -35,7 +35,7 @@ scoped out by anything.
 | form, input, field, validation, required, submit, draft, wizard, steps, regex, pattern, email, phone, postcode, quantity, price, calculator, math, textarea, select on focus, typing, keyboard closes, caret jumps, screen jumps, zoom on focus, re-render | Forms | [F](#f-forms-and-input) |
 | button, delete, remove, clear, reset, save, toast, undo, confirm, loading, progress, hover, halo, clickable, affordance | Actions | [A](#a-actions-and-feedback) |
 | modal, dialog, dropdown, popover, tooltip, sheet, drawer, menu, tab, route, back, deep link | Overlays and navigation | [N](#n-overlays-and-navigation) |
-| layout, responsive, breakpoint, mobile, phone, safe area, bottom bar, scroll, overflow, column | Layout | [L](#l-layout-spacing-and-the-mobile-shell) |
+| layout, responsive, breakpoint, mobile, phone, safe area, bottom bar, scroll, overflow, column, horizontal, sideways, timeline, kanban, carousel, strip, stepper | Layout | [L](#l-layout-spacing-and-the-mobile-shell) |
 | colour, contrast, dark mode, theme, token, font, typography, size, spacing, shadow, elevation | Type, colour, theming | [Y](#y-type-colour-and-theming) |
 | animation, transition, motion, reduced motion, duration, easing | Motion | [M](#m-motion) |
 | slow, performance, lazy, skeleton, virtualise, jank, layout shift, images, fonts loading | Performance | [P](#p-performance-and-what-arrives-late) |
@@ -116,7 +116,8 @@ measurement, the arrange screen), Appendix T (scroll, view state, addressability
 **Rules:** L2 (spacing from a scale), L7 (survive content), V3 (verify the layout, which
 absorbed the old responsive rule), L5 (controls in a row share one height), L6 (bounded
 height), L8 and N3 (mobile shell), P2 (text longer than the mock), L1 (hierarchy and the
-blur test), L3 (spacing is a rhythm), L4 (depth), L9 (what the user holds at once).
+blur test), L3 (spacing is a rhythm), L4 (depth), L9 (what the user holds at once), L11 (a sequence
+wraps only while all of it stays in view).
 **Read:** Appendix F (control sizing, and never `display: flex` on a table cell), Appendix K
 (the layout audit and why the same failures recur), Appendix L, Appendix O.
 **Check:** `layout-audit.js`, at a wide width, a narrow one, and **375px with touch

@@ -6,7 +6,7 @@ the check that catches it, is in [`ui-rules.md`](../skills/kz-uiuxrule/rules/ui-
 [`chart-rules.md`](../skills/kz-uiuxrule/rules/chart-rules.md). To find a rule by the words of your task rather
 than its letter, use the keyword router, [`INDEX.md`](../skills/kz-uiuxrule/rules/INDEX.md).
 
-78 rules. Each category links to its live wrong/right samples.
+79 rules. Each category links to its live wrong/right samples.
 
 ## D - Fitting the design system
 
@@ -37,6 +37,7 @@ Live samples: [Layout, spacing and the mobile shell](https://kz-95.github.io/kz-
 | L8 | A scrolling mobile screen is three bars and one scroller. |
 | L10 | A control strip that will not fit across can fit down, and which side it takes is a measurement. |
 | L9 | Count what the screen asks the user to hold at once. |
+| L11 | A sequence wraps only while all of it stays in view. |
 
 ## B - Buttons and their explainers
 

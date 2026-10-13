@@ -1,6 +1,6 @@
 # Install
 
-Ten skills, each a folder with a `SKILL.md`. Install all of them: `kz-uiuxrule` links to `kz-engrules`, `kz-askcard` and `kz-uicheck` as siblings, and `kz-crew021` calls most of the others.
+Eleven skills, each a folder with a `SKILL.md`. Install all of them: `kz-uiuxrule` links to `kz-engrules`, `kz-askcard` and `kz-uicheck` as siblings, and `kz-crew021` calls most of the others.
 
 ## Claude Code, as a plugin
 
