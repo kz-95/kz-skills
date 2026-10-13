@@ -18,7 +18,7 @@ read by its parent.
 |---|---|
 | `../kz-engrules/` | Any code task at all - L0 behaviour, L1 code work, the S standing rules, ASCII discipline and its hook. The floor everything else sits on |
 | `../kz-fastfix/` | One small job: a typo, a wording or style change, a doc line, a one-line bug. A size test first; if it passes, the change is made directly and checked once, with no crew and no loop |
-| `../kz-flashrule/` | A fast rule check in one read: the 37 rules that break worst when missed, each with its ID and the fastest check. Use before calling work done; open the full rule when a line fails |
+| `../kz-flashrule/` | A fast rule check in one read: the 40 rules that break worst when missed, each with its ID and the fastest check. Use before calling work done; open the full rule when a line fails |
 | `../kz-askcard/` | About to ask the user something. Three to five decisions, one recommended, a custom option, a default per line, one card per turn |
 | `../kz-crew021/` | A whole project, idea to maintenance: phases, scope relay, PoC spike, contract-first parallel build, dispatch gates, budget, retro |
 | `../kz-uiuxrule/` | Anything that creates, changes, reviews or standardises UI - 57 UI rules, 6 motion rules, 21 chart rules, 16 principles, four modes |

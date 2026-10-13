@@ -22,7 +22,7 @@ kz-crew021       the workflow that dispatches the rest across a crew
 |---|---|---|
 | Any code task at all | `kz-engrules` first | It is short and nothing scopes it out |
 | A typo, a wording or style change, a doc line, a one-line bug | `kz-fastfix` | A size test, then the change made directly and checked once; no crew, no loop |
-| "Quick check before I call this done" | `kz-flashrule` | The 37 rules that break worst when missed, one read, each with its fastest check |
+| "Quick check before I call this done" | `kz-flashrule` | The 40 rules that break worst when missed, one read, each with its fastest check |
 | Build, change or review a screen, table, form, chart, overlay | `kz-uiuxrule` | The rules, in four modes |
 | "Look at this screenshot and tell me what is wrong" | `ui-glance` (child of `kz-uiuxrule`) | One read, one pass, three to six findings |
 | An animation, a transition, a press effect, nothing else | `kz-motionrule` | The six motion rules and their check, without the rest of the corpus |

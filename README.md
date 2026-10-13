@@ -70,7 +70,7 @@ First public release.
 | [`kz-uicheck`](skills/kz-uicheck/SKILL.md) | Before calling UI work done: nine paste-in browser checks that measure instead of judge. |
 | [`kz-engrules`](skills/kz-engrules/SKILL.md) | Any code task at all: the engineering floor everything else sits on. |
 | [`kz-fastfix`](skills/kz-fastfix/SKILL.md) | One small job (a typo, a style change, a one-line bug): a size test, then the change made directly and checked once. No crew, no loop. |
-| [`kz-flashrule`](skills/kz-flashrule/SKILL.md) | A fast rule check in one read: the 37 rules that break worst when missed, each with its ID and the fastest check. |
+| [`kz-flashrule`](skills/kz-flashrule/SKILL.md) | A fast rule check in one read: the 40 rules that break worst when missed, each with its ID and the fastest check. |
 | [`kz-askcard`](skills/kz-askcard/SKILL.md) | About to ask the user something: three to five decisions, one recommended, a custom option. |
 | [`kz-crew021`](skills/kz-crew021/SKILL.md) | A whole project, idea to maintenance, with a costed multi-agent crew. |
 | [`kz-judge`](skills/kz-judge/SKILL.md) | After the checks: the wording rules a script cannot measure (errors, button labels, empty states, delete confirmations), judged by Jev or a local Laya, only on questions each has passed on labelled examples. Costs the agent no tokens. |

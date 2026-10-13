@@ -25,6 +25,9 @@ Checks in backticks are [kz-uicheck](../kz-uicheck/SKILL.md) scripts: one at a t
 | 7 | ASCII only in source and docs: no em dash, curly quote, arrow or glyph. | `grep -nP '[^\x00-\x7F]'` on the changed files finds nothing. |
 | 8 | No AI attribution anywhere: no AI co-author, trailer or "Generated with". | `git log -1 --format=%B` and the diff name no AI, tool or model. |
 | 32 | Final review: no placeholder, TODO, skipped test or stray debug output left. | Grep the diff for `TODO`, `FIXME`, `.skip`, `.only`, `console.log`. |
+| 33 | Branch named after the work (`feat/`, `fix/`, `docs/`, `chore/`), never a tool or session id; never push to `main`. | `git branch --show-current` reads as the work, not as a generated id. |
+| 33a | Author and committer are the connected git account, read at commit time - never hard-coded, never the tool's default. | `gh api user` (or `get_me`) login and email match every line of `git log origin/main..HEAD --format='%an <%ae> \| %cn <%ce>'`. |
+| 33c | Merge, remote branch delete and force-push only on the owner's explicit say-so. | The task holds the owner's words for that branch or PR. |
 
 ## Data and destructive actions
 
