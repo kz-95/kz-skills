@@ -2,7 +2,7 @@
 
 **Your agent learns what any interface must do, what breaks when it does not, and runs a browser check that proves it.**
 
-<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#g"><img src="docs/assets/hero.gif" alt="A diagram an agent drew wrong: a slanted line, a label sitting on its line, and a line passing behind a box. diagram-check.js runs and reports DIAGONAL, LABEL ON LINE and BEHIND BOX, outlining each fault in magenta. The diagram redraws with square routes, the label beside its line and the line routed around the box, and the check reports clean (1 diagram measured). Closing card: Rules your agent can't argue with. Checks that measure them. kz-skills." width="100%"></a>
+<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html"><img src="docs/assets/hero.gif" alt="kz-skills: UI rules for AI coding agents, each with a browser check that measures it. Tables, rule T1: a bare text box under each column, table-check.js reports BOX (3 of 3 column filters are a bare text box), the filters become buttons with an open value panel, and the check reports no failures. Contrast, rule Y2, dark theme: a card label at 1.05:1, contrast-check.js reports LOW in dark, the label takes the dark-theme token at 7.84:1, and the check is clean in both themes. Charts, rule C5: a focused donut wedge ringed by its bounding box, layout-audit.js reports FOCUS BOX, the ring follows the wedge and shows its value, and the audit is clean. Diagrams, rule G6: the WRITE label sits on its line, diagram-check.js reports LABEL ON LINE, the label moves beside the line, and the check is clean. Closing card: 94 rules. 10 checks. Any stack. npx skills add kz-95/kz-skills." width="100%"></a>
 
 ```bash
 npx skills add kz-95/kz-skills
