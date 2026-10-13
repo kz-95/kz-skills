@@ -1,6 +1,6 @@
 ---
 name: kz-diagramrule
-description: The diagram part of the kz UI rules on its own - ten rules (G1-G10) for architecture diagrams, flowcharts, sequences, state machines, data models and swimlanes, with the budget, cut order, line and label numbers behind them, and diagram-check.js to measure them on the drawn page. Use when the work is only a diagram - drawing, reviewing or fixing one - and the rest of kz-uiuxrule is not needed. Triggers on "/kz-diagramrule", "diagram rules", "review this diagram", "architecture diagram", "flowchart", "draw a diagram".
+description: "The diagram part of the kz UI rules on its own - ten rules (G1-G10) for architecture diagrams, flowcharts, sequences, state machines, data models and swimlanes, with the budget, cut order, line and label numbers behind them, and diagram-check.js to measure them on the drawn page. Use when the work is only a diagram - drawing, reviewing or fixing one - and the rest of kz-uiuxrule is not needed. Triggers on \"/kz-diagramrule\", \"diagram rules\", \"review this diagram\", \"architecture diagram\", \"flowchart\", \"draw a diagram\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 

@@ -6,6 +6,8 @@ Facts: 94 rules in all (57 UI + 6 motion + 21 chart + 10 diagram). 26 recorded a
 
 To find the rule for a task, match its words in the keyword index; it names the two or three sections that apply, so the whole rule set need not be read.
 
+This file is served at https://kz-95.github.io/kz-skills/llms.txt and at https://raw.githubusercontent.com/kz-95/kz-skills/main/llms.txt; the two are identical.
+
 ## Start here
 
 - [README](https://raw.githubusercontent.com/kz-95/kz-skills/main/README.md): what this is, install, the rules most often missed

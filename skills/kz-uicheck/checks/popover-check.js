@@ -97,7 +97,7 @@
     /* a visible close control on touch - looked for while the panel is OPEN, not after the toggle tests closed it */
     if (TOUCH && panel) {
       var closer = Array.prototype.filter.call(panel.querySelectorAll('button, [role="button"], a'), function (b) {
-        return visible(b) && /^(done|close|cancel|dismiss|ok|apply|x|×|✕)$/i.test((b.textContent || b.getAttribute('aria-label') || '').trim());
+        return visible(b) && /^(done|close|cancel|dismiss|ok|apply|x|\u00d7|\u2715)$/i.test((b.textContent || b.getAttribute('aria-label') || '').trim());
       })[0];
       var hasControls = !!panel.querySelector('input, select, textarea, button, [role="option"], [role="menuitem"], a[href]');
       if (!closer && hasControls) { advisory.push('NODONE | ' + label(t) + ' | on touch the panel has no visible Done or close button'); }

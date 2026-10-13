@@ -97,7 +97,6 @@ The downsides are real:
 
 - **It does not pick a look.** There is no palette, typeface or component library here, so pair it with your design system or a style skill.
 - **The checks need a browser.** They are console scripts that measure the rendered page; a screenshot or a code review cannot run them, and hover, press and focus states need the live page.
-- **The plugin path is pre-release.** The plugin manifest has not yet been installed from GitHub; `npx skills` and the manual copy are the verified routes.
 
 ---
 
@@ -118,8 +117,9 @@ Add `-l` to list the skills without installing, or `--skill kz-uiuxrule` to take
 /plugin install kz-skills@kz-skills
 ```
 
+From a terminal, the same two steps are `claude plugin marketplace add kz-95/kz-skills` and `claude plugin install kz-skills@kz-skills`.
+The plugin installs and enables all thirteen skills.
 Then `/kz-uiuxrule`, or `/kz-skill` if you are not sure which one.
-The plugin path is pre-release (see [Important notes](#important-notes)).
 
 </details>
 
@@ -191,21 +191,21 @@ Every rule there has a wrong half beside it, and a check asserts the wrong half 
 
 ## The thirteen skills
 
-| Skill | Reach for it when |
-|---|---|
-| [`kz-skill`](skills/kz-skill/SKILL.md) | A request spans several of these, or it is unclear which applies. The router. |
-| [`kz-uiuxrule`](skills/kz-uiuxrule/SKILL.md) | Building, changing or reviewing any UI: the rules, in four modes (adopt, review, build, loop). |
-| [`kz-motionrule`](skills/kz-motionrule/SKILL.md) | Work that only moves - an animation, a transition, a press effect: the six motion rules and their check, without the rest of the corpus. |
-| [`kz-diagramrule`](skills/kz-diagramrule/SKILL.md) | Only a diagram: boxes, lines and labels - the ten diagram rules and their check, without the rest of the corpus. |
-| [`kz-uicheck`](skills/kz-uicheck/SKILL.md) | Before calling UI work done: ten paste-in browser checks that measure instead of judge. |
-| [`kz-engrules`](skills/kz-engrules/SKILL.md) | Any code task at all: the engineering floor everything else sits on, including how branches, commits and merges are done (rules 33-33c). |
-| [`kz-fastfix`](skills/kz-fastfix/SKILL.md) | One small job (a typo, a style change, a one-line bug): a size test, then the change made directly and checked once. No crew, no loop. |
-| [`kz-flashrule`](skills/kz-flashrule/SKILL.md) | A fast rule check in one read: the rules that break worst when missed, each with its ID and the fastest check. |
-| [`kz-askcard`](skills/kz-askcard/SKILL.md) | About to ask the user something: three to five decisions, one recommended, a custom option. |
-| [`kz-crew021`](skills/kz-crew021/SKILL.md) | A whole project, idea to maintenance, with a costed multi-agent crew. |
-| [`kz-judge`](skills/kz-judge/SKILL.md) | After the checks: the wording rules a script cannot measure (errors, button labels, empty states, delete confirmations), judged by Jev or a local Laya, only on questions each has passed on labelled examples. Costs the agent no tokens. |
-| [`kz-reflect`](skills/kz-reflect/SKILL.md) | A mistake was noticed and the fix verified: log it, classify it, and propose the rule or check change for a person to approve. |
-| [`kz-loopfix`](skills/kz-loopfix/SKILL.md) | One defect that "fix it and move on" already failed once: critic, fixer, then a gate. |
+Each skill, and when to reach for it:
+
+- **[`kz-skill`](skills/kz-skill/SKILL.md)**: A request spans several of these, or it is unclear which applies. The router.
+- **[`kz-uiuxrule`](skills/kz-uiuxrule/SKILL.md)**: Building, changing or reviewing any UI: the rules, in four modes (adopt, review, build, loop).
+- **[`kz-motionrule`](skills/kz-motionrule/SKILL.md)**: Work that only moves - an animation, a transition, a press effect: the six motion rules and their check, without the rest of the corpus.
+- **[`kz-diagramrule`](skills/kz-diagramrule/SKILL.md)**: Only a diagram: boxes, lines and labels - the ten diagram rules and their check, without the rest of the corpus.
+- **[`kz-uicheck`](skills/kz-uicheck/SKILL.md)**: Before calling UI work done: ten paste-in browser checks that measure instead of judge.
+- **[`kz-engrules`](skills/kz-engrules/SKILL.md)**: Any code task at all: the engineering floor everything else sits on, including how branches, commits and merges are done (rules 33-33c).
+- **[`kz-fastfix`](skills/kz-fastfix/SKILL.md)**: One small job (a typo, a style change, a one-line bug): a size test, then the change made directly and checked once. No crew, no loop.
+- **[`kz-flashrule`](skills/kz-flashrule/SKILL.md)**: A fast rule check in one read: the rules that break worst when missed, each with its ID and the fastest check.
+- **[`kz-askcard`](skills/kz-askcard/SKILL.md)**: About to ask the user something: three to five decisions, one recommended, a custom option.
+- **[`kz-crew021`](skills/kz-crew021/SKILL.md)**: A whole project, idea to maintenance, with a costed multi-agent crew.
+- **[`kz-judge`](skills/kz-judge/SKILL.md)**: After the checks: the wording rules a script cannot measure (errors, button labels, empty states, delete confirmations), judged by Jev or a local Laya, only on questions each has passed on labelled examples. Costs the agent no tokens.
+- **[`kz-reflect`](skills/kz-reflect/SKILL.md)**: A mistake was noticed and the fix verified: log it, classify it, and propose the rule or check change for a person to approve.
+- **[`kz-loopfix`](skills/kz-loopfix/SKILL.md)**: One defect that "fix it and move on" already failed once: critic, fixer, then a gate.
 
 Plus [`ui-glance`](skills/kz-uiuxrule/skills/ui-glance/SKILL.md), a child of `kz-uiuxrule`: a screenshot reviewed in one pass against a 22-point checklist.
 
@@ -296,7 +296,6 @@ The skills are Markdown and the hook script is host-neutral, but the hook has on
 
 ## Important notes
 
-- **Pre-release.** The plugin manifest follows the shape of other marketplace plugins, but this repository has not yet been installed from GitHub as a plugin. `npx skills` and the manual copy are the verified paths.
 - **The purpose hook is not in the plugin yet.** It asks what a skill is for before it acts. Wire it by hand from [`skills/kz-askcard/hooks/README.md`](skills/kz-askcard/hooks/README.md).
 - **Hover, press and focus states need the live page or the checks.** A screenshot is one still.
 - **Sample data uses Malaysian ringgit (`RM`).** It is sample data only.

@@ -1,6 +1,6 @@
 ---
 name: kz-fastfix
-description: The fast lane for small work - a short size test first, then the change made directly with no crew, no card and no ledger, checked once by the tests that touch it and the project's automatic safety checks, and reported in three lines. Leaves the lane the moment the job grows or a check fails twice. Use before opening kz-crew021 for a single task, and whenever a request is a quick fix, a typo, a wording or style change, a doc line or a one-line bug. Triggers on "/kz-fastfix", "fast fix", "quick fix", "small fix", "just fix it".
+description: "The fast lane for small work - a short size test first, then the change made directly with no crew, no card and no ledger, checked once by the tests that touch it and the project's automatic safety checks, and reported in three lines. Leaves the lane the moment the job grows or a check fails twice. Use before opening kz-crew021 for a single task, and whenever a request is a quick fix, a typo, a wording or style change, a doc line or a one-line bug. Triggers on \"/kz-fastfix\", \"fast fix\", \"quick fix\", \"small fix\", \"just fix it\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 

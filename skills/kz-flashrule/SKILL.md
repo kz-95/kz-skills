@@ -1,6 +1,6 @@
 ---
 name: kz-flashrule
-description: One-page digest of the most critical rules across the kz skillset - the safety floor, data and destructive actions, tables, forms, overlays, layout and theming, the charts that get misread, diagrams, and asking the user - each line a rule ID, the rule in a few words and the fastest check for it (a kz-uicheck script and its finding code, or one manual step). For a fast rule check of finished work in one read, not a copy of every rule. Use before calling work done, in step three of kz-fastfix, or when a full review is too heavy. The source rule always wins. Triggers on "/kz-flashrule", "flash rule", "fast rule check", "critical rules", "quick check".
+description: "One-page digest of the most critical rules across the kz skillset - the safety floor, data and destructive actions, tables, forms, overlays, layout and theming, the charts that get misread, diagrams, and asking the user - each line a rule ID, the rule in a few words and the fastest check for it (a kz-uicheck script and its finding code, or one manual step). For a fast rule check of finished work in one read, not a copy of every rule. Use before calling work done, in step three of kz-fastfix, or when a full review is too heavy. The source rule always wins. Triggers on \"/kz-flashrule\", \"flash rule\", \"fast rule check\", \"critical rules\", \"quick check\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 

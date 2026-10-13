@@ -1,6 +1,6 @@
 ---
 name: kz-engrules
-description: Stack-neutral engineering rules for any code work, UI or not - L0 always-on behaviour and honesty, L1 for any code task (understand first, fit the codebase, size the solution, quality bar, scope discipline, close out, git), and the S standing rules. Includes ASCII discipline with a PostToolUse hook that enforces it, and the rule on composing rather than copying. Use before starting any code task, and when closing one out. Triggers on "/kz-engrules", "engineering rules", "code rules", "what rules apply here".
+description: "Stack-neutral engineering rules for any code work, UI or not - L0 always-on behaviour and honesty, L1 for any code task (understand first, fit the codebase, size the solution, quality bar, scope discipline, close out, git), and the S standing rules. Includes ASCII discipline with a PostToolUse hook that enforces it, and the rule on composing rather than copying. Use before starting any code task, and when closing one out. Triggers on \"/kz-engrules\", \"engineering rules\", \"code rules\", \"what rules apply here\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 

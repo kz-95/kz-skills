@@ -1,6 +1,6 @@
 ---
 name: kz-crew021
-description: Run a project from idea to maintenance with a costed multi-agent crew. Five phases with rigor that scales per phase, one scope relay, one Ask Card, a PoC spike with kill criteria before any fan-out, contract-first parallel build in worktrees, a scripted dispatch pipeline with six gates including a token budget gate, a single scribe for shared docs, and a per-session retro that feeds velocity back into planning. Triggers on "/kz-crew021", "crew project", "build this project", "plan and build", "run the crew".
+description: "Run a project from idea to maintenance with a costed multi-agent crew. Five phases with rigor that scales per phase, one scope relay, one Ask Card, a PoC spike with kill criteria before any fan-out, contract-first parallel build in worktrees, a scripted dispatch pipeline with six gates including a token budget gate, a single scribe for shared docs, and a per-session retro that feeds velocity back into planning. Triggers on \"/kz-crew021\", \"crew project\", \"build this project\", \"plan and build\", \"run the crew\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 

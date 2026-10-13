@@ -5,13 +5,15 @@
 
 Checks, each of which has caught a real defect in this project:
   1. every skill is a DIRECT child of skills/ (a nested one is not registered as a command)
-     and its frontmatter `name` equals its folder name, with a non-empty description
+     and its frontmatter `name` equals its folder name, with a non-empty description;
+     the frontmatter is strict YAML (an unquoted value with ': ' makes the skills CLI skip it)
   2. every relative link, relative path and <img> source in the Markdown resolves
   3. no CRLF line endings in text files (.gitattributes enforces LF)
   4. docs/rule-index.md is up to date with the rule files
   5. the plugin and marketplace manifests parse and agree on the plugin name
   6. every published link (https://kz-95.github.io/kz-skills/...) names a file under docs/,
      and its #anchor, on an .html page, names an id that page has
+  7. docs/llms.txt is a byte-for-byte copy of llms.txt (GitHub Pages serves docs/ only)
 Exit status is 0 only when every check passes.
 """
 import io
@@ -33,14 +35,82 @@ def read(p):
     return io.open(p, encoding="utf-8", newline="").read()
 
 
-def frontmatter(text):
+YAML_INDICATORS = "-?:,[]{}#&*!|>'\"%@`"
+DQ_ESCAPES = {"\\": "\\", '"': '"', "/": "/", "n": "\n", "t": "\t", "r": "\r", "0": "\0", " ": " "}
+
+
+def frontmatter(text, errors=None):
+    """Read the frontmatter as the strict YAML parsers that install skills read it.
+
+    Values may be plain, "double quoted", 'single quoted' or a block scalar (>-, |).
+    A plain value that strict YAML rejects or misreads (one containing ': ' or ' #',
+    or starting with an indicator) is reported to `errors`: the skills CLI skips such
+    a skill with "Nested mappings are not allowed in compact mappings".
+    """
     m = re.match(r"^---\n(.*?)\n---\n", text.replace("\r\n", "\n"), re.S)
     out = {}
-    if m:
-        for line in m.group(1).split("\n"):
-            k = re.match(r"^([A-Za-z_-]+):\s*(.*)$", line)
-            if k:
-                out[k.group(1)] = k.group(2).strip()
+    err = errors if errors is not None else []
+    if not m:
+        err.append("no frontmatter block (--- ... ---) at the top")
+        return out
+    lines = m.group(1).split("\n")
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        i += 1
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        k = re.match(r"^([A-Za-z_][A-Za-z0-9_-]*):(?: (.*))?$", line)
+        if not k:
+            err.append("line %d is not a top-level `key: value`: %r" % (i, line[:60]))
+            continue
+        key, raw = k.group(1), (k.group(2) or "").strip()
+        if raw in (">", ">-", ">+", "|", "|-", "|+"):
+            block = []
+            while i < len(lines) and (lines[i].startswith(" ") or not lines[i].strip()):
+                block.append(lines[i].strip())
+                i += 1
+            if raw.startswith(">"):
+                val = re.sub(r"(?<!\n)\n(?!\n)", " ", "\n".join(block).strip("\n"))
+            else:
+                val = "\n".join(block).strip("\n")
+            out[key] = val
+            continue
+        if raw.startswith('"'):
+            val, j, ok = [], 1, False
+            while j < len(raw):
+                c = raw[j]
+                if c == "\\" and j + 1 < len(raw) and raw[j + 1] in DQ_ESCAPES:
+                    val.append(DQ_ESCAPES[raw[j + 1]])
+                    j += 2
+                    continue
+                if c == "\\":
+                    err.append("%s: unknown escape in a double-quoted value" % key)
+                    j += 1
+                    continue
+                if c == '"':
+                    ok = True
+                    break
+                val.append(c)
+                j += 1
+            rest = raw[j + 1:].strip() if ok else ""
+            if not ok or (rest and not rest.startswith("#")):
+                err.append("%s: double-quoted value is not closed on its line, or has text after the closing quote" % key)
+            out[key] = "".join(val)
+        elif raw.startswith("'"):
+            mm = re.match(r"^'((?:[^']|'')*)'\s*(#.*)?$", raw)
+            if not mm:
+                err.append("%s: single-quoted value is not closed on its line" % key)
+                out[key] = raw.strip("'")
+            else:
+                out[key] = mm.group(1).replace("''", "'")
+        else:
+            if raw and (raw[0] in YAML_INDICATORS or ": " in raw or " #" in raw or raw.endswith(":")):
+                err.append("%s: unquoted value that strict YAML rejects (contains ': ' or ' #', or starts "
+                           "with an indicator); wrap it in double quotes" % key)
+            out[key] = raw
+        if i < len(lines) and lines[i].startswith(" "):
+            err.append("%s: value continues on an indented line; use one line or a block scalar (>-)" % key)
     return out
 
 
@@ -52,8 +122,11 @@ for base, dirs, files in os.walk(skills_dir):
     if "SKILL.md" in files:
         found += 1
         folder = os.path.basename(base)
-        fm = frontmatter(read(os.path.join(base, "SKILL.md")))
         rel = os.path.relpath(base, ROOT)
+        yaml_errors = []
+        fm = frontmatter(read(os.path.join(base, "SKILL.md")), yaml_errors)
+        for e in yaml_errors:
+            fail("%s/SKILL.md: frontmatter is not strict YAML - %s" % (rel, e))
         if fm.get("name") != folder:
             fail("%s: frontmatter name %r does not match its folder %r" % (rel, fm.get("name"), folder))
         if not fm.get("description"):
@@ -173,9 +246,33 @@ for rel in tracked:
                 if anchor not in ids_cache[local]:
                     fail("%s:%d: published link to an anchor the page does not have -> %s" % (rel, n, m.group(0)))
 
+# 7. llms.txt is served from docs/ by GitHub Pages, so the copy there must match the root one --
+try:
+    if open(os.path.join(ROOT, "llms.txt"), "rb").read() != open(os.path.join(ROOT, "docs", "llms.txt"), "rb").read():
+        fail("docs/llms.txt is out of date - copy llms.txt")
+except OSError as e:
+    fail("docs/llms.txt is out of date - copy llms.txt (%s)" % e)
+
+# 8. ASCII only (engineering rule 7) in the files agents read and run -----------------------------
+# Skill text, rules, scripts and checks. A line that must quote a non-ASCII sample (a name a form
+# has to accept) ends with the invisible marker <!-- ascii-ok -->.
+for base, dirs, files in os.walk(ROOT):
+    dirs[:] = [d for d in dirs if d not in (".git", "node_modules", "__pycache__", "out", "history")]
+    rel_base = os.path.relpath(base, ROOT)
+    if not (rel_base == "." or rel_base.startswith(("skills", "scripts"))):
+        continue
+    for f in files:
+        if not f.endswith((".md", ".js", ".mjs", ".py", ".ts", ".tsx", ".txt")):
+            continue
+        path = os.path.join(base, f)
+        for n, line in enumerate(io.open(path, encoding="utf-8", errors="replace"), 1):
+            if any(ord(c) > 127 for c in line) and "<!-- ascii-ok -->" not in line:
+                fail("%s:%d: non-ASCII character (rule 7: use the ASCII form)" % (os.path.relpath(path, ROOT), n))
+                break
+
 if problems:
     print("%d problem(s):" % len(problems))
     for p in problems:
         print("  - " + p)
     sys.exit(1)
-print("ok: %d skills, links resolve, LF endings, rule index current, manifests agree, published links resolve" % found)
+print("ok: %d skills, links resolve, LF endings, rule index current, manifests agree, published links resolve, llms.txt copies match, ASCII only" % found)
