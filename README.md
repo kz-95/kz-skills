@@ -2,7 +2,7 @@
 
 <a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#t1-filter"><img src="docs/assets/carousel-improvements.gif" alt="Five usability mistakes, each shown wrong, then right. T1: a filter is a panel, not a text box. F1: a required field says so before it is missed. F4: a field is the shape of what goes in it. N2: a panel can always be closed. F9: Enter moves to the next field." width="100%"></a>
 
-**Stack-neutral UI/UX rules that tell an AI agent what any interface must do, what breaks when it does not, and a browser check that fails it.** 58 UI rules, 21 chart rules, 16 principles, in ten installable skills for Claude Code and any agent that reads Markdown.
+**Stack-neutral UI/UX rules that tell an AI agent what any interface must do, what breaks when it does not, and a browser check that fails it.** 57 UI rules, 6 motion rules, 21 chart rules, 16 principles, in twelve installable skills for Claude Code and any agent that reads Markdown.
 
 [Install](#quick-start) · [Live reference](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html) · [All 79 rules](docs/rule-index.md) · [For agents: llms.txt](llms.txt) · [Changelog](CHANGELOG.md)
 
@@ -54,19 +54,20 @@ First public release.
 
 | | | | |
 |---|:-:|---|:-:|
-| 58 UI rules, each with its failure and its check | ✅ | Works with any stack and any visual style | ✅ |
+| 57 UI rules and 6 motion rules, each with its failure and its check | ✅ | Works with any stack and any visual style | ✅ |
 | 21 chart rules | ✅ | 3 console checks that run on **any** page | ✅ |
 | A keyword router: task words to two or three sections | ✅ | Live wrong/right reference page | ✅ |
 | Claude Code skills, plugin manifest provided | ✅ | Plain Markdown for GPT, Codex, Cursor and others | ✅ |
 | Picks a palette, typeface or framework for you | ❌ | Judges hover and press states from a screenshot | ❌ |
 
-## The eleven skills
+## The twelve skills
 
 | Skill | Reach for it when |
 |---|---|
 | [`kz-skill`](skills/kz-skill/SKILL.md) | A request spans several of these, or it is unclear which applies. The router. |
 | [`kz-uiuxrule`](skills/kz-uiuxrule/SKILL.md) | Building, changing or reviewing any UI: the rules, in four modes (adopt, review, build, loop). |
-| [`kz-uicheck`](skills/kz-uicheck/SKILL.md) | Before calling UI work done: eight paste-in browser checks that measure instead of judge. |
+| [`kz-motionrule`](skills/kz-motionrule/SKILL.md) | Work that only moves - an animation, a transition, a press effect: the six motion rules and their check, without the rest of the corpus. |
+| [`kz-uicheck`](skills/kz-uicheck/SKILL.md) | Before calling UI work done: nine paste-in browser checks that measure instead of judge. |
 | [`kz-engrules`](skills/kz-engrules/SKILL.md) | Any code task at all: the engineering floor everything else sits on. |
 | [`kz-fastfix`](skills/kz-fastfix/SKILL.md) | One small job (a typo, a style change, a one-line bug): a size test, then the change made directly and checked once. No crew, no loop. |
 | [`kz-flashrule`](skills/kz-flashrule/SKILL.md) | A fast rule check in one read: the 37 rules that break worst when missed, each with its ID and the fastest check. |
@@ -117,7 +118,7 @@ The skills are plain Markdown. Point your agent at [`AGENTS.md`](AGENTS.md) and 
 | `N5` | The mark showing where you are belongs to the thing it marks. | `rules-check.js` |
 | `V3` | Verify the layout, not only the behaviour. | `layout-audit.js` |
 
-`rules-check.js` runs against the [reference page](docs/reference/README.md): it proves each right sample passes and each wrong sample still fails. The eight checks in `kz-uicheck` run on any page.
+`rules-check.js` runs against the [reference page](docs/reference/README.md): it proves each right sample passes and each wrong sample still fails. The nine checks in `kz-uicheck` run on any page.
 
 All 79 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 
@@ -145,7 +146,7 @@ All 79 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 ## Repository map
 
 ```
-skills/        the eleven skills, each a direct child
+skills/        the twelve skills, each a direct child
 docs/          index, install guide, rule index, live reference page, history
 scripts/       build-index.py (generates the rule index), validate.py (CI)
 llms.txt       index for LLM crawlers          AGENTS.md  how any agent works here

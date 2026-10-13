@@ -1,8 +1,8 @@
 # kz-skills
 
-> Stack-neutral UI/UX rules for AI coding agents, with eight paste-in browser checks that measure them. 58 UI rules, 21 chart rules and 16 design principles, in ten installable Claude Code skills. Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. Licence: Apache-2.0 with Commons Clause (free to use, modify and use commercially; not to be sold). Usable by any agent that reads Markdown.
+> Stack-neutral UI/UX rules for AI coding agents, with nine paste-in browser checks that measure them. 57 UI rules, 6 motion rules, 21 chart rules and 16 design principles, in twelve installable Claude Code skills. Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. Licence: Apache-2.0 with Commons Clause (free to use, modify and use commercially; not to be sold). Usable by any agent that reads Markdown.
 
-Facts: 79 rules in all (58 UI + 21 chart). 26 recorded agent mistakes (Appendix Z of the UI rules). Every rule has a wrong sample and a right sample on the live reference page. Rules are numbered by category letter and number (T1, F9, N2, C5) and the numbers never change.
+Facts: 84 rules in all (57 UI + 6 motion + 21 chart). 26 recorded agent mistakes (Appendix Z of the UI rules). Every rule has a wrong sample and a right sample on the live reference page. Rules are numbered by category letter and number (T1, F9, N2, C5) and the numbers never change.
 
 To find the rule for a task, match its words in the keyword index; it names the two or three sections that apply, so the whole rule set need not be read.
 
@@ -17,7 +17,8 @@ To find the rule for a task, match its words in the keyword index; it names the 
 ## Skills
 
 - [kz-uiuxrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/SKILL.md): building, changing or reviewing any UI; four modes (adopt, review, build, loop)
-- [kz-uicheck](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/SKILL.md): eight paste-in browser checks
+- [kz-uicheck](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/SKILL.md): nine paste-in browser checks
+- [kz-motionrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-motionrule/SKILL.md): the motion rules alone, M1-M6, with motion-check.js
 - [kz-judge](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-judge/SKILL.md): wording rules a script cannot measure, judged by Jev or a local Laya; no agent tokens
 - [kz-reflect](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-reflect/SKILL.md): records what went wrong, classifies it, proposes the rule change; a person approves
 - [kz-engrules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/SKILL.md): engineering rules for any code work
@@ -31,6 +32,7 @@ To find the rule for a task, match its words in the keyword index; it names the 
 ## Rules
 
 - [UI rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/ui-rules.md): 58 rules by category, with appendices and 26 lessons
+- [Motion rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/motion-rules.md): 6 rules for anything that moves, with durations and curves
 - [Chart rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/chart-rules.md): 21 rules for anything that renders data as marks
 - [Design principles](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/design-principles.md): the 16 principles behind the rules
 - [Engineering rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/rules/engineering-rules.md): the floor under every task
@@ -44,6 +46,7 @@ To find the rule for a task, match its words in the keyword index; it names the 
 - [contrast-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/contrast-check.js): text under 4.5:1 on its real background, both themes
 - [modal-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/modal-check.js): scroll lock, focus, backdrop, Escape, focus return
 - [focus-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/focus-check.js): every control shows where focus is
+- [motion-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/motion-check.js): transition all, ease-in, layout transitions, scale(0), centre-origin popovers, no press state
 - [form-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/form-check.js): labels, input types, nudge, submit
 
 ## Optional
