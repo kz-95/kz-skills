@@ -1,6 +1,6 @@
 ---
 name: kz-uicheck
-description: Eight runnable browser checks that measure an interface instead of judging it: layout audit (overflow, overlap, clipped text, tap targets, SVG focus ring, undefined CSS variable, wrapped sequence), table check (text-box filters, missing filter or sort, header spacing), typing check (field rebuilt, caret-jumped or zoomed while typed), popover check (a panel that cannot be closed), contrast check (under 4.5:1 on the real background, both themes), modal check (scroll lock, focus, backdrop, Escape), focus check (every control shows focus) and form check (labels, types, nudge, submit). Paste into the console; no build step, no framework. Use before calling UI work done and once at phone width. Triggers on "/kz-uicheck", "check this page", "layout audit", "table check", "contrast check", "modal check", "focus check", "form check", "verify the UI".
+description: Nine runnable browser checks that measure an interface instead of judging it: layout audit (overflow, overlap, clipped text, tap targets, SVG focus ring, undefined CSS variable, wrapped sequence), table check (text-box filters, missing filter or sort, header spacing), typing check (field rebuilt, caret-jumped or zoomed while typed), popover check (a panel that cannot be closed), contrast check (under 4.5:1 on the real background, both themes), modal check (scroll lock, focus, backdrop, Escape), focus check (every control shows focus) form check (labels, types, nudge, submit) and motion check (transition all, ease-in, layout transitions, scale(0), centre-origin popovers, no press state). Paste into the console; no build step, no framework. Use before calling UI work done and once at phone width. Triggers on "/kz-uicheck", "check this page", "layout audit", "table check", "contrast check", "modal check", "focus check", "form check", "verify the UI".
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 
@@ -22,12 +22,13 @@ are checking. Nothing to install, no selectors to configure, no framework assume
 | `checks/contrast-check.js` | Text under 4.5:1 (3:1 large) against the background it really sits on, translucent layers and ancestor opacity composited, both themes; gradient backgrounds reported as `UNKNOWN`, never guessed | `Y2` |
 | `checks/modal-check.js` | A modal that leaves the page scrolling (`SCROLL`), shifts it sideways (`SHIFT`), does not take focus, lets clicks through to the page behind (`BACKDROP`), cancels Escape, or does not return focus to its opener | `N1` |
 | `checks/focus-check.js` | A control whose focus changes nothing visible (`NOFOCUS`), a focus indicator under 3:1 (`WEAK`), `tabindex` above 0, a clickable thing the keyboard cannot reach. Needs the page focused | `A` |
+| `checks/motion-check.js` | `transition: all` (`ALL`), an ease-in curve (`EASEIN`), a transitioned width/height/top/margin (`LAYOUTPROP`), an entrance at `scale(0)` (`SCALE0`), a popover or menu growing from its own centre (`ORIGIN`), a button with no `:active` rule (`NOPRESS`); no reduced-motion query is an advisory. Reads styles only, safe on any page. Skip a deliberately wrong sample with `data-motion-check="skip"` | `M1` `M3`-`M5` |
 | `checks/form-check.js` | A field with no label, a phone or email field typed as text, an error shown while typing, a required field left with no nudge, a refused submit that does not land in the first empty field. Types into the page: reload after | `F1` `F2` |
 
 ## Without a browser window: `scripts/run-checks.py`
 
 ```bash
-python scripts/run-checks.py page.html                         # all eight, at 1280px
+python scripts/run-checks.py page.html                         # all nine, at 1280px
 python scripts/run-checks.py page.html --checks table-check,popover-check --width 390
 ```
 

@@ -172,11 +172,10 @@ The figures behind text and surfaces.
 
 ### M: Motion
 
-When movement is doing work.
-
-| # | Rule |
-|---|---|
-| M1 | **Motion is functional or absent.** Transitions explain a state change (enter, exit, reorder); respect `prefers-reduced-motion`, and respecting it means an alternative that still shows the state change, never a blanket `0.01ms` that deletes the feedback with the animation. Decorative animation is skipped. **Duration comes from the distance, and the bands live in Appendix Q.** Exit faster than entrance, decelerate on arrival, and move or fade rather than animating a property that forces the layout to be recomputed. See Appendix Q. |
+When movement is doing work. **The motion rules, M1-M6, live in
+[motion-rules.md](motion-rules.md)**, with the duration bands, the named curves and the
+mechanics behind them - one file, so motion work can read it alone. They are cited here by
+ID like any other rule.
 
 ### P: Performance and content
 
@@ -1947,7 +1946,7 @@ runs, in a sheet instead of a panel.
 
 ---
 
-## Appendix Q: The numbers (rules Y1, Y2, M1)
+## Appendix Q: The numbers (rules Y1, Y2)
 
 Three rules in this file used to say "enough contrast", "readable" and "short". Each of
 those is a judgement the next person makes differently, so each one now has a figure. A
@@ -1989,36 +1988,9 @@ read the same (rule Y3, Appendix E).
 
 ### Motion
 
-| Duration | For |
-|---|---|
-| 100-150ms | Acknowledging a press. Longer reads as latency, not as animation |
-| 150-300ms | A routine state change: a toggle, an expand, a filter applying |
-| 300-500ms | An overlay, a sheet, a view transition - a thing that moves a long way |
-| 500ms+ | One authored moment on a page that has earned it, and nothing else |
-
-Where something travels a distance rather than simply appearing, the shape inside the
-duration is **2 : 1 : 2** - accelerate, hold, decelerate - so at 500ms that is 0.2s in,
-0.1s across, 0.2s out. See Appendix W, which is where the travelling mark uses it.
-
-Exit runs at roughly two thirds of entry: an exit as long as its entry feels like the
-interface is reluctant to let go. Arrivals decelerate - a strong ease-out, not a linear
-ramp; bounce and elastic are a decision, never a reflex. Move and fade before reaching for
-anything else, because those are the two things every platform can animate without
-recomputing layout, and where blur, shadow or a mask genuinely say something, bound the
-region they run on.
-
-Two mechanics that decide whether motion feels built or bolted on:
-
-- **Interruptible.** A second click during an animation takes effect now. An animation
-  that must finish before the UI listens again is a queue the user cannot see.
-- **Visible by default.** The resting state of an element that animates in is *visible*.
-  If the entrance is what makes it appear, a failed script, a blocked observer or reduced
-  motion leaves a blank page - and the blank page looks like a bug in the data, which is
-  where the next hour goes.
-
-`prefers-reduced-motion` means a different transition, not no transition. A state change
-still has to be legible when it is honoured; a global `* { animation-duration: 0.01ms }`
-satisfies the setting and deletes the feedback that told the user their click landed.
+The duration bands, the 2 : 1 : 2 travel shape, the named curves, reduced motion and the
+rest of the motion figures are in [motion-rules.md](motion-rules.md), with the rules they
+serve.
 
 ---
 

@@ -12,7 +12,7 @@
          Done. Ticking a value never closes it. A scroll moves it with its trigger rather than
          closing it, so a filter that shrinks the table cannot dismiss its own panel.
        - on touch the panel's search is not auto-focused, so the keyboard does not cover it
-     Checks it passes: all eight in kz-uicheck, at 1280px and 390px, light and dark.
+     Checks it passes: all nine in kz-uicheck, at 1280px and 390px, light and dark.
 
      YOUR COPY IS NOT CHECKED until you run this on it - "the snippet passes" says nothing about your edits,
      and no browser window is needed:
@@ -47,6 +47,8 @@ thead tr.filters th{padding-top:var(--s1);padding-bottom:var(--s2);border-bottom
 .sortbtn,.ftrig,.panel button{font:inherit;color:inherit;background:none;border:1px solid transparent;border-radius:6px;cursor:pointer}
 .sortbtn{font-weight:600;padding:2px var(--s1)}
 .sortbtn:hover,.ftrig:hover,.panel button:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+/* M5: a press answers at once, before the sort or the panel lands */
+.sortbtn:active,.ftrig:active,.panel button:active{transform:scale(.97)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .ftrig{display:inline-flex;align-items:center;gap:var(--s1);min-height:30px;padding:0 var(--s2);border-color:var(--field);color:var(--muted);max-width:160px}
 .ftrig[data-on="1"]{border-color:var(--accent);color:var(--accent-ink)}

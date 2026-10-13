@@ -2,11 +2,12 @@
 
 Every rule in `kz-uiuxrule`, one line each, with the category it lives in. **Generated from the rule files**
 by `scripts/build-index.py` - do not edit by hand. The full text of each rule, with the failure it prevents and
-the check that catches it, is in [`ui-rules.md`](../skills/kz-uiuxrule/rules/ui-rules.md) and
+the check that catches it, is in [`ui-rules.md`](../skills/kz-uiuxrule/rules/ui-rules.md),
+[`motion-rules.md`](../skills/kz-uiuxrule/rules/motion-rules.md) and
 [`chart-rules.md`](../skills/kz-uiuxrule/rules/chart-rules.md). To find a rule by the words of your task rather
 than its letter, use the keyword router, [`INDEX.md`](../skills/kz-uiuxrule/rules/INDEX.md).
 
-79 rules. Each category links to its live wrong/right samples.
+84 rules. Each category links to its live wrong/right samples.
 
 ## D - Fitting the design system
 
@@ -112,11 +113,16 @@ Live samples: [Type, colour and theming](https://kz-95.github.io/kz-skills/refer
 
 ## M - Motion
 
-Live samples: [Motion](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#y)
+Live samples: [Motion](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#m)
 
 | ID | Rule |
 |---|---|
 | M1 | Motion is functional or absent. |
+| M2 | How often it is seen decides whether it moves. |
+| M3 | Nothing enters from nothing, and a panel grows from what opened it. |
+| M4 | A transition names what it moves, and it starts fast. |
+| M5 | A press answers before the action does. |
+| M6 | Once one tooltip is open, the next one opens at once. |
 
 ## P - Performance and content
 
