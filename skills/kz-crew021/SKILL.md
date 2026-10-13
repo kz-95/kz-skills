@@ -59,7 +59,7 @@ hook is wired, this section is the requirement.
 
 Anything that renders - a screen, a component, a chart, the dashboard below - is built
 and reviewed against the **`kz-uiuxrule`** skill (v2.3.0: 57 UI rules, 6 motion
-rules, 21 chart rules, 16 principles), not against taste. Route with its `../kz-uiuxrule/rules/INDEX.md`: a task's own
+rules, 21 chart rules, 10 diagram rules, 16 principles), not against taste. Route with its `../kz-uiuxrule/rules/INDEX.md`: a task's own
 words ("table", "form", "chart", "dark mode", "back button") name the two or three
 sections that apply, and nothing else does. **The rules live in that skill, not here** -
 a copy in this folder would drift, and a drifted rule is worse than none.

@@ -38,6 +38,7 @@ scoped out by anything.
 | layout, responsive, breakpoint, mobile, phone, safe area, bottom bar, scroll, overflow, column, horizontal, sideways, timeline, kanban, carousel, strip, stepper | Layout | [L](#l-layout-spacing-and-the-mobile-shell) |
 | colour, contrast, dark mode, theme, token, font, typography, size, spacing, shadow, elevation | Type, colour, theming | [Y](#y-type-colour-and-theming) |
 | animation, transition, motion, reduced motion, duration, easing, press, scale, stagger, drag, gesture | Motion | [M](#m-motion) |
+| diagram, architecture diagram, flowchart, flow diagram, sequence diagram, state machine, ER diagram, swimlane, boxes and arrows, connector, arrow label, mermaid, draw.io | Diagrams | [G](#g-diagrams) |
 | slow, performance, lazy, skeleton, virtualise, jank, layout shift, images, fonts loading | Performance | [P](#p-performance-and-what-arrives-late) |
 | accessibility, a11y, screen reader, keyboard, focus, aria, label, i18n, translation, RTL | Accessibility | [X](#x-accessibility-semantics-and-language) |
 | copy, wording, label, message, error text, empty state, explainer, tooltip text | Copy | [K](#k-copy-and-explainers) |
@@ -51,8 +52,9 @@ behaves, moves or is interacted with**, read [D](#d-fitting-the-design-system) a
 
 **The section letter is the rule letter.** Section T holds the rules called `T1`, `T2`, `T3`;
 section Y holds `Y1` to `Y3`. A rule cited anywhere in the corpus can be found by reading its
-first character and coming here. Three sections keep their rules in a file of their own: **C** points at
-[chart-rules.md](chart-rules.md), **M** at [motion-rules.md](motion-rules.md), and **E** at [engineering-rules.md](../../kz-engrules/rules/engineering-rules.md).
+first character and coming here. Four sections keep their rules in a file of their own: **C** points at
+[chart-rules.md](chart-rules.md), **M** at [motion-rules.md](motion-rules.md), **G** at
+[diagram-rules.md](diagram-rules.md), and **E** at [engineering-rules.md](../../kz-engrules/rules/engineering-rules.md).
 Rules appearing under a section that is not their own letter are cross-references, and are
 marked as such by their identity.
 
@@ -147,6 +149,29 @@ curves, reduced motion, stagger, gestures and performance. Motion-only work can 
 layout property, scale(0), a popover growing from its centre, a button with no press state).
 **The trap:** honouring reduced motion by deleting the feedback rather than replacing the
 transition.
+
+## G. Diagrams
+
+**Rules:** G1-G10 in [diagram-rules.md](diagram-rules.md) - a diagram earns its place and
+its form comes from the question (G1), at most nine boxes, twelve lines and two emphasised
+things (G2), lines run on two axes and meet a box square (G3), every line traced on its own
+(G4), never behind a box that is not an end (G5), a label beside its line on an opaque plate
+(G6), a key under the drawing (G7), a wide diagram scrolls rather than shrinks (G8), a named
+figure (G9), emphasis on one or two things and never colour alone (G10). Plus C7 (never
+colour alone), C11 (every mark explained), C21 (one label orientation), Y2 (contrast), L11
+(a row that scrolls sideways) and M1 (motion).
+**Boundary:** a chart plots values on scales and is [C](#c-charts-and-data); a diagram shows
+things and how they connect and is G. A sankey or a funnel with counts reads both: the chart
+rules for the values, these for the lines.
+**Read:** diagram-rules.md in full - one short file, with the budget, the cut order, the
+line and label numbers and the phone canvas. Diagram-only work can use the `kz-diagramrule`
+skill, which reads that file and nothing else.
+**Check:** `../../kz-uicheck/checks/diagram-check.js`, at a wide width and at 375px (over
+budget, a slanted line, a port on a corner, stacked lines, a line behind a box, a label on
+its line, a plate under a box, a key inside the drawing, a diagram shrunk on a phone or
+clipped, an unnamed figure, too much emphasis).
+**The trap:** shrinking a wide diagram to fit a phone, which keeps every box and makes
+every label unreadable, when it should scroll inside its own box (G8) or split (G2).
 
 ## P. Performance and what arrives late
 

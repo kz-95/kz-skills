@@ -1,13 +1,13 @@
 ---
 name: kz-flashrule
-description: One-page digest of the most critical rules across the kz skillset - the safety floor, data and destructive actions, tables, forms, overlays, layout and theming, the charts that get misread, and asking the user - each line a rule ID, the rule in a few words and the fastest check for it (a kz-uicheck script and its finding code, or one manual step). For a fast rule check of finished work in one read, not a copy of every rule. Use before calling work done, in step three of kz-fastfix, or when a full review is too heavy. The source rule always wins. Triggers on "/kz-flashrule", "flash rule", "fast rule check", "critical rules", "quick check".
+description: One-page digest of the most critical rules across the kz skillset - the safety floor, data and destructive actions, tables, forms, overlays, layout and theming, the charts that get misread, diagrams, and asking the user - each line a rule ID, the rule in a few words and the fastest check for it (a kz-uicheck script and its finding code, or one manual step). For a fast rule check of finished work in one read, not a copy of every rule. Use before calling work done, in step three of kz-fastfix, or when a full review is too heavy. The source rule always wins. Triggers on "/kz-flashrule", "flash rule", "fast rule check", "critical rules", "quick check".
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 
 # kz-flashrule
 
 The rules that break worst when missed, in one read. A summary only: the source rule wins, so always cite its ID.
-A line fails or is unclear -> open the full rule in [ui-rules.md](../kz-uiuxrule/rules/ui-rules.md), [chart-rules.md](../kz-uiuxrule/rules/chart-rules.md) or [engineering-rules.md](../kz-engrules/rules/engineering-rules.md). A screenshot only -> [ui-glance](../kz-uiuxrule/skills/ui-glance/SKILL.md).
+A line fails or is unclear -> open the full rule in [ui-rules.md](../kz-uiuxrule/rules/ui-rules.md), [chart-rules.md](../kz-uiuxrule/rules/chart-rules.md), [diagram-rules.md](../kz-uiuxrule/rules/diagram-rules.md) or [engineering-rules.md](../kz-engrules/rules/engineering-rules.md). A screenshot only -> [ui-glance](../kz-uiuxrule/skills/ui-glance/SKILL.md).
 Checks in backticks are [kz-uicheck](../kz-uicheck/SKILL.md) scripts: one at a time, on a settled page, at a wide width, a narrow one and 375px with touch, colour checks in both themes.
 
 ## Safety floor and code (engineering rule numbers)
@@ -82,6 +82,13 @@ Checks in backticks are [kz-uicheck](../kz-uicheck/SKILL.md) scripts: one at a t
 | C3 | Every chart works at 0, 1 and all rows. | Filter to 0, then 1: an empty message, no `NaN`, no blank. |
 | C6 | Amounts sum, balances take the last value, rates recompute from summed sources. | Work one bucket out by hand and compare. |
 | C9 | A bar axis starts at zero; a cropped line axis says so. | Read the lowest tick of every bar chart. |
+
+## Diagrams
+
+| ID | Rule | Fast check |
+|---|---|---|
+| G6 | A label sits beside its line on an opaque plate, 4px or more clear, never on the line. | `diagram-check.js` `LABEL ON LINE`, `LABEL GAP`. |
+| G8 | A wide diagram keeps its native width on a phone and scrolls in its own box; never shrunk. | `diagram-check.js` `SHRUNK`, `CLIPPED`, at 375px. |
 
 ## Asking the user
 

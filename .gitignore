@@ -21,3 +21,7 @@ Thumbs.db
 # agent working state
 .omc/
 .claude/settings.local.json
+
+# hero GIF project (scripts/hero): dependencies and raw renders; the final GIF lives in docs/assets/
+scripts/hero/node_modules/
+scripts/hero/out/

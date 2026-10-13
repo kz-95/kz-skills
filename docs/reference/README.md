@@ -13,7 +13,7 @@ any other page they would report clean and mean nothing:
 - `state-check.js` - drives every table to 0, 1 and all rows, sorts every column, and checks
   chart, count, totals and legend still agree.
 
-The nine checks that work on **any** page are in `../../skills/kz-uicheck/checks/`.
+The ten checks that work on **any** page are in `../../skills/kz-uicheck/checks/`.
 
 To run them against this page, serve the folder (`python -m http.server` in `docs/`), open
 `reference/ui-rules-visual.html`, and paste each file into the console one at a time, on a settled

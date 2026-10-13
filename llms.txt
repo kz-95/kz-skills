@@ -1,8 +1,8 @@
 # kz-skills
 
-> Stack-neutral UI/UX rules for AI coding agents, with nine paste-in browser checks that measure them. 57 UI rules, 6 motion rules, 21 chart rules and 16 design principles, in twelve installable Claude Code skills. Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. Licence: Apache-2.0 with Commons Clause (free to use, modify and use commercially; not to be sold). Usable by any agent that reads Markdown.
+> Stack-neutral UI/UX rules for AI coding agents, with ten paste-in browser checks that measure them. 57 UI rules, 6 motion rules, 21 chart rules, 10 diagram rules and 16 design principles, in thirteen installable Claude Code skills. Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. Licence: Apache-2.0 with Commons Clause (free to use, modify and use commercially; not to be sold). Usable by any agent that reads Markdown.
 
-Facts: 84 rules in all (57 UI + 6 motion + 21 chart). 26 recorded agent mistakes (Appendix Z of the UI rules). Every rule has a wrong sample and a right sample on the live reference page. Rules are numbered by category letter and number (T1, F9, N2, C5) and the numbers never change.
+Facts: 94 rules in all (57 UI + 6 motion + 21 chart + 10 diagram). 26 recorded agent mistakes (Appendix Z of the UI rules). Every rule has a wrong sample and a right sample on the live reference page. Rules are numbered by category letter and number (T1, F9, N2, C5, G6) and the numbers never change.
 
 To find the rule for a task, match its words in the keyword index; it names the two or three sections that apply, so the whole rule set need not be read.
 
@@ -17,8 +17,9 @@ To find the rule for a task, match its words in the keyword index; it names the 
 ## Skills
 
 - [kz-uiuxrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/SKILL.md): building, changing or reviewing any UI; four modes (adopt, review, build, loop)
-- [kz-uicheck](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/SKILL.md): nine paste-in browser checks
+- [kz-uicheck](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/SKILL.md): ten paste-in browser checks
 - [kz-motionrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-motionrule/SKILL.md): the motion rules alone, M1-M6, with motion-check.js
+- [kz-diagramrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-diagramrule/SKILL.md): the diagram rules alone, G1-G10, with diagram-check.js
 - [kz-judge](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-judge/SKILL.md): wording rules a script cannot measure, judged by Jev or a local Laya; no agent tokens
 - [kz-reflect](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-reflect/SKILL.md): records what went wrong, classifies it, proposes the rule change; a person approves
 - [kz-engrules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/SKILL.md): engineering rules for any code work, including git (branch names, commit identity, merges)
@@ -34,6 +35,7 @@ To find the rule for a task, match its words in the keyword index; it names the 
 - [UI rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/ui-rules.md): 57 rules by category, with appendices and 26 lessons
 - [Motion rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/motion-rules.md): 6 rules for anything that moves, with durations and curves
 - [Chart rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/chart-rules.md): 21 rules for anything that renders data as marks
+- [Diagram rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/diagram-rules.md): 10 rules for boxes, lines and labels drawn as SVG, with the budget and cut order
 - [Design principles](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/design-principles.md): the 16 principles behind the rules
 - [Engineering rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/rules/engineering-rules.md): the floor under every task
 
@@ -48,6 +50,7 @@ To find the rule for a task, match its words in the keyword index; it names the 
 - [focus-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/focus-check.js): every control shows where focus is
 - [motion-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/motion-check.js): transition all, ease-in, layout transitions, scale(0), centre-origin popovers, no press state
 - [form-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/form-check.js): labels, input types, nudge, submit
+- [diagram-check.js](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/checks/diagram-check.js): diagonal lines, labels on lines, lines behind boxes, the box and line budget
 
 ## Optional
 

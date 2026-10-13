@@ -1,6 +1,6 @@
 # kz-uiuxrule
 
-Stack-neutral, style-neutral UI rules: 57 UI rules, 6 motion rules, 21 chart rules, two standing rules and
+Stack-neutral, style-neutral UI rules: 57 UI rules, 6 motion rules, 21 chart rules, 10 diagram rules, two standing rules and
 sixteen principles. Each rule states an obligation and the failure that follows when it is
 missed. Nothing here names a framework, a component library, a palette or a typeface.
 
@@ -31,7 +31,7 @@ Markdown with no host-specific syntax. Three ways to use them:
    prompt. `SKILL.md` is written to work as that instruction file unchanged.
 
 For a small context window, paste `rules/INDEX.md` alone and let the model ask for the two
-or three sections it needs. The whole corpus is roughly 3,600 lines; almost no task needs
+or three sections it needs. The whole corpus is roughly 4,400 lines; almost no task needs
 more than a tenth of it.
 
 ## What it does
@@ -48,7 +48,7 @@ Four modes, picked from the request before anything else happens:
 
 Where it is unsure - two modes fit, or the project already has rules that disagree - it
 raises a single **Ask Card** rather than guessing, and a review always asks which of the
-thirteen sections to cover before reading every rule at someone.
+fourteen sections to cover before reading every rule at someone.
 
 A **speed dial** decides how much of that runs: *fast* is one review pass and the fixes,
 *right* runs the full loop. It says what a fast pass skips rather than quietly doing more
@@ -64,6 +64,7 @@ than was asked.
 | `rules/ui-rules.md` | The 57 UI rules and the appendices carrying their detail, including **Appendix Z: twenty-six things not to do**, each one learned by doing it |
 | `rules/chart-rules.md` | C1-C21, for anything that renders data as marks |
 | `rules/motion-rules.md` | M1-M6, for anything that moves; also the whole of the `kz-motionrule` skill |
+| `rules/diagram-rules.md` | G1-G10, for any drawn diagram - boxes, lines and their labels; also the whole of the `kz-diagramrule` skill |
 | `../kz-engrules/rules/engineering-rules.md` | Sibling skill: non-UI rules for code work, where S1 and S2 are defined |
 | `rules/design-principles.md` | The sixteen principles, and why each rule exists |
 | `../kz-askcard/hooks/ui-rule-purpose.mjs` | Sibling skill. Host-neutral hook that makes the skill ask its purpose before acting - stdin JSON, JSON arg or bare name; fires only for this skill; never blocks |

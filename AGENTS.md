@@ -4,12 +4,12 @@ Instructions for any AI agent that **uses** or **works in** this repository: Cla
 
 ## What this repository is
 
-Twelve skills, each a folder under `skills/` with a `SKILL.md`. The core is `kz-uiuxrule`: stack-neutral, style-neutral UI rules (57 UI rules, 6 motion rules, 21 chart rules, 16 principles), each with the failure it prevents and a browser check that catches it. `kz-uicheck` holds those checks as paste-in console scripts.
+Thirteen skills, each a folder under `skills/` with a `SKILL.md`. The core is `kz-uiuxrule`: stack-neutral, style-neutral UI rules (57 UI rules, 6 motion rules, 21 chart rules, 10 diagram rules, 16 principles), each with the failure it prevents and a browser check that catches it. `kz-uicheck` holds those checks as paste-in console scripts.
 
 ## Using the skills when you are not Claude Code
 
 1. **Read `skills/kz-skill/SKILL.md` first.** It is a router. It names which skill fits the task and says what to read, so you never need the whole set.
-2. **For any UI work, read `skills/kz-uiuxrule/rules/INDEX.md`.** Find the row whose keywords match the task (`table`, `form`, `chart`, `dark mode`, `back button`). It names the two or three sections that apply. Read those, and nothing else unless the work touches a second category. Work that only moves (an animation, a transition, a press effect) can read `skills/kz-uiuxrule/rules/motion-rules.md` alone, which is what `skills/kz-motionrule/` does.
+2. **For any UI work, read `skills/kz-uiuxrule/rules/INDEX.md`.** Find the row whose keywords match the task (`table`, `form`, `chart`, `dark mode`, `back button`). It names the two or three sections that apply. Read those, and nothing else unless the work touches a second category. Work that only moves (an animation, a transition, a press effect) can read `skills/kz-uiuxrule/rules/motion-rules.md` alone, which is what `skills/kz-motionrule/` does. Work that is only a diagram (boxes, lines and labels drawn as SVG) can read `skills/kz-uiuxrule/rules/diagram-rules.md` alone, which is what `skills/kz-diagramrule/` does.
 3. **Quote rule IDs** (`T1`, `F8`, `C5`) when you report a finding or justify a choice. They are stable.
 4. **Before saying UI work is done, run the checks** in `skills/kz-uicheck/checks/`. Paste each into the browser console of the page, one at a time, on a settled page: at a wide width, at a narrow one, and at 375px with touch emulation. A finding without a measurement behind it is not a finding.
 5. **Ask what the work is for before doing it**, as one card with three to five decisions, one marked recommended and a custom option always open. The format is in `skills/kz-askcard/SKILL.md`.

@@ -1,6 +1,6 @@
 # Install
 
-Twelve skills, each a folder with a `SKILL.md`. Install all of them: `kz-uiuxrule` links to `kz-engrules`, `kz-askcard` and `kz-uicheck` as siblings, and `kz-crew021` calls most of the others.
+Thirteen skills, each a folder with a `SKILL.md`. Install all of them: `kz-uiuxrule` links to `kz-engrules`, `kz-askcard` and `kz-uicheck` as siblings, and `kz-crew021` calls most of the others.
 
 ## Claude Code, as a plugin
 
@@ -44,7 +44,7 @@ The skills are plain Markdown. There is no build step.
 
 ## It does not show up as a command
 
-The usual cause is **nesting**. Claude Code registers `skills/<name>/SKILL.md` and nothing deeper. If a skill sits inside another skill's folder, it is read by its parent but is not a command. Each of the ten must be a direct child of your skills folder:
+The usual cause is **nesting**. Claude Code registers `skills/<name>/SKILL.md` and nothing deeper. If a skill sits inside another skill's folder, it is read by its parent but is not a command. Each of the thirteen must be a direct child of your skills folder:
 
 ```
 ~/.claude/skills/

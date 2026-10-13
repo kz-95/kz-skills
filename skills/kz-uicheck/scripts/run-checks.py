@@ -2,7 +2,7 @@
 """Run the kz-uicheck checks on a local HTML file in headless Chrome, with no browser window and no
 install beyond Python 3 and Chrome. For generated pages, static reports, and a pre-commit step.
 
-    python run-checks.py page.html                       all nine checks, at 1280px
+    python run-checks.py page.html                       all ten checks, at 1280px
     python run-checks.py page.html --checks table-check,popover-check --width 390
 
 Prints each check's findings and exits 1 if any check found a problem (advisories do not fail it).
@@ -32,7 +32,7 @@ CHECKS_DIR = os.path.join(os.path.dirname(HERE), "checks")
 for _s in (sys.stdout, sys.stderr):      # findings quote page text; a Windows pipe defaults to cp1252
     _s.reconfigure(encoding="utf-8", errors="replace")
 ALL = ["layout-audit", "table-check", "typing-check", "popover-check", "contrast-check",
-       "modal-check", "focus-check", "form-check", "motion-check"]
+       "modal-check", "focus-check", "form-check", "motion-check", "diagram-check"]
 
 
 def find_chrome():

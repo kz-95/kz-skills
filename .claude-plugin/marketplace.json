@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "kz-skills",
-      "description": "Stack-neutral UI/UX rules for AI coding agents with browser checks that measure them: 57 UI rules, 6 motion rules, 21 chart rules, 16 principles, in twelve skills.",
+      "description": "Stack-neutral UI/UX rules for AI coding agents with browser checks that measure them: 57 UI rules, 6 motion rules, 21 chart rules, 10 diagram rules, 16 principles, in thirteen skills.",
       "source": "./",
       "category": "development"
     }
