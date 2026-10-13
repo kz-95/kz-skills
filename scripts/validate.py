@@ -61,10 +61,11 @@ for base, dirs, files in os.walk(skills_dir):
         depth = len(os.path.relpath(base, skills_dir).split(os.sep))
         if depth > 1 and "ui-glance" not in base:
             fail("%s: a skill nested %d deep is read by its parent but is not registered as a command" % (rel, depth))
-if found < 13:
-    fail("expected at least 13 skills under skills/ (twelve plus ui-glance), found %d" % found)
+if found < 14:
+    fail("expected at least 14 skills under skills/ (thirteen plus ui-glance), found %d" % found)
 
 # 1b. kz-flashrule cites only rule IDs that exist, so the digest cannot drift ----------------
+# every file in kz-uiuxrule/rules (ui, chart, motion and diagram rules) plus the engineering rules
 rd = os.path.join(skills_dir, "kz-uiuxrule", "rules")
 srcs = [os.path.join(rd, f) for f in os.listdir(rd)] + [os.path.join(skills_dir, "kz-engrules", "rules", "engineering-rules.md")]
 ids = set(re.findall(r"^\| ([A-Z]?\d+[a-z]?\d*) \| \*\*", "\n".join(read(p) for p in srcs), re.M))

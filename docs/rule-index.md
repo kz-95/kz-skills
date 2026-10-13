@@ -3,11 +3,12 @@
 Every rule in `kz-uiuxrule`, one line each, with the category it lives in. **Generated from the rule files**
 by `scripts/build-index.py` - do not edit by hand. The full text of each rule, with the failure it prevents and
 the check that catches it, is in [`ui-rules.md`](../skills/kz-uiuxrule/rules/ui-rules.md),
-[`motion-rules.md`](../skills/kz-uiuxrule/rules/motion-rules.md) and
+[`motion-rules.md`](../skills/kz-uiuxrule/rules/motion-rules.md),
+[`diagram-rules.md`](../skills/kz-uiuxrule/rules/diagram-rules.md) and
 [`chart-rules.md`](../skills/kz-uiuxrule/rules/chart-rules.md). To find a rule by the words of your task rather
 than its letter, use the keyword router, [`INDEX.md`](../skills/kz-uiuxrule/rules/INDEX.md).
 
-84 rules. Each category links to its live wrong/right samples.
+94 rules. Each category links to its live wrong/right samples.
 
 ## D - Fitting the design system
 
@@ -123,6 +124,23 @@ Live samples: [Motion](https://kz-95.github.io/kz-skills/reference/ui-rules-visu
 | M4 | A transition names what it moves, and it starts fast. |
 | M5 | A press answers before the action does. |
 | M6 | Once one tooltip is open, the next one opens at once. |
+
+## G - Diagrams
+
+Live samples: [Diagrams](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#g)
+
+| ID | Rule |
+|---|---|
+| G1 | A diagram earns its place, and its form comes from what the reader must understand. |
+| G2 | One diagram holds at most nine boxes, twelve lines and two emphasised things; past that it splits. |
+| G3 | Lines between boxes run horizontally and vertically, and meet a box square to its edge. |
+| G4 | Every line can be traced on its own from end to end. |
+| G5 | A line never passes behind a box that is not one of its ends. |
+| G6 | A label sits beside its line, on an opaque plate, clear of the line and of every box. |
+| G7 | Every kind of mark is explained, in a key below the drawing. |
+| G8 | A wide diagram keeps its size on a narrow screen and scrolls inside its own box. |
+| G9 | A diagram is a named figure. |
+| G10 | Emphasis goes on one or two things, and meaning never rides on colour or motion alone. |
 
 ## P - Performance and content
 
