@@ -122,6 +122,15 @@ removes one of those is a bug in the convention, so raise it rather than followi
 | 32b | **A captured default is a copy, not a reference.** Snapshotting an array or object to restore later and then holding the live reference means every change to the state also changes the "default", and the reset quietly restores whatever the user last did. `d.slice()` / `{...d}` at capture time, not only at restore time. |
 | 32 | **Final review before done**, correctness, consistency, regressions, unfinished work, leftover placeholders, leftover files and folders (29d). |
 
+### 1.7 Git
+
+| # | Rule |
+|---|---|
+| 33 | **A branch is named after the work, never after the tool.** `feat/`, `fix/`, `docs/` or `chore/` plus the work in kebab-case (`feat/motion-rules`). Never a tool, model, agent or session name or id: a host that hands out a generated branch (`ccr-890ac0d4-erjkp3`) is renamed before the first push, not after. Never commit or push to `main` directly. |
+| 33a | **Commits are authored and committed by the person who owns the work.** Take the identity from the project's own history (`git log --format='%an <%ae>'`), not from the environment: an agent's sandbox often defaults `user.name` to the tool. Where it does, set it per command (`git -c user.name=... -c user.email=...`) rather than changing the person's global config. Both fields count - author and committer. This is rule 8 at the level of git metadata. |
+| 33b | **Push what you meant to commit, once.** Before the first push, check `git log origin/main..HEAD --format='%h %an <%ae> \| %cn <%ce> \| %s'`: every line names the owner, no line is a scratch or a sync merge, and the subjects say what changed. Fix it then - squash, reword, re-author - while the branch is still yours alone. Once others may have it, history is not rewritten. |
+| 33c | **Merging, deleting a remote branch and force-pushing are the owner's call.** Each needs the owner's explicit say-so for that branch or pull request, given in this task. Reviews and passing checks make a merge possible; they do not authorise it. |
+
 ---
 
 ## S: Standing rules
