@@ -21,7 +21,7 @@ To find the rule for a task, match its words in the keyword index; it names the 
 - [kz-motionrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-motionrule/SKILL.md): the motion rules alone, M1-M6, with motion-check.js
 - [kz-judge](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-judge/SKILL.md): wording rules a script cannot measure, judged by Jev or a local Laya; no agent tokens
 - [kz-reflect](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-reflect/SKILL.md): records what went wrong, classifies it, proposes the rule change; a person approves
-- [kz-engrules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/SKILL.md): engineering rules for any code work
+- [kz-engrules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/SKILL.md): engineering rules for any code work, including git (branch names, commit identity, merges)
 - [kz-fastfix](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-fastfix/SKILL.md): the fast lane for one small job; a size test, then the change made directly and checked once
 - [kz-flashrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-flashrule/SKILL.md): the most critical rules on one page, each with its ID and the fastest check
 - [kz-askcard](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-askcard/SKILL.md): the one-card rule for asking a user anything
@@ -31,7 +31,7 @@ To find the rule for a task, match its words in the keyword index; it names the 
 
 ## Rules
 
-- [UI rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/ui-rules.md): 58 rules by category, with appendices and 26 lessons
+- [UI rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/ui-rules.md): 57 rules by category, with appendices and 26 lessons
 - [Motion rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/motion-rules.md): 6 rules for anything that moves, with durations and curves
 - [Chart rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/chart-rules.md): 21 rules for anything that renders data as marks
 - [Design principles](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/design-principles.md): the 16 principles behind the rules

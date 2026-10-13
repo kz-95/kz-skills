@@ -25,7 +25,7 @@ Step zero below does not apply to it - the purpose is not in doubt when a pictur
 ## Step zero: ask what this is for
 
 **Before reading a rule, opening a file, or planning anything, ask the user which mode and
-what scope.** One Ask Card, then work. This is not a courtesy - the corpus is ninety-four
+what scope.** One Ask Card, then work. This is not a courtesy - the corpus is a hundred
 rules across four modes, and the two ways it wastes a session are both guesses: adopting
 rules over a project that already has its own, and reviewing all of them when the user
 wanted two.
@@ -52,7 +52,7 @@ section is the requirement.
 
 If the request fits two modes, or the project state is ambiguous, **do not guess - raise an
 Ask Card** (below). Guessing here is expensive: adopting rules over a project that already
-has its own, or reviewing all 54 rules when the user wanted two, both waste the whole session.
+has its own, or reviewing all 84 rules when the user wanted two, both waste the whole session.
 
 ---
 
