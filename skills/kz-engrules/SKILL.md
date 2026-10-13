@@ -1,6 +1,6 @@
 ---
 name: kz-engrules
-description: Stack-neutral engineering rules for any code work, UI or not - L0 always-on behaviour and honesty, L1 for any code task (understand first, fit the codebase, size the solution, quality bar, scope discipline, close out), and the S standing rules. Includes ASCII discipline with a PostToolUse hook that enforces it, and the rule on composing rather than copying. Use before starting any code task, and when closing one out. Triggers on "/kz-engrules", "engineering rules", "code rules", "what rules apply here".
+description: Stack-neutral engineering rules for any code work, UI or not - L0 always-on behaviour and honesty, L1 for any code task (understand first, fit the codebase, size the solution, quality bar, scope discipline, close out, git), and the S standing rules. Includes ASCII discipline with a PostToolUse hook that enforces it, and the rule on composing rather than copying. Use before starting any code task, and when closing one out. Triggers on "/kz-engrules", "engineering rules", "code rules", "what rules apply here".
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 
@@ -19,7 +19,9 @@ The rules that apply to all work, not only work that renders. Sibling of
 - **L0, always** - think before acting, never invent project facts, assume rather than
   ask when assuming is safe, ASCII only, no AI attribution, close with a summary.
 - **L1, any code work** - understand first, fit the codebase, climb the size ladder
-  *after* understanding, quality bar, scope discipline, close out.
+  *after* understanding, quality bar, scope discipline, close out, and git (33-33c: a
+  branch named after the work, the connected git account as author and committer, the
+  log read before the first push, merge and delete only on the owner's say-so).
 - **S, standing** - fire in any layer whenever their trigger appears, including inside
   UI work. `S1` (tables ship search, sort and filter) and `S2` (destructive actions are
   confirmed) are repeated in `kz-uiuxrule` because they apply to both; they are defined

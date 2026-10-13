@@ -1,7 +1,7 @@
 # kz-uiuxrule
 
 Stack-neutral, style-neutral UI rules: 57 UI rules, 6 motion rules, 21 chart rules, two standing rules and
-fifteen principles. Each rule states an obligation and the failure that follows when it is
+sixteen principles. Each rule states an obligation and the failure that follows when it is
 missed. Nothing here names a framework, a component library, a palette or a typeface.
 
 ## Install

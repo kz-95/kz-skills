@@ -4,7 +4,7 @@
 
 **Stack-neutral UI/UX rules that tell an AI agent what any interface must do, what breaks when it does not, and a browser check that fails it.** 57 UI rules, 6 motion rules, 21 chart rules, 16 principles, in twelve installable skills for Claude Code and any agent that reads Markdown.
 
-[Install](#quick-start) · [Live reference](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html) · [All 79 rules](docs/rule-index.md) · [For agents: llms.txt](llms.txt) · [Changelog](CHANGELOG.md)
+[Install](#quick-start) · [Live reference](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html) · [All 84 rules](docs/rule-index.md) · [For agents: llms.txt](llms.txt) · [Changelog](CHANGELOG.md)
 
 See the rules fail and pass, side by side:
 [Table filter](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html#t1-filter) ·
@@ -68,7 +68,7 @@ First public release.
 | [`kz-uiuxrule`](skills/kz-uiuxrule/SKILL.md) | Building, changing or reviewing any UI: the rules, in four modes (adopt, review, build, loop). |
 | [`kz-motionrule`](skills/kz-motionrule/SKILL.md) | Work that only moves - an animation, a transition, a press effect: the six motion rules and their check, without the rest of the corpus. |
 | [`kz-uicheck`](skills/kz-uicheck/SKILL.md) | Before calling UI work done: nine paste-in browser checks that measure instead of judge. |
-| [`kz-engrules`](skills/kz-engrules/SKILL.md) | Any code task at all: the engineering floor everything else sits on. |
+| [`kz-engrules`](skills/kz-engrules/SKILL.md) | Any code task at all: the engineering floor everything else sits on, including how branches, commits and merges are done (rules 33-33c). |
 | [`kz-fastfix`](skills/kz-fastfix/SKILL.md) | One small job (a typo, a style change, a one-line bug): a size test, then the change made directly and checked once. No crew, no loop. |
 | [`kz-flashrule`](skills/kz-flashrule/SKILL.md) | A fast rule check in one read: the 40 rules that break worst when missed, each with its ID and the fastest check. |
 | [`kz-askcard`](skills/kz-askcard/SKILL.md) | About to ask the user something: three to five decisions, one recommended, a custom option. |
@@ -120,7 +120,7 @@ The skills are plain Markdown. Point your agent at [`AGENTS.md`](AGENTS.md) and 
 
 `rules-check.js` runs against the [reference page](docs/reference/README.md): it proves each right sample passes and each wrong sample still fails. The nine checks in `kz-uicheck` run on any page.
 
-All 79 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
+All 84 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 
 ## FAQ
 
