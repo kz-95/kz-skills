@@ -139,18 +139,35 @@ const RUBRICS = {
   'chart-filter': [
     ['a chart is drawn (svg, canvas or HTML chart >= 200x100)', async p => (await chartSnapshot(p)).length > 0],
     ['the site filter is not a <select>', async p => p.evaluate(S => ![...document.querySelectorAll('select')].some(s => [...s.options].some(o => S.includes(o.textContent.trim()))), SITES)],
-    /* T1, as table-check.js defines it: no CHARTBOX (chips, tick boxes, a select or a text box
-       driving the chart), and a trigger that declares aria-haspopup opens a value list with counts */
-    ['the site filter is a T1 panel (table-check CHARTBOX clean, aria-haspopup trigger, value list with counts)', async p => {
+    /* T1, as table-check.js defines it: no CHARTBOX, and either a trigger that declares
+       aria-haspopup and opens a value list with counts, or (six sites, a fixed list) up to six
+       chips or tick boxes with a count and a clear. The site chips are marked data-filter first,
+       so table-check reads them whatever their label says. */
+    ['the site filter passes T1 (table-check CHARTBOX clean: a panel with counts, or up to 6 chips with a count and a clear)', async p => {
+      const chips = await p.evaluate(S => {
+        const els = [...document.querySelectorAll('button[aria-pressed], [role=button][aria-pressed], input[type=checkbox], [role=checkbox]')]
+          .filter(e => !e.closest('table, [role=dialog], [role=menu], [role=listbox], [popover], [aria-modal]'))
+          .filter(e => { const t = (e.closest('label') || e).textContent + ' ' + (e.getAttribute('aria-label') || ''); return S.some(x => t.includes(x)) && (e.closest('label') || e).getClientRects().length; });
+        if (els.length < 2) return 0;
+        let h = els[0].parentElement;
+        while (h && !els.every(e => h.contains(e))) h = h.parentElement;
+        if (h) h.setAttribute('data-filter', 'site');
+        return els.length;
+      }, SITES);
       const tc = await p.evaluate(TABLE_CHECK);
       if (!tc || (tc.failures || []).some(f => /^CHARTBOX/.test(f))) return false;
+      if (chips >= 2) return true;
       const o = await openValueList(p, SITES);
       if (!o || o.how !== 'panel') return false;
       const declared = await o.trigger.evaluate(e => e.hasAttribute('aria-haspopup') || !!e.closest('[aria-haspopup]')).catch(() => false);
       return declared && o.labels.filter(l => /\d/.test(l)).length >= 3;
     }],
     ['unticking a site re-renders the chart', async p => { await p.reload(); const a = await chartSnapshot(p); const o = await openValueList(p, SITES); if (!o) return false; const l = await untickOne(p, SITES); await p.waitForTimeout(300); return !!l && (await chartSnapshot(p)) !== a; }],
-    ['the panel closes on trigger, Escape and outside click', async p => {
+    ['the panel closes on trigger, Escape and outside click (visible chips: nothing to close)', async p => {
+      /* up to six sites may be visible chips (T1); then there is no panel to close */
+      const chipsShown = await p.evaluate(S => [...document.querySelectorAll('button[aria-pressed], [role=button][aria-pressed]')]
+        .filter(e => e.getClientRects().length && S.some(x => (e.textContent + (e.getAttribute('aria-label') || '')).includes(x))).length >= 2, SITES);
+      if (chipsShown) return true;
       const closed = async () => (await visibleCheckboxes(p)).filter(l => SITES.some(s => l.includes(s))).length < 3;
       await p.reload(); let o = await openValueList(p, SITES); if (!o || o.how !== 'panel') return false;
       await o.trigger.click({ timeout: 2000 }).catch(() => {}); await p.waitForTimeout(150); const a = await closed();

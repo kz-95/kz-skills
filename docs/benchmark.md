@@ -4,6 +4,10 @@ Baseline numbers for the kz skills on small single-file HTML tasks, taken on 202
 any change to the skills. The harness is `scripts/bench/` (see its README); re-run it for AFTER.
 Raw results: `scripts/bench/results/before-2026-10-14.json` (and `opus-probe-2026-10-14.json`).
 
+**Headline metrics: `tokens_total` and wall time.** Every USD figure in this file is the CLI's
+`total_cost_usd`, a CLI list-price estimate, not a bill; it depends on cache hits, so it is shown
+second, after time and tokens.
+
 ## Method
 
 Six tasks, each a prompt and a starter `index.html` with its data inline.
@@ -540,3 +544,66 @@ Opus 5.5, against no skills:
 - `/kz-fastfix` on small edits: 1.7x slower, 1.7x tokens, 2.0x cost; 7.5 check failures introduced against 14.
 
 Plainly: the skills cut measured defects to near zero at 1.5x to 2x the time and cost of no skills, half what they cost before this change on Opus; a screenshot judge does not see most of what they fix, and prefers visible filters to T1 panels.
+
+## AFTER 2: firmer fast lanes and the chips rule (2026-10-14)
+
+Two changes on the same branch, measured on the two fast lanes only.
+Raw results: `scripts/bench/results/after2-2026-10-14.json` (36 agent runs, with per-run `check_calls` and the chart-filter re-scoring under `rescore_chart_filter`).
+The `none` baseline is reused from `after-2026-10-14.json` (same models, tasks, harness and CLI); none was re-run.
+
+### What the Opus transcripts showed
+
+The AFTER line "ran the check suite in 6 of 8 runs" came from a counter that counts any command touching a check file, including `head checks/contrast-check.js`.
+Read from the transcripts, Opus `/kz-fastfix` never ran all ten checks; it ran the one check, but did not know how to run one headless, so it read `run-checks.py` and the check source, probed for Chrome and Playwright, and wrote its own Playwright wrappers and behaviour tests in a scratch folder (2.5 such calls per run; 6 to 8 on iterate-html, across Chromium, Firefox and WebKit).
+Opus `/kz-flashrule` ran `run-checks.py` with two to six checks per call (layout, focus, motion and contrast besides the one for the work), at two widths and both schemes ("Now the browser checks for what was built: form, typing, layout, focus, contrast, motion"), read `references/running.md` in 7 of 14 runs, and broke scratch copies to "show the check failing".
+The sentences it followed: kz-flashrule "only those for what you touched ... layout at a wide width and 375px", "When every line that applies passes", and rules 29 and 29a ("Break what it guards, watch it go red"); kz-fastfix step two ("Run the touched tests once before the change", "leaves one test that fails before"); kz-uicheck "375px with touch is never skipped" and its first example, `run-checks.py page.html # all ten`; the speed contract's "then `layout-audit` once at one wide width and at 375px"; rule 29e "a component runs the checks for what it touched".
+The 7.5 failures Opus `/kz-fastfix` introduced were all on iterate-html and came from the bare build turn, which the lane does not cover (the model routed it to kz-flashrule itself): a 40px filter button (`SMALL TOUCH TARGET`) and modal focus return. The `/kz-fastfix` dark-mode follow-up then added a 40px theme button, unchecked because the lane mapped a theme change to `contrast-check` only.
+
+### What changed
+
+- kz-fastfix and kz-flashrule open with a hard rule: run only the one check named for the change, as a single check file or `run-checks.py --checks <that one>`; never `run-checks.py` without `--checks`, never all checks, never checks the change did not touch; no harness, test or scratch copy of your own. Each names the mapping (label/text/style -> none or `contrast-check` if a colour changed; table -> `table-check`; filter/dropdown -> `popover-check`; form field -> `form-check`; diagram -> `diagram-check`; layout -> `layout-audit` at 375px; a theme toggle -> `contrast-check` both themes plus `layout-audit` at 375px for the new control).
+- kz-flashrule's "Fast check" column is now what to look for, not checks to run; 29 and 29a apply to tests in the project's own runner and to checks you write.
+- kz-uicheck: `run-checks.py` without `--checks` is the large path only; the speed contract, running.md and rule 29e now say the checks named for the kind of work, `layout-audit` once at 375px, never "to be safe", and no scratch harness.
+- T1 (owner decision): up to six values, outside a table's header row, visible chips or a filter bar may stand in for the panel if they show what is on (`aria-pressed`), carry a count ("4 of 6") and offer a one-tap Clear or All; past six, or when values come from data and can grow, it is the panel. `table-check.js` CHARTBOX follows it. The rubric item is now "the site filter passes T1", and the panel-closes item counts visible chips as nothing to close.
+
+### Fast lanes, AFTER against AFTER 2
+
+Factors are per task over none's median (same model), then the median over tasks with the range. Check calls are parsed from the transcripts. Failures introduced and rubric are sums over tasks of per-task medians; chart-filter is scored with the chips rule in both rows (AFTER re-scored). Cost is the CLI estimate.
+
+| model | lane | version | tasks | wall time vs none | tokens_total vs none | run-checks.py calls per run (bare / multi-check) | own browser-script calls per run | failures introduced | rubric | cost vs none (estimate) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| opus-5-5 | /kz-fastfix | AFTER | 4 (8 runs) | 1.70x (0.96x-2.00x) | 1.73x (1.44x-2.80x) | 0.2 (0.0 / 0.0) | 2.5 | 7.5 | 21/22 | 2.00x (1.18x-3.28x) |
+| opus-5-5 | /kz-fastfix | AFTER 2 | 4 (8 runs) | 1.40x (0.72x-1.48x) | 1.23x (1.09x-2.15x) | 3.1 (0.0 / 0.0) | 0.2 | 6 | 22/22 | 1.64x (1.31x-3.14x) |
+| opus-5-5 | /kz-flashrule | AFTER | 5 (10 runs) | 1.56x (1.14x-2.64x) | 1.72x (1.39x-3.02x) | 3.5 (0.0 / 1.2) | 0.9 | 0 | 25/27 | 1.78x (1.40x-2.51x) |
+| opus-5-5 | /kz-flashrule | AFTER 2 | 5 (10 runs) | 0.82x (0.71x-1.54x) | 1.02x (0.62x-1.58x) | 2.4 (0.0 / 0.0) | 0.0 | 0 | 27/27 | 1.32x (0.83x-2.00x) |
+| sonnet-5-5 | /kz-fastfix | AFTER | 4 (12 runs) | 1.24x (1.22x-1.35x) | 1.53x (1.49x-1.55x) | 0.0 (0.0 / 0.0) | 0.0 | 0 | 22/22 | 1.50x (1.48x-1.96x) |
+| sonnet-5-5 | /kz-fastfix | AFTER 2 | 4 (8 runs) | 1.60x (1.15x-1.79x) | 1.86x (1.33x-2.14x) | 1.5 (0.0 / 0.0) | 0.0 | 0 | 22/22 | 1.57x (1.45x-2.20x) |
+| sonnet-5-5 | /kz-flashrule | AFTER | 5 (15 runs) | 1.14x (0.93x-1.41x) | 1.21x (0.88x-1.67x) | 0.0 (0.0 / 0.0) | 0.0 | 4 | 26/27 | 1.67x (1.02x-1.93x) |
+| sonnet-5-5 | /kz-flashrule | AFTER 2 | 5 (10 runs) | 1.13x (0.60x-1.45x) | 1.51x (0.85x-1.62x) | 1.5 (0.0 / 0.0) | 0.0 | 2 | 26/27 | 1.51x (0.84x-2.09x) |
+
+On Opus both lanes got cheaper: `/kz-flashrule` went from 1.56x to 0.82x wall time and 1.72x to 1.02x tokens on these five tasks, with no multi-check calls, no scratch harness, 0 failures and 27 of 27 rubric items; `/kz-fastfix` went from 1.70x to 1.40x wall and 1.73x to 1.23x tokens, its scratch-harness calls from 2.5 to 0.2 per run.
+Opus `/kz-fastfix` still introduced 6 failures, again all on iterate-html (modal, motion and popover checks); in the run with per-turn commits they are present from the bare build turn, outside the lane.
+On Sonnet the firmer wording cost something: Sonnet ran no checks before and now runs the one named check (1.5 calls per run), so `/kz-fastfix` rose from 1.24x to 1.60x wall and 1.53x to 1.86x tokens, and `/kz-flashrule` tokens from 1.21x to 1.51x at the same wall time (1.14x to 1.13x); failures introduced 0 and 4 before, 0 and 2 now. Two or three runs per cell: read the Sonnet change as "no faster", not as a measured 30%.
+
+### Chart-filter, re-scored with the chips rule
+
+The same chart-filter pages from `after-2026-10-14.json` and `before-v2-2026-10-14.json`, scored twice: old = "the site filter is a T1 panel", new = "the site filter passes T1".
+
+| model | condition | skills | n | T1 item, old | T1 item, new | rubric of 5, old -> new (median) | failures introduced, old -> new (median) |
+|---|---|---|---|---|---|---|---|
+| opus-5-5 | none | - | 2 | 0/2 | 2/2 | 3 -> 4.5 | 12 -> 12 |
+| opus-5-5 | /kz-uiuxrule | before | 2 | 0/2 | 1/2 | 3.5 -> 4.5 | 4 -> 2 |
+| opus-5-5 | /kz-uiuxrule | after | 2 | 2/2 | 2/2 | 5 -> 5 | 0 -> 0 |
+| opus-5-5 | /kz-flashrule | after | 2 | 2/2 | 2/2 | 5 -> 5 | 0 -> 0 |
+| sonnet-5-5 | none | - | 3 | 0/3 | 0/3 | 3 -> 4 | 12 -> 12 |
+| sonnet-5-5 | installed | before | 3 | 0/3 | 0/3 | 2 -> 2 | 12 -> 12 |
+| sonnet-5-5 | installed | after | 3 | 2/3 | 2/3 | 5 -> 5 | 4 -> 4 |
+| sonnet-5-5 | /kz-uiuxrule | before | 3 | 0/3 | 3/3 | 3 -> 4 | 4 -> 4 |
+| sonnet-5-5 | /kz-uiuxrule | after | 3 | 3/3 | 3/3 | 5 -> 5 | 0 -> 0 |
+| sonnet-5-5 | /kz-flashrule | after | 3 | 0/3 | 0/3 | 4 -> 4 | 4 -> 4 |
+
+Opus's no-skill pages built six chips with a count and a clear, which now pass; Sonnet's no-skill pages built six chips or tick boxes with no count, which still fail CHARTBOX. Sonnet `/kz-flashrule` (AFTER) still fails the item for the reason it did before: a panel trigger without `aria-haspopup`. In AFTER 2 all four chart-filter runs pass all five items with 0 failures.
+
+### Spend
+
+AFTER 2: 36 agent runs, 12.2M tokens_total, USD 9.82 (CLI estimate). Scoring and the re-scoring use no model.

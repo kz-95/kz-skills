@@ -70,7 +70,7 @@ survives coming back).
 A filter that drives a chart or a dashboard, with no table in sight, is still T1: the same
 panel, the same Appendix A anatomy.
 **Start from:** [`snippets/filter-table.html`](../snippets/filter-table.html), a table that already passes every check.
-**Check:** `../../kz-uicheck/checks/table-check.js` (fails a filter that is a text box, a column with no filter, no sort, a filter glued to a header line, and with CHARTBOX a chart's filter built as chips, tick boxes or a select - run it on ANY page), `state-check.js` (drives every table to 0, 1 and all rows, sorts every column).
+**Check:** `../../kz-uicheck/checks/table-check.js` (fails a filter that is a text box, a column with no filter, no sort, a filter glued to a header line, and with CHARTBOX a chart's filter built as a select, a text box, or chips past 6 values or without a count and clear - run it on ANY page), `state-check.js` (drives every table to 0, 1 and all rows, sorts every column).
 **The three most often missed:** a filter that is a single text box rather than a panel
 (T1); a computed column with no filter because the value only exists inside the formatter
 (T2); totals summed from the formatted strings rather than the source values (Appendix A).
@@ -78,14 +78,14 @@ panel, the same Appendix A anatomy.
 ## C. Charts and data
 
 **Rules:** C1-C21 in [chart-rules.md](chart-rules.md), plus UI rules B3, X2, V1, Y2, and T1
-for any filter on the chart - it is the table's filter panel, not chips, tick boxes or a select.
+for any filter on the chart - chips only for up to 6 values with a count and clear; otherwise the panel.
 **Read:** [ui-rules.md](ui-rules.md) Appendix A for that filter panel's anatomy, and
 chart-rules in full for a new chart - it is one document and it is the shortest
 path. For an edit to an existing chart, C2 (chart follows its table), C15 (legend built
 inside the draw), C19 (rows not drawn say so), C14 (readout reports what is plotted).
 **Check:** `state-check.js` - it asserts chart, count, totals, readout and legend all still
 agree after every control is touched; `../../kz-uicheck/checks/table-check.js` CHARTBOX fails a
-chart filter built as chips, tick boxes, a select or a text box.
+chart filter built as a select, a text box, or chips or tick boxes past 6 values or without a count and clear.
 **The trap:** anything computed at load rather than inside the draw is stale the moment a
 filter moves (principle 12, C15, rule V1).
 

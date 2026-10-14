@@ -58,7 +58,7 @@ Live samples: [Tables and columns](https://kz-95.github.io/kz-skills/reference/u
 
 | ID | Rule |
 |---|---|
-| T1 | A filter on a dimension is a panel, not a single input - wherever it sits: a table column, a chart toolbar, a dashboard header. |
+| T1 | A filter on a dimension is a panel, not a single input - wherever it sits: a table column, a chart toolbar, a dashboard header; up to six values, visible chips with a count and a clear may stand in. |
 | T2 | Every column gets a filter, including computed ones. |
 | T3 | Every column explains itself. |
 | T4 | One mechanism per job. |

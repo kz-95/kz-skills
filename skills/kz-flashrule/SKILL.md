@@ -8,7 +8,7 @@ license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 
 **The default first read for small and medium UI work** (speed contract, [kz-skill](../kz-skill/SKILL.md)): open a full section only when its "More:" line is needed or no line covers the work. Trivial work reads only the one line that applies.
 The rules that break worst when missed; the source rule wins, so cite its ID. A screenshot only -> [ui-glance](../kz-uiuxrule/skills/ui-glance/SKILL.md).
-Checks are [kz-uicheck](../kz-uicheck/SKILL.md) scripts: only those for what you touched, once, on a settled page; layout at a wide width and 375px with touch; colour in both themes only when colour or theme changed.
+**Hard rule for this lane.** Run only the one [kz-uicheck](../kz-uicheck/SKILL.md) check named for the change, by pasting or running that single check file (no browser window: `python ../kz-uicheck/scripts/run-checks.py page.html --checks <that one> --width 375 --scheme light`), once, on a settled page; never run `scripts/run-checks.py` without `--checks`, or all checks; never run checks the change did not touch. Label, text or style -> none, or `contrast-check` in both themes if a colour changed; table -> `table-check`; filter or dropdown -> `popover-check` (a chart filter -> `table-check`); form field -> `form-check`; diagram -> `diagram-check`; layout -> `layout-audit` at one width (375px). A new screen: the check for its kind, then `layout-audit` at 375px; nothing else. The "Fast check" column names what to look for, not checks to run; and write no harness, test or scratch copy of your own to check a page.
 
 ## Safety floor and code (engineering rule numbers)
 
@@ -19,9 +19,9 @@ More: [engineering-rules.md](../kz-engrules/rules/engineering-rules.md).
 | 26 | Never simplify away validation at trust boundaries, data-loss handling, security or accessibility basics. | The diff removes no guard, check or try/catch; a secret scan of it is clean. |
 | 2 | Never invent APIs, files, functions, behaviour or test results. | Grep every name you cite; every "passes" has its output beside it. |
 | 11 | Trace every caller before editing a shared function; fix the shared path once. | Grep the function name; each caller still gets what it relied on. |
-| 29 | Non-trivial logic leaves one runnable check that fails if the logic breaks. | A test runs the changed branch; a pure wording or style change needs none. |
+| 29 | Non-trivial logic leaves one runnable check that fails if the logic breaks. | A test in the project's own runner covers the changed branch; a pure wording or style change, or a project with no runner, needs none here. |
 | 29e | Verification is proportional to the change; nothing written into the user's project unasked. | The checks run match what changed; after a fix only the failed one re-ran; the diff holds no unrequested file or feature. |
-| 29a | A check has to be shown failing before it is trusted. | Break what it guards, watch it go red, put it back. |
+| 29a | A check has to be shown failing before it is trusted. | A check you write: break what it guards, watch it go red, put it back. Running a kz-uicheck script needs no break test. |
 | 29b | Make sure the run used the file you just edited, not a cached copy. | Cache-bust (`?t=` plus the time), or assert on text only the new version holds. |
 | 32a | A scripted edit asserts its match count and fails loudly on no match. | It asserts the replacement count; re-run the file after. |
 | 29c | Every cross-reference resolves: rule IDs, links, tokens, icons, element ids. | `layout-audit.js` `UNDEFINED TOKEN`; grep each cited ID and link target. |
@@ -50,7 +50,7 @@ More: [ui-rules.md](../kz-uiuxrule/rules/ui-rules.md) T1-T4, Appendix A; start f
 | ID | Rule | Fast check |
 |---|---|---|
 | S1 | Search, sort on every column, a filter per column (the T1 panel, never a bare box or select), a live count, a no-match state. | `table-check.js` `NOSORT`, `NOSEARCH`, `NOCOUNT`; sort a number column: 9 before 10. |
-| T1 | A filter is a panel: sort, value list with counts, range. Never a text box. Chart and dashboard filters too: never chips, tick boxes or a select. | `table-check.js` `BOX`, `CHARTBOX`. |
+| T1 | A filter is a panel: sort, value list with counts, range. Never a text box. Chart and dashboard filters too, never a select; chips only for up to 6 values with a count and clear. | `table-check.js` `BOX`, `CHARTBOX`. |
 | T2 | Every column gets a filter, computed ones too; materialise the value onto the row. | `table-check.js` `NOFILTER`. |
 | S1 | Totals come from source values, rounded once; a filtered footer totals only shown rows. | Filter the table: the footer equals the shown rows' sum; shares total 100.0%. |
 
@@ -127,4 +127,4 @@ More: [kz-askcard](../kz-askcard/SKILL.md).
 | 3 | Ask only when blocked; otherwise state the assumption and continue. | Does the repo, the record or the request answer it? Then do not ask. |
 | kz-askcard | One card per turn: 3 to 5 decisions, one recommended, custom open, a default each. | Count cards this turn (1); every line has a recommendation and a default. |
 
-When every line that applies passes, small and medium work is fit to hand over; large work still gets its full review.
+When every line that applies is met (read in the code; measured only by the checks the hard rule names), small and medium work is fit to hand over; large work still gets its full review.

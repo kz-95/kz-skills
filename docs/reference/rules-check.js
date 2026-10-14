@@ -630,11 +630,29 @@
     function bars(id) { return $(id).querySelectorAll('rect').length; }
     var sec = $('t1-chart-filter');
     if (!sec) { bad('T1', 'the chart filter pair (#t1-chart-filter) is missing'); return; }
-    /* the wrong half must stay what agents build: chips, no panel, and still filtering, or the pair
-       stops showing that the defect is the shape of the filter and not whether it works */
+    /* the wrong half must stay what agents build: more than six chips, no count, no panel, and
+       still filtering, or the pair stops showing that the defect is the shape of the filter and
+       not whether it works. Up to six chips with a count and a clear pass T1, so it has nine. */
     var wrong = sec.querySelector('.demo.wrong'), chips = wrong.querySelectorAll('#cfBadChips button[aria-pressed]');
-    ok('T1 (wrong sample)', chips.length >= 2 && !wrong.querySelector('[aria-haspopup]'),
-       'the wrong half is no longer a row of chips without a panel, so it no longer shows the defect');
+    ok('T1 (wrong sample)', chips.length > 6 && !wrong.querySelector('[aria-haspopup]') &&
+       !/\d+\s*(of|\/)\s*\d+/.test(wrong.querySelector('.cfbar').textContent),
+       'the wrong half is no longer more than six chips with no count and no panel, so CHARTBOX would pass it');
+    /* the real verdict, when the page is served from the repository root: table-check's CHARTBOX
+       fails the wrong half (skip lifted for the run) and passes the panel and the six chips */
+    var TC = null;
+    try {
+      var xr = new XMLHttpRequest();
+      xr.open('GET', '../../skills/kz-uicheck/checks/table-check.js?t=' + Date.now(), false); xr.send();
+      if (xr.status === 200 && /function tableCheck/.test(xr.responseText)) { TC = xr.responseText; }
+    } catch (e) { TC = null; }
+    if (TC) {
+      wrong.removeAttribute('data-table-check');
+      var tcr = (0, eval)(TC);
+      wrong.setAttribute('data-table-check', 'skip');
+      var cbx = (tcr && tcr.failures || []).filter(function (f) { return /^CHARTBOX/.test(f); });
+      ok('T1 (wrong sample)', cbx.length === 1 && /September \(w/.test(cbx[0]) && /past six/.test(cbx[0]),
+         'table-check CHARTBOX did not fail the nine chips (and only them): ' + cbx.join(' / '));
+    }
     ok('T1 (wrong sample)', wrong.getAttribute('data-table-check') === 'skip',
        'the wrong half lost data-table-check="skip", so table-check would count the sample as a page defect');
     if (chips.length) {
@@ -669,6 +687,18 @@
     ok('T1', bars('cfGood') === all && /6 of 6/.test(trig.textContent), 'Select all did not bring every site back');
     tap(open().querySelector('.fdone'));
     ok('T1', !open() && document.activeElement === trig, 'Done did not close the chart panel and return focus');
+    /* also right, up to six values: chips that show their state, a live "n of m", All and Clear */
+    var cset = sec.querySelectorAll('#cfChipSet button[aria-pressed]'), cnt = $('cfChipCount'), six = bars('cfChips');
+    ok('T1', cset.length >= 2 && cset.length <= 6 && six === cset.length && cnt.textContent === six + ' of ' + six &&
+       !!$('cfChipAll') && !!$('cfChipClear') && !sec.querySelector('#cfChipsDemo').closest('[data-table-check]'),
+       'the six-chip sample lost its count, its All or Clear, went past six, or is skipped from table-check');
+    tap(cset[0]);
+    ok('T1', bars('cfChips') === six - 1 && cnt.textContent === (six - 1) + ' of ' + six &&
+       sec.querySelector('#cfChipSet button[aria-pressed="false"]'), 'a chip did not filter the chart, update the count and show its off state');
+    tap($('cfChipClear'));
+    ok('T1', bars('cfChips') === 0 && cnt.textContent === '0 of ' + six, 'Clear did not empty the chips chart');
+    tap($('cfChipAll'));
+    ok('T1', bars('cfChips') === six && cnt.textContent === six + ' of ' + six, 'All did not bring every site back');
   })();
 
   /* ---- N2 sample: the wrong half is a trap, the right half has four ways out ---- */

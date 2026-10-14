@@ -1,7 +1,8 @@
 # kz-uicheck - running the checks, and the traps
 
 Read this when a result looks wrong, when you serve the page and `fetch` the checks, or before
-a full close-out. `../SKILL.md` has which check to run for what.
+a full close-out. `../SKILL.md` has which check to run for what. The fast lanes (`kz-fastfix`,
+`kz-flashrule`) do not need this page: they run one check with `run-checks.py --checks`.
 
 ## Done condition for any page with a table
 
@@ -22,7 +23,7 @@ transitions off where a check reads a computed style. Colour checks run in **bot
 ## Widths
 
 The full close-out runs the layout audit at a wide width, a narrow one, and **375px with touch
-emulation**. A scoped run uses one wide width and 375px. 375px is never optional: it is the only
+emulation**. A scoped run uses 375px alone. 375px is never optional: it is the only
 width that exercises the 44px tap-target rule, and the width at which the typing check finds
 anything at all - the defects it reports do not exist on a desktop.
 

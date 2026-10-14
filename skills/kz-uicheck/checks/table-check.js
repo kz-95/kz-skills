@@ -20,11 +20,13 @@
      NOHELP    a header with no explainer - a title, a data-tip, or a [?] button (T3).
                Advisory.
      CHARTBOX  a filter that drives a chart, not a table column, built as a <select>, a
-               bare text box, a row of inline checkboxes or a row of toggle chips
-               (aria-pressed). T1 covers it: a chart's or dashboard's filter is the same
-               panel as a column filter - a trigger showing "Sites: 6 of 6" that opens
-               sort, value search, Select all / Clear selection, an "n of m" count and a
-               value list with counts. A chart is an <svg> wider than 200px with
+               bare text box, or a row of toggle chips (aria-pressed) or inline checkboxes
+               that has more than six values, or no visible count ("4 of 6", "4 selected")
+               or no one-tap Clear / All / Reset beside it. T1 covers it: a chart's or
+               dashboard's filter is the same panel as a column filter - a trigger showing
+               "Sites: 6 of 6" that opens sort, value search, Select all / Clear selection,
+               an "n of m" count and a value list with counts - except that up to six values
+               may be chips that show their state, a count and a clear. A chart is an <svg> wider than 200px with
                role="img" or at least three marks, a <canvas> wider than 200px, or an
                HTML chart (bars drawn as elements) whose id, class or role says chart. A
                control drives it when it sits in the same card or section (or a filter
@@ -179,7 +181,8 @@
 
   /* CHARTBOX. The filter that drives a chart or a dashboard is the T1 panel too. Agents who
      build the panel for a table column build chips, a row of tick boxes or a select the moment
-     the same dimension filters a chart instead - 0 of 12 benchmark runs built the panel. */
+     the same dimension filters a chart instead - 0 of 12 benchmark runs built the panel. Up to
+     six values may be chips instead, if they show their state, a count and a clear (T1). */
   function shown(el) {
     if (!el.getClientRects().length) { return false; }
     var cs = getComputedStyle(el);
@@ -300,6 +303,36 @@
         groups.filter(function (x) { return x.g === holder; })[0].n++;
       }
     });
+    /* up to six chips pass (T1) when a count and a Clear / All sit beside them: in the set, or
+       up to two levels out, never across into another chart's card */
+    var CLEARW = /^\s*(select |show )?(all|none|clear|reset)\b|\b(clear|reset)( all| selection)?\s*$/i;
+    var COUNTW = /\b\d+\s*(of|\/)\s*\d+\b|\b\d+\s+(selected|shown|on)\b/i;
+    function near(g, ci) {
+      var out = [g], up = g.parentElement;
+      for (var u = 0; up && u < 2 && up !== document.body; u++, up = up.parentElement) {
+        if (charts.some(function (c, k) { return k !== ci && up.contains(c); })) { break; }
+        out.push(up);
+      }
+      return out;
+    }
+    function hasCount(scope) {
+      return scope.some(function (el) {
+        var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false), n;
+        while ((n = w.nextNode())) {
+          var pe = n.parentElement;
+          if (!pe || pe.closest('svg, canvas, table, ' + POPUP) || !shown(pe)) { continue; }
+          if (COUNTW.test(n.nodeValue)) { return true; }
+        }
+        return false;
+      });
+    }
+    function clearIn(scope) {
+      return scope.some(function (el) {
+        return Array.prototype.some.call(el.querySelectorAll('button, [role=button], input[type=button], input[type=reset], a[href]'), function (b) {
+          return shown(b) && !b.closest(POPUP) && CLEARW.test(b.getAttribute('aria-label') || txt(b));
+        });
+      });
+    }
     groups.forEach(function (x) {
       if ((x.kind === 'toggle chips' || x.kind === 'inline checkboxes') && x.n < 2) { return; }
       var ci = chartFor(x.g);
@@ -309,10 +342,24 @@
       if (!marked && !KEY.test(words)) { return; }
       /* a search box beside a table is that table's search (S1), not a filter on a dimension */
       if (x.search && /search/i.test(words) && boxes2[ci] && boxes2[ci].querySelector('table')) { return; }
+      var lack = '', set = x.kind === 'toggle chips' || x.kind === 'inline checkboxes';
+      if (set) {
+        /* a chip that is itself All / Clear is the clear, not a value */
+        var vals = Array.prototype.filter.call(x.g.querySelectorAll('input[type=checkbox], [role=checkbox], [aria-pressed]'), function (el) {
+          return shown(el.closest('label') || el) && !CLEARW.test(el.getAttribute('aria-label') || txt(el.closest('label') || el));
+        }).length;
+        x.n = vals;
+        if (vals < 2) { return; }
+        var sc = near(x.g, ci), nc = !hasCount(sc), nx = !clearIn(sc);
+        if (vals <= 6 && !nc && !nx) { return; }
+        lack = vals > 6 ? ', past six values - chips wrap, cannot be searched and hide the counts'
+                        : ' with no ' + (nc ? 'count ("4 of 6")' : '') + (nc && nx ? ' and no ' : '') +
+                          (nx ? 'one-tap Clear or All' : '') + ' - up to six chips pass only with both';
+      }
       var what = x.n > 1 ? x.n + ' ' + x.kind : x.kind;
       var said = words.replace(/\s+/g, ' ').trim().slice(0, 40);
       fail.push('CHARTBOX | chart "' + chartName(charts[ci]) + '" | its filter is ' + what +
-                (said ? ' ("' + said + '")' : '') + ' - T1: a chart\'s filter is the same panel as a ' +
+                (said ? ' ("' + said + '")' : '') + lack + ' - T1: a chart\'s filter is the same panel as a ' +
                 'column filter: a trigger showing "Sites: 6 of 6" that opens sort, value search, ' +
                 'Select all / Clear selection, an n-of-m count and a value list with counts');
     });

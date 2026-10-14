@@ -116,7 +116,7 @@ What every column owes, and what a table must not do twice.
 
 | # | Rule |
 |---|---|
-| T1 | **A filter on a dimension is a panel, not a single input - wherever it sits: a table column, a chart toolbar, a dashboard header.** Sort, value search, multi-select value list with counts, range for numbers. It applies **live** - every tick lands immediately and the panel stays open - so there is no Cancel and no OK. A text box or single-select dropdown is not a real filter, and neither is a row of chips or inline tick boxes. A chart's or dashboard's filter is the same panel, and it filters the chart's rows as a column filter filters the table's ([chart-rules.md](chart-rules.md) C2). See Appendix A. |
+| T1 | **A filter on a dimension is a panel, not a single input - wherever it sits: a table column, a chart toolbar, a dashboard header; up to six values, visible chips with a count and a clear may stand in.** Sort, value search, multi-select value list with counts, range for numbers. It applies **live** - every tick lands immediately and the panel stays open - so there is no Cancel and no OK. A text box or single-select dropdown is not a real filter. **Up to six values, outside a table's header row, visible chips or a filter bar may stand in for the panel**, provided they show what is on (a pressed state, `aria-pressed`), carry a count (`4 of 6`) or equivalent, and offer a one-tap Clear or All. Why: when every value fits on one line, chips are faster to read and to use than a panel; past six they wrap, cannot be searched and hide the counts. So seven values or more, or values that come from the data and can grow, are the panel - and so is a row of chips or inline tick boxes with no count or no clear. A chart's or dashboard's filter is the same panel (or, up to six values, those chips), and it filters the chart's rows as a column filter filters the table's ([chart-rules.md](chart-rules.md) C2). See Appendix A. |
 | T2 | **Every column gets a filter, including computed ones.** A value that exists only inside a formatter cannot be sorted or filtered, so materialise it onto the row. See Appendix A. |
 | T3 | **Every column explains itself.** Each column header carries a one-line explainer: a tooltip on pointer devices, a tappable `[?]` on touch. A column whose meaning is obvious to the person who built it is rarely obvious to the person reading it. See Appendix A. |
 | T4 | **One mechanism per job.** When a general mechanism exists, a second bespoke one beside it is a defect, not a convenience. A dimension worth filtering is a column, filtered in the panel like every other column, rather than a dropdown in the toolbar that behaves differently. See Appendix M. |
@@ -242,8 +242,10 @@ The reference implementation lives in `ui-rules-visual.html` (the reference page
 **The filter panel below is not only a table's.** The same anatomy applies to a filter that
 drives a chart or a whole dashboard: a trigger that states what is on, opening the same
 panel (sort, value search, Select all / Clear selection, an "n of m" count, the value list
-with counts, Done on touch), applied live to the chart's rows (T1, C2). Chips, a row of tick
-boxes or a select beside a chart are the same defect as a text box under a column header.
+with counts, Done on touch), applied live to the chart's rows (T1, C2). A select, a text box,
+or chips and tick boxes past six values beside a chart are the same defect as a text box under
+a column header. Up to six values that cannot grow, visible chips pass instead: each shows
+whether it is on (`aria-pressed`), a count says "4 of 6", and All or Clear is one tap away.
 
 ```
 [ Sites: 5 of 6  v ]  RM 1,612k shown           <- trigger above the chart, says what is on

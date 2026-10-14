@@ -41,18 +41,20 @@ rules and checks, which this keeps.
      most the one check that covers it (or none), report in one line. That is `kz-fastfix`.
    - **Small/medium** - a component or a screen: read `../kz-flashrule/SKILL.md` first. Open
      the `rules/INDEX.md` row and the one or two sections it names only when a flashrule line
-     says "see X" or no line covers the work. Build. Run only the checks for what was touched:
+     says "see X" or no line covers the work. Build. Run only the checks named for its kind:
      table -> `table-check` (+ `popover-check` for its panels), form -> `form-check`
      (+ `typing-check` at 375px), popover/dropdown -> `popover-check`, modal -> `modal-check`,
      motion -> `motion-check`, diagram -> `diagram-check`, colour/theme -> `contrast-check`
-     in both themes; then `layout-audit` once at one wide width and at 375px.
+     in both themes; then `layout-audit` once at 375px. Not every check a touched element
+     could fail, and never `run-checks.py` without `--checks`.
    - **Large** - a project, an audit, "make it production", a release: the full path (all
      ten checks, both widths, both themes; `kz-uiuxrule` mode 4, `kz-crew021`, `kz-loopfix`).
 2. **No question unless genuinely ambiguous.** State the assumptions in one line and proceed
    (engineering rule 3). The Ask Card is for adopt or review scope, and for real ambiguity.
 3. **Checks are scoped and run once.** Fix what a check reports, then re-run only that check;
    never the full suite after a targeted fix. Both themes only when colour or theme changed.
-   The full suite only for mode 4, "make it production", or before a release.
+   The full suite only for mode 4, "make it production", or before a release. "To be safe" is
+   not a reason to run more; no harness or test script of your own to check a page, either.
 4. **Follow-ups stay light.** Do not re-read rules already read in this session; check only
    what the follow-up touched.
 5. **Nothing unasked.** A check left behind in the user's project is opt-in (mode 4, or the

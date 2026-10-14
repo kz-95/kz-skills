@@ -14,8 +14,8 @@ Nothing to install, no selectors to configure, no framework assumed.
 29e). One line or element: at most the one check that covers it. A component or screen: its
 checks (table -> `table-check` + `popover-check`, form -> `form-check` + `typing-check` at
 375px, dropdown -> `popover-check`, modal -> `modal-check`, motion -> `motion-check`, diagram
--> `diagram-check`, colour/theme -> `contrast-check` in both themes), then `layout-audit` at
-one wide width and 375px. After a fix, re-run only the check that failed. All ten, at three
+-> `diagram-check`, colour/theme -> `contrast-check` in both themes), then `layout-audit` once
+at 375px. After a fix, re-run only the check that failed. All ten, at three
 widths and both themes: mode 4, "make it production", a release. Never copy a check into the
 user's project unless asked.
 
@@ -24,7 +24,7 @@ Every finding code and skip attribute (`data-*-check="skip"`) in full: `referenc
 | Check | Catches | Rule |
 |---|---|---|
 | `checks/layout-audit.js` | Page overflow, overlap, clipped text, ragged control rows, tap targets under 44px, SVG text out of its viewBox, `FOCUS BOX`, `UNDEFINED TOKEN`, `WRAPPED SEQUENCE`, `COVERED` | `V3`, `L5`, `L8`, `L10`, `L11` |
-| `checks/table-check.js` | A column filter that is a bare text box or select instead of a panel, a column with no filter, a table with no sort, a header whose title and filter rows are split by a line or whose filter sits under 4px from one (`FILTERGAP`, measured in px), a filter that drives a chart built as chips, tick boxes, a select or a text box instead of the panel (`CHARTBOX`); and, as advisories, no search, no live count, headers with no explainer. Skip a deliberately wrong sample with `data-table-check="skip"` | `S1`, `T1`-`T3` |
+| `checks/table-check.js` | A column filter that is a bare text box or select instead of a panel, a column with no filter, a table with no sort, a header whose title and filter rows are split by a line or whose filter sits under 4px from one (`FILTERGAP`, measured in px), a filter that drives a chart built as a select, a text box, or chips or tick boxes past 6 values or with no count or clear, instead of the panel (`CHARTBOX`); and, as advisories, no search, no live count, headers with no explainer. Skip a deliberately wrong sample with `data-table-check="skip"` | `S1`, `T1`-`T3` |
 | `checks/typing-check.js` | A field rebuilt mid-word, a caret thrown to the end, a field that moves while typed into, text under 16px that zooms on focus | `F8` |
 | `checks/popover-check.js` | A panel that cannot be closed: trigger only opens (`STUCK`), Escape or outside click does nothing, no Done on touch | `N2` |
 | `checks/contrast-check.js` | Text under 4.5:1 (3:1 large) on its real background, layers composited, both themes; gradients `UNKNOWN` | `Y2` |
@@ -43,6 +43,8 @@ python scripts/run-checks.py page.html --checks table-check,popover-check --widt
 
 Headless Chrome on a local HTML file (needs only Python and Chrome); exits 1 if any check
 fails, so a generated page can be checked in a script or pre-commit step. One width per run.
+Without `--checks` it runs all ten: the large path only (a release, an audit, mode 4). The fast
+lanes (`kz-fastfix`, `kz-flashrule`) pass `--checks <the one check>` and never call it bare.
 
 ## What these cannot measure
 
@@ -55,8 +57,9 @@ model, if one is available, and costs the agent no tokens.
 - A page with a table is done only when `table-check.js` (and `popover-check.js` for its
   panels) ran in a real browser and its output is in the report - generated and static pages
   too; a reviewer reads the output, not the wording.
-- One at a time, on a settled page; colour checks in both themes; 375px with touch is never
-  skipped (the only width that exercises 44px targets and finds typing defects).
+- One at a time, on a settled page; colour checks in both themes; when layout or typing is
+  checked, 375px with touch is never skipped (the only width that exercises 44px targets and
+  finds typing defects).
 - A clean result on a page you have not seen render means the instrument is broken (zero-width
   viewport, a surface that never painted). Served and `fetch`ed: bust the cache (`?t=` plus
   the time), or an edited check reports on the old copy.
