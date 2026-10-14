@@ -267,7 +267,7 @@ The skills are Markdown and the hook script is host-neutral, but the hook has on
 
 ## Important notes
 
-- **The purpose hook is not in the plugin yet.** It asks what a skill is for before it acts. Wire it by hand from [`skills/kz-askcard/hooks/README.md`](skills/kz-askcard/hooks/README.md).
+- **The purpose hook is not in the plugin yet.** It sizes `kz-uiuxrule` work before any rule is read, and asks `kz-crew021` what the run is for. Wire it by hand from [`skills/kz-askcard/hooks/README.md`](skills/kz-askcard/hooks/README.md).
 - **Sample data uses Malaysian ringgit (`RM`).** It is sample data only.
 
 ---

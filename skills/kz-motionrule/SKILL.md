@@ -6,9 +6,11 @@ license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 
 # kz-motionrule
 
-The motion rules without the rest of the corpus. The rules themselves live in one place,
-[`motion-rules.md`](../kz-uiuxrule/rules/motion-rules.md), which `kz-uiuxrule` also routes
-to for its M category - this skill is a lane into that file, not a copy of it.
+The motion rules without the rest of the corpus: a lane into
+[`motion-rules.md`](../kz-uiuxrule/rules/motion-rules.md), which `kz-uiuxrule` also routes to
+for its M category, not a copy of it. The speed contract in `../kz-skill/SKILL.md` holds: one
+transition or press state changed is trivial (the `kz-flashrule` M line, `motion-check` once);
+only a review of a whole page's motion reads the file in full.
 
 ## When to use this rather than kz-uiuxrule
 
@@ -20,8 +22,8 @@ to for its M category - this skill is a lane into that file, not a copy of it.
 
 ## What to do
 
-1. **Ask first only if the request is unclear** - review or build, and which elements. One
-   card, in the `../kz-askcard/` format. A request that names both goes straight on.
+1. **Ask only if genuinely unclear** - review or build, and which elements (one
+   `../kz-askcard/` card). Otherwise state what you read in one line and go on.
 2. **Read [`motion-rules.md`](../kz-uiuxrule/rules/motion-rules.md)** - the six rules and
    the appendix of numbers. It is short and complete on its own.
 3. **Before writing any animation**, answer in order: does it move at all (M2), what is it
@@ -29,8 +31,9 @@ to for its M category - this skill is a lane into that file, not a copy of it.
    where does it grow from (M3).
 4. **Measure, then report.** Paste
    [`motion-check.js`](../kz-uicheck/checks/motion-check.js) into the console of the page,
-   or run `python ../kz-uicheck/scripts/run-checks.py page.html --checks motion-check`. M2
-   and M6 are behaviour: test them by hand as each rule's check line says.
+   or run `python ../kz-uicheck/scripts/run-checks.py page.html --checks motion-check`, once;
+   after a fix re-run it, nothing else. M2 and M6 are behaviour: test them by hand as each
+   rule's check line says.
 5. **Report by rule ID**, one row per finding, with the measurement behind it:
 
 | Rule | Found | Change to | Why |

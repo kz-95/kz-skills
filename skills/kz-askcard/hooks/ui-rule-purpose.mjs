@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-/* Ask the purpose before a big skill does anything.
+/* Point a big skill in the right direction before it does anything.
 
-   Two skills here are expensive to point in the wrong direction: a rule corpus with four
-   modes, and a project workflow that can spend a budget. Both have the same failure -
-   a model that decides what the user meant and is wrong - so both are gated the same way:
-   one card, asked first, then work.
+   Two skills here are expensive to point the wrong way: a rule corpus with four modes, and
+   a project workflow that can spend a budget. For kz-uiuxrule the card is the size test
+   (most UI work is small, and the full path made it 2.5x slower - docs/benchmark.md) and an
+   ask only when the mode or scope is genuinely unclear. For kz-crew021 it is one card,
+   asked first, then work.
 
    HOST-NEUTRAL BY DESIGN. It reads a JSON payload on stdin (or a single JSON argument, or
    a bare skill name as an argument), matches the skill being invoked against the table
@@ -23,32 +24,25 @@
 
 const CARDS = {
   "kz-uiuxrule": [
-    "MANDATORY FIRST STEP - do not read rules, edit files, or plan until this is answered.",
+    "FIRST: SIZE THE CHANGE, before reading any rule (the speed contract in kz-skill/SKILL.md).",
     "",
-    "The kz-uiuxrule skill has four modes. Ask the user which one, as a single",
-    "Ask Card, before any other action. Use the host's question UI where there is one;",
-    "otherwise print the card and stop for an answer.",
+    "  TRIVIAL (one element or one line, no new behaviour): treat it as kz-fastfix - at most",
+    "    the one kz-flashrule line that applies, at most the one check that covers it,",
+    "    a one-line report. Do not read INDEX.md or the rule files.",
+    "  SMALL/MEDIUM (a component or a screen): read kz-flashrule first; open an INDEX section",
+    "    only when a flashrule line points there. Run only the checks for what you touched,",
+    "    once; after a fix re-run only that check.",
+    "  LARGE (a project, an audit, 'make it production', a release): the full path.",
     "",
-    "  0. GLANCE - a screenshot, one pass (the ui-glance child skill; no card needed)",
-    "  1. ADOPT  - put design rules into this project (consolidating any that already exist)",
-    "  2. REVIEW - check existing UI against the rules, and which of the 13 sections to cover",
-    "  3. BUILD  - build or change UI under the rules, leaving a check behind",
-    "  4. LOOP   - build, then three independent reviewers against a separate fixer",
+    "Do not ask unless it is genuinely ambiguous. If the request names the work, say in one",
+    "line which mode and scope you read from it and proceed. Ask one Ask Card only when the",
+    "mode or scope is really unclear (adopt vs review, which sections to review, the",
+    "project's own rules disagree): 3-5 decisions, ONE marked (recommended) with four words",
+    "of why, a custom option always open, and the default you will assume if unanswered.",
     "",
-    "Ask in the same card, because both change what gets done:",
-    "  - Scope: which sections (D L B T F A N Y M P X K V), or let the skill propose from the repo",
-    "  - Speed: FAST (one review pass and the fixes) or RIGHT (the full loop until unanimous)",
-    "",
-    "EVERY question carries a recommendation and a way out:",
-    "  - Read the repo first, then mark ONE option (recommended) - the one you would pick,",
-    "    and say in four words why. A card with no recommendation makes the user do the",
-    "    skill's thinking for it.",
-    "  - Always leave a custom option open, so a user whose answer is not on the card can",
-    "    say so instead of picking a wrong one to get moving.",
-    "",
-    "State what you will assume if the user does not answer, so silence still makes progress.",
-    "If the user already named the mode and the scope in their request, say which you read",
-    "from it in one line and proceed - do not ask a question they have already answered.",
+    "Modes: 0 GLANCE (screenshot, ui-glance) | 1 ADOPT | 2 REVIEW | 3 BUILD | 4 LOOP.",
+    "Write nothing into the user's project that was not asked for: no check scripts, no",
+    "test files, no extra features.",
   ].join("\n"),
 
   "kz-crew021": [

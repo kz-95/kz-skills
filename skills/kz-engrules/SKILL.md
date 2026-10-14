@@ -19,7 +19,8 @@ The rules that apply to all work, not only work that renders. Sibling of
 - **L0, always** - think before acting, never invent project facts, assume rather than
   ask when assuming is safe, ASCII only, no AI attribution, close with a summary.
 - **L1, any code work** - understand first, fit the codebase, climb the size ladder
-  *after* understanding, quality bar, scope discipline, close out, and git (33-33c: a
+  *after* understanding, quality bar, scope discipline, close out (29e: verification is
+  proportional to the change - the speed contract in `../kz-skill/SKILL.md`), and git (33-33c: a
   branch named after the work, the connected git account as author and committer, the
   log read before the first push, merge and delete only on the owner's say-so).
 - **S, standing** - fire in any layer whenever their trigger appears, including inside

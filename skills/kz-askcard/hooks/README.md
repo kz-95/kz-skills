@@ -1,12 +1,22 @@
 # The purpose hook
 
-`ui-rule-purpose.mjs` makes a skill ask what it is for before it does anything. It carries
-a card per skill - today `kz-uiuxrule` (which mode, which sections, fast or right)
-and `kz-crew021` (what run, which phase, what budget, what weight). Adding another is
-one entry in `CARDS`; nothing else changes.
+`ui-rule-purpose.mjs` points a skill the right way before it does anything. It carries a
+card per skill:
 
-The requirement is also written into each skill, but a document can be skimmed past by a
-model that has decided it already knows; a hook cannot.
+- `kz-uiuxrule`: **size the change first** (the speed contract in
+  `../../kz-skill/SKILL.md`): a trivial change goes the `kz-fastfix` way with at most one
+  check, a component reads `kz-flashrule` first and runs only the checks for what it touched,
+  and only a project, audit or release takes the full path. It asks **only when the mode or
+  scope is genuinely unclear**; otherwise the model states what it read in one line and
+  proceeds. It is no longer a mandatory first question: on six benchmark tasks
+  (`docs/benchmark.md` in the repository) the agent skipped the card every time anyway, and
+  the cost was in reading and checking, not asking.
+- `kz-crew021`: what run, which phase, what budget, what weight - one card first, because
+  that workflow spends a budget.
+
+Adding another is one entry in `CARDS`; nothing else changes. The same text is written into
+each skill, but a document can be skimmed past by a model that has decided it already knows;
+a hook cannot.
 
 It is host-neutral on purpose. It reads a JSON payload on **stdin**, or a single JSON
 argument, or a bare skill name as an argument, and prints a card **only** for a skill in its
@@ -99,7 +109,7 @@ To wire one, you need the three things above. The quickest check, before touchin
 config:
 
 ```bash
-echo '{"skill":"kz-uiuxrule"}' | node hooks/ui-rule-purpose.mjs   # prints the card
+echo '{"skill":"kz-uiuxrule"}' | node hooks/ui-rule-purpose.mjs   # prints the size test
 echo '{"skill":"something-else"}'       | node hooks/ui-rule-purpose.mjs   # prints nothing
 ```
 
@@ -109,6 +119,6 @@ the host passes a payload this script does not recognise, the fix is one line in
 
 ## Without any hook at all
 
-`SKILL.md` opens with **Step zero: ask what this is for**. On a host with no hook
-mechanism, that section is the requirement, and it is the first thing in the file for that
-reason.
+`kz-uiuxrule`'s `SKILL.md` opens with **Step zero: the size test**, and `kz-crew021`'s
+with **Step zero: ask what this run is for**. On a host with no hook mechanism, those
+sections are the requirement, and they come first in each file for that reason.

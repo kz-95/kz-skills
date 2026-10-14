@@ -36,19 +36,21 @@ more than a tenth of it.
 
 ## What it does
 
-Four modes, picked from the request before anything else happens:
+The work is sized first (the speed contract in `../kz-skill/SKILL.md`): a one-element change goes to
+`kz-fastfix`, a component reads `kz-flashrule` first and runs only its own checks, and only large work
+takes the full path. Four modes, picked from the request:
 
 | Mode | Sounds like | Produces |
 |---|---|---|
 | **Glance** | a pasted screenshot, "quick look" | Three to six findings by rule id, from the picture alone - the child skill, one read, no questions |
 | **Adopt** | "set up design rules for this project" | A design-rule doc the project owns, plus its index - consolidated with whatever rules already exist, never overwriting them |
 | **Review** | "check this screen" | Findings by rule id, each carrying the measurement that proves it |
-| **Build** | "make this page" | The work built under the rules, with a runnable check left behind |
+| **Build** | "make this page" | The work built under the rules, checked by the checks for what it touched |
 | **Loop** | "make it right" | Three independent reviewers against a separate fixer, until unanimous |
 
-Where it is unsure - two modes fit, or the project already has rules that disagree - it
-raises a single **Ask Card** rather than guessing, and a review always asks which of the
-fourteen sections to cover before reading every rule at someone.
+Where it is genuinely unsure - two modes fit, or the project already has rules that disagree -
+it raises a single **Ask Card** rather than guessing, and a review that names no sections asks
+which of the fourteen to cover. Otherwise it says in one line what it read and proceeds.
 
 A **speed dial** decides how much of that runs: *fast* is one review pass and the fixes,
 *right* runs the full loop. It says what a fast pass skips rather than quietly doing more

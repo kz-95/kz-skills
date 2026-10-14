@@ -55,7 +55,7 @@ The skills are plain Markdown. There is no build step.
 
 ## The purpose hook (optional)
 
-`skills/kz-askcard/hooks/ui-rule-purpose.mjs` makes a skill ask what it is for before it acts. It reads a JSON payload on stdin, never blocks, and works with any host that can run a command before a skill call. It has only been tested on Claude Code. Wiring, including the two Claude Code entries it needs (one for a skill the model calls, one for a command you type), is in [`skills/kz-askcard/hooks/README.md`](../skills/kz-askcard/hooks/README.md).
+`skills/kz-askcard/hooks/ui-rule-purpose.mjs` points a skill the right way before it acts: for `kz-uiuxrule` the size test and an ask only when the mode or scope is genuinely unclear, for `kz-crew021` one card first. It reads a JSON payload on stdin, never blocks, and works with any host that can run a command before a skill call. It has only been tested on Claude Code. Wiring, including the two Claude Code entries it needs (one for a skill the model calls, one for a command you type), is in [`skills/kz-askcard/hooks/README.md`](../skills/kz-askcard/hooks/README.md).
 
 ## It does not show up as a command
 
