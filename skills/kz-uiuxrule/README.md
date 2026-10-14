@@ -69,7 +69,7 @@ than was asked.
 | `rules/diagram-rules.md` | G1-G10, for any drawn diagram - boxes, lines and their labels; also the whole of the `kz-diagramrule` skill |
 | `../kz-engrules/rules/engineering-rules.md` | Sibling skill: non-UI rules for code work, where S1 and S2 are defined |
 | `rules/design-principles.md` | The sixteen principles, and why each rule exists |
-| `../kz-askcard/hooks/ui-rule-purpose.mjs` | Sibling skill. Host-neutral hook that makes the skill ask its purpose before acting - stdin JSON, JSON arg or bare name; fires only for this skill; never blocks |
+| `../kz-askcard/hooks/ui-rule-purpose.mjs` | Sibling skill. Optional host-neutral hook that repeats the size test before the skill acts, and asks only when the mode or scope is genuinely unclear - stdin JSON, JSON arg or bare name; never blocks |
 | `../kz-askcard/hooks/README.md` | How to wire that hook, and which wiring has actually been tested |
 
 ## What it is not

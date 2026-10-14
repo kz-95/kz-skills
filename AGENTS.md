@@ -9,12 +9,16 @@ Thirteen skills, each a folder under `skills/` with a `SKILL.md`. The core is `k
 ## Using the skills when you are not Claude Code
 
 1. **Read `skills/kz-skill/SKILL.md` first.** It is a router. It names which skill fits the task and says what to read, so you never need the whole set.
-2. **For any UI work, read `skills/kz-uiuxrule/rules/INDEX.md`.** Find the row whose keywords match the task (`table`, `form`, `chart`, `dark mode`, `back button`). It names the two or three sections that apply. Read those, and nothing else unless the work touches a second category. Work that only moves (an animation, a transition, a press effect) can read `skills/kz-uiuxrule/rules/motion-rules.md` alone, which is what `skills/kz-motionrule/` does. Work that is only a diagram (boxes, lines and labels drawn as SVG) can read `skills/kz-uiuxrule/rules/diagram-rules.md` alone, which is what `skills/kz-diagramrule/` does.
-3. **Quote rule IDs** (`T1`, `F8`, `C5`) when you report a finding or justify a choice. They are stable.
-4. **Before saying UI work is done, run the checks** in `skills/kz-uicheck/checks/`. Paste each into the browser console of the page, one at a time, on a settled page: at a wide width, at a narrow one, and at 375px with touch emulation. A finding without a measurement behind it is not a finding.
-5. **Ask what the work is for before doing it**, as one card with three to five decisions, one marked recommended and a custom option always open. The format is in `skills/kz-askcard/SKILL.md`.
+2. **Size the change before reading any rule** (the speed contract in `skills/kz-skill/SKILL.md`, engineering rule 29e). A one-line edit (a label, a colour, a column) follows `skills/kz-fastfix/SKILL.md`: at most the one `kz-flashrule` line that applies and at most one check. Small and medium work (a component, a form, a screen) reads `skills/kz-flashrule/SKILL.md` first. Only a project, an audit, "make it production" or a release takes the full path.
+3. **Open the rule files only when `kz-flashrule` is not enough.** Then read `skills/kz-uiuxrule/rules/INDEX.md`, find the row whose keywords match the task (`table`, `form`, `chart`, `dark mode`, `back button`), and read the two or three sections it names, and nothing else unless the work touches a second category. Work that only moves (an animation, a transition, a press effect) can read `skills/kz-uiuxrule/rules/motion-rules.md` alone, which is what `skills/kz-motionrule/` does. Work that is only a diagram (boxes, lines and labels drawn as SVG) can read `skills/kz-uiuxrule/rules/diagram-rules.md` alone, which is what `skills/kz-diagramrule/` does.
+4. **Quote rule IDs** (`T1`, `F8`, `C5`) when you report a finding or justify a choice. They are stable.
+5. **Before saying UI work is done, run the checks named for the change** in `skills/kz-uicheck/checks/`, once, on a settled page: a table `table-check.js`, a form `form-check.js`, a theme `contrast-check.js` in both themes, then `layout-audit.js` once at 375px. After a fix, re-run only the check that failed. All ten checks at a wide width, a narrow one and 375px with touch emulation are for the full path. A finding without a measurement behind it is not a finding.
+6. **Ask only when the request is genuinely ambiguous.** Otherwise state in one line what you read the work to be and proceed. When you do ask, it is one card with three to five decisions, one marked recommended and a custom option always open; the format is in `skills/kz-askcard/SKILL.md`.
+7. **Write nothing into the user's project that was not asked for**: no check scripts, no test files, no extra features.
 
-If your host can run a command before a skill is invoked, `skills/kz-askcard/hooks/ui-rule-purpose.mjs` enforces step 5. It is host-neutral and never blocks. It has only been tested on Claude Code.
+If your host can run a command before a skill is invoked, `skills/kz-askcard/hooks/ui-rule-purpose.mjs` repeats the size test and step 6 there. It is optional, host-neutral and never blocks. It has only been tested on Claude Code.
+
+These steps cost time and tokens on purpose. `docs/benchmark.md` measures each lane against no skills on Sonnet 5.5 and Opus 5.5, and `scripts/bench/` reruns it.
 
 ## Working in this repository
 

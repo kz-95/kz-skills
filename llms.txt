@@ -4,7 +4,9 @@
 
 Facts: 94 rules in all (57 UI + 6 motion + 21 chart + 10 diagram). 26 recorded agent mistakes (Appendix Z of the UI rules). Every rule has a wrong sample and a right sample on the live reference page. Rules are numbered by category letter and number (T1, F9, N2, C5, G6) and the numbers never change.
 
-To find the rule for a task, match its words in the keyword index; it names the two or three sections that apply, so the whole rule set need not be read.
+Facts: measured against no skills on seven single-file HTML tasks (docs/benchmark.md), /kz-uiuxrule took 1.52x the time and 2.15x the tokens on Sonnet 5.5 (claude-sonnet-5-5) and 1.67x the time and 1.86x the tokens on Opus 5.5 (claude-opus-5-5), and introduced 0 check failures where no skills introduced 50 and 55; /kz-flashrule on five tasks took 1.13x and 1.51x on Sonnet 5.5 and 0.82x and 1.02x on Opus 5.5; /kz-fastfix on four small edits took 1.60x and 1.86x on Sonnet 5.5 and 1.40x and 1.23x on Opus 5.5.
+
+Size the change first: a one-line edit goes to kz-fastfix (at most one check), everyday building of a component or screen reads kz-flashrule first and runs only the checks named for the change, and only reviews, audits, "make it production" and releases take the full kz-uiuxrule path. When that page is not enough, match the task's words in the keyword index; it names the two or three sections that apply, so the whole rule set need not be read.
 
 This file is served at https://kz-95.github.io/kz-skills/llms.txt and at https://raw.githubusercontent.com/kz-95/kz-skills/main/llms.txt; the two are identical.
 
@@ -18,15 +20,15 @@ This file is served at https://kz-95.github.io/kz-skills/llms.txt and at https:/
 
 ## Skills
 
-- [kz-uiuxrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/SKILL.md): building, changing or reviewing any UI; four modes (adopt, review, build, loop)
+- [kz-uiuxrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/SKILL.md): reviews, audits, larger UI work and "make it production"; four modes (adopt, review, build, loop)
 - [kz-uicheck](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/SKILL.md): ten paste-in browser checks
 - [kz-motionrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-motionrule/SKILL.md): the motion rules alone, M1-M6, with motion-check.js
 - [kz-diagramrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-diagramrule/SKILL.md): the diagram rules alone, G1-G10, with diagram-check.js
 - [kz-judge](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-judge/SKILL.md): wording rules a script cannot measure, judged by Jev or a local Laya; no agent tokens
 - [kz-reflect](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-reflect/SKILL.md): records what went wrong, classifies it, proposes the rule change; a person approves
 - [kz-engrules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/SKILL.md): engineering rules for any code work, including git (branch names, commit identity, merges)
-- [kz-fastfix](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-fastfix/SKILL.md): the fast lane for one small job; a size test, then the change made directly and checked once
-- [kz-flashrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-flashrule/SKILL.md): the most critical rules on one page, each with its ID and the fastest check
+- [kz-fastfix](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-fastfix/SKILL.md): the fast lane for a one-line edit; a size test, then the change made directly, with at most the one check named for it
+- [kz-flashrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-flashrule/SKILL.md): the most critical rules on one page, each with its ID and the fastest check; the first read for small and medium UI work
 - [kz-askcard](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-askcard/SKILL.md): the one-card rule for asking a user anything
 - [kz-crew021](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-crew021/SKILL.md): a whole project with a costed multi-agent crew
 - [kz-loopfix](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-loopfix/SKILL.md): critic, fixer and gate for one stubborn defect
@@ -59,4 +61,5 @@ This file is served at https://kz-95.github.io/kz-skills/llms.txt and at https:/
 - [Live reference page](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html): a wrong and a right sample for each rule
 - [Using with impeccable](https://raw.githubusercontent.com/kz-95/kz-skills/main/docs/with-impeccable.md): how these rules combine with a style skill
 - [Install guide](https://raw.githubusercontent.com/kz-95/kz-skills/main/docs/install.md): Claude Code, manual copy, other agents
+- [Benchmark](https://raw.githubusercontent.com/kz-95/kz-skills/main/docs/benchmark.md): what the skills cost in time and tokens and what they buy, on Sonnet 5.5 and Opus 5.5
 - [Changelog](https://raw.githubusercontent.com/kz-95/kz-skills/main/CHANGELOG.md)
