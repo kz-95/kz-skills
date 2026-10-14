@@ -30,7 +30,7 @@ scoped out by anything.
 
 | If the task says | Category | Go to |
 |---|---|---|
-| table, list, grid, rows, sort, filter, search, pagination, export | Tables | [T](#t-tables-and-columns) |
+| table, list, grid, rows, sort, filter, search, pagination, export, chart filter, dashboard filter, filter dropdown, pick which ... to show, multi-select | Tables | [T](#t-tables-and-columns) |
 | chart, graph, plot, axis, legend, series, KPI, dashboard, data viz, timeline, funnel | Charts | [C](#c-charts-and-data) |
 | form, input, field, validation, required, submit, draft, wizard, steps, regex, pattern, email, phone, postcode, quantity, price, calculator, math, textarea, select on focus, typing, keyboard closes, caret jumps, screen jumps, zoom on focus, re-render | Forms | [F](#f-forms-and-input) |
 | button, delete, remove, clear, reset, save, toast, undo, confirm, loading, progress, hover, halo, clickable, affordance | Actions | [A](#a-actions-and-feedback) |
@@ -67,20 +67,25 @@ marked as such by their identity.
 value lists, counts, totals), Appendix L (bounded height and expand), Appendix T (what
 survives coming back).
 **Also:** [chart-rules.md](chart-rules.md) C2 and C10 if anything on screen plots these rows.
+A filter that drives a chart or a dashboard, with no table in sight, is still T1: the same
+panel, the same Appendix A anatomy.
 **Start from:** [`snippets/filter-table.html`](../snippets/filter-table.html), a table that already passes every check.
-**Check:** `../../kz-uicheck/checks/table-check.js` (fails a filter that is a text box, a column with no filter, no sort, a filter glued to a header line - run it on ANY page), `state-check.js` (drives every table to 0, 1 and all rows, sorts every column).
+**Check:** `../../kz-uicheck/checks/table-check.js` (fails a filter that is a text box, a column with no filter, no sort, a filter glued to a header line, and with CHARTBOX a chart's filter built as chips, tick boxes or a select - run it on ANY page), `state-check.js` (drives every table to 0, 1 and all rows, sorts every column).
 **The three most often missed:** a filter that is a single text box rather than a panel
 (T1); a computed column with no filter because the value only exists inside the formatter
 (T2); totals summed from the formatted strings rather than the source values (Appendix A).
 
 ## C. Charts and data
 
-**Rules:** C1-C21 in [chart-rules.md](chart-rules.md), plus UI rules B3, X2, V1, Y2.
-**Read:** chart-rules in full for a new chart - it is one document and it is the shortest
+**Rules:** C1-C21 in [chart-rules.md](chart-rules.md), plus UI rules B3, X2, V1, Y2, and T1
+for any filter on the chart - it is the table's filter panel, not chips, tick boxes or a select.
+**Read:** [ui-rules.md](ui-rules.md) Appendix A for that filter panel's anatomy, and
+chart-rules in full for a new chart - it is one document and it is the shortest
 path. For an edit to an existing chart, C2 (chart follows its table), C15 (legend built
 inside the draw), C19 (rows not drawn say so), C14 (readout reports what is plotted).
 **Check:** `state-check.js` - it asserts chart, count, totals, readout and legend all still
-agree after every control is touched.
+agree after every control is touched; `../../kz-uicheck/checks/table-check.js` CHARTBOX fails a
+chart filter built as chips, tick boxes, a select or a text box.
 **The trap:** anything computed at load rather than inside the draw is stale the moment a
 filter moves (principle 12, C15, rule V1).
 
@@ -106,7 +111,9 @@ that is already on screen instead of counting it (A2).
 ## N. Overlays and navigation
 
 **Rules:** N2 (when a dropdown closes), N1 (a modal claims the screen - four separate
-things), L8 and N3 (the mobile shell and its bars), N4 (coming back is a state).
+things), L8 and N3 (the mobile shell and its bars), N4 (coming back is a state), and T1 when
+the dropdown filters data - a "pick which to show" dropdown is the T1 filter panel.
+**Read for a filter dropdown:** [ui-rules.md](ui-rules.md) Appendix A (the panel's parts).
 **Check:** `popover-check.js` (opens every dropdown and closes it four ways).
 **Read:** Appendix J (when a popover closes, and every way out), Appendix N (the four things a modal owns and
 the scroll lock that is always the missing one), Appendix O (the mobile shell, bar

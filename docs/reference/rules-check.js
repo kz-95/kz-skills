@@ -618,6 +618,59 @@
     if (all.length > 1) { tap(all[0]); tap(all[1]); ok('N2', document.querySelectorAll('.fpop[data-show="1"]').length === 1, 'two filter panels are open at once'); tap(document.body); }
   })();
 
+  /* ---- T1 on a chart: the chart's filter is the same panel as a column's ---------- */
+  (function () {
+    function tap(el) {
+      ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click'].forEach(function (t) {
+        var C = t.indexOf('pointer') === 0 ? PointerEvent : MouseEvent;
+        el.dispatchEvent(new C(t, { bubbles: true, cancelable: true, view: window, pointerType: 'mouse', button: 0 }));
+      });
+    }
+    function open() { return document.querySelector('.fpop[data-show="1"]'); }
+    function bars(id) { return $(id).querySelectorAll('rect').length; }
+    var sec = $('t1-chart-filter');
+    if (!sec) { bad('T1', 'the chart filter pair (#t1-chart-filter) is missing'); return; }
+    /* the wrong half must stay what agents build: chips, no panel, and still filtering, or the pair
+       stops showing that the defect is the shape of the filter and not whether it works */
+    var wrong = sec.querySelector('.demo.wrong'), chips = wrong.querySelectorAll('#cfBadChips button[aria-pressed]');
+    ok('T1 (wrong sample)', chips.length >= 2 && !wrong.querySelector('[aria-haspopup]'),
+       'the wrong half is no longer a row of chips without a panel, so it no longer shows the defect');
+    ok('T1 (wrong sample)', wrong.getAttribute('data-table-check') === 'skip',
+       'the wrong half lost data-table-check="skip", so table-check would count the sample as a page defect');
+    if (chips.length) {
+      var b0 = bars('cfBad'); tap(chips[0]);
+      ok('T1 (wrong sample)', bars('cfBad') === b0 - 1, 'a chip no longer filters the wrong chart');
+      tap(wrong.querySelector('#cfBadChips button[aria-pressed="false"]'));
+    }
+    /* the right half: a trigger that opens the T1 panel, which filters the chart live */
+    var trig = $('cfTrig'), all = bars('cfGood');
+    ok('T1', trig && trig.getAttribute('aria-haspopup') && /6 of 6/.test(trig.textContent),
+       'the chart filter trigger does not declare its panel or does not say "6 of 6"');
+    tap(trig);
+    var pop = open();
+    ok('T1', !!pop && trig.getAttribute('aria-expanded') === 'true', 'the chart filter trigger did not open the panel');
+    if (!pop) { return; }
+    ok('T1', pop.querySelectorAll('.sortbtn').length === 2 && !!pop.querySelector('.fq') &&
+       !!pop.querySelector('.selall') && !!pop.querySelector('.selnone') && !!pop.querySelector('.fdone'),
+       'the chart panel is missing sort, value search, Select all, Clear selection or Done');
+    var vals = pop.querySelectorAll('.vals label');
+    ok('T1', vals.length === all && Array.prototype.every.call(vals, function (l) { return /^\d+$/.test(l.querySelector('.c').textContent); }),
+       'the chart panel does not list every site with a count');
+    ok('T1', pop.querySelector('.n').textContent === all + ' of ' + all, 'the chart panel count does not read "n of m"');
+    var cb = pop.querySelector('.vals input:checked');
+    tap(cb);
+    ok('T1', bars('cfGood') === all - 1, 'unticking a site did not redraw the chart without it (live apply)');
+    ok('T1', !!open(), 'unticking a site closed the panel: the next tick is the likely next action');
+    ok('T1', /5 of 6/.test(trig.textContent) && /5 of 6/.test(open().querySelector('.n').textContent),
+       'the trigger and the panel count did not follow the tick');
+    tap(open().querySelector('.selnone'));
+    ok('T1', bars('cfGood') === 0 && /0 of 6/.test(trig.textContent), 'Clear selection did not empty the chart');
+    tap(open().querySelector('.selall'));
+    ok('T1', bars('cfGood') === all && /6 of 6/.test(trig.textContent), 'Select all did not bring every site back');
+    tap(open().querySelector('.fdone'));
+    ok('T1', !open() && document.activeElement === trig, 'Done did not close the chart panel and return focus');
+  })();
+
   /* ---- N2 sample: the wrong half is a trap, the right half has four ways out ---- */
   (function () {
     function tap(el) {

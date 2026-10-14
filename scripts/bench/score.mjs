@@ -19,6 +19,9 @@ const PW = process.env.PLAYWRIGHT || '/opt/node-tools/node_modules/playwright/in
 const { chromium } = await import(pathToFileURL(PW).href);
 const CHROME = process.env.CHROME || '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell';
 const RUN_CHECKS = path.join(REPO, 'skills', 'kz-uicheck', 'scripts', 'run-checks.py');
+/* the rubric's "is it a T1 panel" uses the check's own definition, so the rubric and table-check
+   cannot disagree about what a chart filter has to be */
+const TABLE_CHECK = readFileSync(path.join(REPO, 'skills', 'kz-uicheck', 'checks', 'table-check.js'), 'utf8');
 const STATUSES = ['Open', 'In progress', 'On hold', 'Done', 'Cancelled'];
 const SITES = ['North depot', 'South yard', 'East works', 'West plant', 'Harbour', 'Airport'];
 
@@ -129,7 +132,16 @@ const RUBRICS = {
   'chart-filter': [
     ['a chart is drawn (svg, canvas or HTML chart >= 200x100)', async p => (await chartSnapshot(p)).length > 0],
     ['the site filter is not a <select>', async p => p.evaluate(S => ![...document.querySelectorAll('select')].some(s => [...s.options].some(o => S.includes(o.textContent.trim()))), SITES)],
-    ['the site filter is a panel with a value list and counts or values', async p => { const o = await openValueList(p, SITES); return !!o && o.how === 'panel' && o.labels.filter(l => /\d/.test(l)).length >= 3; }],
+    /* T1, as table-check.js defines it: no CHARTBOX (chips, tick boxes, a select or a text box
+       driving the chart), and a trigger that declares aria-haspopup opens a value list with counts */
+    ['the site filter is a T1 panel (table-check CHARTBOX clean, aria-haspopup trigger, value list with counts)', async p => {
+      const tc = await p.evaluate(TABLE_CHECK);
+      if (!tc || (tc.failures || []).some(f => /^CHARTBOX/.test(f))) return false;
+      const o = await openValueList(p, SITES);
+      if (!o || o.how !== 'panel') return false;
+      const declared = await o.trigger.evaluate(e => e.hasAttribute('aria-haspopup') || !!e.closest('[aria-haspopup]')).catch(() => false);
+      return declared && o.labels.filter(l => /\d/.test(l)).length >= 3;
+    }],
     ['unticking a site re-renders the chart', async p => { await p.reload(); const a = await chartSnapshot(p); const o = await openValueList(p, SITES); if (!o) return false; const l = await untickOne(p, SITES); await p.waitForTimeout(300); return !!l && (await chartSnapshot(p)) !== a; }],
     ['the panel closes on trigger, Escape and outside click', async p => {
       const closed = async () => (await visibleCheckboxes(p)).filter(l => SITES.some(s => l.includes(s))).length < 3;

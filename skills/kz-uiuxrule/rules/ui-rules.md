@@ -116,7 +116,7 @@ What every column owes, and what a table must not do twice.
 
 | # | Rule |
 |---|---|
-| T1 | **A column filter is a panel, not a single input.** Sort, value search, multi-select value list with counts, range for numbers. It applies **live** - every tick lands immediately and the panel stays open - so there is no Cancel and no OK. A text box or single-select dropdown is not a real filter. See Appendix A. |
+| T1 | **A filter on a dimension is a panel, not a single input - wherever it sits: a table column, a chart toolbar, a dashboard header.** Sort, value search, multi-select value list with counts, range for numbers. It applies **live** - every tick lands immediately and the panel stays open - so there is no Cancel and no OK. A text box or single-select dropdown is not a real filter, and neither is a row of chips or inline tick boxes. A chart's or dashboard's filter is the same panel, and it filters the chart's rows as a column filter filters the table's ([chart-rules.md](chart-rules.md) C2). See Appendix A. |
 | T2 | **Every column gets a filter, including computed ones.** A value that exists only inside a formatter cannot be sorted or filtered, so materialise it onto the row. See Appendix A. |
 | T3 | **Every column explains itself.** Each column header carries a one-line explainer: a tooltip on pointer devices, a tappable `[?]` on touch. A column whose meaning is obvious to the person who built it is rarely obvious to the person reading it. See Appendix A. |
 | T4 | **One mechanism per job.** When a general mechanism exists, a second bespoke one beside it is a defect, not a convenience. A dimension worth filtering is a column, filtered in the panel like every other column, rather than a dropdown in the toolbar that behaves differently. See Appendix M. |
@@ -238,7 +238,20 @@ What has to be true on every path, and what is checked before done.
 ## Appendix A: The standard table pattern (S1)
 
 The reference implementation lives in `ui-rules-visual.html` (the reference page and the browser checks in the project this corpus came from (not carried in this package)).
-Anatomy, top to bottom:
+
+**The filter panel below is not only a table's.** The same anatomy applies to a filter that
+drives a chart or a whole dashboard: a trigger that states what is on, opening the same
+panel (sort, value search, Select all / Clear selection, an "n of m" count, the value list
+with counts, Done on touch), applied live to the chart's rows (T1, C2). Chips, a row of tick
+boxes or a select beside a chart are the same defect as a text box under a column header.
+
+```
+[ Sites: 5 of 6  v ]  RM 1,612k shown           <- trigger above the chart, says what is on
+| Sort A to Z | Search values... | Select all  Clear selection  5 of 6 |
+| [x] Bangi  9 | [ ] Cyberjaya  7 | [x] Kajang  9 | ...       [ Done ] |   <- the T1 panel
+```
+
+Anatomy of the table, top to bottom:
 
 ```
 +-----------------------------------------------------+
