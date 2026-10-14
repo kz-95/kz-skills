@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edit site</title>
+<style>
+  :root { --bg: #f7f7f8; --surface: #fff; --text: #1d1f23; --muted: #5b6170; --line: #d6d9e0; --accent: #2457c5; --accent-text: #fff; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  main { max-width: 640px; margin: 32px auto; padding: 0 16px; }
+  form { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 24px; }
+  .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+  label { font-weight: 600; }
+  input, textarea, select { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; }
+  .hint { color: var(--muted); font-size: 13px; }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .btn { font: inherit; padding: 8px 16px; border-radius: 6px; cursor: pointer; min-height: 40px; }
+  .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
+  .btn-primary { background: var(--accent); color: var(--accent-text); border: 1px solid var(--accent); }
+  .status { margin-top: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Edit site</h1>
+  <form id="site-form">
+    <div class="field">
+      <label for="name">Site name</label>
+      <input id="name" name="name" value="North depot" required>
+    </div>
+    <div class="field">
+      <label for="region">Region</label>
+      <select id="region" name="region">
+        <option>North</option><option>South</option><option>East</option><option>West</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="notes">Notes</label>
+      <textarea id="notes" name="notes" rows="3">Gate code at reception.</textarea>
+      <span class="hint">Visible to all crews.</span>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn btn-secondary" id="cancel">Cancel</button>
+      <button type="submit" class="btn btn-secondary" id="save">Save</button>
+    </div>
+    <p class="status" id="status" aria-live="polite"></p>
+  </form>
+</main>
+<script>
+  document.getElementById('site-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('status').textContent = 'Saved.';
+  });
+  document.getElementById('cancel').addEventListener('click', function () {
+    document.getElementById('site-form').reset();
+  });
+</script>
+</body>
+</html>

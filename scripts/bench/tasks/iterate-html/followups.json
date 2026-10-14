@@ -1,0 +1,5 @@
+[
+  "Make the filter remember its value on reload.",
+  "Add a dark mode toggle.",
+  "The detail panel should close on Escape."
+]
