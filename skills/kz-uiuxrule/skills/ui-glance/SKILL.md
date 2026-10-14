@@ -7,9 +7,9 @@ license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 
 # Glance - a screenshot, one pass
 
-The fast path of `kz-uiuxrule`. The parent skill asks what it is for before it
-does anything; this one does not, because the request already says: *look at this and tell
-me what is wrong*. Answer, do not ask.
+The fast path of `kz-uiuxrule`, and the cheapest lane of its speed contract
+(`../../../kz-skill/SKILL.md`): no size test, no card, no check run - the request already
+says *look at this and tell me what is wrong*. Answer, do not ask.
 
 **Read only this file.** Do not open the parent rule set - the ids below are enough to
 cite, and the whole point of this mode is that it costs one read. If the user then asks

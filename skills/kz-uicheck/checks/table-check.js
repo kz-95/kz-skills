@@ -19,14 +19,32 @@
                Advisory, for the same reason.
      NOHELP    a header with no explainer - a title, a data-tip, or a [?] button (T3).
                Advisory.
+     CHARTBOX  a filter that drives a chart, not a table column, built as a <select>, a
+               bare text box, or a row of toggle chips (aria-pressed) or inline checkboxes
+               that has more than six values, or no visible count ("4 of 6", "4 selected")
+               or no one-tap Clear / All / Reset beside it. T1 covers it: a chart's or
+               dashboard's filter is the same panel as a column filter - a trigger showing
+               "Sites: 6 of 6" that opens sort, value search, Select all / Clear selection,
+               an "n of m" count and a value list with counts - except that up to six values
+               may be chips that show their state, a count and a clear. A chart is an <svg> wider than 200px with
+               role="img" or at least three marks, a <canvas> wider than 200px, or an
+               HTML chart (bars drawn as elements) whose id, class or role says chart. A
+               control drives it when it sits in the same card or section (or a filter
+               bar two levels out from it), or points at it with aria-controls, and its label or nearby text says filter, show, site,
+               pick, choose or which - or it carries data-filter. A trigger with
+               aria-haspopup is the panel and passes; a legend's own toggles (C20) pass;
+               a search box beside a table is that table's search (S1) and passes. Its own
+               code, because BOX's message names a column and a table head.
 
-   BOX, NOFILTER, FILTERGAP and NOSORT are failures. The rest are listed below them.
+   BOX, NOFILTER, FILTERGAP, NOSORT and CHARTBOX are failures. The rest are listed below them.
 
    A table that is deliberately wrong (a "wrong" sample in a rules page) opts out with
    data-table-check="skip" on the table or any ancestor.
 
    Only data tables are read: a table needs a thead with headers, at least two columns
-   and at least one body row, and must not be role="presentation". Returns the list. */
+   and at least one body row, and must not be role="presentation". The CHARTBOX pass reads
+   every chart the same way, and data-table-check="skip" opts a chart's sample out too.
+   Returns the list. */
 (function tableCheck() {
   var fail = [], note = [];
   function name(t, i) {
@@ -161,7 +179,193 @@
     }
   });
 
-  var head = 'table check: ' + tables.length + ' table(s) read';
+  /* CHARTBOX. The filter that drives a chart or a dashboard is the T1 panel too. Agents who
+     build the panel for a table column build chips, a row of tick boxes or a select the moment
+     the same dimension filters a chart instead - 0 of 12 benchmark runs built the panel. Up to
+     six values may be chips instead, if they show their state, a count and a clear (T1). */
+  function shown(el) {
+    if (!el.getClientRects().length) { return false; }
+    var cs = getComputedStyle(el);
+    return cs.visibility !== 'hidden' && cs.display !== 'none';
+  }
+  function txt(el) { return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : ''; }
+  var charts = Array.prototype.filter.call(document.querySelectorAll('svg, canvas'), function (el) {
+    if (el.closest('[data-table-check="skip"]') || !shown(el)) { return false; }
+    var r = el.getBoundingClientRect();
+    if (r.width <= 200 || r.height < 60) { return false; }
+    if (el.tagName.toLowerCase() === 'canvas') { return true; }
+    if (el.parentElement && el.parentElement.closest('svg')) { return false; }
+    if (el.getAttribute('role') === 'img' || el.getAttribute('role') === 'graphics-document') { return true; }
+    return el.querySelectorAll('rect, path, polyline, polygon, circle, line').length >= 3;
+  });
+  /* an HTML chart - bars drawn as divs - in an element whose id, class or role says so; the
+     innermost one, never a whole section, and never one that holds a table or an svg chart */
+  var htmlCharts = Array.prototype.filter.call(document.querySelectorAll('[role=img], [id*="chart" i], [class*="chart" i]'), function (el) {
+    var tag = el.tagName.toLowerCase();
+    if (['section', 'main', 'body', 'article', 'svg', 'canvas'].indexOf(tag) > -1) { return false; }
+    if (el.closest('svg, [data-table-check="skip"]') || !shown(el) || el.querySelector('table, svg, canvas')) { return false; }
+    var r = el.getBoundingClientRect();
+    return r.width > 200 && r.height >= 60 && el.querySelectorAll('*').length >= 6;
+  });
+  htmlCharts.forEach(function (el) {
+    if (!htmlCharts.some(function (o) { return o !== el && el.contains(o); })) { charts.push(el); }
+  });
+  var BOUND = 'section, article, figure, aside, [role=region], [class*="card"], [class*="panel"], [class*="widget"]';
+  var POPUP = '[role=dialog], [role=menu], [role=listbox], [aria-modal], [popover], .fpop';
+  var CANDS = 'select, input, [role=checkbox], [role=menuitemcheckbox], button[aria-pressed], [role=button][aria-pressed]';
+  function boxOf(chart) {
+    /* the chart's card: the nearest bounding ancestor, or the next one out when the nearest is
+       only a wrapper with no controls in it */
+    var b = chart.parentElement && chart.parentElement.closest(BOUND);
+    if (b && !b.querySelector(CANDS) && !b.matches('section, article, [role=region]')) {
+      b = (b.parentElement && b.parentElement.closest(BOUND)) || b;
+    }
+    return b || (chart.parentElement && chart.parentElement.parentElement) || chart.parentElement;
+  }
+  var boxes2 = charts.map(boxOf);
+  function chartName(c) {
+    return (c.getAttribute('aria-label') || c.id || c.tagName.toLowerCase()).slice(0, 40);
+  }
+  function labelText(el) {
+    var out = [el.getAttribute('aria-label') || '', el.getAttribute('title') || '',
+               el.getAttribute('placeholder') || ''];
+    var by = el.getAttribute('aria-labelledby');
+    if (by) { by.split(/\s+/).forEach(function (id) { out.push(txt(document.getElementById(id))); }); }
+    if (el.labels) { Array.prototype.forEach.call(el.labels, function (l) { out.push(txt(l)); }); }
+    if (el.tagName.toLowerCase() === 'fieldset') { out.push(txt(el.querySelector('legend'))); }
+    var fs = el.closest('fieldset');
+    if (fs) { out.push(txt(fs.querySelector('legend'))); }
+    var g = el.parentElement && el.parentElement.closest('[role=group], [role=toolbar]');
+    if (g) { out.push(g.getAttribute('aria-label') || ''); }
+    /* the words just before it: "Sites:" in front of a row of chips */
+    var prev = el.previousElementSibling;
+    for (var i = 0; prev && i < 2; i++, prev = prev.previousElementSibling) {
+      if (!prev.querySelector || !prev.querySelector(CANDS)) { out.push(txt(prev).slice(0, 60)); }
+    }
+    var seenW = {};
+    return out.join(' ').split(/\s+/).filter(function (w) {
+      var k = w.toLowerCase();
+      if (!w || seenW[k]) { return false; }
+      seenW[k] = true; return true;
+    }).join(' ');
+  }
+  var KEY = /filter|\bshow|\bsites?\b|\bpick|\bchoos|\bwhich\b/i;
+  function idsUnder(el) {
+    var ids = [];
+    if (el.getAttribute('aria-controls')) { ids = ids.concat(el.getAttribute('aria-controls').split(/\s+/)); }
+    Array.prototype.forEach.call(el.querySelectorAll('[aria-controls]'), function (x) {
+      ids = ids.concat(x.getAttribute('aria-controls').split(/\s+/));
+    });
+    return ids;
+  }
+  function chartFor(g) {
+    for (var i = 0; i < charts.length; i++) {
+      if (boxes2[i] && boxes2[i].contains(g)) { return i; }
+    }
+    /* a filter bar just outside the chart's card - "Sites: [x] [x] [x]" above it in the same
+       column of the page - drives it as surely as one inside: two levels up, never further */
+    var up = g.parentElement;
+    for (var u = 0; up && u < 2 && up !== document.body; u++, up = up.parentElement) {
+      for (var m = 0; m < charts.length; m++) {
+        if (up.contains(charts[m])) { return m; }
+      }
+    }
+    var ids = idsUnder(g);
+    for (var k = 0; k < ids.length; k++) {
+      var t = document.getElementById(ids[k]);
+      if (!t) { continue; }
+      for (var j = 0; j < charts.length; j++) {
+        if (t === charts[j] || t.contains(charts[j]) || boxes2[j] === t) { return j; }
+      }
+    }
+    return -1;
+  }
+  if (charts.length) {
+    var groups = [], seenG = [];
+    Array.prototype.forEach.call(document.querySelectorAll(CANDS), function (el) {
+      if (el.closest('table, [data-table-check="skip"], ' + POPUP) || !shown(el)) { return; }
+      var tag = el.tagName.toLowerCase(), type = (el.getAttribute('type') || '').toLowerCase();
+      if (tag === 'input' && ['', 'text', 'search', 'checkbox'].indexOf(type) === -1) { return; }
+      if (tag === 'select' || (tag === 'input' && type !== 'checkbox')) {
+        groups.push({ g: el, kind: tag === 'select' ? 'a <select>' : 'a bare text box', n: 1, search: tag === 'input' });
+        return;
+      }
+      /* a set of tick boxes or chips: grouped by the element that holds the set */
+      var chip = el.hasAttribute('aria-pressed');
+      if (chip && el.closest('[class*="legend"]') && !el.closest('[data-filter]')) { return; }   /* C20: a legend acts */
+      var holder = el.closest('fieldset, [role=group], [role=toolbar], ul, ol') ||
+                   (el.closest('label') || el).parentElement;
+      var at = seenG.indexOf(holder);
+      if (at === -1) {
+        seenG.push(holder);
+        groups.push({ g: holder, kind: chip ? 'toggle chips' : 'inline checkboxes', n: 1 });
+      } else {
+        groups.filter(function (x) { return x.g === holder; })[0].n++;
+      }
+    });
+    /* up to six chips pass (T1) when a count and a Clear / All sit beside them: in the set, or
+       up to two levels out, never across into another chart's card */
+    var CLEARW = /^\s*(select |show )?(all|none|clear|reset)\b|\b(clear|reset)( all| selection)?\s*$/i;
+    var COUNTW = /\b\d+\s*(of|\/)\s*\d+\b|\b\d+\s+(selected|shown|on)\b/i;
+    function near(g, ci) {
+      var out = [g], up = g.parentElement;
+      for (var u = 0; up && u < 2 && up !== document.body; u++, up = up.parentElement) {
+        if (charts.some(function (c, k) { return k !== ci && up.contains(c); })) { break; }
+        out.push(up);
+      }
+      return out;
+    }
+    function hasCount(scope) {
+      return scope.some(function (el) {
+        var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false), n;
+        while ((n = w.nextNode())) {
+          var pe = n.parentElement;
+          if (!pe || pe.closest('svg, canvas, table, ' + POPUP) || !shown(pe)) { continue; }
+          if (COUNTW.test(n.nodeValue)) { return true; }
+        }
+        return false;
+      });
+    }
+    function clearIn(scope) {
+      return scope.some(function (el) {
+        return Array.prototype.some.call(el.querySelectorAll('button, [role=button], input[type=button], input[type=reset], a[href]'), function (b) {
+          return shown(b) && !b.closest(POPUP) && CLEARW.test(b.getAttribute('aria-label') || txt(b));
+        });
+      });
+    }
+    groups.forEach(function (x) {
+      if ((x.kind === 'toggle chips' || x.kind === 'inline checkboxes') && x.n < 2) { return; }
+      var ci = chartFor(x.g);
+      if (ci === -1) { return; }
+      var words = labelText(x.g);
+      var marked = !!x.g.closest('[data-filter]') || !!x.g.querySelector('[data-filter]');
+      if (!marked && !KEY.test(words)) { return; }
+      /* a search box beside a table is that table's search (S1), not a filter on a dimension */
+      if (x.search && /search/i.test(words) && boxes2[ci] && boxes2[ci].querySelector('table')) { return; }
+      var lack = '', set = x.kind === 'toggle chips' || x.kind === 'inline checkboxes';
+      if (set) {
+        /* a chip that is itself All / Clear is the clear, not a value */
+        var vals = Array.prototype.filter.call(x.g.querySelectorAll('input[type=checkbox], [role=checkbox], [aria-pressed]'), function (el) {
+          return shown(el.closest('label') || el) && !CLEARW.test(el.getAttribute('aria-label') || txt(el.closest('label') || el));
+        }).length;
+        x.n = vals;
+        if (vals < 2) { return; }
+        var sc = near(x.g, ci), nc = !hasCount(sc), nx = !clearIn(sc);
+        if (vals <= 6 && !nc && !nx) { return; }
+        lack = vals > 6 ? ', past six values - chips wrap, cannot be searched and hide the counts'
+                        : ' with no ' + (nc ? 'count ("4 of 6")' : '') + (nc && nx ? ' and no ' : '') +
+                          (nx ? 'one-tap Clear or All' : '') + ' - up to six chips pass only with both';
+      }
+      var what = x.n > 1 ? x.n + ' ' + x.kind : x.kind;
+      var said = words.replace(/\s+/g, ' ').trim().slice(0, 40);
+      fail.push('CHARTBOX | chart "' + chartName(charts[ci]) + '" | its filter is ' + what +
+                (said ? ' ("' + said + '")' : '') + lack + ' - T1: a chart\'s filter is the same panel as a ' +
+                'column filter: a trigger showing "Sites: 6 of 6" that opens sort, value search, ' +
+                'Select all / Clear selection, an n-of-m count and a value list with counts');
+    });
+  }
+
+  var head = 'table check: ' + tables.length + ' table(s), ' + charts.length + ' chart(s) read';
   if (fail.length) {
     console.warn(head + ', ' + fail.length + ' failure(s)');
     fail.forEach(function (p) { console.log('  ' + p); });
@@ -172,5 +376,5 @@
     console.log('  advisory (' + note.length + '):');
     note.forEach(function (p) { console.log('    ' + p); });
   }
-  return { tables: tables.length, failures: fail, advisory: note };
+  return { tables: tables.length, charts: charts.length, failures: fail, advisory: note };
 })();

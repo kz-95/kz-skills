@@ -6,9 +6,11 @@ license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 
 # kz-diagramrule
 
-The diagram rules without the rest of the corpus. The rules themselves live in one place,
-[`diagram-rules.md`](../kz-uiuxrule/rules/diagram-rules.md), which `kz-uiuxrule` also routes
-to for its G category - this skill is a lane into that file, not a copy of it.
+The diagram rules without the rest of the corpus: a lane into
+[`diagram-rules.md`](../kz-uiuxrule/rules/diagram-rules.md), which `kz-uiuxrule` also routes to
+for its G category, not a copy of it. The speed contract in `../kz-skill/SKILL.md` holds: moving
+one label or line is trivial (the `kz-flashrule` G line, `diagram-check` once); drawing or
+reviewing a diagram reads the file.
 
 ## When to use this rather than kz-uiuxrule
 
@@ -24,14 +26,13 @@ to for its G category - this skill is a lane into that file, not a copy of it.
 | Request | Files read |
 |---|---|
 | "Review this architecture diagram" | this SKILL.md + `diagram-rules.md` + `diagram-check.js` |
-| "Draw a flowchart of checkout" | the same, plus `../kz-askcard/` if the purpose is unclear |
+| "Draw a flowchart of checkout" | the same; `../kz-askcard/` only if the purpose is unclear |
 | "A chart of revenue by month" | not this skill: `kz-uiuxrule` section C, `chart-rules.md` |
 
 ## What to do
 
-1. **Ask first only if the request is unclear** - review or draw, what the reader must
-   understand from it, and for whom. One card, in the `../kz-askcard/` format. A request that
-   names both goes straight on.
+1. **Ask only if genuinely unclear** - review or draw, what the reader must understand from
+   it, and for whom (one `../kz-askcard/` card). Otherwise state what you read and go on.
 2. **Read [`diagram-rules.md`](../kz-uiuxrule/rules/diagram-rules.md)** - the ten rules and
    the appendix of numbers. It is short and complete on its own.
 3. **Before drawing anything**, answer in order: does it need a diagram at all, and which
@@ -41,7 +42,8 @@ to for its G category - this skill is a lane into that file, not a copy of it.
 4. **Measure, then report.** Paste
    [`diagram-check.js`](../kz-uicheck/checks/diagram-check.js) into the console of the page at
    a wide width and at 375px, or run
-   `python ../kz-uicheck/scripts/run-checks.py page.html --checks diagram-check`. G1 and the
+   `python ../kz-uicheck/scripts/run-checks.py page.html --checks diagram-check`; after a fix
+   re-run only it. G1 and the
    key's completeness (G7) are judgement: test them by hand as each rule's check line says.
 5. **Report by rule ID**, one row per finding, with the measurement behind it:
 

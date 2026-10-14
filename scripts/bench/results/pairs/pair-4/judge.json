@@ -1,0 +1,8 @@
+{
+ "winner": "A",
+ "reasons": [
+  "A shows every status as a filter chip with a count (All 8, Running 2, Queued 2\u2026), so you can filter in one click. B hides the filter behind a single 'Status: All' dropdown button, which is less obvious and takes more clicks.",
+  "A's detail panel has more useful information: a progress bar, the cron trigger and a latest-log excerpt. B's panel shows only basic fields and leaves a lot of empty space.",
+  "Both close the panel on Escape and switch cleanly to dark mode, but A's toggle changes its label to 'Light mode' with a sun icon, which is clearer. B's toggle still says 'Dark mode' after switching, so it's harder to tell what the button will do."
+ ]
+}

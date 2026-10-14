@@ -72,6 +72,9 @@ p{margin:0 0 var(--s4)}
 code{font:13px ui-monospace,Menlo,Consolas,monospace;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:0 var(--s1)}
 a{color:var(--accent-ink)}
 footer{margin-top:var(--s6);color:var(--muted);font-size:14px}
+.cost{color:var(--muted);font-size:15px;margin-top:calc(-1 * var(--s3))}
+.cost code{white-space:nowrap}
+.cost a{display:flex;width:fit-content;align-items:center;min-height:44px}
 </style>
 </head>
 <body>
@@ -84,6 +87,7 @@ footer{margin-top:var(--s6);color:var(--muted);font-size:14px}
     <a href="https://github.com/kz-95/kz-skills#install">Install</a>
     <a href="https://github.com/kz-95/kz-skills">GitHub</a>
   </div>
+  <p class="cost">It costs time and tokens on purpose: <code>/kz-uiuxrule</code> took 1.52x the time and 2.15x the tokens of no skills on Sonnet 5.5 (1.67x and 1.86x on Opus 5.5) and introduced 0 check failures against 50 (55). <a href="https://github.com/kz-95/kz-skills/blob/main/docs/benchmark.md">How it was measured</a></p>
 
   <h2>What agents get wrong, and the rule that catches it</h2>
   <ul class="cases">

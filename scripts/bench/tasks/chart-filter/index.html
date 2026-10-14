@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Operations dashboard</title>
+<style>
+  :root { --bg: #f7f7f8; --surface: #fff; --text: #1d1f23; --muted: #5b6170; --line: #d6d9e0; --accent: #2457c5; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  main { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .tile, .card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+  .tile .label { color: var(--muted); }
+  .tile .value { font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Operations dashboard</h1>
+  <section class="tiles" id="tiles"></section>
+  <section class="card" id="charts">
+    <h2>Revenue</h2>
+  </section>
+</main>
+<script>
+// Monthly revenue per site, GBP. One row per site per month.
+const REVENUE = [{"site": "North depot", "month": "2026-01", "revenue": 26961}, {"site": "North depot", "month": "2026-02", "revenue": 19464}, {"site": "North depot", "month": "2026-03", "revenue": 19796}, {"site": "North depot", "month": "2026-04", "revenue": 18229}, {"site": "North depot", "month": "2026-05", "revenue": 18627}, {"site": "North depot", "month": "2026-06", "revenue": 40451}, {"site": "North depot", "month": "2026-07", "revenue": 54816}, {"site": "North depot", "month": "2026-08", "revenue": 51703}, {"site": "North depot", "month": "2026-09", "revenue": 32933}, {"site": "South yard", "month": "2026-01", "revenue": 41955}, {"site": "South yard", "month": "2026-02", "revenue": 49581}, {"site": "South yard", "month": "2026-03", "revenue": 12408}, {"site": "South yard", "month": "2026-04", "revenue": 42350}, {"site": "South yard", "month": "2026-05", "revenue": 55308}, {"site": "South yard", "month": "2026-06", "revenue": 48680}, {"site": "South yard", "month": "2026-07", "revenue": 47007}, {"site": "South yard", "month": "2026-08", "revenue": 32858}, {"site": "South yard", "month": "2026-09", "revenue": 17283}, {"site": "East works", "month": "2026-01", "revenue": 49035}, {"site": "East works", "month": "2026-02", "revenue": 25291}, {"site": "East works", "month": "2026-03", "revenue": 49643}, {"site": "East works", "month": "2026-04", "revenue": 58526}, {"site": "East works", "month": "2026-05", "revenue": 28584}, {"site": "East works", "month": "2026-06", "revenue": 28872}, {"site": "East works", "month": "2026-07", "revenue": 57233}, {"site": "East works", "month": "2026-08", "revenue": 45690}, {"site": "East works", "month": "2026-09", "revenue": 16840}, {"site": "West plant", "month": "2026-01", "revenue": 14606}, {"site": "West plant", "month": "2026-02", "revenue": 15860}, {"site": "West plant", "month": "2026-03", "revenue": 55052}, {"site": "West plant", "month": "2026-04", "revenue": 49938}, {"site": "West plant", "month": "2026-05", "revenue": 15601}, {"site": "West plant", "month": "2026-06", "revenue": 50979}, {"site": "West plant", "month": "2026-07", "revenue": 58976}, {"site": "West plant", "month": "2026-08", "revenue": 42178}, {"site": "West plant", "month": "2026-09", "revenue": 26221}, {"site": "Harbour", "month": "2026-01", "revenue": 36530}, {"site": "Harbour", "month": "2026-02", "revenue": 14811}, {"site": "Harbour", "month": "2026-03", "revenue": 8741}, {"site": "Harbour", "month": "2026-04", "revenue": 58486}, {"site": "Harbour", "month": "2026-05", "revenue": 41783}, {"site": "Harbour", "month": "2026-06", "revenue": 35382}, {"site": "Harbour", "month": "2026-07", "revenue": 56548}, {"site": "Harbour", "month": "2026-08", "revenue": 30558}, {"site": "Harbour", "month": "2026-09", "revenue": 53331}, {"site": "Airport", "month": "2026-01", "revenue": 50960}, {"site": "Airport", "month": "2026-02", "revenue": 18974}, {"site": "Airport", "month": "2026-03", "revenue": 21095}, {"site": "Airport", "month": "2026-04", "revenue": 23234}, {"site": "Airport", "month": "2026-05", "revenue": 20508}, {"site": "Airport", "month": "2026-06", "revenue": 38495}, {"site": "Airport", "month": "2026-07", "revenue": 21487}, {"site": "Airport", "month": "2026-08", "revenue": 29789}, {"site": "Airport", "month": "2026-09", "revenue": 14816}];
+
+const total = REVENUE.reduce((s, r) => s + r.revenue, 0);
+const sites = new Set(REVENUE.map(r => r.site)).size;
+const months = new Set(REVENUE.map(r => r.month)).size;
+const fmt = v => v.toLocaleString('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 });
+document.getElementById('tiles').innerHTML =
+  '<div class="tile"><div class="label">Total revenue</div><div class="value">' + fmt(total) + '</div></div>' +
+  '<div class="tile"><div class="label">Sites</div><div class="value">' + sites + '</div></div>' +
+  '<div class="tile"><div class="label">Months</div><div class="value">' + months + '</div></div>';
+</script>
+</body>
+</html>

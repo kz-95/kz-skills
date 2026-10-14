@@ -1,0 +1,8 @@
+{
+ "winner": "tie",
+ "reasons": [
+  "The desktop screenshots look the same in both versions. Each adds a Status column between Site and Amount, with an 'All \u25be' filter and the same values (Open, In progress, On hold, Done, Cancelled) for all 40 orders.",
+  "The filter works the same way in both. The Status dropdown has sort options, a search box, Select all/Clear and a count for each value. Unticking Cancelled cuts the table to 34 of 40 orders and changes the button to 'Filtered'.",
+  "The phone layouts are identical too. In both, the table overflows sideways and the Status column is off-screen at 390px, so neither version handles mobile better."
+ ]
+}

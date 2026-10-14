@@ -1,41 +1,50 @@
 ---
 name: kz-uicheck
-description: "Ten runnable browser checks that measure an interface instead of judging it: layout audit (overflow, overlap, clipped text, tap targets, SVG focus ring, undefined CSS variable, wrapped sequence), table check (text-box filters, missing filter or sort), typing check (field rebuilt or caret jumped while typed), popover check (a panel that cannot be closed), contrast check (under 4.5:1, both themes), modal check (scroll lock, focus, backdrop, Escape), focus check, form check, motion check (transition all, ease-in, scale(0), no press state) and diagram check (slanted or stacked lines, a line behind a box, a label on its line, a diagram shrunk on a phone, no accessible name). Paste into the console; no build step. Use before calling UI work done and once at phone width. Triggers on \"/kz-uicheck\", \"check this page\", \"layout audit\", \"table check\", \"contrast check\", \"diagram check\", \"verify the UI\"."
+description: "Ten runnable browser checks that measure an interface instead of judging it: layout audit (overflow, overlap, clipped text, tap targets, SVG focus ring, undefined CSS variable, wrapped sequence), table check (text-box filters, missing filter or sort), typing check (field rebuilt or caret jumped while typed), popover check (a panel that cannot be closed), contrast check (under 4.5:1, both themes), modal check (scroll lock, focus, backdrop, Escape), focus check, form check, motion check (transition all, ease-in, scale(0), no press state) and diagram check (slanted or stacked lines, a line behind a box, a label on its line, a diagram shrunk on a phone, no accessible name). Paste into the console; no build step. Run only the checks for what changed, once; all ten only for a release or a full audit. Triggers on \"/kz-uicheck\", \"check this page\", \"layout audit\", \"table check\", \"contrast check\", \"diagram check\", \"verify the UI\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 
 # kz-uicheck
 
-The instruments behind `kz-uiuxrule`'s V rules. A rule with no check is a rule that gets
-broken by the person who wrote it, and the V category says to measure rather than assert.
-These are what does the measuring.
+The instruments behind `kz-uiuxrule`'s V rules: a rule with no check gets broken by the
+person who wrote it. Plain ES5 in an IIFE: paste one into the browser console of the page.
+Nothing to install, no selectors to configure, no framework assumed.
 
-All of them are plain ES5 in an IIFE. Paste one into the browser console on the page you
-are checking. Nothing to install, no selectors to configure, no framework assumed.
+**Run only the checks for what changed** (the speed contract, `../kz-skill/SKILL.md`; rule
+29e). One line or element: at most the one check that covers it. A component or screen: its
+checks (table -> `table-check` + `popover-check`, form -> `form-check` + `typing-check` at
+375px, dropdown -> `popover-check`, modal -> `modal-check`, motion -> `motion-check`, diagram
+-> `diagram-check`, colour/theme -> `contrast-check` in both themes), then `layout-audit` once
+at 375px. After a fix, re-run only the check that failed. All ten, at three
+widths and both themes: mode 4, "make it production", a release. Never copy a check into the
+user's project unless asked.
+
+Every finding code and skip attribute (`data-*-check="skip"`) in full: `references/checks.md`.
 
 | Check | Catches | Rule |
 |---|---|---|
-| `checks/layout-audit.js` | Horizontal page overflow, overlapping boxes, clipped text, ragged control rows, tap targets under 44px, SVG text outside its viewBox or landing on other text, a focus ring on an SVG shape that is a bounding box instead of the shape (`FOCUS BOX`), a `var(--x)` that nothing defines so its whole declaration silently drops (`UNDEFINED TOKEN`), a sequence marked `data-orientation="horizontal"` that wraps and is taller than the area showing it (or wraps while marked `data-sequence="line"`), or overflows with no sideways scroll (`WRAPPED SEQUENCE`; opt a deliberately wrong sample out with `data-layout-check="skip"`), a fixed or sticky rail sitting on content, with the covered element and the pixel overlap (`COVERED`; dialogs, popovers, tooltips, toasts and full-width bars are exempt) | `V3`, `L5`, `L8`, `L10`, `L11` |
-| `checks/table-check.js` | A column filter that is a bare text box or select instead of a panel, a column with no filter, a table with no sort, a header whose title and filter rows are split by a line or whose filter sits under 4px from one (`FILTERGAP`, measured in px); and, as advisories, no search, no live count, headers with no explainer. Skip a deliberately wrong sample with `data-table-check="skip"` | `S1`, `T1`-`T3` |
-| `checks/typing-check.js` | A field rebuilt mid-word (the phone keyboard closes), a caret thrown to the end, a field that moves while typed into, text under 16px that makes the browser zoom on focus | `F8` |
-| `checks/popover-check.js` | A dropdown or panel that cannot be closed: its trigger only opens (`STUCK`), Escape or an outside click does nothing, no visible Done on touch | `N2` |
-| `checks/contrast-check.js` | Text under 4.5:1 (3:1 large) against the background it really sits on, translucent layers and ancestor opacity composited, both themes; gradient backgrounds reported as `UNKNOWN`, never guessed | `Y2` |
-| `checks/modal-check.js` | A modal that leaves the page scrolling (`SCROLL`), shifts it sideways (`SHIFT`), does not take focus, lets clicks through to the page behind (`BACKDROP`), cancels Escape, or does not return focus to its opener | `N1` |
-| `checks/focus-check.js` | A control whose focus changes nothing visible (`NOFOCUS`), a focus indicator under 3:1 (`WEAK`), `tabindex` above 0, a clickable thing the keyboard cannot reach. Needs the page focused | `A` |
-| `checks/motion-check.js` | `transition: all` (`ALL`), an ease-in curve (`EASEIN`), a transitioned width/height/top/margin (`LAYOUTPROP`), an entrance at `scale(0)` (`SCALE0`), a popover or menu growing from its own centre (`ORIGIN`), a button with no `:active` rule (`NOPRESS`); no reduced-motion query is an advisory. Reads styles only, safe on any page. Skip a deliberately wrong sample with `data-motion-check="skip"` | `M1` `M3`-`M5` |
-| `checks/diagram-check.js` | An SVG diagram measured as drawn: too many boxes or lines (`BUDGET`), a slanted straight line (`DIAGONAL`), a line ending at a box corner (`CORNER`), two lines stacked (`STACKED`) or meeting a box at one point (`SHARED PORT`), a line behind a box that is not its end (`BEHIND BOX`), a label plate on its line (`LABEL ON LINE`), under 4px from one (`LABEL GAP`) or under a later box (`PLATE UNDER BOX`), a key inside the drawing (`KEY INSIDE`), a diagram shrunk below its native width (`SHRUNK`), making the page scroll (`PAGE SCROLL`) or cut off by a clipping parent (`CLIPPED`), scrolling with no visible cue (`NO CUE`), no accessible name (`NO NAME`, `DUP ID`), accent on more than two boxes (`EMPHASIS`). Run at a wide width and at 375px. Skip a deliberately wrong sample with `data-diagram-check="skip"` | `G1`-`G10` |
-| `checks/form-check.js` | A field with no label, a phone or email field typed as text, an error shown while typing, a required field left with no nudge, a refused submit that does not land in the first empty field. Types into the page: reload after | `F1` `F2` |
+| `checks/layout-audit.js` | Page overflow, overlap, clipped text, ragged control rows, tap targets under 44px, SVG text out of its viewBox, `FOCUS BOX`, `UNDEFINED TOKEN`, `WRAPPED SEQUENCE`, `COVERED` | `V3`, `L5`, `L8`, `L10`, `L11` |
+| `checks/table-check.js` | A column filter that is a bare text box or select instead of a panel, a column with no filter, a table with no sort, a header whose title and filter rows are split by a line or whose filter sits under 4px from one (`FILTERGAP`, measured in px), a filter that drives a chart built as a select, a text box, or chips or tick boxes past 6 values or with no count or clear, instead of the panel (`CHARTBOX`); and, as advisories, no search, no live count, headers with no explainer. Skip a deliberately wrong sample with `data-table-check="skip"` | `S1`, `T1`-`T3` |
+| `checks/typing-check.js` | A field rebuilt mid-word, a caret thrown to the end, a field that moves while typed into, text under 16px that zooms on focus | `F8` |
+| `checks/popover-check.js` | A panel that cannot be closed: trigger only opens (`STUCK`), Escape or outside click does nothing, no Done on touch | `N2` |
+| `checks/contrast-check.js` | Text under 4.5:1 (3:1 large) on its real background, layers composited, both themes; gradients `UNKNOWN` | `Y2` |
+| `checks/modal-check.js` | `SCROLL`, `SHIFT`, no focus taken, `BACKDROP`, Escape cancelled, focus not returned | `N1` |
+| `checks/focus-check.js` | `NOFOCUS`, `WEAK` (under 3:1), `tabindex` above 0, unreachable by keyboard. Needs the page focused | `A` |
+| `checks/motion-check.js` | `ALL`, `EASEIN`, `LAYOUTPROP`, `SCALE0`, `ORIGIN`, `NOPRESS`; no reduced-motion query is an advisory | `M1` `M3`-`M5` |
+| `checks/diagram-check.js` | `BUDGET`, `DIAGONAL`, `CORNER`, `STACKED`, `SHARED PORT`, `BEHIND BOX`, `LABEL ON LINE`, `LABEL GAP`, `PLATE UNDER BOX`, `KEY INSIDE`, `SHRUNK`, `PAGE SCROLL`, `CLIPPED`, `NO CUE`, `NO NAME`, `DUP ID`, `EMPHASIS`. Wide width and 375px | `G1`-`G10` |
+| `checks/form-check.js` | No label, phone or email typed as text, error while typing, no nudge on a required field, refused submit not landing on the first empty field. Types: reload after | `F1` `F2` |
 
 ## Without a browser window: `scripts/run-checks.py`
 
 ```bash
-python scripts/run-checks.py page.html                         # all ten, at 1280px
+python scripts/run-checks.py page.html                         # all ten, at 1280px (large work only)
 python scripts/run-checks.py page.html --checks table-check,popover-check --width 390
 ```
 
-Runs the checks on a local HTML file in headless Chrome (nothing to install beyond Python and Chrome)
-and exits 1 if any check fails, so a generated page or a static report can be checked in a script or
-a pre-commit step. One width per run; run it at a wide width and at 390.
+Headless Chrome on a local HTML file (needs only Python and Chrome); exits 1 if any check
+fails, so a generated page can be checked in a script or pre-commit step. One width per run.
+Without `--checks` it runs all ten: the large path only (a release, an audit, mode 4). The fast
+lanes (`kz-fastfix`, `kz-flashrule`) pass `--checks <the one check>` and never call it bare.
 
 ## What these cannot measure
 
@@ -43,62 +52,17 @@ Whether an error says what to do next, a button names its action, an empty state
 delete confirmation names its target: words, not geometry. `../kz-judge/` judges those with a small decision
 model, if one is available, and costs the agent no tokens.
 
-## Done condition for any page with a table
+## Running them
 
-A page with a table is not done until `table-check.js` (and `popover-check.js` for its filter panels) has
-been **run in a real browser and its output pasted into the report**. This includes generated pages and
-static reports: a progress page, an export, a status board. They are UI, the rules apply, and a
-copied older page is not evidence that the copy passes. A reviewer reads the output, not the wording: a
-bare text box or select in the header satisfies the sentence "every column has a filter" and fails the rule.
-
-## Instrument traps (read before trusting a result)
-
-- **A hidden or unfocused tab** throttles `setTimeout` to about a second and never matches `:focus`. The
-  async checks wait on a message channel instead, and `focus-check.js` refuses to run (and says why)
-  unless the page has focus rather than reporting every control as unfocused.
-- **Transitions** read mid-flight give colours that were never on screen. The checks that compare styles
-  switch transitions off while they measure.
-- **Synthetic events** cannot press a real Escape in a native `<dialog>`, trigger native hover, or submit
-  implicitly. `modal-check.js` tests that nothing cancels the cancel event instead.
-
-## How to run them
-
-They work pasted straight into the console. If you serve the page instead and `fetch`
-them, **bust the cache** - without it the browser serves the copy it already has, so an
-edited check reports on the version before your edit and says everything is fine:
-
-```js
-await (async () => eval(await (await fetch('layout-audit.js?t=' + Date.now(), { cache: 'no-store' })).text()))()
-```
-
-That is not a footnote. It cost a full round on the project these came from: 43 findings
-that had already been fixed.
-
-## One at a time, on a settled page
-
-Run the checks one after another, never together, and not while the page is still moving: a
-check started while another was scrolling the page reported fields "moved" by 26,000px, and a
-colour read in the middle of a transition reported "none". Wait for the page to settle; switch
-transitions off where a check reads a computed style. Run colour checks in **both** themes.
-
-## Three widths, and one of them is not optional
-
-Run the layout audit at a wide width, a narrow one, and **375px with touch emulation**.
-The third is the only one that exercises the 44px tap-target rule, and it is the width at
-which the typing check finds anything at all - the defects it reports do not exist on a
-desktop.
-
-## Check the instrument before you believe it
-
-A viewport of zero width, or a surface that never painted a frame, produces confident and
-wrong numbers. If a check returns clean on a page you have not seen render, the check is
-what is broken. `../kz-uiuxrule/rules/ui-rules.md` Appendix Z has this one written up with
-the examples, along with the green check that asserts the wrong thing.
-
-## What is deliberately not here
-
-Two more checks exist in the project these rules came from - a rules check that asserts
-the wrong/right sample pairs, and a state check that drives every table to 0, 1 and all
-rows. Both are bound to that project's own page by element id, so they would return clean
-and meaningless anywhere else. The pattern is worth copying; the files are not portable,
-so they are not shipped pretending to be.
+- A page with a table is done only when `table-check.js` (and `popover-check.js` for its
+  panels) ran in a real browser and its output is in the report - generated and static pages
+  too; a reviewer reads the output, not the wording.
+- One at a time, on a settled page; colour checks in both themes; when layout or typing is
+  checked, 375px with touch is never skipped (the only width that exercises 44px targets and
+  finds typing defects).
+- A clean result on a page you have not seen render means the instrument is broken (zero-width
+  viewport, a surface that never painted). Served and `fetch`ed: bust the cache (`?t=` plus
+  the time), or an edited check reports on the old copy.
+- Instrument traps (hidden tabs, mid-transition colours, synthetic events), the cache-bust
+  snippet, the full-close-out widths and the two checks deliberately not shipped:
+  `references/running.md`.

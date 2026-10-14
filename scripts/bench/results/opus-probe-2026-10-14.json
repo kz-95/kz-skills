@@ -1,0 +1,518 @@
+{
+ "label": "opus-probe",
+ "date": "2026-10-14",
+ "claude_version": "2.1.299 (Claude Code)",
+ "assume_suffix": "If you would ask me something, assume the recommended option and proceed.",
+ "probe_max_turns": 8,
+ "max_turns": null,
+ "model_flag": "opus",
+ "total_cost_usd": 2.9543,
+ "work": "/tmp/kzb/opus-probe-2026-10-14-093001",
+ "runs": [
+  {
+   "task": "chart-filter",
+   "condition": "kz-slash",
+   "mode": "scored",
+   "workdir": "/tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/w",
+   "config": "/tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/cfg",
+   "max_turns": null,
+   "run_budget_usd": 8,
+   "wall_s": 283.5,
+   "duration_api_ms": 245438,
+   "num_turns": 21,
+   "input_tokens": 38,
+   "cache_creation_input_tokens": 73639,
+   "cache_read_input_tokens": 1417169,
+   "output_tokens": 26597,
+   "total_cost_usd": 1.4046378000000002,
+   "skill_bytes_read": 83329,
+   "asked": false,
+   "stalled_on_question": false,
+   "skills_invoked": [],
+   "skill_reads": {
+    "Bash kz-uiuxrule; cat $S/rules/INDEX.md; cat $S/rules/chart-rules.md": 2294,
+    "Bash kz-uiuxrule; grep -n -A40 \"^## C\\|c-charts\" $S/rules/INDEX.md | head -80; grep": 9086,
+    "Bash kz-uiuxrule; sed -n 1,300p $S/rules/chart-rules.md": 21697,
+    "Bash kz-uiuxrule; ls $S/snippets; wc -l $S/snippets/*; cat $S/snippets/filter-table": 14985,
+    "Bash kz-uiuxrule; sed -n 374,560p $S/rules/chart-rules.md; sed -n 790,905p $S/rules": 14856,
+    "Bash cd /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/w; cat > /tmp/claude-0/-tmp-kzb-opus-probe-2026-10-14-093001-chart-filter--kz-slash--sco": 1222,
+    "Bash cd /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/w; python3 - <<'EOF'\np='index.html'; s=open(p).read()\ns=s.replace(\"transition: width 200": 1030,
+    "Bash cd /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/w; sed -n 3,14p /tmp/claude-0/-tmp-kzb-opus-probe-2026-10-14-093001-chart-filter--kz-sla": 459,
+    "Bash cd /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/w; head -60 /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/cfg/ski": 624,
+    "Bash kz-uicheck/scripts/run-checks.py": 1090,
+    "Bash cd /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/w; python3 - <<'EOF'\np='index.html'; s=open(p).read()\na='''      <div class=\"readout\" id": 84
+   },
+   "files_changed": [
+    "checks/chart-check.js",
+    "checks/run-chart-check.py",
+    "index.html"
+   ],
+   "lines_added": 471,
+   "lines_removed": 1,
+   "turns": [
+    {
+     "wall_s": 283.5,
+     "duration_api_ms": 245438,
+     "num_turns": 21,
+     "input_tokens": 38,
+     "cache_creation_input_tokens": 73639,
+     "cache_read_input_tokens": 1417169,
+     "output_tokens": 26597,
+     "total_cost_usd": 1.4046378000000002,
+     "is_error": false,
+     "subtype": "success",
+     "model": "claude-opus-5-5",
+     "session_id": "e1a41a74-f1e0-4af9-b501-36bdeb39295c",
+     "result_tail": "ting at a bar used to make the readout box grow and push the bars down under the pointer, so the box now sits under the bars with room kept for one site.\n\n**Decisions to know about**\n- **Bar chart, not lines per month:** \"which site brings in the most\" is answered most directly by ranked bars. The monthly breakdown only appears as each site's best month.\n- **Summary tiles left alone:** the tiles at the top still show all sites, whatever is filtered. The chart's own count and the table's totals row show the filtered figures.\n- **No dark mode:** the page didn't have one, so I kept it light only.",
+     "tools": {
+      "Bash": 17,
+      "Read": 3
+     },
+     "skills_invoked": [],
+     "asked_tool": false,
+     "skill_reads": {
+      "Bash kz-uiuxrule; cat $S/rules/INDEX.md; cat $S/rules/chart-rules.md": 2294,
+      "Bash kz-uiuxrule; grep -n -A40 \"^## C\\|c-charts\" $S/rules/INDEX.md | head -80; grep": 9086,
+      "Bash kz-uiuxrule; sed -n 1,300p $S/rules/chart-rules.md": 21697,
+      "Bash kz-uiuxrule; ls $S/snippets; wc -l $S/snippets/*; cat $S/snippets/filter-table": 14985,
+      "Bash kz-uiuxrule; sed -n 374,560p $S/rules/chart-rules.md; sed -n 790,905p $S/rules": 14856,
+      "Bash cd /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/w; cat > /tmp/claude-0/-tmp-kzb-opus-probe-2026-10-14-093001-chart-filter--kz-slash--sco": 1222,
+      "Bash cd /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/w; python3 - <<'EOF'\np='index.html'; s=open(p).read()\ns=s.replace(\"transition: width 200": 1030,
+      "Bash cd /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/w; sed -n 3,14p /tmp/claude-0/-tmp-kzb-opus-probe-2026-10-14-093001-chart-filter--kz-sla": 459,
+      "Bash cd /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/w; head -60 /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/cfg/ski": 624,
+      "Bash kz-uicheck/scripts/run-checks.py": 1090,
+      "Bash cd /tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__kz-slash__scored/w; python3 - <<'EOF'\np='index.html'; s=open(p).read()\na='''      <div class=\"readout\" id": 84
+     },
+     "skill_loaded_bytes": 15902,
+     "skill_bytes_read": 83329,
+     "prompt": "/kz-uiuxrule Add a chart of revenue by site to this dashboard, with a filter to pick which sites to show. The page is index.html; the data is already in it. If you would ask me something, assume the recommended option and proceed."
+    }
+   ],
+   "final_result_tail": "ting at a bar used to make the readout box grow and push the bars down under the pointer, so the box now sits under the bars with room kept for one site.\n\n**Decisions to know about**\n- **Bar chart, not lines per month:** \"which site brings in the most\" is answered most directly by ranked bars. The monthly breakdown only appears as each site's best month.\n- **Summary tiles left alone:** the tiles at the top still show all sites, whatever is filtered. The chart's own count and the table's totals row show the filtered figures.\n- **No dark mode:** the page didn't have one, so I kept it light only.",
+   "score": {
+    "uicheck": {
+     "390": {
+      "failures": 0,
+      "runs": 20,
+      "perCheck": {
+       "layout-audit": 0,
+       "table-check": 0,
+       "typing-check": 0,
+       "popover-check": 0,
+       "contrast-check": 0,
+       "modal-check": 0,
+       "focus-check": 0,
+       "form-check": 0,
+       "motion-check": 0,
+       "diagram-check": 0
+      },
+      "error": null
+     },
+     "1280": {
+      "failures": 0,
+      "runs": 20,
+      "perCheck": {
+       "layout-audit": 0,
+       "table-check": 0,
+       "typing-check": 0,
+       "popover-check": 0,
+       "contrast-check": 0,
+       "modal-check": 0,
+       "focus-check": 0,
+       "form-check": 0,
+       "motion-check": 0,
+       "diagram-check": 0
+      },
+      "error": null
+     }
+    },
+    "rubric": [
+     {
+      "item": "a chart is drawn (svg, canvas or HTML chart >= 200x100)",
+      "pass": true
+     },
+     {
+      "item": "the site filter is not a <select>",
+      "pass": true
+     },
+     {
+      "item": "the site filter is a panel with a value list and counts or values",
+      "pass": false
+     },
+     {
+      "item": "unticking a site re-renders the chart",
+      "pass": false
+     },
+     {
+      "item": "the panel closes on trigger, Escape and outside click",
+      "pass": false
+     }
+    ],
+    "rubric_pass": 2,
+    "rubric_total": 5
+   }
+  },
+  {
+   "task": "chart-filter",
+   "condition": "none",
+   "mode": "scored",
+   "workdir": "/tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__none__scored/w",
+   "config": "/tmp/kzb/opus-probe-2026-10-14-093001/chart-filter__none__scored/cfg",
+   "max_turns": null,
+   "run_budget_usd": 8,
+   "wall_s": 102.3,
+   "duration_api_ms": 94414,
+   "num_turns": 15,
+   "input_tokens": 22,
+   "cache_creation_input_tokens": 59751,
+   "cache_read_input_tokens": 490270,
+   "output_tokens": 11394,
+   "total_cost_usd": 0.8040299999999999,
+   "skill_bytes_read": 0,
+   "asked": false,
+   "stalled_on_question": false,
+   "skills_invoked": [
+    "dataviz"
+   ],
+   "skill_reads": {},
+   "files_changed": [
+    "index.html"
+   ],
+   "lines_added": 243,
+   "lines_removed": 10,
+   "turns": [
+    {
+     "wall_s": 102.3,
+     "duration_api_ms": 94414,
+     "num_turns": 15,
+     "input_tokens": 22,
+     "cache_creation_input_tokens": 59751,
+     "cache_read_input_tokens": 490270,
+     "output_tokens": 11394,
+     "total_cost_usd": 0.8040299999999999,
+     "is_error": false,
+     "subtype": "success",
+     "model": "claude-opus-5-5",
+     "session_id": "74fd8f6b-043c-4b87-8215-aab1dd3b75b0",
+     "result_tail": "ected, the chart shows a short message instead of empty axes.\n\n**Choices I made without asking**\n- **Revenue over time, not one total per site.** The data is monthly, so a line per site shows the trend. A bar of each site's total would hide that.\n- **Checkboxes rather than a dropdown,** because with six sites every option fits on one line and the checkboxes double as the colour key.\n- **Dark mode for the whole page.** The page had no dark mode, so the chart would have been the only dark part; it now follows the device setting.\n\nIt's plain JavaScript with no libraries, and nothing is committed.",
+     "tools": {
+      "Bash": 8,
+      "Skill": 1,
+      "Read": 4
+     },
+     "skills_invoked": [
+      "dataviz"
+     ],
+     "asked_tool": false,
+     "skill_reads": {},
+     "skill_loaded_bytes": 0,
+     "skill_bytes_read": 0,
+     "prompt": "Add a chart of revenue by site to this dashboard, with a filter to pick which sites to show. The page is index.html; the data is already in it. If you would ask me something, assume the recommended option and proceed."
+    }
+   ],
+   "final_result_tail": "ected, the chart shows a short message instead of empty axes.\n\n**Choices I made without asking**\n- **Revenue over time, not one total per site.** The data is monthly, so a line per site shows the trend. A bar of each site's total would hide that.\n- **Checkboxes rather than a dropdown,** because with six sites every option fits on one line and the checkboxes double as the colour key.\n- **Dark mode for the whole page.** The page had no dark mode, so the chart would have been the only dark part; it now follows the device setting.\n\nIt's plain JavaScript with no libraries, and nothing is committed.",
+   "score": {
+    "uicheck": {
+     "390": {
+      "failures": 6,
+      "runs": 20,
+      "perCheck": {
+       "layout-audit": 2,
+       "table-check": 2,
+       "typing-check": 0,
+       "popover-check": 0,
+       "contrast-check": 0,
+       "modal-check": 0,
+       "focus-check": 0,
+       "form-check": 0,
+       "motion-check": 2,
+       "diagram-check": 0
+      },
+      "error": null
+     },
+     "1280": {
+      "failures": 6,
+      "runs": 20,
+      "perCheck": {
+       "layout-audit": 2,
+       "table-check": 2,
+       "typing-check": 0,
+       "popover-check": 0,
+       "contrast-check": 0,
+       "modal-check": 0,
+       "focus-check": 0,
+       "form-check": 0,
+       "motion-check": 2,
+       "diagram-check": 0
+      },
+      "error": null
+     }
+    },
+    "rubric": [
+     {
+      "item": "a chart is drawn (svg, canvas or HTML chart >= 200x100)",
+      "pass": true
+     },
+     {
+      "item": "the site filter is not a <select>",
+      "pass": true
+     },
+     {
+      "item": "the site filter is a panel with a value list and counts or values",
+      "pass": false
+     },
+     {
+      "item": "unticking a site re-renders the chart",
+      "pass": true
+     },
+     {
+      "item": "the panel closes on trigger, Escape and outside click",
+      "pass": false
+     }
+    ],
+    "rubric_pass": 3,
+    "rubric_total": 5
+   }
+  },
+  {
+   "task": "trivial-label",
+   "condition": "kz-slash",
+   "mode": "scored",
+   "workdir": "/tmp/kzb/opus-probe-2026-10-14-093001/trivial-label__kz-slash__scored/w",
+   "config": "/tmp/kzb/opus-probe-2026-10-14-093001/trivial-label__kz-slash__scored/cfg",
+   "max_turns": null,
+   "run_budget_usd": 8,
+   "wall_s": 44.5,
+   "duration_api_ms": 23306,
+   "num_turns": 6,
+   "input_tokens": 12,
+   "cache_creation_input_tokens": 47543,
+   "cache_read_input_tokens": 215168,
+   "output_tokens": 1779,
+   "total_cost_usd": 0.4590056,
+   "skill_bytes_read": 23247,
+   "asked": false,
+   "stalled_on_question": false,
+   "skills_invoked": [],
+   "skill_reads": {
+    "Bash sed -i 's|<button type=\"submit\" class=\"btn btn-secondary\" id=\"save\">Save</button>|<button type=\"submit\" class=\"btn btn-primary\" id=\"save\">Save draft</button>|' ": 523,
+    "Bash kz-uicheck/scripts/run-checks.py; timeout 180 python3 $S index.html 2>&1 | tail -25; echo ---; timeout 180 python3 $S index.html --width 390 2>&": 1615,
+    "Bash kz-uicheck/scripts/run-checks.py; D=/tmp/claude-0/-tmp-kzb-opus-probe-2026-10-14-093001-trivial-label--kz-slash--scored-w/c6674c7e-8b48-440": 5251
+   },
+   "files_changed": [
+    "index.html"
+   ],
+   "lines_added": 1,
+   "lines_removed": 1,
+   "turns": [
+    {
+     "wall_s": 44.5,
+     "duration_api_ms": 23306,
+     "num_turns": 6,
+     "input_tokens": 12,
+     "cache_creation_input_tokens": 47543,
+     "cache_read_input_tokens": 215168,
+     "output_tokens": 1779,
+     "total_cost_usd": 0.4590056,
+     "is_error": false,
+     "subtype": "success",
+     "model": "claude-opus-5-5",
+     "session_id": "c6674c7e-8b48-4401-8085-500d0dd8ea0f",
+     "result_tail": "oth the old and new versions of the page. The failures are the same in both, so this change didn't cause any of them:\n- **All widths:** no field is marked as required or optional (the Site name field is required).\n- **All widths:** the buttons have no visual response when pressed.\n- **At phone width:** the Site name and Notes fields use 15px text, which makes phones zoom in when you tap them.\n\nI left those alone because they're outside what you asked for. I also left the success message at \"Saved.\", which is still accurate, though \"Draft saved.\" would match the new label. Nothing is committed.",
+     "tools": {
+      "Bash": 5
+     },
+     "skills_invoked": [],
+     "asked_tool": false,
+     "skill_reads": {
+      "Bash sed -i 's|<button type=\"submit\" class=\"btn btn-secondary\" id=\"save\">Save</button>|<button type=\"submit\" class=\"btn btn-primary\" id=\"save\">Save draft</button>|' ": 523,
+      "Bash kz-uicheck/scripts/run-checks.py; timeout 180 python3 $S index.html 2>&1 | tail -25; echo ---; timeout 180 python3 $S index.html --width 390 2>&": 1615,
+      "Bash kz-uicheck/scripts/run-checks.py; D=/tmp/claude-0/-tmp-kzb-opus-probe-2026-10-14-093001-trivial-label--kz-slash--scored-w/c6674c7e-8b48-440": 5251
+     },
+     "skill_loaded_bytes": 15858,
+     "skill_bytes_read": 23247,
+     "prompt": "/kz-uiuxrule Change the Save button's text to Save draft and make it the primary style. The page is index.html. If you would ask me something, assume the recommended option and proceed."
+    }
+   ],
+   "final_result_tail": "oth the old and new versions of the page. The failures are the same in both, so this change didn't cause any of them:\n- **All widths:** no field is marked as required or optional (the Site name field is required).\n- **All widths:** the buttons have no visual response when pressed.\n- **At phone width:** the Site name and Notes fields use 15px text, which makes phones zoom in when you tap them.\n\nI left those alone because they're outside what you asked for. I also left the success message at \"Saved.\", which is still accurate, though \"Draft saved.\" would match the new label. Nothing is committed.",
+   "score": {
+    "uicheck": {
+     "390": {
+      "failures": 6,
+      "runs": 20,
+      "perCheck": {
+       "layout-audit": 2,
+       "table-check": 0,
+       "typing-check": 2,
+       "popover-check": 0,
+       "contrast-check": 0,
+       "modal-check": 0,
+       "focus-check": 0,
+       "form-check": 0,
+       "motion-check": 2,
+       "diagram-check": 0
+      },
+      "error": null
+     },
+     "1280": {
+      "failures": 4,
+      "runs": 20,
+      "perCheck": {
+       "layout-audit": 2,
+       "table-check": 0,
+       "typing-check": 0,
+       "popover-check": 0,
+       "contrast-check": 0,
+       "modal-check": 0,
+       "focus-check": 0,
+       "form-check": 0,
+       "motion-check": 2,
+       "diagram-check": 0
+      },
+      "error": null
+     }
+    },
+    "rubric": [
+     {
+      "item": "button text is \"Save draft\"",
+      "pass": true
+     },
+     {
+      "item": "Save draft has the primary style",
+      "pass": true
+     },
+     {
+      "item": "Cancel stayed secondary",
+      "pass": true
+     },
+     {
+      "item": "diff is small (<= 6 lines changed)",
+      "pass": true
+     },
+     {
+      "item": "the form still saves",
+      "pass": true
+     }
+    ],
+    "rubric_pass": 5,
+    "rubric_total": 5
+   }
+  },
+  {
+   "task": "trivial-label",
+   "condition": "none",
+   "mode": "scored",
+   "workdir": "/tmp/kzb/opus-probe-2026-10-14-093001/trivial-label__none__scored/w",
+   "config": "/tmp/kzb/opus-probe-2026-10-14-093001/trivial-label__none__scored/cfg",
+   "max_turns": null,
+   "run_budget_usd": 8,
+   "wall_s": 8.8,
+   "duration_api_ms": 5979,
+   "num_turns": 3,
+   "input_tokens": 6,
+   "cache_creation_input_tokens": 32985,
+   "cache_read_input_tokens": 64442,
+   "output_tokens": 493,
+   "total_cost_usd": 0.28665240000000003,
+   "skill_bytes_read": 0,
+   "asked": false,
+   "stalled_on_question": false,
+   "skills_invoked": [],
+   "skill_reads": {},
+   "files_changed": [
+    "index.html"
+   ],
+   "lines_added": 1,
+   "lines_removed": 1,
+   "turns": [
+    {
+     "wall_s": 8.8,
+     "duration_api_ms": 5979,
+     "num_turns": 3,
+     "input_tokens": 6,
+     "cache_creation_input_tokens": 32985,
+     "cache_read_input_tokens": 64442,
+     "output_tokens": 493,
+     "total_cost_usd": 0.28665240000000003,
+     "is_error": false,
+     "subtype": "success",
+     "model": "claude-opus-5-5",
+     "session_id": "1a63a472-cbd5-4adc-9191-e48807363a1a",
+     "result_tail": "The Save button in `index.html:45` now says \"Save draft\" and uses the primary style (`btn-primary`, the accent color) instead of the secondary one. I didn't open the page in a browser to check how it looks.\n\nWhen the form is submitted, the status message still says \"Saved.\" You may want it to say \"Draft saved.\" to match the new button text. That's a one-line change if you want it.",
+     "tools": {
+      "Bash": 2
+     },
+     "skills_invoked": [],
+     "asked_tool": false,
+     "skill_reads": {},
+     "skill_loaded_bytes": 0,
+     "skill_bytes_read": 0,
+     "prompt": "Change the Save button's text to Save draft and make it the primary style. The page is index.html. If you would ask me something, assume the recommended option and proceed."
+    }
+   ],
+   "final_result_tail": "The Save button in `index.html:45` now says \"Save draft\" and uses the primary style (`btn-primary`, the accent color) instead of the secondary one. I didn't open the page in a browser to check how it looks.\n\nWhen the form is submitted, the status message still says \"Saved.\" You may want it to say \"Draft saved.\" to match the new button text. That's a one-line change if you want it.",
+   "score": {
+    "uicheck": {
+     "390": {
+      "failures": 6,
+      "runs": 20,
+      "perCheck": {
+       "layout-audit": 2,
+       "table-check": 0,
+       "typing-check": 2,
+       "popover-check": 0,
+       "contrast-check": 0,
+       "modal-check": 0,
+       "focus-check": 0,
+       "form-check": 0,
+       "motion-check": 2,
+       "diagram-check": 0
+      },
+      "error": null
+     },
+     "1280": {
+      "failures": 4,
+      "runs": 20,
+      "perCheck": {
+       "layout-audit": 2,
+       "table-check": 0,
+       "typing-check": 0,
+       "popover-check": 0,
+       "contrast-check": 0,
+       "modal-check": 0,
+       "focus-check": 0,
+       "form-check": 0,
+       "motion-check": 2,
+       "diagram-check": 0
+      },
+      "error": null
+     }
+    },
+    "rubric": [
+     {
+      "item": "button text is \"Save draft\"",
+      "pass": true
+     },
+     {
+      "item": "Save draft has the primary style",
+      "pass": true
+     },
+     {
+      "item": "Cancel stayed secondary",
+      "pass": true
+     },
+     {
+      "item": "diff is small (<= 6 lines changed)",
+      "pass": true
+     },
+     {
+      "item": "the form still saves",
+      "pass": true
+     }
+    ],
+    "rubric_pass": 5,
+    "rubric_total": 5
+   }
+  }
+ ]
+}

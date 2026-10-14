@@ -26,7 +26,13 @@ In Claude Code, as a plugin:
 
 From a terminal, the same two steps are `claude plugin marketplace add kz-95/kz-skills` and `claude plugin install kz-skills@kz-skills`.
 The plugin installs and enables all thirteen skills.
-Then `/kz-uiuxrule`, or `/kz-skill` if you are not sure which one.
+Then `/kz-flashrule` for everyday UI building, `/kz-uiuxrule` for reviews and audits, or `/kz-skill` if you are not sure which one.
+
+> **Warning: these skills cost time and tokens, on purpose.**
+> The agent reads rules and runs browser checks before it calls UI work done.
+> Measured with `/kz-uiuxrule`: 1.5x the time and 2.2x the tokens on Sonnet 5.5, 1.7x and 1.9x on Opus 5.5, in exchange for 0 check failures introduced against 50 to 55 without the skills.
+> When speed matters, call the lighter lane: `/kz-fastfix` for a one-line edit, `/kz-flashrule` for everyday building (0.8x the time and 1.0x the tokens on Opus 5.5).
+> Details and limits: [Measured](#measured-speed-tokens-and-quality).
 
 <details>
 <summary><b>Claude Code</b>, by hand (macOS, Linux, Windows)</summary>
@@ -68,7 +74,7 @@ The checks are `.js` files you paste into a browser console, so they need no hos
 
 [Live reference](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html) | [All 94 rules](docs/rule-index.md) | [For agents: llms.txt](llms.txt) | [Changelog](CHANGELOG.md)
 
-**On this page:** [Ask in plain words](#ask-your-agent-in-plain-words) | [Why](#why-this-exists) | [What it covers](#what-it-covers) | [How it compares](#how-it-compares) | [The skills](#the-thirteen-skills) | [What loads when](#what-loads-when) | [Most missed](#the-rules-most-often-missed) | [FAQ](#faq) | [Contributing](#contributing) | [License](#license)
+**On this page:** [Ask in plain words](#ask-your-agent-in-plain-words) | [Why](#why-this-exists) | [What it covers](#what-it-covers) | [How it compares](#how-it-compares) | [Measured](#measured-speed-tokens-and-quality) | [The skills](#the-thirteen-skills) | [What loads when](#what-loads-when) | [Most missed](#the-rules-most-often-missed) | [FAQ](#faq) | [Contributing](#contributing) | [License](#license)
 
 ---
 
@@ -80,7 +86,7 @@ The checks are `.js` files you paste into a browser console, so they need no hos
 - *"Draw the checkout flow as a diagram."*
 - *"Make this page work on a phone."*
 
-The agent finds the two or three rule sections that fit the request, builds or reviews against them, quotes the rule IDs it applied, and runs the checks before it says the work is done.
+The agent sizes the request first, reads only the rules that fit it (one page for everyday work, two or three rule sections when that page is not enough), builds or reviews against them, quotes the rule IDs it applied, and runs the checks for what it changed before it says the work is done.
 You never have to name a rule or a skill.
 
 ## Why this exists
@@ -160,6 +166,41 @@ The downsides are real:
 
 - **It does not pick a look.** There is no palette, typeface or component library here, so pair it with your design system or a style skill.
 - **The checks need a browser.** They are console scripts that measure the rendered page; a screenshot or a code review cannot run them, and hover, press and focus states need the live page.
+- **It is slower than no rules.** Reading rules and running checks takes time and tokens; [Measured](#measured-speed-tokens-and-quality) says how much.
+
+## Measured: speed, tokens and quality
+
+The skills were measured against no skills on seven single-file HTML tasks: a label change, a new column, a dark mode toggle, a table, a chart filter, a form, and a build with three follow-ups.
+Each run was a fresh headless Claude Code 2.1.299 session on a named model, two or three runs per task.
+A factor is the lane's median over the no-skill median for the same task and model, then the median over tasks.
+A check failure introduced is a failing `kz-uicheck` check run (check x colour scheme, at 1280px and 390px) that the starter page did not have; the number in brackets is no skills on the same tasks.
+For `/kz-uiuxrule` and the installed skills, "before" is the skills as they were before the speed contract; for the two fast lanes, which the old skills never routed to, it is the first version of the speed contract.
+
+**Sonnet 5.5** (`claude-sonnet-5-5`)
+
+| Lane | Tasks | Time vs no skills, before -> now | Tokens vs no skills, before -> now | Check failures introduced, now (no skills) |
+|---|---|---|---|---|
+| `/kz-uiuxrule` | 7 | 2.54x -> 1.52x | 2.22x -> 2.15x | 0 (50) |
+| `/kz-flashrule` | 5 | 1.14x -> 1.13x | 1.21x -> 1.51x | 2 (24) |
+| `/kz-fastfix` | 4 | 1.24x -> 1.60x | 1.53x -> 1.86x | 0 (12) |
+| Installed, the model chooses | 7 | 1.14x -> 1.09x | 1.09x -> 1.12x | 8 (50) |
+
+**Opus 5.5** (`claude-opus-5-5`)
+
+| Lane | Tasks | Time vs no skills, before -> now | Tokens vs no skills, before -> now | Check failures introduced, now (no skills) |
+|---|---|---|---|---|
+| `/kz-uiuxrule` | 7 | 3.35x -> 1.67x | 4.17x -> 1.86x | 0 (55) |
+| `/kz-flashrule` | 5 | 1.56x -> 0.82x | 1.72x -> 1.02x | 0 (26) |
+| `/kz-fastfix` | 4 | 1.70x -> 1.40x | 1.73x -> 1.23x | 6 (14) |
+
+`/kz-uiuxrule` passed 37 of 37 rubric items on Sonnet 5.5 and 36.5 of 37 on Opus 5.5, against 32 and 34 for no skills.
+With the skills only installed, Sonnet 5.5 picked a kz skill in 14 of 21 runs, against 2 of 21 before.
+On Sonnet 5.5 the fast lanes got no faster in the second version: they now run the one named check where before they ran none, and with two or three runs per cell that reads as "no faster", not as a measured slowdown.
+On Opus 5.5 all six `/kz-fastfix` failures were on the build-and-follow-ups task, and in the run that could be traced they were already there after the bare build turn, which the lane does not cover.
+A blind screenshot judge (Opus 5.5) preferred the no-skill page in most pairs on the table build (the kz page won 1 of 10) and the build with follow-ups (2 of 10), and the kz page on the chart filter (10 of 10).
+
+Every table, the method and the limits: [`docs/benchmark.md`](docs/benchmark.md).
+To run it again, before and after a change of your own: [`scripts/bench/README.md`](scripts/bench/README.md); it spends real money on your account.
 
 ---
 
@@ -167,15 +208,15 @@ The downsides are real:
 
 Each skill, and when to reach for it:
 
-- **[`kz-skill`](skills/kz-skill/SKILL.md)**: A request spans several of these, or it is unclear which applies. The router.
-- **[`kz-uiuxrule`](skills/kz-uiuxrule/SKILL.md)**: Building, changing or reviewing any UI: the rules, in four modes (adopt, review, build, loop).
+- **[`kz-skill`](skills/kz-skill/SKILL.md)**: A request spans several of these, or it is unclear which applies. The router, and the home of the speed contract: size the change first, then read and check only what it touches.
+- **[`kz-uiuxrule`](skills/kz-uiuxrule/SKILL.md)**: Reviews, audits, larger UI work and "make it production": the rules, in four modes (adopt, review, build, loop). Everyday building starts from `kz-flashrule` instead.
 - **[`kz-motionrule`](skills/kz-motionrule/SKILL.md)**: Work that only moves - an animation, a transition, a press effect: the six motion rules and their check, without the rest of the corpus.
 - **[`kz-diagramrule`](skills/kz-diagramrule/SKILL.md)**: Only a diagram: boxes, lines and labels - the ten diagram rules and their check, without the rest of the corpus.
 - **[`kz-uicheck`](skills/kz-uicheck/SKILL.md)**: Before calling UI work done: ten paste-in browser checks that measure instead of judge.
 - **[`kz-engrules`](skills/kz-engrules/SKILL.md)**: Any code task at all: the engineering floor everything else sits on, including how branches, commits and merges are done (rules 33-33c).
-- **[`kz-fastfix`](skills/kz-fastfix/SKILL.md)**: One small job (a typo, a style change, a one-line bug): a size test, then the change made directly and checked once. No crew, no loop.
-- **[`kz-flashrule`](skills/kz-flashrule/SKILL.md)**: A fast rule check in one read: the rules that break worst when missed, each with its ID and the fastest check.
-- **[`kz-askcard`](skills/kz-askcard/SKILL.md)**: About to ask the user something: three to five decisions, one recommended, a custom option.
+- **[`kz-fastfix`](skills/kz-fastfix/SKILL.md)**: A one-line edit (a typo, a label, a colour, a column, a one-line bug): a size test, then the change made directly, with at most the one check named for it. No crew, no loop.
+- **[`kz-flashrule`](skills/kz-flashrule/SKILL.md)**: Everyday building of a component, a form or a screen, and a fast rule check of finished work: the rules that break worst when missed, on one page, each with its ID and the fastest check. The first read for small and medium UI work; it runs only the check named for the change.
+- **[`kz-askcard`](skills/kz-askcard/SKILL.md)**: About to ask the user something, which happens only when the request is genuinely ambiguous: three to five decisions, one recommended, a custom option.
 - **[`kz-crew021`](skills/kz-crew021/SKILL.md)**: A whole project, idea to maintenance, with a costed multi-agent crew.
 - **[`kz-judge`](skills/kz-judge/SKILL.md)**: After the checks: the wording rules a script cannot measure (errors, button labels, empty states, delete confirmations), judged by Jev or a local Laya, only on questions each has passed on labelled examples. Costs the agent no tokens.
 - **[`kz-reflect`](skills/kz-reflect/SKILL.md)**: A mistake was noticed and the fix verified: log it, classify it, and propose the rule or check change for a person to approve.
@@ -186,32 +227,37 @@ Plus [`ui-glance`](skills/kz-uiuxrule/skills/ui-glance/SKILL.md), a child of `kz
 ## What loads when
 
 At startup the agent sees only each skill's name and one-line description; files load only when a request matches, so the cost of having all thirteen installed is a few lines of context.
+Every request is sized first (the speed contract in [`kz-skill`](skills/kz-skill/SKILL.md), engineering rule 29e).
+A one-line edit goes to `kz-fastfix`, everyday building reads `kz-flashrule` first and runs only the checks named for the change, and only reviews, audits, "make it production" and releases take the full path in `kz-uiuxrule`.
 
 | You ask for... | Agent loads |
 |---|---|
-| "Build an orders table with filters" | `kz-uiuxrule` SKILL.md, `rules/INDEX.md` section T, `ui-rules.md` T1-T4 and Appendix A, `snippets/filter-table.html`, then `table-check.js` and `popover-check.js` |
-| "Review this signup form" | `kz-uiuxrule` SKILL.md (review mode), `rules/INDEX.md` section F, `ui-rules.md` F1-F9, then `form-check.js` and `typing-check.js` |
-| "Is this chart right?" | `kz-uiuxrule` SKILL.md, `rules/INDEX.md` section C, `chart-rules.md` (the C rules and the appendix for that chart), then `layout-audit.js` and `contrast-check.js` |
-| "Draw our checkout flow" | `kz-diagramrule` SKILL.md, `diagram-rules.md`, then `diagram-check.js` at a wide width and at 375px |
-| "Make this page work on a phone" | `kz-uiuxrule` SKILL.md, `rules/INDEX.md` section L, `ui-rules.md` L rules and Appendix O (the mobile shell), then `layout-audit.js` and `typing-check.js` at 375px |
-| "Add a dark mode" | `kz-uiuxrule` SKILL.md, `rules/INDEX.md` section Y, `ui-rules.md` Y1-Y3, then `contrast-check.js` in both themes |
-| "The filter dropdown won't close on mobile" | `kz-uiuxrule` SKILL.md, `rules/INDEX.md` section N, `ui-rules.md` N2 and Appendix J, then `popover-check.js` |
+| "Fix this typo" or "Rename this button" | `kz-fastfix` SKILL.md and at most the one `kz-flashrule` line that applies; at most one check (`contrast-check.js` in both themes if a colour changed) |
+| "Build an orders table with filters" | `kz-flashrule` SKILL.md, then `ui-rules.md` T1-T3 and Appendix A (its `S1` line sends a new table there) and `snippets/filter-table.html`, then `table-check.js` and `popover-check.js`, and `layout-audit.js` once at 375px |
+| "Add a site filter to this chart" | `kz-flashrule` SKILL.md (its `T1` line covers chart and dashboard filters), then `table-check.js` (`CHARTBOX`) and `layout-audit.js` once at 375px |
+| "Add a dark mode" | `kz-flashrule` SKILL.md, then `contrast-check.js` in both themes and `layout-audit.js` at 375px for the new control |
+| "Make this page work on a phone" | `kz-flashrule` SKILL.md, and the L rules and Appendix O (the mobile shell) of `ui-rules.md` only when its layout lines are not enough, then `layout-audit.js` at 375px (and `typing-check.js` if the page has fields) |
+| "The filter dropdown won't close on mobile" | `kz-fastfix` SKILL.md and the `N2` line of `kz-flashrule`, then `popover-check.js` once |
 | "Add a hover animation to the cards" | `kz-motionrule` SKILL.md, `motion-rules.md`, then `motion-check.js` |
+| "Draw our checkout flow" | `kz-diagramrule` SKILL.md, `diagram-rules.md`, then `diagram-check.js` at a wide width and at 375px |
+| "Review this signup form" | `kz-uiuxrule` SKILL.md (review mode), `rules/INDEX.md` section F, `ui-rules.md` F1-F9, then `form-check.js` and `typing-check.js` |
+| "Is this chart right?" | `kz-uiuxrule` SKILL.md (review mode), `rules/INDEX.md` section C, `chart-rules.md` (the C rules and the appendix for that chart), then `layout-audit.js` and `contrast-check.js` |
+| "Audit the whole UI" or "Make it production" | `kz-uiuxrule` SKILL.md and `references/modes.md`, the `rules/INDEX.md` sections the screens need, then all ten checks at both widths and in both themes |
 | "What's wrong with this screenshot?" | `ui-glance` SKILL.md only: one read, no rule files |
 | "Is this ready to ship?" | `kz-flashrule` SKILL.md, then the checks its lines name |
 | "Check the error messages" | `kz-judge` SKILL.md and `scripts/judge.py` |
-| "Fix this typo" | `kz-fastfix` SKILL.md only |
 | "Run the whole project" | `kz-crew021` SKILL.md, then each file in `references/` as its phase starts |
 | "The agent got it wrong, learn from it" | `kz-reflect` SKILL.md and `scripts/reflect.py` |
 
-Any code task also reads the short always-on part of `kz-engrules` (L0 and the standing rules), and a request whose purpose is unclear starts with one `kz-askcard` question.
+Any code task also reads the short always-on part of `kz-engrules` (L0 and the standing rules).
+The agent asks a question only when the request is genuinely ambiguous; otherwise it says in one line what it read the work to be and proceeds.
 
 ## The rules most often missed
 
 | ID | Rule | The&nbsp;check&nbsp;that&nbsp;fails&nbsp;it |
 |---|---|---|
 | `S1` | Every table ships search, sort on every column and a filter per column. A "filter" is a panel, never a bare text box. | `table-check.js` |
-| `T1` | A column filter is a panel: sort, a value list with counts, a range for numbers. | `table-check.js` |
+| `T1` | A filter on a dimension is a panel, wherever it sits (a table column, a chart toolbar, a dashboard header): sort, a value list with counts, a range for numbers. Up to six values, outside a table's header row, visible chips with a count and a clear may stand in. | `table-check.js` (`BOX`, `CHARTBOX`) |
 | `F8` | Typing is never interrupted. | `typing-check.js` |
 | `F5` | A digit-only field selects its value when it is entered. | `rules-check.js` |
 | `F6` | A field that holds an amount accepts the arithmetic that produces it. | `rules-check.js` |
@@ -229,11 +275,12 @@ All 94 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 
 ## It's working if...
 
-- **A table request produces a filter panel, not a text box.** Each column header has a button that opens sort, a value list with counts and, for numbers, a range.
+- **A table request produces a filter panel, not a text box.** Each column header has a button that opens sort, a value list with counts and, for numbers, a range. A chart or dashboard filter is the same panel, or, for up to six values, visible chips with a count and a clear.
+- **A one-line change takes about as long as without the skills.** The agent makes the edit, runs at most the one check that covers it, and reports in a line.
 - **The agent quotes rule IDs.** It says "`F8`: the field keeps focus while the list re-renders", not "I improved the UX".
-- **The agent runs the checks and pastes the output.** At a wide width, at a narrow one and at 375px with touch emulation, before it says the work is done.
+- **The agent runs the checks for what it changed and pastes the output.** A table runs `table-check.js`, a form `form-check.js`, a theme `contrast-check.js` in both themes, then `layout-audit.js` once at 375px; all ten checks at both widths are for an audit, "make it production" or a release.
 - **A diagram passes `diagram-check.js`.** The console prints `clean (1 diagram(s) measured)`, not a list of `DIAGONAL` or `LABEL ON LINE` findings.
-- **It asks what the work is for first.** One card, three to five options, one marked recommended, and a custom answer always open.
+- **It asks only when the request is genuinely ambiguous.** Otherwise it says in one line what it read the work to be and proceeds; when it does ask, it is one card, three to five options, one marked recommended, and a custom answer always open.
 - **A correction becomes a proposed rule or check.** When you tell it it got something wrong, `kz-reflect` logs the mistake and suggests the change for you to approve.
 
 ## When not to use it
@@ -267,7 +314,7 @@ The skills are Markdown and the hook script is host-neutral, but the hook has on
 
 ## Important notes
 
-- **The purpose hook is not in the plugin yet.** It asks what a skill is for before it acts. Wire it by hand from [`skills/kz-askcard/hooks/README.md`](skills/kz-askcard/hooks/README.md).
+- **The purpose hook is optional, and not in the plugin yet.** Nothing depends on it: the skills carry the same size test in their own text. It sizes `kz-uiuxrule` work before any rule is read, and asks `kz-crew021` what the run is for. Wire it by hand from [`skills/kz-askcard/hooks/README.md`](skills/kz-askcard/hooks/README.md).
 - **Sample data uses Malaysian ringgit (`RM`).** It is sample data only.
 
 ---
@@ -316,6 +363,7 @@ docs/
   rule-index.md                  every rule, one line each (generated)
   install.md                     install per host, and fixes for "it does not show up"
   with-impeccable.md             using the rules beside a style skill
+  benchmark.md                   what the skills cost in time and tokens, and what they buy
   assets/                        the hero GIF, the carousels and the gallery pictures
 scripts/
   validate.py                    frontmatter, links, line endings, index freshness
@@ -323,6 +371,7 @@ scripts/
   check-branch.py                fails a branch name that is not feat/fix/docs/chore kebab-case
   make-carousel.py               rebuilds the carousel GIFs from the reference page
   hero/                          the Remotion project that renders docs/assets/hero.gif
+  bench/                         the benchmark harness: tasks, runs, scoring, a blind judge, results
 AGENTS.md                        how any agent uses and works in this repository
 llms.txt                         the index for LLM crawlers
 ```

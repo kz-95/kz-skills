@@ -9,9 +9,9 @@ license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 One card, asked once, carrying only decisions that change what gets done. Never a
 conversation. The user answers a card and the work proceeds.
 
-This is shared doctrine: `kz-crew021` and `kz-uiuxrule` both open with a card, and
-`hooks/ui-rule-purpose.mjs` serves one for either of them before the skill runs. The
-formats differ because the outputs differ. The rules below do not.
+Shared doctrine: `kz-crew021` opens with a card; `kz-uiuxrule` raises one only when the mode
+or scope is genuinely unclear (the speed contract, `../kz-skill/SKILL.md`). The formats differ
+because the outputs differ. The rules below do not.
 
 ## The six rules
 
@@ -68,9 +68,9 @@ answer.
 ## The hook
 
 `hooks/ui-rule-purpose.mjs` enforces rule 1 and rule 6 outside the document, on any host
-that can run a command before a skill call and feed its stdout back to the model - most
-agent runners, not just Claude Code. It carries a card per skill, fires only for the
-skills it knows, and never blocks. Wiring, and what has actually been tested, is in
+that can run a command before a skill call and feed its stdout back to the model. It
+carries a card per skill (for `kz-uiuxrule`, the size test and ask-only-if-unclear), fires
+only for the skills it knows, and never blocks. Wiring and what was tested:
 `hooks/README.md`.
 
 ```bash

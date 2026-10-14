@@ -1,6 +1,6 @@
 # kz-crew021 - reference index
 
-Six references plus one script. `SKILL.md` at the skill root is the router; read
+Eight references plus one script. `SKILL.md` at the skill root is the router; read
 it first, then come back here for the one you need.
 
 | Document | Kind | Covers | Reach for it when |
@@ -11,8 +11,8 @@ it first, then come back here for the one you need.
 | [04-team.md](04-team.md) | confirmed workflow rule | The 10 agents, who joins at which phase, path ownership, the two-tier policy and the one-way escalation rule | Choosing who does a task and at which tier |
 | [05-doc-ownership.md](05-doc-ownership.md) | confirmed workflow rule | Code-vs-shared-doc split, the `updates/` inbox, the scribe, the ten rules, the enforced ownership map | Anything is about to write a file |
 | [06-budget.md](06-budget.md) | spec to build against | Points and velocity, check 6's three bands, the escalation ladder, the session report, the four levers, the guardrail | Sizing a phase, hitting the budget gate, or closing a session |
-
 | [07-progress.md](07-progress.md) | spec to build against | The generated dashboard (`pb.py dashboard`), what it carries, and the rule that a blocked task ships the steps that clear it | Closing a slice, blocking a task, or when someone asks how far along the project is |
+| [08-ui.md](08-ui.md) | confirmed workflow rule | The UI rules the crew builds under: S1 and S2 in full, how `kz-uiuxrule`'s modes map onto the phases, the checks, Appendix Z, `V3` and `N4` | Before the first UI task, and when a UI task is dispatched or reviewed |
 
 ## Outside this folder
 

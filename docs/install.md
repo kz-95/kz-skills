@@ -26,7 +26,8 @@ claude plugin install kz-skills@kz-skills
 ```
 
 The plugin installs and enables all thirteen skills.
-Then `/kz-uiuxrule` for UI work, or `/kz-skill` when you are not sure which skill fits.
+Then call the lane that fits: `/kz-fastfix` for a one-line edit, `/kz-flashrule` for everyday UI building, `/kz-uiuxrule` for reviews, audits and "make it production", or `/kz-skill` when you are not sure which skill fits.
+The skills cost time and tokens on purpose; [`benchmark.md`](benchmark.md) has the measured cost of each lane on Sonnet 5.5 and Opus 5.5.
 
 ## Claude Code, by hand
 
@@ -50,12 +51,12 @@ The skills are plain Markdown. There is no build step.
 
 1. Give your agent the repository, or the `skills/` folder, wherever it reads skills or instructions.
 2. Point it at [`AGENTS.md`](../AGENTS.md), which says how to use the rules without Claude Code, and at [`llms.txt`](../llms.txt).
-3. For a UI task it reads `skills/kz-uiuxrule/rules/INDEX.md`, matches the task's words to a section, and reads only that.
-4. The checks in `skills/kz-uicheck/checks/` are plain JavaScript. Paste each into the browser console of the page being checked.
+3. For a UI task it sizes the change first (the speed contract in `skills/kz-skill/SKILL.md`): a one-line edit follows `skills/kz-fastfix/SKILL.md`, everyday building reads `skills/kz-flashrule/SKILL.md` first, and only when that page is not enough does it open `skills/kz-uiuxrule/rules/INDEX.md`, match the task's words to a section, and read only that.
+4. The checks in `skills/kz-uicheck/checks/` are plain JavaScript. Paste the ones named for the change into the browser console of the page being checked; all ten are for an audit or a release.
 
 ## The purpose hook (optional)
 
-`skills/kz-askcard/hooks/ui-rule-purpose.mjs` makes a skill ask what it is for before it acts. It reads a JSON payload on stdin, never blocks, and works with any host that can run a command before a skill call. It has only been tested on Claude Code. Wiring, including the two Claude Code entries it needs (one for a skill the model calls, one for a command you type), is in [`skills/kz-askcard/hooks/README.md`](../skills/kz-askcard/hooks/README.md).
+`skills/kz-askcard/hooks/ui-rule-purpose.mjs` points a skill the right way before it acts: for `kz-uiuxrule` the size test and an ask only when the mode or scope is genuinely unclear, for `kz-crew021` one card first. It reads a JSON payload on stdin, never blocks, and works with any host that can run a command before a skill call. It has only been tested on Claude Code. Wiring, including the two Claude Code entries it needs (one for a skill the model calls, one for a command you type), is in [`skills/kz-askcard/hooks/README.md`](../skills/kz-askcard/hooks/README.md).
 
 ## It does not show up as a command
 

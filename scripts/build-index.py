@@ -5,7 +5,7 @@
     python scripts/build-index.py --check  exit 1 if the file on disk is out of date (used by CI)
 
 It reads the first bold sentence of every table row whose first cell is a rule ID
-(`| T1 | **A column filter is a panel...** ...`) in ui-rules.md, chart-rules.md, motion-rules.md and diagram-rules.md.
+(`| T1 | **A filter on a dimension is a panel...** ...`) in ui-rules.md, chart-rules.md, motion-rules.md and diagram-rules.md.
 """
 import io
 import os

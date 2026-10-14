@@ -36,19 +36,21 @@ more than a tenth of it.
 
 ## What it does
 
-Four modes, picked from the request before anything else happens:
+The work is sized first (the speed contract in `../kz-skill/SKILL.md`): a one-element change goes to
+`kz-fastfix`, a component reads `kz-flashrule` first and runs only its own checks, and only large work
+takes the full path. Four modes, picked from the request:
 
 | Mode | Sounds like | Produces |
 |---|---|---|
 | **Glance** | a pasted screenshot, "quick look" | Three to six findings by rule id, from the picture alone - the child skill, one read, no questions |
 | **Adopt** | "set up design rules for this project" | A design-rule doc the project owns, plus its index - consolidated with whatever rules already exist, never overwriting them |
 | **Review** | "check this screen" | Findings by rule id, each carrying the measurement that proves it |
-| **Build** | "make this page" | The work built under the rules, with a runnable check left behind |
+| **Build** | "make this page" | The work built under the rules, checked by the checks for what it touched |
 | **Loop** | "make it right" | Three independent reviewers against a separate fixer, until unanimous |
 
-Where it is unsure - two modes fit, or the project already has rules that disagree - it
-raises a single **Ask Card** rather than guessing, and a review always asks which of the
-fourteen sections to cover before reading every rule at someone.
+Where it is genuinely unsure - two modes fit, or the project already has rules that disagree -
+it raises a single **Ask Card** rather than guessing, and a review that names no sections asks
+which of the fourteen to cover. Otherwise it says in one line what it read and proceeds.
 
 A **speed dial** decides how much of that runs: *fast* is one review pass and the fixes,
 *right* runs the full loop. It says what a fast pass skips rather than quietly doing more
@@ -67,7 +69,7 @@ than was asked.
 | `rules/diagram-rules.md` | G1-G10, for any drawn diagram - boxes, lines and their labels; also the whole of the `kz-diagramrule` skill |
 | `../kz-engrules/rules/engineering-rules.md` | Sibling skill: non-UI rules for code work, where S1 and S2 are defined |
 | `rules/design-principles.md` | The sixteen principles, and why each rule exists |
-| `../kz-askcard/hooks/ui-rule-purpose.mjs` | Sibling skill. Host-neutral hook that makes the skill ask its purpose before acting - stdin JSON, JSON arg or bare name; fires only for this skill; never blocks |
+| `../kz-askcard/hooks/ui-rule-purpose.mjs` | Sibling skill. Optional host-neutral hook that repeats the size test before the skill acts, and asks only when the mode or scope is genuinely unclear - stdin JSON, JSON arg or bare name; never blocks |
 | `../kz-askcard/hooks/README.md` | How to wire that hook, and which wiring has actually been tested |
 
 ## What it is not

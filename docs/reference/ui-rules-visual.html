@@ -1095,7 +1095,7 @@ tbody tr.offrow td:first-child::after{content:" (not drawn)";color:var(--muted);
 .vcard .vnote{font-size:13px;color:var(--text);line-height:1.4}
 .vcard .vstat{font-size:12px;color:var(--muted);margin-top:var(--s1)}
 .vcard[aria-current]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-.l11-fits{margin-top:var(--s4)}
+.l11-fits,.cf-six{margin-top:var(--s4)}
 .l11-fits .seq-grid{max-width:420px}
 .btnrow{display:flex;flex-wrap:wrap;gap:6px}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
@@ -1266,6 +1266,12 @@ tbody tr{transition:background var(--mo-state) var(--mo-ease)}
 /* C5 demo: the ring on a wedge */
 .ringdemo{display:block;margin:0 auto;max-width:210px;width:100%}
 .ring-bad{outline:2px solid var(--text);outline-offset:2px}
+/* T1 on a chart: the filter bar above a chart, and its trigger */
+.cfbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2);margin-bottom:var(--s3);min-height:var(--ctl)}
+.cflab{font-size:13px;color:var(--muted)}
+.cftrig[data-on="1"]{border-color:var(--accent);color:var(--accent-ink)}
+.cftrig svg{width:11px;height:11px;flex:none;stroke:currentColor;fill:none;stroke-width:2}
+svg.chart text.cfn{fill:var(--text)}
 /* N2 demo: a minimal popover, twice */
 .n2c-body{min-height:250px}
 .n2c{position:relative;display:inline-block}
@@ -1955,6 +1961,63 @@ section[id]{scroll-margin-top:56px}
       undoing what you already chose.</p>
     </div>
   </div>
+</section>
+
+<section id="t1-chart-filter">
+  <h2>Rule T1 on a chart: a chart's filter is the same panel</h2>
+  <p class="rule">A filter on a dimension is the T1 panel wherever it sits - a table column, a
+  chart toolbar, a dashboard header. It filters the chart's rows the way a column filter
+  filters a table's (C2): sort, search the values, Select all and Clear selection, an
+  "n of m" count, a value list with counts, Done on touch, applied live. Up to six values
+  that cannot grow, visible chips may stand in, with a pressed state, a count and a clear.</p>
+  <div class="pair">
+    <div class="demo wrong" data-table-check="skip">
+      <div class="tag">Wrong: nine sites as a row of chips</div>
+      <div class="body">
+        <div class="cfbar">
+          <span class="cflab" id="cfBadLab">Sites</span>
+          <div class="tsgrp" id="cfBadChips" role="group" aria-labelledby="cfBadLab"></div>
+        </div>
+        <svg class="chart" id="cfBad" viewBox="0 0 340 200" role="img" aria-label="Revenue by site, January to September (wrong sample)"></svg>
+      </div>
+      <p class="note">It works, but past six values chips wrap line after line, cannot be
+      searched and cannot carry a count: nothing says how many are on, there is no
+      select all or clear, and nothing shows how much data sits behind each site. At forty sites
+      it is a wall of buttons. Past six, or when the values come from data and can grow, it is
+      the panel.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: the T1 panel, on the chart</div>
+      <div class="body">
+        <div class="cfbar">
+          <button type="button" class="btn cftrig" id="cfTrig" aria-haspopup="dialog" aria-expanded="false" aria-label="Sort and filter Sites: 6 of 6"><span class="cap">Sites: 6 of 6</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.5l4 4 4-4"/></svg></button>
+          <span class="chip" id="cfCount" aria-live="polite"></span>
+        </div>
+        <svg class="chart" id="cfGood" viewBox="0 0 340 200" role="img" aria-label="Revenue by site, January to September"></svg>
+      </div>
+      <p class="note">The same panel every table column on this page opens: sort, value search,
+      Select all and Clear selection, the "n of m" count, and the sites with how many months of
+      data each holds. Every tick redraws the chart at once and the panel stays open; the
+      trigger says what is on. Done closes it on a phone.</p>
+    </div>
+  </div>
+  <div class="pair cf-six"><div class="demo right" id="cfChipsDemo">
+    <div class="tag">Also right, up to six values: chips with a count and a clear</div>
+    <div class="body">
+      <div class="cfbar">
+        <span class="cflab" id="cfChipLab">Sites</span>
+        <div class="tsgrp" id="cfChipSet" role="group" aria-labelledby="cfChipLab"></div>
+        <span class="chip" id="cfChipCount" aria-live="polite"></span>
+        <button type="button" class="btn" id="cfChipAll">All</button>
+        <button type="button" class="btn" id="cfChipClear">Clear</button>
+      </div>
+      <svg class="chart" id="cfChips" viewBox="0 0 340 200" role="img" aria-label="Revenue by site, January to September (chips sample)"></svg>
+    </div>
+    <p class="note">Six sites, a fixed list: every value is in view at once, so the chips
+    are faster to read and to tap than a panel. Each says whether it is on, the count says
+    "5 of 6", and All or Clear is one tap. A seventh site, or a list that grows with the data,
+    turns it into the panel above.</p>
+  </div></div>
 </section>
 
 <section id="t3-explain">
@@ -10599,6 +10662,118 @@ document.getElementById('t4Clear').onclick = function () { t4Table.reset(); };
 /* first paint: the component draws from state, so the first draw is a call like any
    other (rule V1 - nothing is painted at construction time that the draw does not paint) */
 [tTable, t2Table, t3Table, t4Table].forEach(function (t) { t.draw(); });
+
+/* T1 on a chart. One row per site per month; a site that opened mid-year has fewer months,
+   which is what the count beside each value in the panel says. The wrong half filters with
+   chips, the right half with the same panel every table column opens (openFilterPanel), and
+   both draw through one function, so the only difference between them is the filter. */
+var CF_ROWS = (function () {
+  var sites = [['Kajang', 42, 9], ['Puchong', 35, 9], ['Cyberjaya', 28, 7],
+               ['Bangi', 51, 9], ['Klang', 19, 5], ['Shah Alam', 33, 8]];
+  var out = [];
+  sites.forEach(function (x) {
+    for (var m = 9 - x[2]; m < 9; m++) { out.push({ site: x[0], month: m, rev: x[1] + (m * 7 + x[1]) % 6 }); }
+  });
+  return out;
+}());
+var CF_ALL = distinctOf(CF_ROWS, 'site', false);
+/* the wrong half has nine sites: past six, chips wrap and cannot search or count (T1) */
+var CF_ROWS9 = CF_ROWS.concat([['Rawang', 24, 6], ['Semenyih', 38, 9], ['Seremban', 27, 8]].reduce(function (out, x) {
+  for (var m = 9 - x[2]; m < 9; m++) { out.push({ site: x[0], month: m, rev: x[1] + (m * 7 + x[1]) % 6 }); }
+  return out;
+}, []));
+var CF_ALL9 = distinctOf(CF_ROWS9, 'site', false);
+
+function cfDraw(svgId, on, order, rows) {
+  var svg = document.getElementById(svgId);
+  var tot = {};
+  (rows || CF_ROWS).forEach(function (r) {
+    if (on.indexOf(r.site) > -1) { tot[r.site] = (tot[r.site] || 0) + r.rev; }
+  });
+  var names = Object.keys(tot);
+  /* ranked by revenue unless the reader sorted by name in the panel */
+  names.sort(order ? function (a, b) { return order * cmp(a, b, false); }
+                   : function (a, b) { return tot[b] - tot[a]; });
+  if (!names.length) {
+    svg.innerHTML = '<text x="170" y="100" text-anchor="middle">No sites ticked - tick one in the filter</text>';
+    return tot;
+  }
+  var L = 74, R = 62, T = 6, band = 31;
+  svg.setAttribute('viewBox', '0 0 340 ' + Math.max(200, T + names.length * band + 8));
+  var max = Math.max.apply(null, names.map(function (n) { return tot[n]; }));
+  var w = 340 - L - R;
+  svg.innerHTML = names.map(function (n, i) {
+    var y = T + i * band, bw = Math.max(1, tot[n] / max * w);
+    return '<text class="cfn" x="' + (L - 8) + '" y="' + (y + 19) + '" text-anchor="end">' + esc(n) + '</text>' +
+      '<rect class="cfbarmark" x="' + L + '" y="' + (y + 6) + '" width="' + bw.toFixed(1) +
+      '" height="18" rx="2" fill="var(--c1)"><title>' + esc(n) + ': RM ' + tot[n] + 'k</title></rect>' +
+      '<text x="' + (L + bw + 6).toFixed(1) + '" y="' + (y + 19) + '">RM ' + tot[n] + 'k</text>';
+  }).join('');
+  return tot;
+}
+
+/* wrong: nine chips, one state per chip and nothing else - no count, no clear */
+var cfBadOn = CF_ALL9.slice();
+function cfBadPaint() {
+  document.getElementById('cfBadChips').innerHTML = CF_ALL9.map(function (n) {
+    return '<button type="button" aria-pressed="' + (cfBadOn.indexOf(n) > -1) + '" data-site="' +
+      esc(n) + '">' + esc(n) + '</button>';
+  }).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('#cfBadChips button'), function (b) {
+    b.onclick = function () {
+      var i = cfBadOn.indexOf(b.dataset.site);
+      if (i > -1) { cfBadOn.splice(i, 1); } else { cfBadOn.push(b.dataset.site); }
+      cfBadPaint();
+    };
+  });
+  cfDraw('cfBad', cfBadOn, 0, CF_ROWS9);
+}
+cfBadPaint();
+
+/* also right: six fixed sites as chips, each with its state, a live "n of m" and All / Clear */
+var cfChipOn = CF_ALL.slice();
+function cfChipPaint() {
+  document.getElementById('cfChipSet').innerHTML = CF_ALL.map(function (n) {
+    return '<button type="button" aria-pressed="' + (cfChipOn.indexOf(n) > -1) + '" data-site="' +
+      esc(n) + '">' + esc(n) + '</button>';
+  }).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('#cfChipSet button'), function (b) {
+    b.onclick = function () {
+      var i = cfChipOn.indexOf(b.dataset.site);
+      if (i > -1) { cfChipOn.splice(i, 1); } else { cfChipOn.push(b.dataset.site); }
+      cfChipPaint();
+    };
+  });
+  document.getElementById('cfChipCount').textContent = cfChipOn.length + ' of ' + CF_ALL.length;
+  cfDraw('cfChips', cfChipOn, 0);
+}
+document.getElementById('cfChipAll').onclick = function () { cfChipOn = CF_ALL.slice(); cfChipPaint(); };
+document.getElementById('cfChipClear').onclick = function () { cfChipOn = []; cfChipPaint(); };
+cfChipPaint();
+
+/* right: the T1 panel. The api is the shape openFilterPanel already drives for a table -
+   rows, a filter state, a draw and a sort - so the chart gets the panel, not a copy of it. */
+var cfCol = { key: 'site', label: 'Sites', ctrl: 'enum' };
+var cfApi = {
+  rows: CF_ROWS, state: { f: {}, sort: 0 },
+  setSort: function (k, dir) { cfApi.state.sort = dir; cfApi.draw(); },
+  draw: function () {
+    var f = cfApi.state.f.site, on = f && f.sel ? f.sel : CF_ALL;
+    var tot = cfDraw('cfGood', on, cfApi.state.sort);
+    var cap = 'Sites: ' + on.length + ' of ' + CF_ALL.length, btn = document.getElementById('cfTrig');
+    btn.querySelector('.cap').textContent = cap;
+    btn.setAttribute('aria-label', 'Sort and filter ' + cap);
+    btn.setAttribute('data-on', on.length === CF_ALL.length ? '0' : '1');
+    var sum = Object.keys(tot).reduce(function (a, k) { return a + tot[k]; }, 0);
+    document.getElementById('cfCount').textContent = on.length ? 'RM ' + sum.toLocaleString('en') + 'k shown' : 'Nothing shown';
+  }
+};
+document.getElementById('cfTrig').onclick = function (e) {
+  e.stopPropagation();
+  if (fpopFor === this) { closeFilterPanel(); return; }
+  openFilterPanel(cfApi, cfCol, this);
+};
+cfApi.draw();
 
 
 /* ---------- N: overlays and navigation -------------------------------------- */
