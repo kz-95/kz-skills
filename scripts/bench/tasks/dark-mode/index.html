@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site operations</title>
+<style>
+  :root { --bg: #f7f7f8; --surface: #fff; --text: #1d1f23; --muted: #5b6170; --line: #d6d9e0; --accent: #2457c5; --hover: #eef2fb; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  main { max-width: 1100px; margin: 24px auto; padding: 0 16px; display: grid; gap: 24px; }
+  section { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; min-width: 0; }
+  h1 { margin: 0; }
+  h2 { margin: 0 0 12px; font-size: 18px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .field label { font-weight: 600; }
+  .hint, .error { font-size: 13px; }
+  .hint { color: var(--muted); font-weight: 400; }
+  .error { color: #b3261e; }
+  .field input, .field select, .field textarea { font: inherit; font-size: 16px; min-height: 44px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--text); }
+  .field [aria-invalid=true] { border-color: #b3261e; }
+  .primary { background: var(--accent); color: #fff; border: 1px solid var(--accent); border-radius: 6px; padding: 0 16px; min-height: 44px; }
+  .chart text { font: 12px system-ui, sans-serif; }
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { padding: 8px 12px; text-align: left; white-space: nowrap; }
+  td { border-bottom: 1px solid var(--line); }
+  th { background: var(--surface); font-weight: 600; }
+  thead tr.titles th { padding-bottom: 4px; }
+  thead tr.filters th { padding-top: 4px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  button { font: inherit; cursor: pointer; transition: transform 80ms ease-out; }
+  button:active { transform: scale(0.97); }
+  @media (prefers-reduced-motion: reduce) { button { transition: none; } button:active { transform: none; } }
+  .sort-btn { border: none; background: none; padding: 0 4px; min-height: 44px; font-weight: 600; color: var(--text); }
+  .filter-btn { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 0 10px; min-height: 44px; min-width: 44px; color: var(--muted); }
+  .filter-btn[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+  .panel { position: absolute; z-index: 10; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.15); padding: 12px; width: 260px; }
+  .panel[hidden] { display: none; }
+  .panel input[type=search], .panel input[type=number] { width: 100%; font: inherit; font-size: 16px; min-height: 44px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; }
+  .panel .values { max-height: 220px; overflow: auto; margin: 8px 0; }
+  .panel label { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; }
+  .panel .count { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .panel .row { display: flex; gap: 8px; }
+  .panel .links { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .panel .links button, .panel .done { background: none; border: none; color: var(--accent); padding: 0 4px; min-height: 44px; }
+  .panel .done { display: block; margin-left: auto; font-weight: 600; }
+  .summary { color: var(--muted); margin: 8px 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Site operations</h1>
+  <div class="grid">
+    <section aria-labelledby="chart-h">
+      <h2 id="chart-h">Revenue by site</h2>
+      <svg class="chart" id="chart" role="img" aria-label="Revenue by site, in thousands of pounds" viewBox="0 0 360 220" width="100%"></svg>
+    </section>
+    <section aria-labelledby="form-h">
+      <h2 id="form-h">Request work</h2>
+      <form id="req" novalidate>
+        <div class="field">
+          <label for="site">Site <span class="hint">(required)</span></label>
+          <select id="site" name="site" required aria-describedby="site-err">
+            <option value="">Choose a site</option>
+          </select>
+          <span class="error" id="site-err"></span>
+        </div>
+        <div class="field">
+          <label for="budget">Budget in GBP <span class="hint">(optional)</span></label>
+          <input id="budget" name="budget" type="number" inputmode="decimal" min="0" step="0.01">
+        </div>
+        <div class="field">
+          <label for="note">Note <span class="hint">(optional)</span></label>
+          <textarea id="note" name="note" rows="3"></textarea>
+        </div>
+        <button type="submit" class="primary">Send request</button>
+        <p class="status" id="form-status" role="status"></p>
+      </form>
+    </section>
+  </div>
+  <section aria-labelledby="table-h">
+    <h2 id="table-h">Jobs</h2>
+    <p class="summary" id="summary" aria-live="polite"></p>
+    <div class="table-wrap">
+      <table id="jobs" aria-label="Jobs">
+        <thead><tr class="titles" id="head"></tr><tr class="filters" id="filters"></tr></thead>
+        <tbody id="body"></tbody>
+      </table>
+    </div>
+  </section>
+  <div class="panel" id="panel" hidden role="dialog" aria-label="Column filter"></div>
+</main>
+<script>
+const JOBS = [{"id": "JOB-201", "site": "East works", "status": "In progress", "cost": 3734.96}, {"id": "JOB-202", "site": "North depot", "status": "Open", "cost": 7445.09}, {"id": "JOB-203", "site": "North depot", "status": "On hold", "cost": 5370.26}, {"id": "JOB-204", "site": "Harbour", "status": "In progress", "cost": 626.21}, {"id": "JOB-205", "site": "West plant", "status": "Done", "cost": 907.74}, {"id": "JOB-206", "site": "North depot", "status": "Done", "cost": 814.26}, {"id": "JOB-207", "site": "Harbour", "status": "Open", "cost": 8542.81}, {"id": "JOB-208", "site": "Airport", "status": "Open", "cost": 5320.8}, {"id": "JOB-209", "site": "West plant", "status": "Open", "cost": 8793.42}, {"id": "JOB-210", "site": "North depot", "status": "In progress", "cost": 2819.6}, {"id": "JOB-211", "site": "South yard", "status": "Open", "cost": 5266.95}, {"id": "JOB-212", "site": "Harbour", "status": "In progress", "cost": 1196.58}];
+const REVENUE = [{"site": "North depot", "revenue": 93000}, {"site": "South yard", "revenue": 44000}, {"site": "East works", "revenue": 67000}, {"site": "West plant", "revenue": 32000}, {"site": "Harbour", "revenue": 90000}, {"site": "Airport", "revenue": 28000}];
+
+const COLUMNS = [
+  { key: 'id', label: 'Job', type: 'values', help: 'The job reference' },
+  { key: 'site', label: 'Site', type: 'values', help: 'Where the work is done' },
+  { key: 'status', label: 'Status', type: 'values', help: 'Where the job stands' },
+  { key: 'cost', label: 'Cost', type: 'range', num: true, help: 'Quoted cost in GBP', fmt: v => v.toLocaleString('en-GB', { style: 'currency', currency: 'GBP' }) }
+];
+
+const filters = {};   // key -> Set of allowed values, or {min,max}
+let sort = { key: 'id', dir: 1 };
+let openKey = null;
+
+function passes(row, skipKey) {
+  return COLUMNS.every(c => {
+    if (c.key === skipKey) return true;
+    const f = filters[c.key];
+    if (!f) return true;
+    if (f instanceof Set) return f.has(String(row[c.key]));
+    if (f.min != null && row[c.key] < f.min) return false;
+    if (f.max != null && row[c.key] > f.max) return false;
+    return true;
+  });
+}
+
+function renderHead() {
+  const tr = document.getElementById('head');
+  const fr = document.getElementById('filters');
+  tr.innerHTML = '';
+  fr.innerHTML = '';
+  COLUMNS.forEach(c => {
+    const th = document.createElement('th');
+    th.scope = 'col';
+    if (c.num) th.className = 'num';
+    th.title = c.help;
+    th.setAttribute('aria-sort', sort.key === c.key ? (sort.dir > 0 ? 'ascending' : 'descending') : 'none');
+    const sb = document.createElement('button');
+    sb.type = 'button';
+    sb.className = 'sort-btn';
+    sb.textContent = c.label;
+    sb.addEventListener('click', () => { sort = { key: c.key, dir: sort.key === c.key ? -sort.dir : 1 }; update(); });
+    th.appendChild(sb);
+    tr.appendChild(th);
+    const fh = document.createElement('th');
+    if (c.num) fh.className = 'num';
+    const b = document.createElement('button');
+    b.className = 'filter-btn';
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Filter ' + c.label);
+    b.setAttribute('aria-pressed', filters[c.key] ? 'true' : 'false');
+    b.setAttribute('aria-haspopup', 'dialog');
+    b.setAttribute('aria-expanded', openKey === c.key ? 'true' : 'false');
+    b.textContent = (filters[c.key] ? 'Filtered' : 'All') + ' \u25be';
+    b.addEventListener('click', e => { e.stopPropagation(); togglePanel(c, b); });
+    fh.appendChild(b);
+    fr.appendChild(fh);
+  });
+}
+
+function renderBody() {
+  const rows = JOBS.filter(r => passes(r)).sort((a, b) => (a[sort.key] > b[sort.key] ? 1 : a[sort.key] < b[sort.key] ? -1 : 0) * sort.dir);
+  const tb = document.getElementById('body');
+  tb.innerHTML = rows.map(r => '<tr>' + COLUMNS.map(c => '<td' + (c.num ? ' class="num"' : '') + '>' + (c.fmt ? c.fmt(r[c.key]) : r[c.key]) + '</td>').join('') + '</tr>').join('');
+  document.getElementById('summary').textContent = rows.length + ' of ' + JOBS.length + ' jobs';
+}
+
+function togglePanel(col, btn) {
+  const panel = document.getElementById('panel');
+  if (openKey === col.key) { closePanel(); return; }
+  openKey = col.key;
+  panel.innerHTML = '';
+  const sortRow = document.createElement('div');
+  sortRow.className = 'links';
+  sortRow.innerHTML = '<button type="button" data-d="1">Sort A to Z</button><button type="button" data-d="-1">Sort Z to A</button>';
+  sortRow.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { sort = { key: col.key, dir: +b.dataset.d }; renderBody(); }));
+  panel.appendChild(sortRow);
+  if (col.type === 'values') buildValues(panel, col); else buildRange(panel, col);
+  const done = document.createElement('button');
+  done.type = 'button';
+  done.className = 'done';
+  done.textContent = 'Done';
+  done.addEventListener('click', closePanel);
+  panel.appendChild(done);
+  const r = btn.getBoundingClientRect();
+  panel.style.top = (window.scrollY + r.bottom + 4) + 'px';
+  panel.style.left = Math.min(window.scrollX + r.left, window.scrollX + document.documentElement.clientWidth - 276) + 'px';
+  panel.hidden = false;
+  panel.querySelector('input')?.focus();
+}
+
+function buildValues(panel, col) {
+  const counts = {};
+  JOBS.filter(r => passes(r, col.key)).forEach(r => { counts[r[col.key]] = (counts[r[col.key]] || 0) + 1; });
+  const all = [...new Set(JOBS.map(r => String(r[col.key])))].sort();
+  const search = document.createElement('input');
+  search.type = 'search';
+  search.placeholder = 'Search values';
+  search.setAttribute('aria-label', 'Search ' + col.label + ' values');
+  panel.appendChild(search);
+  const links = document.createElement('div');
+  links.className = 'links';
+  links.innerHTML = '<button type="button" data-a="all">Select all</button><button type="button" data-a="none">Clear</button>';
+  panel.appendChild(links);
+  const list = document.createElement('div');
+  list.className = 'values';
+  panel.appendChild(list);
+  const draw = () => {
+    const q = search.value.toLowerCase();
+    const sel = filters[col.key];
+    list.innerHTML = '';
+    all.filter(v => v.toLowerCase().includes(q)).forEach(v => {
+      const l = document.createElement('label');
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = !sel || sel.has(v);
+      cb.addEventListener('change', () => {
+        const s = filters[col.key] ? new Set(filters[col.key]) : new Set(all);
+        cb.checked ? s.add(v) : s.delete(v);
+        filters[col.key] = s.size === all.length ? undefined : s;
+        update();
+      });
+      const span = document.createElement('span');
+      span.appendChild(cb);
+      span.append(' ' + v);
+      const n = document.createElement('span');
+      n.className = 'count';
+      n.textContent = counts[v] || 0;
+      l.append(span, n);
+      list.appendChild(l);
+    });
+  };
+  search.addEventListener('input', draw);
+  links.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    filters[col.key] = b.dataset.a === 'all' ? undefined : new Set();
+    update(); draw();
+  }));
+  draw();
+}
+
+function buildRange(panel, col) {
+  const f = filters[col.key] || {};
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.innerHTML = '<input type="number" aria-label="Minimum ' + col.label + '" placeholder="Min"><input type="number" aria-label="Maximum ' + col.label + '" placeholder="Max">';
+  const [mn, mx] = row.querySelectorAll('input');
+  mn.value = f.min ?? ''; mx.value = f.max ?? '';
+  const apply = () => {
+    const v = { min: mn.value === '' ? null : +mn.value, max: mx.value === '' ? null : +mx.value };
+    filters[col.key] = v.min == null && v.max == null ? undefined : v;
+    update();
+  };
+  mn.addEventListener('input', apply); mx.addEventListener('input', apply);
+  panel.appendChild(row);
+}
+
+function update() { renderBody(); renderHead(); }
+
+function closePanel() {
+  const panel = document.getElementById('panel');
+  panel.hidden = true;
+  const key = openKey;
+  openKey = null;
+  const i = COLUMNS.findIndex(c => c.key === key);
+  if (i >= 0) document.querySelectorAll('#filters th')[i]?.querySelector('button')?.focus();
+}
+
+document.addEventListener('click', e => { if (openKey && !document.getElementById('panel').contains(e.target)) closePanel(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && openKey) closePanel(); });
+window.addEventListener('resize', () => { if (openKey) closePanel(); });
+window.addEventListener('scroll', e => { if (openKey && !document.getElementById('panel').contains(e.target)) closePanel(); }, true);
+
+
+function drawChart() {
+  const svg = document.getElementById('chart');
+  const max = Math.max(...REVENUE.map(r => r.revenue));
+  const left = 96, top = 4, barH = 24, gap = 12, width = 220;
+  svg.innerHTML = REVENUE.map((r, i) => {
+    const y = top + i * (barH + gap);
+    const w = Math.round(r.revenue / max * width);
+    return '<text x="' + (left - 8) + '" y="' + (y + 16) + '" text-anchor="end" fill="#1d1f23">' + r.site + '</text>' +
+      '<rect x="' + left + '" y="' + y + '" width="' + w + '" height="' + barH + '" rx="3" fill="#2457c5"></rect>' +
+      '<text x="' + (left + w + 6) + '" y="' + (y + 16) + '" fill="#5b6170">' + (r.revenue / 1000) + 'k</text>';
+  }).join('');
+}
+
+function setupForm() {
+  const form = document.getElementById('req');
+  const site = document.getElementById('site');
+  const err = document.getElementById('site-err');
+  REVENUE.forEach(r => site.add(new Option(r.site, r.site)));
+  site.addEventListener('blur', () => { if (!site.value) { site.setAttribute('aria-invalid', 'true'); err.textContent = 'Choose a site.'; } });
+  site.addEventListener('change', () => { if (site.value) { site.removeAttribute('aria-invalid'); err.textContent = ''; } });
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const status = document.getElementById('form-status');
+    if (!site.value) {
+      site.setAttribute('aria-invalid', 'true');
+      err.textContent = 'Choose a site.';
+      status.textContent = '1 field needs attention.';
+      site.focus();
+      return;
+    }
+    status.textContent = 'Request sent for ' + site.value + '.';
+    form.reset();
+  });
+}
+
+renderHead();
+renderBody();
+drawChart();
+setupForm();
+</script>
+</body>
+</html>

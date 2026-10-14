@@ -1,22 +1,30 @@
 #!/usr/bin/env python3
-"""Print the Markdown tables for docs/benchmark.md from a results file written by run.py and
-scored by score.mjs.
+"""Print the Markdown tables for docs/benchmark.md from results files written by run.py, scored by
+score.mjs, and (optionally) a judge file written by judge.mjs.
 
-    python scripts/bench/report.py scripts/bench/results/before-2026-10-14.json
+    python scripts/bench/report.py scripts/bench/results/after-2026-10-14.json \
+        scripts/bench/results/before-v2-2026-10-14.json --judge scripts/bench/results/judge-2026-10-14.json
 
-Per task: one row per condition, medians over the scored runs, with the range of wall time when
-there is more than one run. "asked" comes from the probe runs (bare prompt, no assume-suffix).
-It also re-reads each run's transcript (still under the run's config dir, if it exists) to time
-the tool calls that touched the kz skills, which is where the evidence for slowness comes from.
+Rows are (condition, skill version) per model. Factors are per task: the cell's median over the
+task's median in `none` (same model), then the median over tasks, with the range over tasks.
+`tokens_total` = input + cache write + cache read + output, which does not depend on cache hits;
+cost is total_cost_usd as the CLI returns it, which does. Check failures are the failures the
+agent introduced (the run's count minus the untouched starter's), summed over 1280 and 390.
+The BEFORE file's names (kz, kz-slash, no version) are read as installed and uiuxrule, version v1.
 """
+import argparse
 import glob
 import json
 import os
 import statistics as st
-import sys
 from datetime import datetime
 
-COND_ORDER = ["none", "kz", "kz-slash"]
+COND_ORDER = ["none", "installed", "uiuxrule", "flashrule", "fastfix"]
+VER_ORDER = ["-", "v1", "before", "after"]
+ALIASES = {"kz": "installed", "kz-slash": "uiuxrule"}
+LABEL = {"none": "none", "installed": "installed", "uiuxrule": "/kz-uiuxrule", "flashrule": "/kz-flashrule",
+         "fastfix": "/kz-fastfix"}
+SMALL_TASKS = ["trivial-label", "small-column", "dark-mode", "iterate-html"]
 
 
 def med(xs):
@@ -30,9 +38,8 @@ def ts(e):
 
 
 def tool_timing(cfg):
-    """Seconds spent inside tool calls, split into those that touched the kz skills and the rest,
-    plus how many times the kz-uicheck runner or a check ran."""
-    out = {"tool_s": 0.0, "kz_tool_s": 0.0, "uicheck_calls": 0, "skill_files": {}}
+    """Seconds inside tool calls, those that touched the kz skills, and kz-uicheck calls."""
+    out = {"tool_s": 0.0, "kz_tool_s": 0.0, "uicheck_calls": 0}
     if not cfg or not os.path.isdir(cfg):
         return out
     start = {}
@@ -60,107 +67,200 @@ def tool_timing(cfg):
                         out["kz_tool_s"] += d
                     if "run-checks" in blob or "-check.js" in blob:
                         out["uicheck_calls"] += 1
-                    fp = use.get("input", {}).get("file_path", "")
-                    if use.get("name") == "Read" and "/skills/kz-" in fp:
-                        k = fp.split("/skills/", 1)[1]
-                        out["skill_files"][k] = out["skill_files"].get(k, 0) + 1
     return out
 
 
-def fmt_k(n):
-    return "%.0fk" % (n / 1000.0) if n is not None else "-"
+def fk(n):
+    return "-" if n is None else ("%.0fk" % (n / 1000.0))
+
+
+def fx(x):
+    return "-" if x is None else "%.2fx" % x
+
+
+def norm(r):
+    r["condition"] = ALIASES.get(r.get("condition"), r.get("condition"))
+    if not r.get("version"):
+        r["version"] = "-" if r["condition"] == "none" else "v1"
+    r.setdefault("model", None)
+    r.setdefault("tokens_total", sum(r.get(k, 0) or 0 for k in ("input_tokens", "cache_creation_input_tokens",
+                                                                    "cache_read_input_tokens", "output_tokens")))
+    for t in r.get("turns", []):
+        t.setdefault("tokens_total", sum(t.get(k, 0) or 0 for k in ("input_tokens", "cache_creation_input_tokens",
+                                                                        "cache_read_input_tokens", "output_tokens")))
+    return r
+
+
+def quality(r, starters):
+    s = r.get("score") or {}
+    u = s.get("uicheck") or {}
+    if not u.get("1280", {}).get("runs") or not u.get("390", {}).get("runs"):
+        intro = None
+    elif s.get("introduced"):
+        intro = s["introduced"]["1280"] + s["introduced"]["390"]
+    else:
+        base = starters.get(r["task"], {}).get("uicheck", {})
+        intro = (u["1280"]["failures"] - base.get("1280", {}).get("failures", 0) +
+                 u["390"]["failures"] - base.get("390", {}).get("failures", 0))
+    lh = s.get("lighthouse") or {}
+    return {"intro": intro, "rubric": s.get("rubric_pass"), "rubric_total": s.get("rubric_total"),
+            "axe": (s.get("axe") or {}).get("serious_critical"),
+            "lh_a11y": lh.get("accessibility"), "lh_bp": lh.get("best_practices")}
+
+
+def cell_stats(rs, starters):
+    q = [quality(r, starters) for r in rs]
+    return {"n": len(rs), "wall": med([r["wall_s"] for r in rs]), "wall_min": min(r["wall_s"] for r in rs),
+            "wall_max": max(r["wall_s"] for r in rs), "turns": med([r["num_turns"] for r in rs]),
+            "tok": med([r["tokens_total"] for r in rs]), "out": med([r.get("output_tokens") for r in rs]),
+            "cost": med([r["total_cost_usd"] for r in rs]), "kb": med([r.get("skill_bytes_read", 0) / 1024 for r in rs]),
+            "intro": med([x["intro"] for x in q]), "rubric": med([x["rubric"] for x in q]),
+            "rubric_total": max([x["rubric_total"] or 0 for x in q] or [0]), "axe": med([x["axe"] for x in q]),
+            "lh_a11y": med([x["lh_a11y"] for x in q]), "lh_bp": med([x["lh_bp"] for x in q]),
+            "asked": sum(1 for r in rs if r.get("asked")),
+            "uicheck_runs": sum(1 for r in rs if r["_timing"]["uicheck_calls"]),
+            "uicheck_calls": med([r["_timing"]["uicheck_calls"] for r in rs])}
+
+
+def judge_line(judge, model, cond):
+    cs = [c for c in judge if c.get("model") == model and c.get("kz_condition") == cond and c.get("result")]
+    if not cs:
+        return "-", None
+    w = sum(1 for c in cs if c["result"] == "kz")
+    lo = sum(1 for c in cs if c["result"] == "none")
+    ti = sum(1 for c in cs if c["result"] == "tie")
+    return "%d%% (%d-%d-%d of %d)" % (round(100.0 * w / len(cs)), w, lo, ti, len(cs)), (w, lo, ti, len(cs))
 
 
 def main():
-    doc = json.load(open(sys.argv[1]))
-    runs = [r for r in doc["runs"] if r.get("task")]
-    scored = [r for r in runs if r["mode"] == "scored" and not r.get("skipped")]
-    probes = [r for r in runs if r["mode"] == "probe" and not r.get("skipped")]
-    tasks = []
-    for r in scored:
-        if r["task"] not in tasks:
-            tasks.append(r["task"])
-    for r in scored:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("files", nargs="+")
+    ap.add_argument("--judge", default=None)
+    a = ap.parse_args()
+    runs, starters, total_cost = [], {}, 0.0
+    for f in a.files:
+        d = json.load(open(f))
+        starters.update(d.get("starters") or {})
+        total_cost += d.get("total_cost_usd", 0) or 0
+        runs += [norm(r) for r in d["runs"] if r.get("task") and not r.get("skipped") and r.get("mode") == "scored"]
+    judge = json.load(open(a.judge))["comparisons"] if a.judge else []
+    judge_cost = sum(c.get("cost") or 0 for c in judge)
+    for r in runs:
         r["_timing"] = tool_timing(r.get("config"))
-    summary = {}
-    print("## Results per task\n")
-    print("Medians over %s scored run(s) per cell; wall time range in brackets. Tokens in = input + cache "
-          "write + cache read. Asked = probe runs that stopped to ask / probe runs.\n"
-          % ", ".join(sorted({str(sum(1 for x in scored if x['task'] == t and x['condition'] == 'none')) for t in tasks})))
-    for t in tasks:
-        print("### %s\n" % t)
-        print("| condition | wall s | turns | tokens in/out | cost USD | asked? | skill KB read | check failures 1280/390 | rubric |")
-        print("|---|---|---|---|---|---|---|---|---|")
-        for c in COND_ORDER:
-            rs = [r for r in scored if r["task"] == t and r["condition"] == c]
-            if not rs:
-                continue
-            ps = [r for r in probes if r["task"] == t and r["condition"] == c]
-            walls = [r["wall_s"] for r in rs]
-            tin = med([r["input_tokens"] + r["cache_creation_input_tokens"] + r["cache_read_input_tokens"] for r in rs])
-            tout = med([r["output_tokens"] for r in rs])
-            sc = [r.get("score") or {} for r in rs]
-            ok = lambda u: u.get("failures") if u.get("runs") else None    # runs 0: the runner errored
-            f1 = med([ok(s.get("uicheck", {}).get("1280", {})) for s in sc])
-            f2 = med([ok(s.get("uicheck", {}).get("390", {})) for s in sc])
-            rub = med([s.get("rubric_pass") for s in sc])
-            tot = max([s.get("rubric_total") or 0 for s in sc] or [0])
-            asked = "%d/%d" % (sum(1 for p in ps if p.get("asked")), len(ps)) if ps else "-"
-            rng = " (%.0f-%.0f)" % (min(walls), max(walls)) if len(walls) > 1 else ""
-            print("| %s | %.0f%s | %s | %s / %s | %.3f | %s | %.1f | %s / %s | %s/%d |" % (
-                c, med(walls), rng, med([r["num_turns"] for r in rs]), fmt_k(tin), fmt_k(tout),
-                med([r["total_cost_usd"] for r in rs]), asked, med([r["skill_bytes_read"] for r in rs]) / 1024,
-                f1, f2, rub, tot))
-            summary.setdefault(c, {})[t] = {"wall": med(walls), "cost": med([r["total_cost_usd"] for r in rs]),
-                                            "rubric": rub, "tot": tot, "fail": (f1 or 0) + (f2 or 0)}
+    models = sorted({r["model"] or "default" for r in runs}, key=lambda m: ("opus" in m, m))
+    for r in runs:
+        r["model"] = r["model"] or "default"
+    for model in models:
+        mr = [r for r in runs if r["model"] == model]
+        tasks = [t for t in ["trivial-label", "small-column", "dark-mode", "table-build", "chart-filter", "form-build",
+                             "iterate-html"] if any(r["task"] == t for r in mr)]
+        keys = sorted({(r["condition"], r["version"]) for r in mr},
+                      key=lambda k: (COND_ORDER.index(k[0]), VER_ORDER.index(k[1])))
+        cells = {}
+        for k in keys:
+            for t in tasks:
+                rs = [r for r in mr if (r["condition"], r["version"]) == k and r["task"] == t]
+                if rs:
+                    cells[(k, t)] = cell_stats(rs, starters)
+        base = {t: cells.get((("none", "-"), t)) for t in tasks}
+        print("### %s\n" % model)
+        print("#### Summary\n")
+        print("| condition | skills | tasks | wall time vs none | tokens_total vs none | cost vs none | "
+              "kz-check failures introduced | rubric | axe serious+critical | Lighthouse a11y | judge: kz preferred (W-L-T) |")
+        print("|---|---|---|---|---|---|---|---|---|---|---|")
+        rows = list(keys)
+        if any(k[0] == "fastfix" for k in keys):          # none on the same small tasks, for the fastfix row
+            rows.insert(1, ("none", "small"))
+        for k in rows:
+            if k == ("none", "small"):
+                ts_ = [t for t in tasks if t in SMALL_TASKS and (("none", "-"), t) in cells]
+                cs = [cells[(("none", "-"), t)] for t in ts_]
+                label, ver = "none (small tasks only)", "-"
+            else:
+                ts_ = [t for t in tasks if (k, t) in cells]
+                cs = [cells[(k, t)] for t in ts_]
+                label, ver = LABEL[k[0]], k[1]
+            def factors(key):
+                xs = [cells[(k if k != ("none", "small") else ("none", "-"), t)][key] / base[t][key]
+                      for t in ts_ if base.get(t) and base[t][key]]
+                if not xs:
+                    return "-"
+                return "%s (%s-%s)" % (fx(med(xs)), fx(min(xs)), fx(max(xs)))
+            intro = sum(c["intro"] or 0 for c in cs)
+            rub = sum(c["rubric"] or 0 for c in cs)
+            rtot = sum(c["rubric_total"] for c in cs)
+            axe = sum(c["axe"] or 0 for c in cs) if any(c["axe"] is not None for c in cs) else "-"
+            lh = med([c["lh_a11y"] for c in cs])
+            jl = judge_line(judge, model, k[0])[0] if (k[1] == "after" and k[0] in ("uiuxrule", "flashrule")) else "-"
+            print("| %s | %s | %d | %s | %s | %s | %g | %g/%d | %s | %s | %s |" % (
+                label, ver, len(ts_), factors("wall"), factors("tok"), factors("cost"), intro, rub, rtot, axe,
+                "-" if lh is None else "%.2f" % lh, jl))
         print()
-    print("## Summary\n")
-    print("| condition | median slowdown vs none (wall) | range over tasks | median cost factor | rubric passed (all tasks) | check failures (all tasks, both widths) |")
-    print("|---|---|---|---|---|---|")
-    base = summary.get("none", {})
-    for c in COND_ORDER:
-        if c not in summary:
-            continue
-        ratios = [summary[c][t]["wall"] / base[t]["wall"] for t in summary[c] if t in base and base[t]["wall"]]
-        costs = [summary[c][t]["cost"] / base[t]["cost"] for t in summary[c] if t in base and base[t]["cost"]]
-        rp = sum(v["rubric"] or 0 for v in summary[c].values())
-        rt = sum(v["tot"] for v in summary[c].values())
-        fl = sum(v["fail"] for v in summary[c].values())
-        print("| %s | %.2fx | %.2fx-%.2fx | %.2fx | %g/%d | %g |" % (c, med(ratios), min(ratios), max(ratios), med(costs), rp, rt, fl))
-    print()
-    it = [r for r in scored if r["task"] == "iterate-html"]
-    if it:
-        print("## Iteration loop, per turn\n")
-        print("| condition | run | turn | prompt | wall s | turns | tokens in/out | cost USD | skill KB read |")
-        print("|---|---|---|---|---|---|---|---|---|")
-        for c in COND_ORDER:
-            for i, r in enumerate([r for r in it if r["condition"] == c]):
-                for j, tr in enumerate(r["turns"]):
-                    tin = tr["input_tokens"] + tr["cache_creation_input_tokens"] + tr["cache_read_input_tokens"]
-                    p = tr["prompt"].replace("/kz-uiuxrule ", "/kz-uiuxrule: ").split(".")[0][:48]
-                    print("| %s | %d | %d | %s | %.0f | %s | %s / %s | %.3f | %.1f |" % (
-                        c, i + 1, j + 1, p, tr["wall_s"], tr["num_turns"], fmt_k(tin), fmt_k(tr["output_tokens"]),
-                        tr["total_cost_usd"], tr["skill_bytes_read"] / 1024))
+        print("#### Per task\n")
+        print("Medians over the runs in each cell (n); wall time range in brackets.\n"
+              "Failures are those the agent introduced (run minus starter), at 1280 + 390.\n"
+              "LH is Lighthouse mobile accessibility / best practices.\n")
+        for t in tasks:
+            print("##### %s\n" % t)
+            print("| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |")
+            print("|---|---|---|---|---|---|---|---|---|---|---|---|---|")
+            for k in keys:
+                c = cells.get((k, t))
+                if not c:
+                    continue
+                print("| %s | %s | %d | %.0f (%.0f-%.0f) | %g | %s | %.3f | %.1f | %s | %s/%d | %s | %s/%s | %d/%d |" % (
+                    LABEL[k[0]], k[1], c["n"], c["wall"], c["wall_min"], c["wall_max"], c["turns"], fk(c["tok"]),
+                    c["cost"], c["kb"], "-" if c["intro"] is None else "%g" % c["intro"],
+                    "-" if c["rubric"] is None else "%g" % c["rubric"], c["rubric_total"],
+                    "-" if c["axe"] is None else "%g" % c["axe"],
+                    "-" if c["lh_a11y"] is None else "%.2f" % c["lh_a11y"], "-" if c["lh_bp"] is None else "%.2f" % c["lh_bp"],
+                    c["uicheck_runs"], c["n"]))
+            print()
+        it = [r for r in mr if r["task"] == "iterate-html"]
+        if it:
+            print("#### Iteration loop, per turn (medians over runs)\n")
+            print("| condition | skills | turn | prompt | wall s | turns | tokens_total | cost USD | skill KB |")
+            print("|---|---|---|---|---|---|---|---|---|")
+            for k in keys:
+                rs = [r for r in it if (r["condition"], r["version"]) == k]
+                if not rs:
+                    continue
+                for j in range(max(len(r["turns"]) for r in rs)):
+                    tr = [r["turns"][j] for r in rs if len(r["turns"]) > j]
+                    p = tr[0]["prompt"].split(".")[0][:46]
+                    print("| %s | %s | %d | %s | %.0f | %g | %s | %.3f | %.1f |" % (
+                        LABEL[k[0]], k[1], j + 1, p, med([x["wall_s"] for x in tr]), med([x["num_turns"] for x in tr]),
+                        fk(med([x["tokens_total"] for x in tr])), med([x["total_cost_usd"] for x in tr]),
+                        med([x["skill_bytes_read"] / 1024 for x in tr])))
+            print()
+        print("#### Routing and asking\n")
+        print("| condition | skills | runs | skills the model invoked (runs) | runs that asked | runs with a permission denial | runs that ran kz-uicheck | median kz-uicheck calls |")
+        print("|---|---|---|---|---|---|---|---|")
+        for k in keys:
+            rs = [r for r in mr if (r["condition"], r["version"]) == k]
+            inv = {}
+            for r in rs:
+                for s in set(x for x in (r.get("skills_invoked") or []) if x):
+                    inv[s] = inv.get(s, 0) + 1
+            print("| %s | %s | %d | %s | %d | %d | %d | %g |" % (
+                LABEL[k[0]], k[1], len(rs), "; ".join("%s (%d)" % kv for kv in sorted(inv.items(), key=lambda kv: -kv[1])) or "none",
+                sum(1 for r in rs if r.get("asked")), sum(1 for r in rs if r.get("permission_denials")),
+                sum(1 for r in rs if r["_timing"]["uicheck_calls"]), med([r["_timing"]["uicheck_calls"] for r in rs])))
         print()
-    print("## Evidence from transcripts\n")
-    print("| condition | runs | runs that invoked a kz skill | median tool s | median kz tool s | runs that ran kz-uicheck | kz files Read (runs) |")
-    print("|---|---|---|---|---|---|---|")
-    for c in COND_ORDER:
-        rs = [r for r in scored if r["condition"] == c]
-        if not rs:
-            continue
-        files = {}
-        for r in rs:
-            for k in r["_timing"]["skill_files"]:
-                files[k] = files.get(k, 0) + 1
-        inv = sum(1 for r in rs if any((k or "").startswith("kz-") for k in r.get("skills_invoked") or [])
-                  or r["condition"] == "kz-slash")
-        print("| %s | %d | %d | %.0f | %.0f | %d | %s |" % (
-            c, len(rs), inv, med([r["_timing"]["tool_s"] for r in rs]), med([r["_timing"]["kz_tool_s"] for r in rs]),
-            sum(1 for r in rs if r["_timing"]["uicheck_calls"]),
-            "; ".join("%s (%d)" % kv for kv in sorted(files.items(), key=lambda kv: -kv[1])) or "-"))
-    print()
-    print("Total spend in this file: USD %.2f" % doc.get("total_cost_usd", 0))
+    if judge:
+        print("### Judge, per task (kz preferred W-L-T)\n")
+        print("| model | task | /kz-uiuxrule vs none | /kz-flashrule vs none |")
+        print("|---|---|---|---|")
+        for model in models:
+            for t in sorted({c["task"] for c in judge if c["model"] == model}):
+                row = []
+                for kc in ("uiuxrule", "flashrule"):
+                    cs = [c for c in judge if c["model"] == model and c["task"] == t and c["kz_condition"] == kc and c.get("result")]
+                    row.append("%d-%d-%d" % (sum(c["result"] == "kz" for c in cs), sum(c["result"] == "none" for c in cs),
+                                             sum(c["result"] == "tie" for c in cs)) if cs else "-")
+                print("| %s | %s | %s | %s |" % (model, t, row[0], row[1]))
+        print()
+    print("Agent spend in these files: USD %.2f; judge: USD %.2f; total USD %.2f" % (total_cost, judge_cost, total_cost + judge_cost))
 
 
 if __name__ == "__main__":

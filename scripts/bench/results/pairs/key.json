@@ -1,0 +1,42 @@
+{
+ "pair-1": {
+  "model": "claude-opus-5-5",
+  "task": "chart-filter",
+  "rep": 0,
+  "kz_condition": "flashrule",
+  "kz_is": "A",
+  "judge_result": "kz"
+ },
+ "pair-2": {
+  "model": "claude-sonnet-5-5",
+  "task": "dark-mode",
+  "rep": 0,
+  "kz_condition": "uiuxrule",
+  "kz_is": "B",
+  "judge_result": "tie"
+ },
+ "pair-3": {
+  "model": "claude-opus-5-5",
+  "task": "form-build",
+  "rep": 0,
+  "kz_condition": "flashrule",
+  "kz_is": "A",
+  "judge_result": "none"
+ },
+ "pair-4": {
+  "model": "claude-opus-5-5",
+  "task": "iterate-html",
+  "rep": 0,
+  "kz_condition": "flashrule",
+  "kz_is": "B",
+  "judge_result": "none"
+ },
+ "pair-5": {
+  "model": "claude-opus-5-5",
+  "task": "small-column",
+  "rep": 0,
+  "kz_condition": "flashrule",
+  "kz_is": "A",
+  "judge_result": "tie"
+ }
+}

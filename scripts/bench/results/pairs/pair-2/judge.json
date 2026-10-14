@@ -1,0 +1,8 @@
+{
+ "winner": "tie",
+ "reasons": [
+  "The desktop screenshots of A and B look the same: same light layout, same 'Dark mode' button in the top right, same chart, form and jobs table.",
+  "Clicking the toggle gives the same result in both: a full dark theme with lighter blue bars and buttons, readable text and dark cards. Neither shows a visible bug in the switch.",
+  "The phone screenshots are also the same. Both open in dark mode and have the same problem: the Cost column in the jobs table is cut off at 390px. Neither version is better for a user."
+ ]
+}

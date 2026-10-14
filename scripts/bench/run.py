@@ -1,27 +1,44 @@
 #!/usr/bin/env python3
-"""Run the kz-skills benchmark: each task under each condition, headless, and record cost and time.
+"""Run the kz-skills benchmark: each task under each condition, skill version and model, headless,
+and record time, tokens and cost.
 
-    python scripts/bench/run.py                         all tasks, both conditions, scored mode
-    python scripts/bench/run.py --tasks chart-filter --conditions kz
-    python scripts/bench/run.py --probe                 also run the 'does it stop to ask' probe
-    python scripts/bench/run.py --label after           names the results file after-<date>.json
+    python scripts/bench/run.py --plan full --label after         the AFTER matrix (see README)
+    python scripts/bench/run.py --tasks chart-filter --conditions none,uiuxrule --versions after
+    python scripts/bench/run.py --probe                           also run the 'does it stop to ask' probe
 
 Conditions:
-  none  an empty, isolated CLAUDE_CONFIG_DIR: no skills, no hooks.
-  kz    an isolated CLAUDE_CONFIG_DIR with skills/* copied into <config>/skills/ and the purpose
-        hook wired on PreToolUse(Skill) and UserPromptSubmit, as skills/kz-askcard/hooks/README.md says.
-        The model decides for itself whether to invoke a skill.
-  kz-slash  the same install, with the first prompt starting "/kz-uiuxrule ", the way a user who
-        wants the rules applied calls them. Follow-up prompts are sent as typed, without the slash.
+  none       an empty, isolated CLAUDE_CONFIG_DIR: no skills, no hooks. Version-independent.
+  installed  skills/* copied into <config>/skills/ and the purpose hook wired on PreToolUse(Skill)
+             and UserPromptSubmit, as skills/kz-askcard/hooks/README.md says. The model decides
+             whether to invoke a skill. (Called `kz` in the BEFORE file.)
+  uiuxrule   the same install, the first prompt sent as "/kz-uiuxrule <prompt>". (`kz-slash` before.)
+  flashrule  the same install, the first prompt sent as "/kz-flashrule <prompt>".
+  fastfix    the same install, small tasks only (SMALL_TASKS). The prompt is sent as
+             "/kz-fastfix <prompt>"; on iterate-html the build prompt is sent bare and each
+             follow-up as "/kz-fastfix <follow-up>", because the follow-ups are the small edits.
+  Other slash conditions send iterate-html's follow-ups as typed, without a slash.
+
+Versions: `after` installs this working tree's skills/; `before` installs skills/ as on
+--before-ref (default origin/main), extracted read-only with git archive. `none` runs once,
+with version "-".
 
 Modes:
   scored  the task prompt plus ASSUME_SUFFIX, so a run that would ask a question proceeds instead.
   probe   the bare task prompt with --max-turns PROBE_TURNS; records whether the agent stops to ask.
 
+Fairness: every cell's repeat k runs in round k; within a round the jobs of all cells are shuffled
+with --seed, so conditions, versions and models interleave. At most --jobs run at once. The seed
+and each run's place in the order, start time, CLI version and model ids are recorded.
+
+Permissions: children run with --permission-mode acceptEdits and --allowedTools CHILD_TOOLS
+(file tools, Skill, subagents and Bash; no web tools), not bypassPermissions, which an agent
+host's safety check may refuse to launch. Any denial is recorded per run (`permission_denials`).
+Same list for every condition.
+
 Each run gets a fresh copy of the task folder (git init + one commit) and a fresh config dir under
---work. Nothing is shared between runs, so up to --jobs runs go in parallel.
-Spending: the run stops launching new work once the summed total_cost_usd passes --budget.
-This script spends real money. Read scripts/bench/README.md first.
+--work. Spending: no new run starts once the summed total_cost_usd passes --budget, and each
+claude call carries --max-budget-usd (--run-budget). The results file is rewritten after every
+run, so an interrupted batch keeps what finished. This script spends real money.
 """
 import argparse
 import concurrent.futures as cf
@@ -29,6 +46,7 @@ import datetime
 import glob
 import json
 import os
+import random
 import shutil
 import subprocess
 import sys
@@ -41,11 +59,22 @@ TASKS_DIR = os.path.join(HERE, "tasks")
 RESULTS_DIR = os.path.join(HERE, "results")
 ASSUME_SUFFIX = "If you would ask me something, assume the recommended option and proceed."
 PROBE_TURNS = 8
-TASKS = ["trivial-label", "small-column", "table-build", "chart-filter", "form-build", "iterate-html"]
-CONDITIONS = ["none", "kz", "kz-slash"]
-SLASH = "/kz-uiuxrule "   # kz-slash: the same install, invoked the way the hook README calls commonest
+TASKS = ["trivial-label", "small-column", "dark-mode", "table-build", "chart-filter", "form-build", "iterate-html"]
+SMALL_TASKS = ["trivial-label", "small-column", "dark-mode", "iterate-html"]
+CONDITIONS = ["none", "installed", "uiuxrule", "flashrule", "fastfix"]
+SLASH = {"uiuxrule": "/kz-uiuxrule ", "flashrule": "/kz-flashrule ", "fastfix": "/kz-fastfix "}
+ALIASES = {"kz": "installed", "kz-slash": "uiuxrule"}      # BEFORE-file names
+# The AFTER matrix: per model, the conditions per version and the repeats.
+FULL_PLAN = {
+    "claude-sonnet-5-5": {"repeat": 3, "cells": [("none", "-"), ("installed", "before"), ("uiuxrule", "before"),
+                                                 ("installed", "after"), ("uiuxrule", "after"),
+                                                 ("flashrule", "after"), ("fastfix", "after")]},
+    "claude-opus-5-5": {"repeat": 2, "cells": [("none", "-"), ("uiuxrule", "before"), ("uiuxrule", "after"),
+                                               ("flashrule", "after"), ("fastfix", "after")]},
+}
+CHILD_TOOLS = "Read,Edit,Write,MultiEdit,Glob,Grep,Skill,TodoWrite,Task,Agent,Bash"
 # Variables the parent session sets that would leak into a child run (session ids, extra
-# CLAUDE.md folders, skill/plugin sync). Removed for both conditions alike.
+# CLAUDE.md folders, skill/plugin sync). Removed for every condition alike.
 STRIP_ENV = ["CLAUDECODE", "CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_CHILD_SESSION",
              "CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD", "CLAUDE_ADDITIONAL_DIRECTORIES",
              "CLAUDE_CODE_SYNC_SKILLS", "CLAUDE_CODE_SYNC_PLUGINS", "CLAUDE_CODE_REMOTE_SESSION_ID",
@@ -53,6 +82,7 @@ STRIP_ENV = ["CLAUDECODE", "CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_CHILD_SESSION"
              "CLAUDE_EFFORT", "CLAUDE_CONFIG_DIR"]
 SKILL_MARKERS = ("/skills/kz-",)
 CHROME = os.environ.get("CHROME", "/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell")
+TOKEN_KEYS = ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens")
 
 lock = threading.Lock()
 spent = [0.0]
@@ -62,16 +92,28 @@ def sh(cmd, cwd=None, env=None, timeout=None):
     return subprocess.run(cmd, cwd=cwd, env=env, capture_output=True, text=True, timeout=timeout)
 
 
-def make_config(cfg, condition):
+def skills_source(version, work, before_ref):
+    """The skills/ folder to install: this tree for `after`, an extracted copy of before_ref for `before`."""
+    if version != "before":
+        return os.path.join(REPO, "skills")
+    dst = os.path.join(work, "skills-before")
+    with lock:
+        if not os.path.isdir(os.path.join(dst, "skills")):
+            os.makedirs(dst, exist_ok=True)
+            arc = subprocess.run(["git", "archive", before_ref, "skills"], cwd=REPO, capture_output=True, check=True)
+            subprocess.run(["tar", "-x", "-C", dst], input=arc.stdout, check=True)
+    return os.path.join(dst, "skills")
+
+
+def make_config(cfg, condition, src):
     os.makedirs(cfg, exist_ok=True)
-    if not condition.startswith("kz"):
+    if condition == "none":
         return
     dst = os.path.join(cfg, "skills")
     os.makedirs(dst, exist_ok=True)
-    for name in sorted(os.listdir(os.path.join(REPO, "skills"))):
-        src = os.path.join(REPO, "skills", name)
-        if os.path.isdir(src):
-            shutil.copytree(src, os.path.join(dst, name))
+    for name in sorted(os.listdir(src)):
+        if os.path.isdir(os.path.join(src, name)):
+            shutil.copytree(os.path.join(src, name), os.path.join(dst, name))
     hook = os.path.join(dst, "kz-askcard", "hooks", "ui-rule-purpose.mjs")
     entry = {"type": "command", "command": 'node "%s"' % hook, "timeout": 5}
     settings = {"hooks": {"PreToolUse": [{"matcher": "Skill", "hooks": [entry]}],
@@ -93,13 +135,14 @@ def child_env(cfg):
     env = {k: v for k, v in os.environ.items() if k not in STRIP_ENV}
     env["CLAUDE_CONFIG_DIR"] = cfg
     # A user's machine has a browser; without this, kz-uicheck's runner stops at "Chrome not
-    # found" and the kz runs look cheaper than they are. Set for both conditions.
+    # found" and the kz runs look cheaper than they are. Set for every condition.
     env.setdefault("CHROME", CHROME)
     return env
 
 
 def claude(prompt, wd, cfg, resume=None, max_turns=None, max_budget=None, model=None):
-    cmd = ["claude", "-p", prompt, "--output-format", "json", "--permission-mode", "bypassPermissions"]
+    cmd = ["claude", "-p", prompt, "--output-format", "json", "--permission-mode", "acceptEdits",
+           "--allowedTools", CHILD_TOOLS]
     if model:
         cmd += ["--model", model]
     if resume:
@@ -181,8 +224,10 @@ def analyse(events, seen):
 
 
 def diff_stat(wd):
+    """Changes against the starter commit, so an agent that commits or branches is still counted."""
     sh(["git", "add", "-A"], cwd=wd)
-    p = sh(["git", "diff", "--cached", "--numstat"], cwd=wd)
+    starter = sh(["git", "rev-list", "--max-parents=0", "--all"], cwd=wd).stdout.split()
+    p = sh(["git", "diff", "--cached", "--numstat"] + starter[-1:], cwd=wd)
     files, added, removed = [], 0, 0
     for line in p.stdout.splitlines():
         a, r, f = line.split("\t", 2)
@@ -199,39 +244,49 @@ def looks_like_question(text):
 
 def turn_record(wall, out, ana):
     u = out.get("usage") or {}
-    return {"wall_s": round(wall, 1), "duration_api_ms": out.get("duration_api_ms"),
-            "num_turns": out.get("num_turns"), "input_tokens": u.get("input_tokens", 0),
-            "cache_creation_input_tokens": u.get("cache_creation_input_tokens", 0),
-            "cache_read_input_tokens": u.get("cache_read_input_tokens", 0),
-            "output_tokens": u.get("output_tokens", 0), "total_cost_usd": out.get("total_cost_usd", 0) or 0,
-            "is_error": out.get("is_error"), "subtype": out.get("subtype"),
-            "model": ",".join((out.get("modelUsage") or {}).keys()),
-            "session_id": out.get("session_id"), "result_tail": (out.get("result") or "")[-600:], **ana}
+    rec = {"wall_s": round(wall, 1), "duration_api_ms": out.get("duration_api_ms"),
+           "num_turns": out.get("num_turns"), **{k: u.get(k, 0) or 0 for k in TOKEN_KEYS},
+           "total_cost_usd": out.get("total_cost_usd", 0) or 0,
+           "is_error": out.get("is_error"), "subtype": out.get("subtype"),
+           "model_ids": sorted((out.get("modelUsage") or {}).keys()),
+           "model_usage": out.get("modelUsage") or {},
+           "permission_denials": [d.get("tool_name", "") + " " + json.dumps(d.get("tool_input", {}))[:160]
+                                  for d in (out.get("permission_denials") or [])],
+           "session_id": out.get("session_id"), "result_tail": (out.get("result") or "")[-600:], **ana}
+    rec["tokens_total"] = sum(rec[k] for k in TOKEN_KEYS)
+    return rec
 
 
-def run_one(task, condition, mode, work, args):
+def prompts_for(task, condition, mode):
+    base = open(os.path.join(TASKS_DIR, task, "prompt.md")).read().strip()
+    suffix = (" " + ASSUME_SUFFIX) if mode == "scored" else ""
+    fu_path = os.path.join(TASKS_DIR, task, "followups.json")
+    fus = json.load(open(fu_path)) if (mode == "scored" and os.path.exists(fu_path)) else []
+    slash = SLASH.get(condition, "")
+    if condition == "fastfix" and fus:          # the follow-ups are the small edits
+        return [base + suffix] + [slash + f + suffix for f in fus]
+    return [slash + base + suffix] + [f + suffix for f in fus]
+
+
+def run_one(job, work, args, write_cb):
+    task, condition, version, model, rep, mode, order = (job[k] for k in
+                                                         ("task", "condition", "version", "model", "rep", "mode", "order"))
+    head = {"task": task, "condition": condition, "version": version, "model": model, "rep": rep,
+            "mode": mode, "order": order}
     with lock:
         if spent[0] >= args.budget:
-            return {"task": task, "condition": condition, "mode": mode, "skipped": "budget"}
-    tag = "%s__%s__%s" % (task, condition, mode)
-    base = os.path.join(work, tag)
+            return {**head, "skipped": "budget"}
+    mshort = (model or "default").replace("claude-", "")
+    base = os.path.join(work, mshort, version.strip("-") or "na", condition, task, "%s-r%d" % (mode, rep))
     wd, cfg = os.path.join(base, "w"), os.path.join(base, "cfg")
     shutil.rmtree(base, ignore_errors=True)
     make_workdir(task, wd)
-    make_config(cfg, condition)
-    prompt = open(os.path.join(TASKS_DIR, task, "prompt.md")).read().strip()
+    make_config(cfg, condition, skills_source(version, work, args.before_ref))
     max_turns = PROBE_TURNS if mode == "probe" else args.max_turns
-    if mode == "scored":
-        prompt += " " + ASSUME_SUFFIX
-    if condition == "kz-slash":
-        prompt = SLASH + prompt
-    prompts = [prompt]
-    fu = os.path.join(TASKS_DIR, task, "followups.json")
-    if mode == "scored" and os.path.exists(fu):
-        prompts += [p + " " + ASSUME_SUFFIX for p in json.load(open(fu))]
+    started = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
     turns, seen, sid = [], set(), None
-    for i, p in enumerate(prompts):
-        wall, out = claude(p, wd, cfg, resume=sid, max_turns=max_turns, max_budget=args.run_budget, model=args.model)
+    for i, p in enumerate(prompts_for(task, condition, mode)):
+        wall, out = claude(p, wd, cfg, resume=sid, max_turns=max_turns, max_budget=args.run_budget, model=model)
         sid = out.get("session_id") or sid
         rec = turn_record(wall, out, analyse(transcript_events(cfg), seen))
         # On a resumed session, total_cost_usd and duration_api_ms are cumulative over the
@@ -243,78 +298,139 @@ def run_one(task, condition, mode, work, args):
         turns.append(rec)
         with lock:
             spent[0] += rec["total_cost_usd"]
-        print("  %-14s %-4s %-6s turn %d: %6.1fs  $%.3f  skillKB %.1f  (spent $%.2f)" % (
-            task, condition, mode, i + 1, wall, rec["total_cost_usd"], rec["skill_bytes_read"] / 1024, spent[0]),
-            flush=True)
+        print("  #%-3d %-6s %-6s %-9s %-13s r%d turn %d: %6.1fs  $%.3f  tok %7d  skillKB %5.1f  (spent $%.2f)" % (
+            order, mshort[:6], version, condition, task, rep, i + 1, wall, rec["total_cost_usd"],
+            rec["tokens_total"], rec["skill_bytes_read"] / 1024, spent[0]), flush=True)
         if rec.get("is_error") and not out.get("session_id"):
             break
     diff = diff_stat(wd)
-    last = turns[-1]
     asked = any(t["asked_tool"] for t in turns) or looks_like_question(turns[0]["result_tail"])
     total = {k: sum((t.get(k) or 0) for t in turns) for k in
-             ("wall_s", "duration_api_ms", "num_turns", "input_tokens", "cache_creation_input_tokens",
-              "cache_read_input_tokens", "output_tokens", "total_cost_usd", "skill_bytes_read")}
+             ("wall_s", "duration_api_ms", "num_turns", *TOKEN_KEYS, "tokens_total", "total_cost_usd",
+              "skill_bytes_read")}
     total["wall_s"] = round(total["wall_s"], 1)
     reads = {}
     for t in turns:
         for k, v in t["skill_reads"].items():
             reads[k] = reads.get(k, 0) + v
-    return {"task": task, "condition": condition, "mode": mode, "workdir": wd, "config": cfg,
-            "max_turns": max_turns, "run_budget_usd": args.run_budget, **total,
-            "asked": asked, "stalled_on_question": asked and not diff["files_changed"],
-            "skills_invoked": sum((t["skills_invoked"] for t in turns), []),
-            "skill_reads": reads, **diff, "turns": turns, "final_result_tail": last["result_tail"]}
+    rec = {**head, "started_at": started, "claude_version": args.cli_version,
+           "model_ids": sorted({m for t in turns for m in t["model_ids"]}),
+           "workdir": wd, "config": cfg, "max_turns": max_turns, "run_budget_usd": args.run_budget, **total,
+           "asked": asked, "stalled_on_question": asked and not diff["files_changed"],
+           "skills_invoked": sum((t["skills_invoked"] for t in turns), []),
+           "permission_denials": sum((t["permission_denials"] for t in turns), []),
+           "skill_reads": reads, **diff, "turns": turns, "final_result_tail": turns[-1]["result_tail"]}
+    write_cb(rec)
+    return rec
+
+
+def build_jobs(a):
+    """One dict per run, in launch order: round k holds every cell's repeat k, shuffled."""
+    cells = []          # (model, condition, version, repeat)
+    if a.plan == "full":
+        for model, spec in FULL_PLAN.items():
+            for cond, ver in spec["cells"]:
+                cells.append((model, cond, ver, spec["repeat"]))
+    else:
+        for model in (a.models.split(",") if a.models else [a.model]):
+            for cond in a.conditions.split(","):
+                cond = ALIASES.get(cond, cond)
+                for ver in (["-"] if cond == "none" else a.versions.split(",")):
+                    cells.append((model, cond, ver, a.repeat))
+    tasks = a.tasks.split(",")
+    modes = ([] if a.no_scored else ["scored"]) + (["probe"] if a.probe else [])
+    rng = random.Random(a.seed)
+    jobs, rounds = [], max(c[3] for c in cells)
+    for r in range(rounds):
+        rnd = []
+        for (model, cond, ver, rep) in cells:
+            if r >= rep:
+                continue
+            for t in tasks:
+                if cond == "fastfix" and t not in SMALL_TASKS:
+                    continue
+                for mode in modes:
+                    rnd.append({"task": t, "condition": cond, "version": ver, "model": model, "rep": r, "mode": mode})
+        rng.shuffle(rnd)
+        jobs += rnd
+    for i, j in enumerate(jobs):
+        j["order"] = i
+    return jobs
 
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--plan", choices=["full"], default=None, help="the AFTER matrix in FULL_PLAN")
     ap.add_argument("--tasks", default=",".join(TASKS))
     ap.add_argument("--conditions", default=",".join(CONDITIONS))
+    ap.add_argument("--versions", default="after", help="before,after (none always runs once, as '-')")
+    ap.add_argument("--before-ref", default="origin/main", help="git ref whose skills/ is the `before` version")
     ap.add_argument("--probe", action="store_true", help="also run the bare prompt to see if it asks")
     ap.add_argument("--no-scored", action="store_true", help="skip the scored runs (probe only)")
     ap.add_argument("--repeat", type=int, default=1)
+    ap.add_argument("--seed", type=int, default=20261014, help="shuffle seed for the launch order")
     ap.add_argument("--jobs", type=int, default=3)
     ap.add_argument("--budget", type=float, default=40.0, help="stop launching runs past this total USD")
     ap.add_argument("--run-budget", type=float, default=8.0, help="--max-budget-usd per claude call")
     ap.add_argument("--max-turns", type=int, default=None)
-    ap.add_argument("--model", default=None, help="default: the CLI's own default model")
+    ap.add_argument("--model", default=None, help="one model; default: the CLI's own default")
+    ap.add_argument("--models", default=None, help="several models, comma-separated")
     ap.add_argument("--work", default=os.environ.get("KZ_BENCH_WORK", "/tmp/kzb"))
-    ap.add_argument("--label", default="before")
+    ap.add_argument("--label", default="run")
     ap.add_argument("--out", default=None)
+    ap.add_argument("--dry-run", action="store_true", help="print the launch order and stop")
     ap.add_argument("--no-score", action="store_true")
     a = ap.parse_args()
+    a.cli_version = sh(["claude", "--version"]).stdout.strip()
     stamp = datetime.date.today().isoformat()
+    jobs = build_jobs(a)
+    if a.dry_run:
+        for j in jobs:
+            print("%(order)4d %(model)s %(version)s %(condition)s %(task)s r%(rep)d %(mode)s" % j)
+        print("%d runs" % len(jobs))
+        return 0
     work = os.path.join(a.work, "%s-%s-%s" % (a.label, stamp, datetime.datetime.now().strftime("%H%M%S")))
     os.makedirs(work, exist_ok=True)
     out = a.out or os.path.join(RESULTS_DIR, "%s-%s.json" % (a.label, stamp))
-    jobs = []
-    modes = ([] if a.no_scored else ["scored"]) + (["probe"] if a.probe else [])
-    for r in range(a.repeat):
-        for mode in modes:
-            for t in a.tasks.split(","):
-                for c in a.conditions.split(","):
-                    jobs.append((t, c, mode, os.path.join(work, "r%d" % r) if a.repeat > 1 else work))
-    print("work dir: %s  (%d runs, %d at a time)" % (work, len(jobs), a.jobs), flush=True)
-    results = []
+    prev = json.load(open(out)) if os.path.exists(out) else {}   # merge with an earlier file of the same name
+    before_sha = sh(["git", "rev-parse", a.before_ref], cwd=REPO).stdout.strip()
+    after_sha = sh(["git", "rev-parse", "HEAD"], cwd=REPO).stdout.strip()
+    dirty = bool(sh(["git", "status", "--porcelain", "skills"], cwd=REPO).stdout.strip())
+    doc = {"label": a.label, "date": stamp, "claude_version": a.cli_version, "assume_suffix": ASSUME_SUFFIX,
+           "probe_max_turns": PROBE_TURNS, "max_turns": a.max_turns, "plan": a.plan or "custom",
+           "plan_spec": FULL_PLAN if a.plan == "full" else None, "seed": a.seed, "jobs_parallel": a.jobs,
+           "permission_mode": "acceptEdits", "allowed_tools": CHILD_TOOLS,
+           "versions": {"before": "%s (%s)" % (a.before_ref, before_sha[:10]),
+                        "after": "working tree at %s%s" % (after_sha[:10], " + uncommitted skills/ edits" if dirty else "")},
+           "launch_order": ["%(model)s|%(version)s|%(condition)s|%(task)s|r%(rep)d|%(mode)s" % j for j in jobs],
+           "work": work, "runs": list(prev.get("runs", []))}
+    base_cost = prev.get("total_cost_usd", 0)
+    print("work dir: %s  (%d runs, %d at a time, seed %d)" % (work, len(jobs), a.jobs, a.seed), flush=True)
+
+    def write(rec):
+        with lock:
+            doc["runs"].append(rec)
+            doc["total_cost_usd"] = round(base_cost + spent[0], 4)
+            os.makedirs(os.path.dirname(out), exist_ok=True)
+            with open(out + ".tmp", "w") as f:
+                json.dump(doc, f, indent=1)
+            os.replace(out + ".tmp", out)
+
     with cf.ThreadPoolExecutor(max_workers=a.jobs) as ex:
-        futs = [ex.submit(run_one, t, c, m, w, a) for (t, c, m, w) in jobs]
+        futs = [ex.submit(run_one, j, work, a, write) for j in jobs]
         for f in cf.as_completed(futs):
             try:
-                results.append(f.result())
+                r = f.result()
+                if r.get("skipped"):
+                    write(r)
             except Exception as e:                       # keep the other runs
-                results.append({"error": repr(e)})
-    results.sort(key=lambda r: (r.get("mode", ""), r.get("task", ""), r.get("condition", "")))
-    doc = {"label": a.label, "date": stamp, "claude_version": sh(["claude", "--version"]).stdout.strip(),
-           "assume_suffix": ASSUME_SUFFIX, "probe_max_turns": PROBE_TURNS, "max_turns": a.max_turns, "model_flag": a.model,
-           "total_cost_usd": round(spent[0], 4), "work": work, "runs": results}
-    os.makedirs(os.path.dirname(out), exist_ok=True)
-    if os.path.exists(out):                              # merge with an earlier file of the same day
-        prev = json.load(open(out))
-        doc["runs"] = prev.get("runs", []) + doc["runs"]
-        doc["total_cost_usd"] = round(prev.get("total_cost_usd", 0) + doc["total_cost_usd"], 4)
+                write({"error": repr(e)})
+    doc["runs"].sort(key=lambda r: (r.get("model") or "", r.get("mode", ""), r.get("task", ""),
+                                    r.get("condition", ""), r.get("version", ""), r.get("rep", 0)))
+    write_final = dict(doc, total_cost_usd=round(base_cost + spent[0], 4))
     with open(out, "w") as f:
-        json.dump(doc, f, indent=1)
-    print("wrote %s  total $%.2f" % (out, doc["total_cost_usd"]))
+        json.dump(write_final, f, indent=1)
+    print("wrote %s  total $%.2f" % (out, write_final["total_cost_usd"]))
     if not a.no_score:
         subprocess.run(["node", os.path.join(HERE, "score.mjs"), out])
 

@@ -1,106 +1,113 @@
 #!/usr/bin/env node
-/* Score benchmark outputs: kz-uicheck failures at 1280px and 390px, and a per-task rubric of
-   binary items checked in the DOM with Playwright. The same scoring runs for every condition.
+/* Score benchmark outputs. For each scored run, the same for every condition:
+     - kz-uicheck failures at 1280px and 390px (run-checks.py, both colour schemes), and the
+       failures the agent introduced: the run's count minus the untouched starter's;
+     - a per-task rubric of binary items checked in the DOM with Playwright;
+     - axe-core violations by impact at 1280 and 390 (AXE_VERSION, injected from npm);
+     - Lighthouse accessibility and best-practices at mobile (LIGHTHOUSE_VERSION).
 
-     node scripts/bench/score.mjs scripts/bench/results/before-2026-10-14.json
+     node scripts/bench/score.mjs scripts/bench/results/after-2026-10-14.json
      RESCORE=1 ONLY_TASK=iterate-html node scripts/bench/score.mjs <results.json>   score one task again
+     SCORE_JOBS=3 ...                                        runs scored at once (default 3)
+     SKIP_LIGHTHOUSE=1 ...                                   leave Lighthouse out
+     DEBUG=1 ...                                             print each rubric item as it is scored
 
-   Writes `score` into each scored run of the results file, in place.
-   Needs: Python 3, Playwright at PLAYWRIGHT (default /opt/node-tools/node_modules/playwright),
-   and Chrome for run-checks.py (CHROME, default the Playwright headless shell). */
+   Writes `score` into each scored run, and `starters` (the untouched pages' own numbers) into
+   the file, in place. Needs: Python 3, Playwright at PLAYWRIGHT, Chrome for run-checks.py
+   (CHROME, default the Playwright headless shell), a full Chromium for Lighthouse (CHROME_PATH),
+   and axe-core and lighthouse installed under KZ_BENCH_TOOLS (see README), else npx fetches them. */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
+import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { STATUSES, SITES, visibleCount, bodyRows, visibleCheckboxes, openValueList, untickOne, chartSnapshot,
+  jobItems, applyStatusFilter, dialogCount, openDetail, findThemeToggle, flipTheme, installColour, pageLum } from './helpers.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(HERE, '..', '..');
 const PW = process.env.PLAYWRIGHT || '/opt/node-tools/node_modules/playwright/index.mjs';
 const { chromium } = await import(pathToFileURL(PW).href);
 const CHROME = process.env.CHROME || '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell';
+const CHROME_PATH = process.env.CHROME_PATH || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+export const AXE_VERSION = '4.10.3';
+export const LIGHTHOUSE_VERSION = '12.8.2';
+const TOOLS = process.env.KZ_BENCH_TOOLS || '/tmp/kzb-tools';
+const AXE = path.join(TOOLS, 'node_modules', 'axe-core', 'axe.min.js');
+const LH_BIN = path.join(TOOLS, 'node_modules', '.bin', 'lighthouse');
 const RUN_CHECKS = path.join(REPO, 'skills', 'kz-uicheck', 'scripts', 'run-checks.py');
 /* the rubric's "is it a T1 panel" uses the check's own definition, so the rubric and table-check
    cannot disagree about what a chart filter has to be */
 const TABLE_CHECK = readFileSync(path.join(REPO, 'skills', 'kz-uicheck', 'checks', 'table-check.js'), 'utf8');
-const STATUSES = ['Open', 'In progress', 'On hold', 'Done', 'Cancelled'];
-const SITES = ['North depot', 'South yard', 'East works', 'West plant', 'Harbour', 'Airport'];
 
-function uicheck(file, width) {
-  const r = spawnSync('python3', [RUN_CHECKS, file, '--width', String(width)],
-    { env: { ...process.env, CHROME }, encoding: 'utf8', timeout: 900000 });
+function run(cmd, args, env, timeout = 900000) {
+  return new Promise(resolve => {
+    const p = spawn(cmd, args, { env: { ...process.env, ...env } });
+    let out = '', err = '';
+    const t = setTimeout(() => p.kill('SIGKILL'), timeout);
+    p.stdout.on('data', d => { out += d; });
+    p.stderr.on('data', d => { err += d; });
+    p.on('close', code => { clearTimeout(t); resolve({ code, out, err }); });
+  });
+}
+
+async function uicheck(file, width) {
+  const r = await run('python3', [RUN_CHECKS, file, '--width', String(width)], { CHROME });
   const perCheck = {};
   let failures = 0;
-  for (const m of (r.stdout || '').matchAll(/^\[(FAIL|ok)\] (\S+)/gm)) {
+  for (const m of (r.out || '').matchAll(/^\[(FAIL|ok)\] (\S+)/gm)) {
     perCheck[m[2]] = (perCheck[m[2]] || 0) + (m[1] === 'FAIL' ? 1 : 0);
     if (m[1] === 'FAIL') failures++;
   }
-  const total = (r.stdout || '').match(/(\d+) failure\(s\) across (\d+)/);
-  return { failures, runs: total ? +total[2] : 0, perCheck, error: total ? null : (r.stderr || r.stdout || '').slice(-400) };
+  const total = (r.out || '').match(/(\d+) failure\(s\) across (\d+)/);
+  return { failures, runs: total ? +total[2] : 0, perCheck, error: total ? null : (r.err || r.out || '').slice(-400) };
 }
 
-/* ---------- page helpers ---------- */
-const visibleCount = (page, sel) => page.evaluate(s => [...document.querySelectorAll(s)].filter(e => {
-  const r = e.getBoundingClientRect(); const cs = getComputedStyle(e);
-  return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none';
-}).length, sel);
-
-const bodyRows = page => visibleCount(page, 'table tbody tr');
-
-const visibleCheckboxes = page => page.evaluate(() => [...document.querySelectorAll('input[type=checkbox], [role=checkbox], [role=option][aria-selected], [role=menuitemcheckbox], button[aria-pressed]')].filter(e => {
-  const t = e.matches('input') && e.closest('label') ? e.closest('label') : e;
-  const r = (e.getBoundingClientRect().width ? e : t).getBoundingClientRect();
-  return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden';
-}).map(e => {
-  const lab = e.closest('label') || (e.id && document.querySelector('label[for="' + e.id + '"]')) || e.parentElement;
-  return (lab ? lab.textContent : e.textContent || '').trim().replace(/\s+/g, ' ');
-}));
-
-/* Open a value list whose entries include `values`; returns {how, labels, trigger} or null. */
-async function openValueList(page, values, scopeSel = 'body') {
-  const hits = labels => labels.filter(l => values.some(v => l.includes(v))).length;
-  let labels = await visibleCheckboxes(page);
-  if (hits(labels) >= Math.min(3, values.length)) return { how: 'inline', labels, trigger: null };
-  const triggers = await page.locator(`${scopeSel} button, ${scopeSel} [role=button], ${scopeSel} summary, ${scopeSel} th[aria-haspopup], ${scopeSel} [aria-haspopup]`).all();
-  for (const t of triggers) {
-    if (!(await t.isVisible().catch(() => false))) continue;
-    await t.click({ timeout: 2000 }).catch(() => {});
-    await page.waitForTimeout(150);
-    labels = await visibleCheckboxes(page);
-    if (hits(labels) >= Math.min(3, values.length)) return { how: 'panel', labels, trigger: t };
-    await page.keyboard.press('Escape');
-    await page.mouse.click(2, 2);
-    await page.waitForTimeout(80);
-  }
-  return null;
-}
-
-async function untickOne(page, values) {
-  const boxes = await page.locator('input[type=checkbox], [role=checkbox], [role=menuitemcheckbox], button[aria-pressed]').all();
-  for (const b of boxes) {
-    if (!(await b.isVisible().catch(() => false))) {
-      // a styled checkbox may be visually hidden; try its label
-    }
-    const lab = await b.evaluate(e => ((e.closest('label') || (e.id && document.querySelector('label[for="' + e.id + '"]')) || e.parentElement || e).textContent || '').trim());
-    if (!values.some(v => lab.includes(v))) continue;
-    const checked = await b.evaluate(e => e.matches('input') ? e.checked : (e.getAttribute('aria-checked') || e.getAttribute('aria-pressed')) === 'true');
-    if (!checked) continue;
-    const lbl = await b.evaluate(e => !!e.closest('label'));
-    if (await b.isVisible()) await b.click({ timeout: 2000 }).catch(() => {});
-    else if (lbl) await b.locator('xpath=ancestor::label[1]').click({ timeout: 2000 }).catch(() => {});
-    await page.waitForTimeout(200);
-    return lab;
-  }
-  return null;
-}
-
-/* An svg or canvas of real size, or failing that an HTML chart (bars drawn with divs) in an
-   element whose id, class or role says chart/img. */
-const chartSnapshot = page => page.evaluate(() => {
-  const sized = e => { const r = e.getBoundingClientRect(); return r.width > 200 && r.height > 100; };
-  let big = [...document.querySelectorAll('svg, canvas')].filter(sized);
-  if (!big.length) big = [...document.querySelectorAll('[id*=chart i], [class*=chart i], [role=img], figure')].filter(sized).slice(0, 1);
-  return big.map(e => e.tagName === 'CANVAS' ? e.toDataURL() : e.innerHTML).join('|');
+/* A tiny static server, so Lighthouse sees http:// rather than file:// (some audits refuse file). */
+const server = http.createServer((req, res) => {
+  const f = decodeURIComponent(new URL(req.url, 'http://x').pathname.replace(/^\/f/, ''));
+  if (!existsSync(f) || !f.startsWith('/')) { res.writeHead(404); res.end(); return; }
+  const type = f.endsWith('.html') ? 'text/html; charset=utf-8' : f.endsWith('.js') ? 'text/javascript' : f.endsWith('.css') ? 'text/css' : 'application/octet-stream';
+  res.writeHead(200, { 'content-type': type }); res.end(readFileSync(f));
 });
+await new Promise(r => server.listen(0, '127.0.0.1', r));
+const urlOf = file => `http://127.0.0.1:${server.address().port}/f${file}`;
+
+async function lighthouse(file) {
+  if (process.env.SKIP_LIGHTHOUSE) return null;
+  const args = [urlOf(file), '--only-categories=accessibility,best-practices', '--form-factor=mobile',
+    '--screenEmulation.mobile=true', '--output=json', '--output-path=stdout', '--quiet',
+    '--chrome-flags=--headless=new --no-sandbox'];
+  const r = existsSync(LH_BIN) ? await run(LH_BIN, args, { CHROME_PATH }, 240000)
+    : await run('npx', ['-y', `lighthouse@${LIGHTHOUSE_VERSION}`, ...args], { CHROME_PATH }, 240000);
+  try {
+    const d = JSON.parse(r.out);
+    const failed = Object.entries(d.audits).filter(([, a]) => a.score !== null && a.score < 1 && a.scoreDisplayMode !== 'informative' && a.scoreDisplayMode !== 'notApplicable').map(([k]) => k);
+    return { version: d.lighthouseVersion, accessibility: d.categories.accessibility.score, best_practices: d.categories['best-practices'].score, failed };
+  } catch (e) { return { error: (r.err || r.out || String(e)).slice(-300) }; }
+}
+
+async function axe(browser, file) {
+  const out = { version: AXE_VERSION, by_impact: { critical: 0, serious: 0, moderate: 0, minor: 0 }, nodes_by_impact: { critical: 0, serious: 0, moderate: 0, minor: 0 }, rules: {} };
+  for (const width of [1280, 390]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+    const page = await ctx.newPage();
+    try {
+      await page.goto(pathToFileURL(file).href); await page.waitForTimeout(300);
+      await page.addScriptTag({ path: AXE });
+      const v = await page.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.map(x => ({ id: x.id, impact: x.impact, nodes: x.nodes.length })));
+      for (const x of v) {
+        const prev = out.rules[x.id];
+        if (!prev) out.rules[x.id] = { impact: x.impact, nodes: x.nodes, widths: [width] };
+        else { prev.nodes = Math.max(prev.nodes, x.nodes); prev.widths.push(width); }
+      }
+    } catch (e) { out.error = String(e).slice(0, 200); }
+    await ctx.close();
+  }
+  for (const r of Object.values(out.rules)) { out.by_impact[r.impact] = (out.by_impact[r.impact] || 0) + 1; out.nodes_by_impact[r.impact] = (out.nodes_by_impact[r.impact] || 0) + r.nodes; }
+  out.serious_critical = out.by_impact.serious + out.by_impact.critical;
+  return out;
+}
 
 /* ---------- rubrics: each item is [name, async page => boolean] ---------- */
 const RUBRICS = {
@@ -152,6 +159,24 @@ const RUBRICS = {
       return a && b && c;
     }],
   ],
+  'dark-mode': [
+    ['a toggle switches the page to a dark background', async p => { await p.evaluate(() => localStorage.clear()); await p.reload(); if ((await pageLum(p)) < 0.2) return false; if (!(await flipTheme(p))) return false; return (await pageLum(p)) < 0.2; }],
+    ['in dark, headings, labels and table cells keep 4.5:1', async p => { await p.evaluate(() => localStorage.clear()); await p.reload(); if (!(await flipTheme(p)) || (await pageLum(p)) >= 0.2) return false; await installColour(p);
+      return p.evaluate(() => { const k = window.__kzc; const els = [...document.querySelectorAll('h1, h2, label, th, td, .summary, button')].filter(e => e.getBoundingClientRect().width > 0 && e.textContent.trim());
+        return els.length > 10 && els.every(e => { const c = k.parse(getComputedStyle(e).color); return c && k.ratio(c, k.bg(e)) >= 4.5; }); }); }],
+    ['in dark, the form fields follow the theme (dark field, text 4.5:1)', async p => { await p.evaluate(() => localStorage.clear()); await p.reload(); if (!(await flipTheme(p)) || (await pageLum(p)) >= 0.2) return false; await installColour(p);
+      return p.evaluate(() => { const k = window.__kzc; const f = [...document.querySelectorAll('form input, form select, form textarea')].filter(e => e.getBoundingClientRect().width > 0);
+        return f.length >= 3 && f.every(e => { const b = k.bg(e); const c = k.parse(getComputedStyle(e).color); return k.lum(b) < 0.4 && c && k.ratio(c, b) >= 4.5; }); }); }],
+    ['in dark, the chart follows the theme (labels 4.5:1, bars 3:1)', async p => { await p.evaluate(() => localStorage.clear()); await p.reload(); if (!(await flipTheme(p)) || (await pageLum(p)) >= 0.2) return false; await installColour(p);
+      return p.evaluate(() => { const k = window.__kzc; const svg = document.querySelector('svg#chart, svg.chart, svg[role=img]'); if (!svg) return false; const bg = k.bg(svg);
+        const texts = [...svg.querySelectorAll('text')], rects = [...svg.querySelectorAll('rect')].filter(r => r.getBoundingClientRect().width > 2);
+        const fill = e => k.parse(getComputedStyle(e).fill);
+        return texts.length >= 6 && texts.every(t => { const c = fill(t); return c && k.ratio(c, bg) >= 4.5; }) && rects.length >= 6 && rects.every(r => { const c = fill(r); return c && k.ratio(c, bg) >= 3; }); }); }],
+    ['the toggle exposes its state (aria-pressed, a switch, a checkbox, a select, or a name that changes)', async p => { await p.evaluate(() => localStorage.clear()); await p.reload(); const el = await findThemeToggle(p); if (!el) return false;
+      const st = await el.evaluate(e => e.hasAttribute('aria-pressed') || (e.getAttribute('role') === 'switch' && e.hasAttribute('aria-checked')) || e.type === 'checkbox' || e.tagName === 'SELECT');
+      if (st) return true; const n0 = await el.evaluate(e => (e.getAttribute('aria-label') || '') + e.textContent); await flipTheme(p); const el2 = await findThemeToggle(p); const n1 = el2 ? await el2.evaluate(e => (e.getAttribute('aria-label') || '') + e.textContent) : n0; return n0 !== n1; }],
+    ['the choice survives a reload', async p => { await p.evaluate(() => localStorage.clear()); await p.reload(); if (!(await flipTheme(p)) || (await pageLum(p)) >= 0.2) return false; await p.reload(); await p.waitForTimeout(300); return (await pageLum(p)) < 0.2; }],
+  ],
   'form-build': [
     ['all four fields have labels', async p => { for (const re of [/site/i, /work type|type of work/i, /budget/i, /note/i]) if ((await p.getByLabel(re).count()) < 1) return false; return true; }],
     ['site and work type are required, and marked', async p => {
@@ -201,83 +226,69 @@ const RUBRICS = {
       await p.evaluate(() => localStorage.clear()); await p.reload();
       const bg = () => p.evaluate(() => getComputedStyle(document.body).backgroundColor + getComputedStyle(document.documentElement).backgroundColor);
       const a = await bg();
-      const t = p.locator('button, [role=switch], input[type=checkbox], select').filter({ hasText: /dark|theme|light/i });
-      let el = (await t.count()) ? t.first() : p.locator('[aria-label*=dark i], [aria-label*=theme i], [title*=dark i], [title*=theme i], #theme-toggle, .theme-toggle').first();
-      if (!(await el.count())) return false;
-      const tag = await el.evaluate(e => e.tagName);
-      if (tag === 'SELECT') await el.selectOption({ label: /dark/i }).catch(async () => el.selectOption({ index: 2 }).catch(() => {}));
-      else await el.click({ timeout: 2000 }).catch(() => {});
-      await p.waitForTimeout(250);
+      if (!(await flipTheme(p))) return false;
       return (await bg()) !== a;
     }],
   ],
 };
 
-const ITEM_SEL = ['tbody tr', 'ul > li', 'ol > li', '[role=listitem]', 'article', '[role=row]:not(:first-child)', '.job', '.job-card', '.card', '[data-id]', '[data-job-id]', 'li button', 'li'];
-async function jobItems(p) {
-  for (const s of ITEM_SEL) if ((await visibleCount(p, s)) === 8) return s;
-  return null;
-}
-async function applyStatusFilter(p) {
-  const sel = await jobItems(p); if (!sel) return null;
-  const s = p.locator('select').filter({ hasText: /./ });
-  for (const sl of await s.all()) {
-    const opts = await sl.evaluate(e => [...e.options].map(o => o.value));
-    for (let i = 1; i < opts.length; i++) {
-      await sl.selectOption({ index: i }).catch(() => {}); await p.waitForTimeout(150);
-      const n = await visibleCount(p, sel); if (n > 0 && n < 8) return { sel, after: n };
-    }
-  }
-  const btns = await p.locator('button, [role=tab], [role=radio], input[type=radio], label').all();
-  for (const b of btns) {
-    const txt = (await b.textContent().catch(() => '')) || (await b.getAttribute('value').catch(() => '')) || '';
-    if (!/open|progress|done|complete|hold|scheduled|pending|cancel|closed|new|queued|running|succeeded|failed|active|paused|blocked|draft/i.test(txt) || txt.length > 40) continue;
-    await b.click({ timeout: 1500 }).catch(() => {}); await p.waitForTimeout(150);
-    const n = await visibleCount(p, sel); if (n > 0 && n < 8) return { sel, after: n };
-  }
-  return null;
-}
-const dialogCount = p => visibleCount(p, '[role=dialog], dialog[open], [aria-modal=true], aside, .detail, .details, .panel, .drawer, #detail, #details, #detail-panel');
-async function openDetail(p) {
-  const sel = await jobItems(p); if (!sel) return false;
-  const before = await dialogCount(p);
-  const text = await p.evaluate(() => document.body.innerText.length);
-  const first = p.locator(sel).first();
-  const inner = first.locator('button, a').first();
-  await ((await inner.count()) ? inner : first).click({ timeout: 2000 }).catch(() => {});
-  await p.waitForTimeout(300);
-  return (await dialogCount(p)) > before || (await p.evaluate(() => document.body.innerText.length)) > text + 40;
-}
 
 /* ---------- main ---------- */
-const file = process.argv[2];
-if (!file) { console.error('usage: node score.mjs <results.json>'); process.exit(2); }
-const doc = JSON.parse(readFileSync(file, 'utf8'));
-const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
-for (const run of doc.runs) {
-  if (run.mode !== 'scored' || !run.workdir) continue;
-  if (run.score && !process.env.RESCORE) continue;
-  if (process.env.ONLY_TASK && run.task !== process.env.ONLY_TASK) continue;
-  const page_ = path.join(run.workdir, 'index.html');
-  if (!existsSync(page_)) { run.score = { error: 'no index.html' }; continue; }
-  const score = { uicheck: { 1280: uicheck(page_, 1280), 390: uicheck(page_, 390) }, rubric: [] };
-  for (const [name, fn] of RUBRICS[run.task] || []) {
+async function scorePage(browser, file, task, run) {
+  if (process.env.DEBUG) console.log('scoring ' + file);
+  const [c1280, c390, lh] = await Promise.all([uicheck(file, 1280), uicheck(file, 390), lighthouse(file)]);
+  const score = { uicheck: { 1280: c1280, 390: c390 }, axe: await axe(browser, file), lighthouse: lh, rubric: [] };
+  if (process.env.DEBUG) console.log('  checks/axe/lighthouse done', JSON.stringify(lh).slice(0, 120));
+  for (const [name, fn] of RUBRICS[task] || []) {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     const page = await ctx.newPage();
+    page.setDefaultTimeout(4000);          /* a control that is not there fails fast, not after 30 s */
     let pass = false, err = null;
     try {
-      await page.goto(pathToFileURL(page_).href);
+      await page.goto(pathToFileURL(file).href);
       await page.waitForTimeout(300);
-      pass = !!(await fn(page, run));
+      pass = !!(await fn(page, run || { lines_added: 0, lines_removed: 0 }));
     } catch (e) { err = String(e).slice(0, 200); }
+    if (process.env.DEBUG) console.log(`  ${task} ${pass ? 'pass' : 'FAIL'} ${name}${err ? ' ' + err : ''}`);
     score.rubric.push({ item: name, pass, ...(err ? { error: err } : {}) });
     await ctx.close();
   }
   score.rubric_pass = score.rubric.filter(r => r.pass).length;
   score.rubric_total = score.rubric.length;
-  run.score = score;
-  console.log(`${run.task.padEnd(14)} ${run.condition.padEnd(8)} checks ${score.uicheck[1280].failures}/${score.uicheck[390].failures}  rubric ${score.rubric_pass}/${score.rubric_total}`);
-  writeFileSync(file, JSON.stringify(doc, null, 1).replace(/[\u0080-\uffff]/g, c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')));
+  return score;
 }
+
+const file = process.argv[2];
+if (!file) { console.error('usage: node score.mjs <results.json>'); process.exit(2); }
+const doc = JSON.parse(readFileSync(file, 'utf8'));
+const save = () => writeFileSync(file, JSON.stringify(doc, null, 1).replace(/[\u0080-\uffff]/g, c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')));
+const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
+doc.score_tools = { axe_core: AXE_VERSION, lighthouse: LIGHTHOUSE_VERSION };
+doc.starters = doc.starters || {};
+for (const task of [...new Set(doc.runs.filter(r => r.task).map(r => r.task))]) {
+  if (doc.starters[task] && !process.env.RESCORE) continue;
+  const f = path.join(HERE, 'tasks', task, 'index.html');
+  doc.starters[task] = await scorePage(browser, f, task, null);
+  console.log(`starter ${task.padEnd(14)} checks ${doc.starters[task].uicheck[1280].failures}/${doc.starters[task].uicheck[390].failures}  axe s+c ${doc.starters[task].axe.serious_critical}  LH ${doc.starters[task].lighthouse?.accessibility}`);
+}
+save();
+const todo = doc.runs.filter(run => run.mode === 'scored' && run.workdir && (!run.score || process.env.RESCORE) &&
+  (!process.env.ONLY_TASK || run.task === process.env.ONLY_TASK));
+let next = 0;
+async function worker() {
+  while (next < todo.length) {
+    const run = todo[next++];
+    const page_ = path.join(run.workdir, 'index.html');
+    if (!existsSync(page_)) { run.score = { error: 'no index.html' }; continue; }
+    const score = await scorePage(browser, page_, run.task, run);
+    const st = doc.starters[run.task];
+    score.introduced = { 1280: score.uicheck[1280].failures - st.uicheck[1280].failures, 390: score.uicheck[390].failures - st.uicheck[390].failures };
+    run.score = score;
+    console.log(`${run.task.padEnd(14)} ${(run.model || '').padEnd(18)} ${(run.version || '').padEnd(6)} ${run.condition.padEnd(9)} checks ${score.uicheck[1280].failures}/${score.uicheck[390].failures}  rubric ${score.rubric_pass}/${score.rubric_total}  axe s+c ${score.axe.serious_critical}  LH ${score.lighthouse?.accessibility}`);
+    save();
+  }
+}
+await Promise.all(Array.from({ length: +(process.env.SCORE_JOBS || 3) }, worker));
 await browser.close();
-writeFileSync(file, JSON.stringify(doc, null, 1).replace(/[\u0080-\uffff]/g, c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')));
+server.close();
+save();

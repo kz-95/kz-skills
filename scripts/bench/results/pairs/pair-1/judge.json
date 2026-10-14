@@ -1,0 +1,8 @@
+{
+ "winner": "A",
+ "reasons": [
+  "A answers 'revenue by site' directly. It uses a sorted horizontal bar chart with the exact total next to each bar, so you can compare sites at a glance. B's six crossing monthly lines make it hard to tell which site earns most.",
+  "A works well on a phone: labels and values sit above full-width bars. B's line chart gets cramped at 390px, and the six colored lines are even harder to tell apart.",
+  "B's filter is better: the checkbox chips double as a legend, are always visible and update the chart in place. A's dropdown covers part of the chart and adds clutter (sorting, min/max fields), and its list order doesn't match the chart. Still, both filters work and update the summary cards, so A's much clearer chart decides it."
+ ]
+}

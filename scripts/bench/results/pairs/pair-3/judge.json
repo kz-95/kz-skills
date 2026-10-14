@@ -1,0 +1,8 @@
+{
+ "winner": "B",
+ "reasons": [
+  "After a successful submit, B shows a clear confirmation card listing site, work type, budget ($1,500.00) and note, plus a 'New request' button. A only shows a one-line green banner above a form that has already been cleared, so it's less clear what was sent.",
+  "Both catch the empty submit with inline messages on the two required fields and focus on the first one. A adds a summary banner, which is a small plus, but B's errors are just as clear.",
+  "B's budget field shows a '$ 0.00' placeholder and the note shows a character counter, so it's obvious what to type. A's hint 'a sum such as 1200+50' is unusual and could confuse people. Both work well on a phone."
+ ]
+}
