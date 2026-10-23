@@ -6835,10 +6835,13 @@ function drawHbar(rows) {
     return Math.max.apply(null, ms.map(function (m) { return Math.abs(r[m.key]); }));
   })) || 1;
   el.innerHTML = rows.map(function (r) {
+    /* the name starts with the row's visible text, built from the same strings, so a
+       voice user can say what they see (label in name); the meaning follows the comma */
+    var vals = ms.map(function (m) { return m.fmt(r[m.key], r); });
     return '<div class="hbar-row" data-id="' + esc(r.name) + '" tabindex="0" role="button" ' +
-      'aria-label="' + esc(r.name) + ', ' + ms.map(function (m) {
-        return m.label + ' ' + m.fmt(r[m.key]);
-      }).join(', ') + '">' +
+      'aria-label="' + esc(r.name + ' ' + vals.join(' ') + ', ' + ms.map(function (m) {
+        return m.label.toLowerCase();
+      }).join(' and ')) + '">' +
       '<span class="nm" title="' + esc(r.name) + '">' + esc(r.name) + '</span>' +
       '<span class="tr">' + ms.map(function (m, i) {
         return '<span class="tk"><i style="width:' +
@@ -6847,9 +6850,9 @@ function drawHbar(rows) {
       }).join('') + '</span>' +
       /* one value per bar, on that bar's own line, so each number is read against the
          bar it belongs to rather than a slash-joined run of them */
-      '<span class="vl">' + ms.map(function (m) {
+      '<span class="vl">' + ms.map(function (m, i) {
         return '<span style="color:var(--c' + (all.map(function (x) {
-          return x.key; }).indexOf(m.key) + 1) + ')">' + m.fmt(r[m.key], r) + '</span>';
+          return x.key; }).indexOf(m.key) + 1) + ')">' + vals[i] + '</span>';
       }).join('') + '</span></div>';
   }).join('');
   if (typeof fitBars === 'function') { fitBars(); }
@@ -7201,8 +7204,12 @@ Array.prototype.forEach.call(
        announcing the largest contract on the chart as their own. It goes on the element
        that is focusable, which is this div: a description on an inner span is a
        description nobody using a keyboard or a screen reader will ever reach (rule X2). */
-    var name = esc(r.proj) + ', claimed ' + r.claimed + ' of contract ' + r.contract +
-      ', target ' + r.target;
+    var bm = bulSel.map(function (k) { return allM.filter(function (x) { return x.key === k; })[0]; });
+    var vals = bulSel.map(function (k, i) { return bm[i] ? bm[i].fmt(r[k], r) : r[k]; });
+    /* and it starts with the row's visible text, from the same strings (label in name) */
+    var name = esc(r.proj + ' ' + vals.join(' ') + ', ' + bulSel.map(function (k, i) {
+      return (bm[i] ? bm[i].label : k).toLowerCase();
+    }).join(' and ') + ', of contract ' + r.contract + ', target ' + r.target);
     return '<div class="bul" data-id="' + esc(r.proj) + '" aria-label="' + name + '">' +
       '<span class="nm" title="' + esc(r.proj) + '">' + esc(r.proj) + '</span>' +
       '<span class="tr">' +
@@ -7216,12 +7223,10 @@ Array.prototype.forEach.call(
       (bulShowTarget ? '<span class="tgt" style="left:' +
         Math.min(100, r.target / scale * 100).toFixed(1) + '%"></span>' : '') +
       '</span>' +
-      '<span class="vl">' + bulSel.map(function (k) {
-        var m = allM.filter(function (x) { return x.key === k; })[0];
+      '<span class="vl">' + bulSel.map(function (k, i) {
         var neg = r[k] < 0;
         var colour = neg ? 'var(--down)' : 'var(--c' + (keyOf.indexOf(k) + 1) + ')';
-        return '<span style="color:' + colour + '">' + (m ? m.fmt(r[k], r) : r[k]) +
-          '</span>';
+        return '<span style="color:' + colour + '">' + vals[i] + '</span>';
       }).join('') + '</span></div>';
   }).join('');
   if (typeof fitBars === 'function') { fitBars(); }
@@ -7665,16 +7670,18 @@ function drawDv(rows) {
   el.innerHTML = rows.map(function (r) {
     var half = Math.abs(r.variance) / reach * 50;
     var ahead = r.variance > 0;
+    var shown = (ahead ? '+' : '') + r.variance;
+    /* starts with the row's visible text (label in name), then says which way it is off */
     return '<div class="dv-row ' + (ahead ? 'ahead' : r.variance < 0 ? 'behind' : '') +
       '" data-id="' + esc(r.proj) + '" tabindex="0" role="button" aria-label="' +
-      esc(r.proj) + ', ' + (ahead ? 'ahead by ' : r.variance < 0 ? 'behind by ' : 'on target') +
-      Math.abs(r.variance) + '">' +
+      esc(r.proj) + ' ' + shown + ', ' + (ahead ? 'ahead by ' + r.variance
+        : r.variance < 0 ? 'behind by ' + -r.variance : 'on target') + '">' +
       '<span class="nm" title="' + esc(r.proj) + '">' + esc(r.proj) + '</span>' +
       '<span class="tr">' +
       '<span class="fl" style="' + (ahead ? 'left:50%' : 'right:50%') + ';width:' +
       half.toFixed(1) + '%;background:' + (ahead ? 'var(--up)' : 'var(--down)') + '"></span>' +
       '<span class="zero" style="left:50%"></span></span>' +
-      '<span class="vl">' + (r.variance > 0 ? '+' : '') + r.variance + '</span></div>';
+      '<span class="vl">' + shown + '</span></div>';
   }).join('');
 
   Array.prototype.forEach.call(el.querySelectorAll('[data-id]'), function (row) {
