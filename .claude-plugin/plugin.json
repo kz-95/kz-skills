@@ -1,6 +1,5 @@
 {
   "name": "kz-skills",
-  "version": "0.1.0",
   "description": "Stack-neutral UI/UX rules for AI coding agents with browser checks that measure them: 57 UI rules, 6 motion rules, 21 chart rules, 10 diagram rules, 16 principles, in thirteen skills (router, rules, motion lane, diagram lane, checks, wording judge, reflect loop, engineering rules, fast lane, flash rules, ask card, crew workflow, fix loop).",
   "author": {
     "name": "kz-95",

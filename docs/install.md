@@ -29,6 +29,17 @@ The plugin installs and enables all thirteen skills.
 Then call the lane that fits: `/kz-fastfix` for a one-line edit, `/kz-flashrule` for everyday UI building, `/kz-uiuxrule` for reviews, audits and "make it production", or `/kz-skill` when you are not sure which skill fits.
 The skills cost time and tokens on purpose; [`benchmark.md`](benchmark.md) has the measured cost of each lane on Sonnet 5.5 and Opus 5.5.
 
+### Updating
+
+The plugin pins no version, so every commit on `main` is a new version. To update now:
+
+```bash
+claude plugin marketplace update kz-skills
+claude plugin update kz-skills@kz-skills
+```
+
+Then run `/reload-plugins` in an open session, or restart it. To update on its own instead, turn it on once: `/plugin` > Marketplaces > `kz-skills` > Enable auto-update (off by default for marketplaces that are not official). A manual install has no updater: `git pull` the clone and copy `skills/*` again.
+
 ## Claude Code, by hand
 
 ```bash
