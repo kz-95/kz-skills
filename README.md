@@ -218,7 +218,7 @@ Each skill, and when to reach for it:
 - **[`kz-flashrule`](skills/kz-flashrule/SKILL.md)**: Everyday building of a component, a form or a screen, and a fast rule check of finished work: the rules that break worst when missed, on one page, each with its ID and the fastest check. The first read for small and medium UI work; it runs only the check named for the change.
 - **[`kz-askcard`](skills/kz-askcard/SKILL.md)**: About to ask the user something, which happens only when the request is genuinely ambiguous: three to five decisions, one recommended, a custom option.
 - **[`kz-crew021`](skills/kz-crew021/SKILL.md)**: A whole project, idea to maintenance, with a costed multi-agent crew.
-- **[`kz-judge`](skills/kz-judge/SKILL.md)**: After the checks: the wording rules a script cannot measure (errors, button labels, empty states, delete confirmations), judged by Jev or a local Laya, only on questions each has passed on labelled examples. Costs the agent no tokens.
+- **[`kz-judge`](skills/kz-judge/SKILL.md)**: After the checks: the wording rules a script cannot measure (errors, button labels, empty states, delete confirmations), judged by a local Laya, only on questions it has passed on labelled examples. Costs the agent no tokens.
 - **[`kz-reflect`](skills/kz-reflect/SKILL.md)**: A mistake was noticed and the fix verified: log it, classify it, and propose the rule or check change for a person to approve.
 - **[`kz-loopfix`](skills/kz-loopfix/SKILL.md)**: One defect that "fix it and move on" already failed once: critic, fixer, then a gate.
 

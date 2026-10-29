@@ -24,7 +24,7 @@ This file is served at https://kz-95.github.io/kz-skills/llms.txt and at https:/
 - [kz-uicheck](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/SKILL.md): ten paste-in browser checks
 - [kz-motionrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-motionrule/SKILL.md): the motion rules alone, M1-M6, with motion-check.js
 - [kz-diagramrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-diagramrule/SKILL.md): the diagram rules alone, G1-G10, with diagram-check.js
-- [kz-judge](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-judge/SKILL.md): wording rules a script cannot measure, judged by Jev or a local Laya; no agent tokens
+- [kz-judge](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-judge/SKILL.md): wording rules a script cannot measure, judged by a local Laya; no agent tokens
 - [kz-reflect](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-reflect/SKILL.md): records what went wrong, classifies it, proposes the rule change; a person approves
 - [kz-engrules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-engrules/SKILL.md): engineering rules for any code work, including git (branch names, commit identity, merges)
 - [kz-fastfix](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-fastfix/SKILL.md): the fast lane for a one-line edit; a size test, then the change made directly, with at most the one check named for it
