@@ -22,7 +22,7 @@ is not a command: its parent reads it.
 | `../kz-motionrule/` | Only motion: an animation, a transition, an easing curve, a press or hover effect, an entrance. The six M rules and the motion check |
 | `../kz-diagramrule/` | Only a diagram: architecture, flowchart, sequence, state machine, data model, swimlane. The ten G rules and the diagram check |
 | `../kz-uicheck/` | Measuring UI: ten paste-in console checks (layout, tables, typing, popovers, contrast, modals, focus, forms, motion, diagrams), on any page |
-| `../kz-judge/` | After `kz-uicheck`: the wording rules a script cannot measure, judged by Jev or a local Laya at no cost to the agent's tokens. Skips cleanly when neither is present |
+| `../kz-judge/` | After `kz-uicheck`: the wording rules a script cannot measure, judged by a local Laya at no cost to the agent's tokens. Skips cleanly when Laya is not present |
 | `../kz-reflect/` | Something went wrong, a person noticed, the fix is verified: log it, classify it, propose the rule or check change for a person to approve. Never edits a shared rule itself |
 | `../kz-loopfix/` | One broken thing where "fix it and move on" already failed once: critic <-> fixer to agreement, then a gate rules on whether the agreement is true |
 

@@ -4,6 +4,9 @@ All notable changes to this repository. Format follows [Keep a Changelog](https:
 
 ## [Unreleased]
 
+### Changed
+- **`kz-judge` uses Laya only.** The hosted Jev engine (TypeSafe, `TYPESAFE_API_KEY`) is removed, so no page text and no API key leave the machine; `--engine` takes `auto` or `laya`. The calibration fingerprint no longer includes a Jev model pin, so a cached calibration is redone once.
+
 ### Added
 - **A benchmark of what the skills cost and buy** (`scripts/bench/`, results in `docs/benchmark.md`). Seven single-file HTML tasks, each run in a fresh headless Claude Code session on a named model (Sonnet 5.5 and Opus 5.5), with no skills, the skills installed, and each lane called by name, the old and new skills side by side. It records wall time, `tokens_total` and the CLI's cost estimate, scores every page with the kz checks at 1280px and 390px (failures introduced against the starter), a DOM rubric, axe-core and Lighthouse, and runs a blind pairwise screenshot judge. `scripts/bench/README.md` says how to run it again. Measured against no skills, `/kz-uiuxrule` went from 2.54x to 1.52x the time on Sonnet 5.5 and from 3.35x to 1.67x on Opus 5.5, with 0 check failures introduced where no skills introduced 50 and 55.
 - **The speed contract** (`kz-skill`), and engineering rule `29e`: verification is proportional to the change. Size the change first: a trivial change goes to `kz-fastfix` with at most one named check; small and medium work reads `kz-flashrule` first and runs only the checks named for the change, once; only a project, an audit, "make it production" or a release takes the full path. Follow-ups stay light, nothing is written into the user's project unasked, and no question is asked unless the request is genuinely ambiguous.
