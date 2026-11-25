@@ -1,6 +1,6 @@
 ---
 name: kz-fastfix
-description: "The fast lane for small work, UI included - change a label, restyle a button, add a column, fix a colour or spacing, tweak this page, a typo, a doc line, a one-line bug. A short size test first, then the change made directly with no crew, no card, no ledger and no rule-corpus read, checked once by the one check or test that covers it, and reported in one to three lines. Leaves the lane the moment the job grows or a check fails twice. Use for any one-element or one-line change before kz-uiuxrule or kz-crew021. Triggers on \"/kz-fastfix\", \"fast fix\", \"quick fix\", \"small fix\", \"just fix it\", \"change the label\", \"restyle\", \"add a column\", \"tweak\"."
+description: "The fast lane for small work, UI included - change a label, restyle a button, add a column, fix a colour or spacing, tweak this page, a typo, a doc line, a one-line bug. A short size test first, then the change made directly with no crew, no card beyond the first-call one, no ledger and no rule-corpus read, checked once by the one check or test that covers it, and reported in one to three lines. Leaves the lane the moment the job grows or a check fails twice. Use for any one-element or one-line change before kz-uiuxrule or kz-crew021. Triggers on \"/kz-fastfix\", \"fast fix\", \"quick fix\", \"small fix\", \"just fix it\", \"change the label\", \"restyle\", \"add a column\", \"tweak\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 
@@ -17,9 +17,17 @@ that single check file (no browser window: `python ../kz-uicheck/scripts/run-che
 `--checks <that one>`, or all checks; never run checks the change did not touch. Label, text or
 style -> none, or `contrast-check.js` (`--scheme both`) if a colour changed; table or column ->
 `table-check.js`; filter or dropdown -> `popover-check`; form field -> `form-check`; diagram ->
-`diagram-check`; layout, spacing, size or a new control -> `layout-audit.js` at 375px; a theme
-toggle -> `contrast-check` both themes, then `layout-audit` at 375px for the toggle. Write no
-harness, test or scratch copy of your own to check a page, in the project or a scratch folder.
+`diagram-check`; a toast -> `toast-check`; a tooltip or `[?]` -> `explain-check`; layout,
+spacing, size or a new control -> `layout-audit.js` at 375px; a theme toggle -> `contrast-check`
+both themes, then `layout-audit` at 375px for the toggle. Run it on the screen the change is on
+(`--hash ROUTE`, `--tap "#tab,#open"`, `--wait SELECTOR`): a run that reports WRONG SCREEN
+is a failure, not a clean result. Write no harness, test or scratch copy of your own to check a
+page, in the project or a scratch folder.
+
+**First kz call in a session.** When this lane is the session's first kz call, the one card
+(type from `../kz-uiuxrule/packs/LOOKUP.md`, size) comes first, as the speed contract in
+`../kz-skill/SKILL.md` says; a "trivial" answer stays here, and later calls reuse it. Inside
+this lane that card is the only question.
 
 ## Step one: the size test
 
@@ -53,7 +61,8 @@ Unsure is a "no". Never argue a job into the fast lane.
 2. Where the project has tests, run the touched ones once before the change: the baseline,
    and for new logic the "fails before". No test runner: build none.
 3. Make the smallest correct change yourself. No subagent, no worktree, and no Ask Card
-   unless a decision is genuinely missing (then one card, `kz-askcard`).
+   beyond the first-call card unless a decision is genuinely missing (then one card,
+   `kz-askcard`).
 4. Non-trivial logic leaves one test in the project's own runner that fails before and passes
    after (`kz-engrules` rule 29). A wording or style change, or a project with no runner, none.
 
@@ -65,8 +74,9 @@ Run each in the foreground and read its exit code or finding count yourself:
 - the project's automatic safety checks, where it has them: secret scan, leak or permission
   tests, lint, type check. They take seconds and catch what a reviewer reading a diff misses;
 - for anything that renders: the one check named in the hard rule above, or none. The rule is
-  the one `kz-flashrule` line that applies; read nothing else. Never the full suite, and never
-  a check script written into the project.
+  the one `kz-flashrule` line that applies; no line covers it -> the one row of
+  `../kz-uiuxrule/packs/LOOKUP.md` and the matching line of its pack, nothing else. Never the
+  full suite, and never a check script written into the project.
 
 All green: done. A red that was not in the baseline: fix it once and re-run that check only.
 Red a second time: escalate. Nothing ran is not green: say so in the report.

@@ -113,7 +113,9 @@ The full checklist is in `../rules/design-principles.md`.
 | File | Holds |
 |---|---|
 | `../skills/ui-glance/SKILL.md` | The child skill: a screenshot reviewed in one pass, twenty-two checks, no rule-set read |
-| `../rules/INDEX.md` | Route by keyword: which rules apply to which job |
+| `../packs/LOOKUP.md` | Route by keyword: one pack and its checks per type of work. The first read |
+| `../packs/` | Ten generated packs: the rules in full, the appendix, a snippet and the exact check command |
+| `../rules/INDEX.md` | Route by keyword to rule sections, for work no pack covers |
 | `../rules/ui-rules.md` | The 57 UI rules by category and the appendices. Appendix Z is twenty-six mistakes to have read before a large build |
 | `../rules/chart-rules.md` | `C1-C21`: anything that renders data as marks, and the table bound to it |
 | `../rules/motion-rules.md` | `M1-M6`, with durations, curves and mechanics. Also read alone by `../../kz-motionrule/` |
@@ -137,5 +139,5 @@ Rules are cited by a category letter and a position - `T2` is the second rule ab
 ## For agents that are not Claude
 
 Nothing here depends on a Claude feature. The rule files are plain Markdown: point a
-file-reading agent at the folder, or paste `../rules/INDEX.md` and let the model ask for the
-sections it needs.
+file-reading agent at the folder, or paste `../packs/LOOKUP.md` and let the model ask for the
+one pack it needs (`../rules/INDEX.md` when no pack covers the work).

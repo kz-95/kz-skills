@@ -4,7 +4,8 @@
 
 <a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html"><img src="docs/assets/hero.gif" alt="kz-skills: UI rules for AI coding agents, each with a browser check that measures it. Tables, rule T1: a bare text box under each column, table-check.js reports BOX (3 of 3 column filters are a bare text box), the filters become buttons with an open value panel, and the check reports no failures. Contrast, rule Y2, dark theme: a card label at 1.05:1, contrast-check.js reports LOW in dark, the label takes the dark-theme token at 7.84:1, and the check is clean in both themes. Charts, rule C5: a focused donut wedge ringed by its bounding box, layout-audit.js reports FOCUS BOX, the ring follows the wedge and shows its value, and the audit is clean. Diagrams, rule G6: the WRITE label sits on its line, diagram-check.js reports LABEL ON LINE, the label moves beside the line, and the check is clean. Closing card: 94 rules. 10 checks. Any stack. npx skills add kz-95/kz-skills." width="100%"></a>
 
-94 rules (57 UI, 6 motion, 21 chart, 10 diagram) and 16 principles, in thirteen skills, with ten browser checks.
+94 rules (57 UI, 6 motion, 21 chart, 10 diagram) and 16 principles, in thirteen skills, with twelve browser checks.
+A 2 KB lookup sends each type of work to one short generated pack: the rules it needs, a snippet to start from and the exact checks to run.
 Stack-neutral and style-neutral: they work with any framework and any look.
 Plain Markdown, so any agent that reads files can use them.
 
@@ -32,6 +33,7 @@ Then `/kz-flashrule` for everyday UI building, `/kz-uiuxrule` for reviews and au
 > The agent reads rules and runs browser checks before it calls UI work done.
 > Measured with `/kz-uiuxrule`: 1.5x the time and 2.2x the tokens on Sonnet 5.5, 1.7x and 1.9x on Opus 5.5, in exchange for 0 check failures introduced against 50 to 55 without the skills.
 > When speed matters, call the lighter lane: `/kz-fastfix` for a one-line edit, `/kz-flashrule` for everyday building (0.8x the time and 1.0x the tokens on Opus 5.5).
+> These figures are from the 2026-10-14 skills, before type routing (one lookup, one pack per type of work); a rerun on the current skills is recorded and its numbers replace these once scored.
 > Details and limits: [Measured](#measured-speed-tokens-and-quality).
 
 <details>
@@ -170,6 +172,9 @@ The downsides are real:
 
 ## Measured: speed, tokens and quality
 
+These numbers measure the skills as they were on 2026-10-14, before type routing.
+The rerun on the current skills, with an eighth task for toasts and Undo, is in `scripts/bench/results/typerouting-2026-11-20.json` (228 runs, not yet scored); it replaces this section once scored.
+
 The skills were measured against no skills on seven single-file HTML tasks: a label change, a new column, a dark mode toggle, a table, a chart filter, a form, and a build with three follow-ups.
 Each run was a fresh headless Claude Code 2.1.299 session on a named model, two or three runs per task.
 A factor is the lane's median over the no-skill median for the same task and model, then the median over tasks.
@@ -212,11 +217,11 @@ Each skill, and when to reach for it:
 - **[`kz-uiuxrule`](skills/kz-uiuxrule/SKILL.md)**: Reviews, audits, larger UI work and "make it production": the rules, in four modes (adopt, review, build, loop). Everyday building starts from `kz-flashrule` instead.
 - **[`kz-motionrule`](skills/kz-motionrule/SKILL.md)**: Work that only moves - an animation, a transition, a press effect: the six motion rules and their check, without the rest of the corpus.
 - **[`kz-diagramrule`](skills/kz-diagramrule/SKILL.md)**: Only a diagram: boxes, lines and labels - the ten diagram rules and their check, without the rest of the corpus.
-- **[`kz-uicheck`](skills/kz-uicheck/SKILL.md)**: Before calling UI work done: ten paste-in browser checks that measure instead of judge.
+- **[`kz-uicheck`](skills/kz-uicheck/SKILL.md)**: Before calling UI work done: twelve paste-in browser checks that measure instead of judge, pointed at the screen the work is on.
 - **[`kz-engrules`](skills/kz-engrules/SKILL.md)**: Any code task at all: the engineering floor everything else sits on, including how branches, commits and merges are done (rules 33-33c).
 - **[`kz-fastfix`](skills/kz-fastfix/SKILL.md)**: A one-line edit (a typo, a label, a colour, a column, a one-line bug): a size test, then the change made directly, with at most the one check named for it. No crew, no loop.
-- **[`kz-flashrule`](skills/kz-flashrule/SKILL.md)**: Everyday building of a component, a form or a screen, and a fast rule check of finished work: the rules that break worst when missed, on one page, each with its ID and the fastest check. The first read for small and medium UI work; it runs only the check named for the change.
-- **[`kz-askcard`](skills/kz-askcard/SKILL.md)**: About to ask the user something, which happens only when the request is genuinely ambiguous: three to five decisions, one recommended, a custom option.
+- **[`kz-flashrule`](skills/kz-flashrule/SKILL.md)**: Everyday building of a component, a form or a screen, and a fast rule check of finished work: the core, the twenty-odd rules agents break most, on one page, each with its ID and the one check that catches it. Everything else is one pack per type of work, found through [`packs/LOOKUP.md`](skills/kz-uiuxrule/packs/LOOKUP.md).
+- **[`kz-askcard`](skills/kz-askcard/SKILL.md)**: About to ask the user something: once on the first kz call in a session (the type of work and the size), and after that only when the request is genuinely ambiguous. Three to five decisions, one recommended, a custom option.
 - **[`kz-crew021`](skills/kz-crew021/SKILL.md)**: A whole project, idea to maintenance, with a costed multi-agent crew.
 - **[`kz-judge`](skills/kz-judge/SKILL.md)**: After the checks: the wording rules a script cannot measure (errors, button labels, empty states, delete confirmations), judged by a local Laya, only on questions it has passed on labelled examples. Costs the agent no tokens.
 - **[`kz-reflect`](skills/kz-reflect/SKILL.md)**: A mistake was noticed and the fix verified: log it, classify it, and propose the rule or check change for a person to approve.
@@ -228,21 +233,25 @@ Plus [`ui-glance`](skills/kz-uiuxrule/skills/ui-glance/SKILL.md), a child of `kz
 
 At startup the agent sees only each skill's name and one-line description; files load only when a request matches, so the cost of having all thirteen installed is a few lines of context.
 Every request is sized first (the speed contract in [`kz-skill`](skills/kz-skill/SKILL.md), engineering rule 29e).
-A one-line edit goes to `kz-fastfix`, everyday building reads `kz-flashrule` first and runs only the checks named for the change, and only reviews, audits, "make it production" and releases take the full path in `kz-uiuxrule`.
+The first kz call in a session asks one card with two lines: the type of work, from the rows of [`packs/LOOKUP.md`](skills/kz-uiuxrule/packs/LOOKUP.md) with the one your words match marked recommended, and the size (trivial, component or project).
+Later calls reuse the answer.
+A one-line edit goes to `kz-fastfix`, a component reads LOOKUP and the one pack its row names and runs only that pack's checks, and only reviews, audits, "make it production" and releases take the full path in `kz-uiuxrule`.
 
 | You ask for... | Agent loads |
 |---|---|
 | "Fix this typo" or "Rename this button" | `kz-fastfix` SKILL.md and at most the one `kz-flashrule` line that applies; at most one check (`contrast-check.js` in both themes if a colour changed) |
-| "Build an orders table with filters" | `kz-flashrule` SKILL.md, then `ui-rules.md` T1-T3 and Appendix A (its `S1` line sends a new table there) and `snippets/filter-table.html`, then `table-check.js` and `popover-check.js`, and `layout-audit.js` once at 375px |
-| "Add a site filter to this chart" | `kz-flashrule` SKILL.md (its `T1` line covers chart and dashboard filters), then `table-check.js` (`CHARTBOX`) and `layout-audit.js` once at 375px |
-| "Add a dark mode" | `kz-flashrule` SKILL.md, then `contrast-check.js` in both themes and `layout-audit.js` at 375px for the new control |
-| "Make this page work on a phone" | `kz-flashrule` SKILL.md, and the L rules and Appendix O (the mobile shell) of `ui-rules.md` only when its layout lines are not enough, then `layout-audit.js` at 375px (and `typing-check.js` if the page has fields) |
+| "Build an orders table with filters" | `packs/LOOKUP.md`, then the `table` pack (T1-T4, the table appendix and `snippets/filter-table.html`), then `table-check.js` and `popover-check.js`, and `layout-audit.js` once at 375px |
+| "Add a site filter to this chart" | `packs/LOOKUP.md`, then the `chart` pack (the `T1` line in `kz-flashrule` covers chart and dashboard filters too), then `table-check.js` (`CHARTBOX`) and `layout-audit.js` once at 375px |
+| "Add a dark mode" | `packs/LOOKUP.md`, then the `theme` pack, then `contrast-check.js` in both themes and `layout-audit.js` at 375px for the new control |
+| "Make this page work on a phone" | `packs/LOOKUP.md`, then the `layout` pack, then `layout-audit.js` at 375px (and `typing-check.js` if the page has fields) |
+| "Add an undo toast after delete" | `packs/LOOKUP.md`, then the `feedback` pack (A1-A4, S2 and `snippets/toast-stack.html`), then `toast-check.js` on the screen the toast appears on |
+| "Explain these icon buttons" | `packs/LOOKUP.md`, then the `explain` pack (B1-B4, M6 and `snippets/tooltip.html`), then `explain-check.js` |
 | "The filter dropdown won't close on mobile" | `kz-fastfix` SKILL.md and the `N2` line of `kz-flashrule`, then `popover-check.js` once |
 | "Add a hover animation to the cards" | `kz-motionrule` SKILL.md, `motion-rules.md`, then `motion-check.js` |
 | "Draw our checkout flow" | `kz-diagramrule` SKILL.md, `diagram-rules.md`, then `diagram-check.js` at a wide width and at 375px |
-| "Review this signup form" | `kz-uiuxrule` SKILL.md (review mode), `rules/INDEX.md` section F, `ui-rules.md` F1-F9, then `form-check.js` and `typing-check.js` |
-| "Is this chart right?" | `kz-uiuxrule` SKILL.md (review mode), `rules/INDEX.md` section C, `chart-rules.md` (the C rules and the appendix for that chart), then `layout-audit.js` and `contrast-check.js` |
-| "Audit the whole UI" or "Make it production" | `kz-uiuxrule` SKILL.md and `references/modes.md`, the `rules/INDEX.md` sections the screens need, then all ten checks at both widths and in both themes |
+| "Review this signup form" | `kz-uiuxrule` SKILL.md (review mode), then the `form` pack (F1-F9 and the form appendix), then `form-check.js` and `typing-check.js` |
+| "Is this chart right?" | `kz-uiuxrule` SKILL.md (review mode), then the `chart` pack (the core C rules in full, the rest one line each), `chart-rules.md` only for the appendix of that chart, then `table-check.js` and `layout-audit.js` |
+| "Audit the whole UI" or "Make it production" | `kz-uiuxrule` SKILL.md and `references/modes.md`, the packs the screens need (`rules/INDEX.md` for anything no pack covers), then all twelve checks at both widths and in both themes |
 | "What's wrong with this screenshot?" | `ui-glance` SKILL.md only: one read, no rule files |
 | "Is this ready to ship?" | `kz-flashrule` SKILL.md, then the checks its lines name |
 | "Check the error messages" | `kz-judge` SKILL.md and `scripts/judge.py` |
@@ -250,7 +259,7 @@ A one-line edit goes to `kz-fastfix`, everyday building reads `kz-flashrule` fir
 | "The agent got it wrong, learn from it" | `kz-reflect` SKILL.md and `scripts/reflect.py` |
 
 Any code task also reads the short always-on part of `kz-engrules` (L0 and the standing rules).
-The agent asks a question only when the request is genuinely ambiguous; otherwise it says in one line what it read the work to be and proceeds.
+After the first-call card, the agent asks a question only when the request is genuinely ambiguous; otherwise it says in one line what it read the work to be and proceeds.
 
 ## The rules most often missed
 
@@ -269,7 +278,7 @@ The agent asks a question only when the request is genuinely ambiguous; otherwis
 | `G6` | A label sits beside its line, on an opaque plate, clear of the line and of every box. | `diagram-check.js` |
 
 `rules-check.js` runs against the [reference page](docs/reference/README.md): it proves each right sample passes and each wrong sample still fails.
-The ten checks in `kz-uicheck` run on any page.
+The twelve checks in `kz-uicheck` run on any page.
 
 All 94 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 
@@ -278,9 +287,10 @@ All 94 rules, one line each: [`docs/rule-index.md`](docs/rule-index.md).
 - **A table request produces a filter panel, not a text box.** Each column header has a button that opens sort, a value list with counts and, for numbers, a range. A chart or dashboard filter is the same panel, or, for up to six values, visible chips with a count and a clear.
 - **A one-line change takes about as long as without the skills.** The agent makes the edit, runs at most the one check that covers it, and reports in a line.
 - **The agent quotes rule IDs.** It says "`F8`: the field keeps focus while the list re-renders", not "I improved the UX".
-- **The agent runs the checks for what it changed and pastes the output.** A table runs `table-check.js`, a form `form-check.js`, a theme `contrast-check.js` in both themes, then `layout-audit.js` once at 375px; all ten checks at both widths are for an audit, "make it production" or a release.
+- **The agent runs the checks for what it changed and pastes the output.** A table runs `table-check.js`, a form `form-check.js`, a theme `contrast-check.js` in both themes, a toast `toast-check.js`, an icon button `explain-check.js`, then `layout-audit.js` once at 375px; all twelve checks at both widths are for an audit, "make it production" or a release.
+- **A check that could not reach the work counts as failed.** The agent points each run at the screen it changed (`--hash`, `--tap`, `--wait`), and a run that prints `WRONG SCREEN` is reported as a failure, never as clean.
 - **A diagram passes `diagram-check.js`.** The console prints `clean (1 diagram(s) measured)`, not a list of `DIAGONAL` or `LABEL ON LINE` findings.
-- **It asks only when the request is genuinely ambiguous.** Otherwise it says in one line what it read the work to be and proceeds; when it does ask, it is one card, three to five options, one marked recommended, and a custom answer always open.
+- **It asks one card on the first kz call, then only when the request is genuinely ambiguous.** The first card has two lines, the type of work and the size, each with one option marked recommended; later calls reuse the answer. Otherwise it says in one line what it read the work to be and proceeds; when it does ask, it is one card, three to five options, one marked recommended, and a custom answer always open.
 - **A correction becomes a proposed rule or check.** When you tell it it got something wrong, `kz-reflect` logs the mistake and suggests the change for you to approve.
 
 ## When not to use it
@@ -314,7 +324,7 @@ The skills are Markdown and the hook script is host-neutral, but the hook has on
 
 ## Important notes
 
-- **The purpose hook is optional, and not in the plugin yet.** Nothing depends on it: the skills carry the same size test in their own text. It sizes `kz-uiuxrule` work before any rule is read, and asks `kz-crew021` what the run is for. Wire it by hand from [`skills/kz-askcard/hooks/README.md`](skills/kz-askcard/hooks/README.md).
+- **The purpose hook is optional, and not in the plugin yet.** Nothing depends on it: the skills carry the same card and size test in their own text. On the first kz call in a session it prints the first-call card (the type of work from `packs/LOOKUP.md`, the matching one recommended, and the size), sizes `kz-uiuxrule` work before any rule is read, and asks `kz-crew021` what the run is for. Wire it by hand from [`skills/kz-askcard/hooks/README.md`](skills/kz-askcard/hooks/README.md).
 - **Sample data uses Malaysian ringgit (`RM`).** It is sample data only.
 
 ---
@@ -328,13 +338,18 @@ The skills are Markdown and the hook script is host-neutral, but the hook has on
 skills/                          the thirteen skills, each a direct child of skills/
   kz-skill/                      the router: which skill fits the request
   kz-uiuxrule/                   the UI rules, in four modes (adopt, review, build, loop)
-    rules/INDEX.md               task words to the two or three sections that apply
+    packs/LOOKUP.md              task words to one pack and its checks: the first read
+    packs/                       ten generated packs, one per type of work (generated)
+    rules/INDEX.md               task words to the rule sections, when no pack covers the work
     rules/ui-rules.md            57 UI rules and their appendices, Appendix Z lessons
     rules/motion-rules.md        M1-M6, the one copy of the motion rules
     rules/chart-rules.md         C1-C21, choosing and wiring charts
     rules/diagram-rules.md       G1-G10, boxes, lines, labels and the budget
     rules/design-principles.md   the 16 principles behind the rules
     snippets/filter-table.html   a dependency-free table that passes every check
+    snippets/toast-stack.html    one toast region: a capped stack, a count, a manual dismiss
+    snippets/saved-note.html     a quiet Saved note beside an autosaved field
+    snippets/tooltip.html        icon buttons that explain themselves on every device
     skills/ui-glance/            a screenshot reviewed in one pass
   kz-motionrule/                 lane: motion-rules.md and motion-check.js only
   kz-diagramrule/                lane: diagram-rules.md and diagram-check.js only
@@ -349,10 +364,12 @@ skills/                          the thirteen skills, each a direct child of ski
     checks/contrast-check.js     text contrast, in both themes
     checks/motion-check.js       transition all, ease-in, scale(0), no press state
     checks/diagram-check.js      diagonal lines, labels on lines, lines behind boxes
-    scripts/run-checks.py        all checks on a local file in headless Chrome
+    checks/toast-check.js        one toast region, a capped stack, repeats counted not restacked
+    checks/explain-check.js      every icon button explains itself on hover, focus and touch
+    scripts/run-checks.py        the named checks on a local file in headless Chrome, on the right screen
   kz-engrules/                   engineering rules for any code, including git
   kz-fastfix/                    the fast lane for one small job
-  kz-flashrule/                  the critical rules on one page
+  kz-flashrule/                  the core rules on one page; LOOKUP routes the rest
   kz-askcard/                    one card for asking the user, and the purpose hook
   kz-crew021/                    a whole project with a costed crew
   kz-judge/                      wording rules judged by a small model
@@ -366,8 +383,9 @@ docs/
   benchmark.md                   what the skills cost in time and tokens, and what they buy
   assets/                        the hero GIF, the carousels and the gallery pictures
 scripts/
-  validate.py                    frontmatter, links, line endings, index freshness
-  build-index.py                 regenerates docs/rule-index.md from the rule files
+  validate.py                    frontmatter, links, line endings, index and pack freshness
+  build-index.py                 regenerates docs/rule-index.md and the packs from the rule files
+  build-packs.py                 writes packs/LOOKUP.md and the ten packs (called by build-index.py)
   check-branch.py                fails a branch name that is not feat/fix/docs/chore kebab-case
   make-carousel.py               rebuilds the carousel GIFs from the reference page
   hero/                          the Remotion project that renders docs/assets/hero.gif

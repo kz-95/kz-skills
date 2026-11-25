@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site visits</title>
+<style>
+  :root { --bg: #f7f7f8; --surface: #fff; --text: #1d1f23; --muted: #5b6170; --line: #d6d9e0; --field: #8a909c; --accent: #2457c5; --danger: #a8231b; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #15161a; --surface: #1f2026; --text: #eceef2; --muted: #a6abb6; --line: #363842; --field: #767c88; --accent: #8fb0ff; --danger: #ff8f86; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  main { max-width: 880px; margin: 24px auto; padding: 0 16px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .summary { color: var(--muted); margin: 0 0 16px; }
+  ul.visits { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .visit { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px;
+    display: grid; grid-template-columns: minmax(150px, 1fr) minmax(140px, 1fr) minmax(180px, 2fr) auto; gap: 12px; align-items: end; }
+  .visit .what { align-self: center; min-width: 0; }
+  .visit .site { font-weight: 600; display: block; }
+  .visit .meta { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .visit label { display: grid; gap: 2px; font-weight: 600; font-size: 13px; color: var(--muted); min-width: 0; }
+  .visit input { font: inherit; font-size: 16px; min-height: 44px; width: 100%; padding: 6px 8px; color: var(--text);
+    background: var(--surface); border: 1px solid var(--field); border-radius: 6px; }
+  .visit input:focus-visible, .del:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .del { font: inherit; min-height: 44px; min-width: 44px; padding: 0 12px; border: 1px solid var(--field); border-radius: 6px;
+    background: var(--surface); color: var(--danger); cursor: pointer; transition: transform 80ms ease-out; }
+  .del:active { transform: scale(0.97); }
+  .empty { color: var(--muted); padding: 24px 0; }
+  @media (max-width: 640px) {
+    .visit { grid-template-columns: 1fr; align-items: stretch; }
+    .del { justify-self: start; }
+  }
+  @media (prefers-reduced-motion: reduce) { .del { transition: none; } .del:active { transform: none; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Site visits</h1>
+  <p class="summary" id="summary"></p>
+  <ul class="visits" id="visits"></ul>
+</main>
+<script>
+const VISITS = [
+  { id: 'SV-2041', date: '2026-11-03', site: 'North depot', inspector: 'Amira Haddad', notes: 'Fire doors checked, one closer slow' },
+  { id: 'SV-2042', date: '2026-11-05', site: 'Harbour', inspector: 'Tom Okafor', notes: 'Crane inspection booked for next week' },
+  { id: 'SV-2043', date: '2026-11-07', site: 'East works', inspector: 'Lena Brandt', notes: 'Roof drains clear' },
+  { id: 'SV-2044', date: '2026-11-10', site: 'West plant', inspector: 'Amira Haddad', notes: 'Boiler pressure within range' },
+  { id: 'SV-2045', date: '2026-11-12', site: 'South yard', inspector: 'Ravi Menon', notes: 'Fence panel loose near gate 2' },
+  { id: 'SV-2046', date: '2026-11-14', site: 'Airport', inspector: 'Tom Okafor', notes: 'Lighting survey complete' }
+];
+
+const fmtDate = iso => new Date(iso + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+function render() {
+  const list = document.getElementById('visits');
+  list.textContent = '';
+  document.getElementById('summary').textContent = VISITS.length + ' visits this month';
+  if (!VISITS.length) {
+    const li = document.createElement('li');
+    li.className = 'empty';
+    li.textContent = 'No visits this month.';
+    list.appendChild(li);
+    return;
+  }
+  for (const v of VISITS) {
+    const li = document.createElement('li');
+    li.className = 'visit';
+    li.dataset.id = v.id;
+    li.innerHTML =
+      '<div class="what"><span class="site"></span><span class="meta"></span></div>' +
+      '<label>Inspector<input type="text" name="inspector" autocomplete="off"></label>' +
+      '<label>Notes<input type="text" name="notes" autocomplete="off"></label>' +
+      '<button type="button" class="del">Delete</button>';
+    li.querySelector('.site').textContent = v.site;
+    li.querySelector('.meta').textContent = v.id + ' \u00b7 ' + fmtDate(v.date);
+    for (const input of li.querySelectorAll('input')) {
+      input.value = v[input.name];
+      input.addEventListener('change', () => { v[input.name] = input.value; });
+    }
+    const del = li.querySelector('.del');
+    del.setAttribute('aria-label', 'Delete visit ' + v.id + ', ' + v.site);
+    del.addEventListener('click', () => {
+      VISITS.splice(VISITS.indexOf(v), 1);
+      render();
+    });
+    list.appendChild(li);
+  }
+}
+
+render();
+</script>
+</body>
+</html>

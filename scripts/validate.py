@@ -9,7 +9,8 @@ Checks, each of which has caught a real defect in this project:
      the frontmatter is strict YAML (an unquoted value with ': ' makes the skills CLI skip it)
   2. every relative link, relative path and <img> source in the Markdown resolves
   3. no CRLF line endings in text files (.gitattributes enforces LF)
-  4. docs/rule-index.md is up to date with the rule files
+  4. docs/rule-index.md and the type packs in skills/kz-uiuxrule/packs/ are up to date with the
+     rule files (build-index.py --check, which also runs build-packs.py --check)
   5. the plugin and marketplace manifests parse and agree on the plugin name
   6. every published link (https://kz-95.github.io/kz-skills/...) names a file under docs/,
      and its #anchor, on an .html page, names an id that page has
@@ -200,11 +201,13 @@ for base, dirs, files in os.walk(ROOT):
             if b"\r\n" in open(os.path.join(base, f), "rb").read():
                 fail("%s: CRLF line endings (the repository is LF)" % os.path.relpath(os.path.join(base, f), ROOT))
 
-# 4. generated index -----------------------------------------------------------------------------
+# 4. generated index and type packs --------------------------------------------------------------
+# A pack copies rule text, so an edited rule leaves every pack that quotes it stale.
 r = subprocess.run([sys.executable, os.path.join(ROOT, "scripts", "build-index.py"), "--check"],
                    capture_output=True, text=True)
 if r.returncode != 0:
-    fail((r.stdout + r.stderr).strip() or "docs/rule-index.md check failed")
+    out = [l for l in (r.stdout + r.stderr).splitlines() if "up to date" not in l]
+    fail(" / ".join(out).strip() or "docs/rule-index.md or packs check failed")
 
 # 5. manifests -------------------------------------------------------------------------------------
 try:
@@ -275,4 +278,4 @@ if problems:
     for p in problems:
         print("  - " + p)
     sys.exit(1)
-print("ok: %d skills, links resolve, LF endings, rule index current, manifests agree, published links resolve, llms.txt copies match, ASCII only" % found)
+print("ok: %d skills, links resolve, LF endings, rule index and packs current, manifests agree, published links resolve, llms.txt copies match, ASCII only" % found)

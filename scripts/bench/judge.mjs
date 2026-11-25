@@ -18,7 +18,7 @@ import { spawn } from 'node:child_process';
 import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { STATUSES, SITES, openValueList, untickOne, openDetail, flipTheme } from './helpers.mjs';
+import { STATUSES, SITES, openValueList, untickOne, openDetail, flipTheme, deleteFirstVisit, pressUndos, editFirstVisit } from './helpers.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PW = process.env.PLAYWRIGHT || '/opt/node-tools/node_modules/playwright/index.mjs';
@@ -60,6 +60,8 @@ const STEPS = {
   'form-build': [['Submitted the empty form', p => click(p, /submit|send|request|create|save/i)], ['Filled the form in and submitted it', async p => { await p.reload(); return fillForm(p); }]],
   'iterate-html': [['Clicked the first job', p => openDetail(p)], ['Pressed Escape', async p => { await p.keyboard.press('Escape'); await p.waitForTimeout(250); return true; }], ['Clicked the dark mode toggle', p => flipTheme(p)]],
   'dark-mode': [['Clicked the dark mode toggle', p => flipTheme(p)]],
+  'undo-toast': [['Deleted the first visit', async p => { const ok = await deleteFirstVisit(p); await p.waitForTimeout(300); return ok; }],
+    ['Pressed Undo, then edited the first field and left it', async p => { const u = await pressUndos(p, 1); const e = await editFirstVisit(p); await p.waitForTimeout(600); return u && e; }]],
 };
 
 async function capture(browser, page_, task, dir, side) {

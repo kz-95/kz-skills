@@ -1,5 +1,9 @@
 # Skill benchmark: BEFORE
 
+> **Pending:** the rerun on the type-routing skills (LOOKUP, one pack per type, twelve checks, the `undo-toast` task) is recorded in `scripts/bench/results/typerouting-2026-11-20.json`: 228 runs, not yet scored.
+> Every number below is for the skills before that change.
+> Score it with `node scripts/bench/score.mjs` on that file, then `judge.mjs` and `report.py`.
+
 Baseline numbers for the kz skills on small single-file HTML tasks, taken on 2026-10-14 before
 any change to the skills. The harness is `scripts/bench/` (see its README); re-run it for AFTER.
 Raw results: `scripts/bench/results/before-2026-10-14.json` (and `opus-probe-2026-10-14.json`).

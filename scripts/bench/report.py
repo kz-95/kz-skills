@@ -153,7 +153,7 @@ def main():
     for model in models:
         mr = [r for r in runs if r["model"] == model]
         tasks = [t for t in ["trivial-label", "small-column", "dark-mode", "table-build", "chart-filter", "form-build",
-                             "iterate-html"] if any(r["task"] == t for r in mr)]
+                             "undo-toast", "iterate-html"] if any(r["task"] == t for r in mr)]
         keys = sorted({(r["condition"], r["version"]) for r in mr},
                       key=lambda k: (COND_ORDER.index(k[0]), VER_ORDER.index(k[1])))
         cells = {}

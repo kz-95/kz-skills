@@ -7,7 +7,7 @@ One row per document: what it covers, what kind of document it is, and **when to
 | [install.md](install.md) | Guide | Installing in Claude Code (plugin and by hand) and in other agents; which lane to call; wiring the optional purpose hook; fixing "it does not show up" | You are setting this up, or a skill is not appearing as a command |
 | [how-they-fit.md](how-they-fit.md) | Guide | The thirteen skills, what each is for, and how a request is routed between them | You are not sure which skill a task needs |
 | [benchmark.md](benchmark.md) | Record | What the skills cost in time and tokens and what they buy in check failures, rubric items and a blind judge's preference, measured before and after the speed contract on Sonnet 5.5 and Opus 5.5 (BEFORE, AFTER and AFTER 2) | You want to know how much slower the skills make an agent, which lane to use when speed matters, or what a change to the skills did |
-| [../scripts/bench/README.md](../scripts/bench/README.md) | Guide | The benchmark harness in `scripts/bench/`: the seven tasks, the conditions, scoring with the kz checks, axe and Lighthouse, the blind judge, and how to run it again; it spends real money | You changed a skill and want to measure it before and after |
+| [../scripts/bench/README.md](../scripts/bench/README.md) | Guide | The benchmark harness in `scripts/bench/`: the eight tasks, the conditions, scoring with the kz checks, axe and Lighthouse, the blind judge, and how to run it again; it spends real money | You changed a skill and want to measure it before and after |
 | [with-impeccable.md](with-impeccable.md) | Guide | Using these skills alongside impeccable (a style skill): who decides what, where they agree, the three places they can pull against each other | You want a style from impeccable and correct behaviour from here |
 | [rule-index.md](rule-index.md) | Reference | Every rule, one line each, by category, with links to its live samples. **Generated** by `scripts/build-index.py` | You want to scan all rules, or find one by its statement |
 | [reference/ui-rules-visual.html](reference/ui-rules-visual.html) | Reference | A wrong and a right sample for every rule, live. `reference/index.html` forwards to it, so the folder's published address works | You want to see a rule fail and pass |
@@ -22,7 +22,9 @@ They live inside the skills, in one place each, so a copy here could not drift:
 
 | Where | What |
 |---|---|
-| [`skills/kz-uiuxrule/rules/INDEX.md`](../skills/kz-uiuxrule/rules/INDEX.md) | The keyword router: task words to the sections that apply. **Start here for any UI task.** |
+| [`skills/kz-uiuxrule/packs/LOOKUP.md`](../skills/kz-uiuxrule/packs/LOOKUP.md) | The pack lookup: task words to one generated pack and its checks. **Start here for any UI task.** |
+| [`skills/kz-uiuxrule/packs/`](../skills/kz-uiuxrule/packs/) | Ten generated packs, one per type of work: the rules in full, the appendix, a snippet and the exact check command. Rebuilt by `scripts/build-index.py`, never edited by hand |
+| [`skills/kz-uiuxrule/rules/INDEX.md`](../skills/kz-uiuxrule/rules/INDEX.md) | The keyword router: task words to the rule sections, for work no pack covers |
 | [`skills/kz-uiuxrule/rules/ui-rules.md`](../skills/kz-uiuxrule/rules/ui-rules.md) | The UI rules by category, with appendices and the 26 lessons |
 | [`skills/kz-uiuxrule/rules/motion-rules.md`](../skills/kz-uiuxrule/rules/motion-rules.md) | The 6 motion rules |
 | [`skills/kz-uiuxrule/rules/chart-rules.md`](../skills/kz-uiuxrule/rules/chart-rules.md) | The 21 chart rules |

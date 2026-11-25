@@ -1,6 +1,6 @@
 ---
 name: kz-uicheck
-description: "Ten runnable browser checks that measure an interface instead of judging it: layout audit (overflow, overlap, clipped text, tap targets, SVG focus ring, undefined CSS variable, wrapped sequence), table check (text-box filters, missing filter or sort), typing check (field rebuilt or caret jumped while typed), popover check (a panel that cannot be closed), contrast check (under 4.5:1, both themes), modal check (scroll lock, focus, backdrop, Escape), focus check, form check, motion check (transition all, ease-in, scale(0), no press state) and diagram check (slanted or stacked lines, a line behind a box, a label on its line, a diagram shrunk on a phone, no accessible name). Paste into the console; no build step. Run only the checks for what changed, once; all ten only for a release or a full audit. Triggers on \"/kz-uicheck\", \"check this page\", \"layout audit\", \"table check\", \"contrast check\", \"diagram check\", \"verify the UI\"."
+description: "Twelve runnable browser checks that measure an interface instead of judging it: layout audit (overflow, overlap, clipped text, tap targets, SVG focus ring, undefined CSS variable), table check (text-box filters, missing filter or sort), typing check (field rebuilt or caret jumped), popover check (a panel that cannot be closed), contrast check (under 4.5:1, both themes), modal check (scroll lock, focus, backdrop, Escape), focus check, form check, motion check (transition all, ease-in, no press state), diagram check (slanted or stacked lines, a label on its line, shrunk on a phone), toast check (no live region or dismiss, a repeat restacked, an Undo lost, under a dialog) and explain check (an icon button unexplained on hover, focus or touch). Paste into the console; no build step. Run only the checks for what changed, once; all twelve only for a release or a full audit. Triggers on \"/kz-uicheck\", \"check this page\", \"layout audit\", \"table check\", \"contrast check\", \"toast check\", \"verify the UI\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 
@@ -14,8 +14,9 @@ Nothing to install, no selectors to configure, no framework assumed.
 29e). One line or element: at most the one check that covers it. A component or screen: its
 checks (table -> `table-check` + `popover-check`, form -> `form-check` + `typing-check` at
 375px, dropdown -> `popover-check`, modal -> `modal-check`, motion -> `motion-check`, diagram
--> `diagram-check`, colour/theme -> `contrast-check` in both themes), then `layout-audit` once
-at 375px. After a fix, re-run only the check that failed. All ten, at three
+-> `diagram-check`, colour/theme -> `contrast-check` in both themes, toasts or saved notes -> `toast-check`,
+icon buttons or tooltips -> `explain-check`), then `layout-audit` once
+at 375px. After a fix, re-run only the check that failed. All twelve, at three
 widths and both themes: mode 4, "make it production", a release. Never copy a check into the
 user's project unless asked.
 
@@ -33,17 +34,19 @@ Every finding code and skip attribute (`data-*-check="skip"`) in full: `referenc
 | `checks/motion-check.js` | `ALL`, `EASEIN`, `LAYOUTPROP`, `SCALE0`, `ORIGIN`, `NOPRESS`; no reduced-motion query is an advisory | `M1` `M3`-`M5` |
 | `checks/diagram-check.js` | `BUDGET`, `DIAGONAL`, `CORNER`, `STACKED`, `SHARED PORT`, `BEHIND BOX`, `LABEL ON LINE`, `LABEL GAP`, `PLATE UNDER BOX`, `KEY INSIDE`, `SHRUNK`, `PAGE SCROLL`, `CLIPPED`, `NO CUE`, `NO NAME`, `DUP ID`, `EMPHASIS`. Wide width and 375px | `G1`-`G10` |
 | `checks/form-check.js` | No label, phone or email typed as text, error while typing, no nudge on a required field, refused submit not landing on the first empty field. Types: reload after | `F1` `F2` |
+| `checks/toast-check.js` | `NO LIVE`, `NO CLOSE`, `STACK` (over three), `RESTACK`, `REMOUNT`, `NO COUNT`, `UNDO GONE`, `UNDO MERGED`, `ERROR SHORT`, `TOO FAST`, `UNDER DIALOG`. Measures through `window.kzToast` / `toast` / `showToast` or `[data-kz-toast-test]`; never presses anything else (`NO HOOK` advisory) | `A1` `A2` |
+| `checks/explain-check.js` | Icon-only buttons: `NO EXPLAIN`, `HOVER ONLY`, `FOCUS ONLY`, `NO TOUCH PATH`, `NO NAME`, `SLOW NEXT`; a title or an accessible name alone is not an explanation | `B1` `B2` `M6` |
 
 ## Without a browser window: `scripts/run-checks.py`
 
 ```bash
-python scripts/run-checks.py page.html                         # all ten, at 1280px (large work only)
+python scripts/run-checks.py page.html                         # all twelve, at 1280px (large work only)
 python scripts/run-checks.py page.html --checks table-check,popover-check --width 390
 ```
 
 Headless Chrome on a local HTML file (needs only Python and Chrome); exits 1 if any check
 fails, so a generated page can be checked in a script or pre-commit step. One width per run.
-Without `--checks` it runs all ten: the large path only (a release, an audit, mode 4). The fast
+Without `--checks` it runs all twelve: the large path only (a release, an audit, mode 4). The fast
 lanes (`kz-fastfix`, `kz-flashrule`) pass `--checks <the one check>` and never call it bare.
 
 ## What these cannot measure

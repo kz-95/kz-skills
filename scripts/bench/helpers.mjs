@@ -175,3 +175,90 @@ export const installColour = p => p.evaluate(() => {
 });
 
 export const pageLum = async p => { await installColour(p); return p.evaluate(() => window.__kzc.lum(window.__kzc.bg(document.querySelector('main') || document.body))); };
+
+/* ---------- undo-toast: a list of site visits, each editable inline with a Delete button ----------
+   Rows are found by their Delete (or Remove) buttons outside any dialog or live region; a row's
+   identity is its notes text, which only that row holds. A message is visible text matching a
+   pattern (opacity and size checked up the tree), wherever the page put it. */
+export const VISIT_NOTES = ['Fire doors checked, one closer slow', 'Crane inspection booked for next week', 'Roof drains clear',
+  'Boiler pressure within range', 'Fence panel loose near gate 2', 'Lighting survey complete'];
+export const DELETED_RE = /\b(deleted|removed|undo)\b/i;
+export const SAVED_RE = /\b(saved|updated)\b/i;
+const OUTSIDE = '[role=dialog], [role=alertdialog], dialog, [aria-modal=true], [aria-live]:not([aria-live=off]), [role=status], [role=alert], [role=log], output';
+
+/* the visible elements whose own text matches re; with mark, they get data-kzb-msg */
+export const messages = (p, re, mark = false) => p.evaluate(([src, flags, mark]) => {
+  const re = new RegExp(src, flags);
+  const shown = el => { const r = el.getBoundingClientRect(); if (!r.width || !r.height) return false;
+    for (let n = el; n && n.nodeType === 1; n = n.parentElement) { const cs = getComputedStyle(n); if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity < 0.1) return false; } return true; };
+  const out = [], w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let t;
+  while ((t = w.nextNode())) if (re.test(t.nodeValue) && t.parentElement && shown(t.parentElement) && !out.includes(t.parentElement)) out.push(t.parentElement);
+  if (mark) { document.querySelectorAll('[data-kzb-msg]').forEach(e => e.removeAttribute('data-kzb-msg')); out.forEach(e => e.setAttribute('data-kzb-msg', '')); }
+  return out.length;
+}, [re.source, re.flags, mark]);
+
+/* poll up to ms for more matching messages than `base`; returns true when they came */
+export async function waitMessage(p, re, base, ms) {
+  for (let t = 0; t <= ms; t += 100) { if ((await messages(p, re)) > base) return true; await p.waitForTimeout(100); }
+  return false;
+}
+
+const deleteButtons = p => p.getByRole('button', { name: /delete|remove/i });
+export async function visitRows(p) {
+  let n = 0;
+  for (const b of await deleteButtons(p).all()) if (await b.isVisible().catch(() => false) && !(await b.evaluate((e, s) => !!e.closest(s), OUTSIDE).catch(() => true))) n++;
+  return n;
+}
+/* the notes of the rows on screen, from field values and text */
+export const presentNotes = p => p.evaluate(N => {
+  const vals = [...document.querySelectorAll('input, textarea')].map(i => i.value).join('\n') + '\n' + document.body.innerText;
+  return N.filter(n => vals.includes(n));
+}, VISIT_NOTES);
+
+/* a confirm step, if the page asks: window.confirm is accepted; a modal's confirming button is pressed */
+export async function confirmIfAsked(p) {
+  await p.waitForTimeout(200);
+  const modal = p.locator('[role=alertdialog], [role=dialog], dialog[open], [aria-modal=true]').filter({ visible: true }).last();
+  if (!(await modal.count())) return false;
+  const btn = modal.getByRole('button', { name: /delete|remove|confirm|yes|ok|continue/i }).filter({ hasNotText: /cancel|keep|^no\b/i }).first();
+  if (!(await btn.count())) return false;
+  await btn.click({ timeout: 2000 }).catch(() => {});
+  return true;
+}
+
+/* press the first row's Delete (and confirm if asked); true when a row went */
+export async function deleteFirstVisit(p) {
+  if (!p.__kzbDialog) { p.on('dialog', d => d.accept().catch(() => {})); p.__kzbDialog = true; }
+  const before = await visitRows(p);
+  for (const b of await deleteButtons(p).all()) {
+    if (!(await b.isVisible().catch(() => false)) || (await b.evaluate((e, s) => !!e.closest(s), OUTSIDE).catch(() => true))) continue;
+    await b.click({ timeout: 2000 }).catch(() => {});
+    await confirmIfAsked(p);
+    await p.waitForTimeout(100);
+    return (await visitRows(p)) < before;
+  }
+  return false;
+}
+
+/* press every Undo (or Restore) on screen, one at a time, up to `max` */
+export async function pressUndos(p, max = 4) {
+  let n = 0;
+  for (; n < max; n++) {
+    const u = p.getByRole('button', { name: /undo|restore/i }).filter({ visible: true }).first();
+    if (!(await u.count())) break;
+    await u.click({ timeout: 2000 }).catch(() => {});
+    await p.waitForTimeout(300);
+  }
+  return n;
+}
+
+/* change the first row field and leave it (Tab); if the page wants a Save press, press the row's */
+export async function editFirstVisit(p) {
+  const f = p.locator('input[type=text], input:not([type]), textarea, [contenteditable=true]').filter({ visible: true }).first();
+  if (!(await f.count())) return false;
+  const editable = await f.evaluate(e => e.isContentEditable);
+  if (editable) { await f.click(); await p.keyboard.press('End'); await p.keyboard.type(' (rechecked)'); }
+  else { const v = await f.inputValue(); await f.fill(v + ' (rechecked)'); }
+  await p.keyboard.press('Tab');
+  return true;
+}

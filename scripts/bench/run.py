@@ -59,7 +59,7 @@ TASKS_DIR = os.path.join(HERE, "tasks")
 RESULTS_DIR = os.path.join(HERE, "results")
 ASSUME_SUFFIX = "If you would ask me something, assume the recommended option and proceed."
 PROBE_TURNS = 8
-TASKS = ["trivial-label", "small-column", "dark-mode", "table-build", "chart-filter", "form-build", "iterate-html"]
+TASKS = ["trivial-label", "small-column", "dark-mode", "table-build", "chart-filter", "form-build", "undo-toast", "iterate-html"]
 SMALL_TASKS = ["trivial-label", "small-column", "dark-mode", "iterate-html"]
 CONDITIONS = ["none", "installed", "uiuxrule", "flashrule", "fastfix"]
 SLASH = {"uiuxrule": "/kz-uiuxrule ", "flashrule": "/kz-flashrule ", "fastfix": "/kz-fastfix "}
@@ -81,11 +81,31 @@ STRIP_ENV = ["CLAUDECODE", "CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_CHILD_SESSION"
              "CLAUDE_CODE_TEE_SDK_STDOUT", "CLAUDE_CODE_MESSAGING_SOCKET", "CLAUDE_CODE_DIAGNOSTICS_FILE",
              "CLAUDE_EFFORT", "CLAUDE_CONFIG_DIR"]
 SKILL_MARKERS = ("/skills/kz-",)
-CHROME = os.environ.get("CHROME", "/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell")
+def _find_chrome():
+    """The browser every child run is given. An empty or stale CHROME would leave the agents unable to run
+    a check, so the kz runs would look cheaper than they are: fail here instead."""
+    if os.environ.get("CHROME") and os.path.exists(os.environ["CHROME"]):
+        return os.environ["CHROME"]
+    for pat in ("/opt/pw-browsers/chromium-*/chrome-linux*/chrome", "/opt/pw-browsers/chromium_headless_shell-*/*/chrome-headless-shell",
+                "/opt/pw-browsers/chromium_headless_shell-*/*/headless_shell"):
+        hits = sorted(glob.glob(pat))
+        if hits:
+            return hits[-1]
+    for name in ("google-chrome", "chromium", "chromium-browser", "chrome"):
+        if shutil.which(name):
+            return shutil.which(name)
+    sys.exit("no Chrome found: set CHROME to a Chrome or Chromium binary")
+
+
+CHROME = _find_chrome()
 TOKEN_KEYS = ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens")
 
 lock = threading.Lock()
 spent = [0.0]
+# Runs that end with an error and no tokens in a row: the CLI lost its login or session, and every
+# run after it would measure nothing. Past FAIL_STREAK, no new run starts; --resume picks them up.
+FAIL_STREAK = 6
+streak = [0]
 
 
 def sh(cmd, cwd=None, env=None, timeout=None):
@@ -136,7 +156,7 @@ def child_env(cfg):
     env["CLAUDE_CONFIG_DIR"] = cfg
     # A user's machine has a browser; without this, kz-uicheck's runner stops at "Chrome not
     # found" and the kz runs look cheaper than they are. Set for every condition.
-    env.setdefault("CHROME", CHROME)
+    env["CHROME"] = CHROME
     return env
 
 
@@ -276,6 +296,8 @@ def run_one(job, work, args, write_cb):
     with lock:
         if spent[0] >= args.budget:
             return {**head, "skipped": "budget"}
+        if streak[0] >= FAIL_STREAK:
+            return {**head, "skipped": "errors"}
     mshort = (model or "default").replace("claude-", "")
     base = os.path.join(work, mshort, version.strip("-") or "na", condition, task, "%s-r%d" % (mode, rep))
     wd, cfg = os.path.join(base, "w"), os.path.join(base, "cfg")
@@ -378,6 +400,8 @@ def main():
     ap.add_argument("--work", default=os.environ.get("KZ_BENCH_WORK", "/tmp/kzb"))
     ap.add_argument("--label", default="run")
     ap.add_argument("--out", default=None)
+    ap.add_argument("--resume", action="store_true",
+                    help="keep the finished runs already in the results file and launch only the missing or failed ones")
     ap.add_argument("--dry-run", action="store_true", help="print the launch order and stop")
     ap.add_argument("--no-score", action="store_true")
     a = ap.parse_args()
@@ -393,6 +417,16 @@ def main():
     os.makedirs(work, exist_ok=True)
     out = a.out or os.path.join(RESULTS_DIR, "%s-%s.json" % (a.label, stamp))
     prev = json.load(open(out)) if os.path.exists(out) else {}   # merge with an earlier file of the same name
+    if a.resume:
+        # a run that errored before the model answered (0 tokens: a lost session, an expired login) has
+        # measured nothing, so it is dropped and run again; every finished run is kept as it is
+        def key(r):
+            return (r.get("model"), r.get("version"), r.get("condition"), r.get("task"), r.get("rep"), r.get("mode"))
+        kept = [r for r in prev.get("runs", []) if r.get("tokens_total") and not r.get("error") and not r.get("skipped")]
+        done = set(key(r) for r in kept)
+        prev["runs"] = kept
+        jobs = [j for j in jobs if key(j) not in done]
+        print("resume: %d finished runs kept, %d to run" % (len(kept), len(jobs)), flush=True)
     before_sha = sh(["git", "rev-parse", a.before_ref], cwd=REPO).stdout.strip()
     after_sha = sh(["git", "rev-parse", "HEAD"], cwd=REPO).stdout.strip()
     dirty = bool(sh(["git", "status", "--porcelain", "skills"], cwd=REPO).stdout.strip())
@@ -409,6 +443,11 @@ def main():
 
     def write(rec):
         with lock:
+            if not rec.get("skipped"):
+                streak[0] = streak[0] + 1 if (rec.get("error") or not rec.get("tokens_total")) else 0
+                if streak[0] == FAIL_STREAK:
+                    print("%d runs in a row ended with no tokens: no new runs start. Fix the CLI, then rerun with --resume."
+                          % FAIL_STREAK, flush=True)
             doc["runs"].append(rec)
             doc["total_cost_usd"] = round(base_cost + spent[0], 4)
             os.makedirs(os.path.dirname(out), exist_ok=True)
