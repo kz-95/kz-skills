@@ -31,9 +31,8 @@ Then `/kz-flashrule` for everyday UI building, `/kz-uiuxrule` for reviews and au
 
 > **Warning: these skills cost time and tokens, on purpose.**
 > The agent reads rules and runs browser checks before it calls UI work done.
-> Measured with `/kz-uiuxrule`: 1.5x the time and 2.2x the tokens on Sonnet 5.5, 1.7x and 1.9x on Opus 5.5, in exchange for 0 check failures introduced against 50 to 55 without the skills.
-> When speed matters, call the lighter lane: `/kz-fastfix` for a one-line edit, `/kz-flashrule` for everyday building (0.8x the time and 1.0x the tokens on Opus 5.5).
-> These figures are from the 2026-10-14 skills, before type routing (one lookup, one pack per type of work); a rerun on the current skills is recorded and its numbers replace these once scored.
+> Measured with `/kz-uiuxrule` on eight tasks: 1.6x the time and 1.5x the tokens on Sonnet 5.5, 2.0x and 1.9x on Opus 5.5, in exchange for every rubric item passed and 8 and 2.5 check failures introduced against 48 and 54 without the skills.
+> When speed matters, call the lighter lane: `/kz-fastfix` for a one-line edit, `/kz-flashrule` for everyday building (1.4x the time and 1.3x to 1.4x the tokens on both models).
 > Details and limits: [Measured](#measured-speed-tokens-and-quality).
 
 <details>
@@ -176,37 +175,35 @@ The downsides are real:
 
 ## Measured: speed, tokens and quality
 
-These numbers measure the skills as they were on 2026-10-14, before type routing.
-The rerun on the current skills, with an eighth task for toasts and Undo, is in `scripts/bench/results/typerouting-2026-11-20.json` (228 runs, not yet scored); it replaces this section once scored.
-
-The skills were measured against no skills on seven single-file HTML tasks: a label change, a new column, a dark mode toggle, a table, a chart filter, a form, and a build with three follow-ups.
-Each run was a fresh headless Claude Code 2.1.299 session on a named model, two or three runs per task.
+The current skills (type routing: one lookup, one pack per type of work, twelve checks) were measured against no skills and against the skills just before type routing, on eight single-file HTML tasks: a label change, a new column, a dark mode toggle, a table, a chart filter, a form, a delete with Undo and a save confirmation, and a build with three follow-ups.
+Each run was a fresh headless Claude Code 2.1.329 session on a named model, three runs per task on Sonnet 5.5 and two on Opus 5.5, 228 runs in one shuffled batch.
 A factor is the lane's median over the no-skill median for the same task and model, then the median over tasks.
 A check failure introduced is a failing `kz-uicheck` check run (check x colour scheme, at 1280px and 390px) that the starter page did not have; the number in brackets is no skills on the same tasks.
-For `/kz-uiuxrule` and the installed skills, "before" is the skills as they were before the speed contract; for the two fast lanes, which the old skills never routed to, it is the first version of the speed contract.
+The rubric is a DOM probe of what each request asked for, 43 items over the eight tasks.
 
 **Sonnet 5.5** (`claude-sonnet-5-5`)
 
-| Lane | Tasks | Time vs no skills, before -> now | Tokens vs no skills, before -> now | Check failures introduced, now (no skills) |
-|---|---|---|---|---|
-| `/kz-uiuxrule` | 7 | 2.54x -> 1.52x | 2.22x -> 2.15x | 0 (50) |
-| `/kz-flashrule` | 5 | 1.14x -> 1.13x | 1.21x -> 1.51x | 2 (24) |
-| `/kz-fastfix` | 4 | 1.24x -> 1.60x | 1.53x -> 1.86x | 0 (12) |
-| Installed, the model chooses | 7 | 1.14x -> 1.09x | 1.09x -> 1.12x | 8 (50) |
+| Lane | Tasks | Time vs no skills, before -> now | Tokens vs no skills, before -> now | Rubric, now (no skills) | Check failures introduced, now (no skills) |
+|---|---|---|---|---|---|
+| `/kz-uiuxrule` | 8 | 1.31x -> 1.63x | 1.42x -> 1.46x | 43/43 (37) | 8 (48) |
+| `/kz-flashrule` | 8 | 1.35x now | 1.43x now | 43/43 (37) | 8 (48) |
+| `/kz-fastfix` | 4 | 1.50x now | 1.76x now | 22/22 (22) | 0 (10) |
+| Installed, the model chooses | 8 | 1.07x -> 1.41x | 1.09x -> 1.46x | 42/43 (37) | 9 (48) |
 
 **Opus 5.5** (`claude-opus-5-5`)
 
-| Lane | Tasks | Time vs no skills, before -> now | Tokens vs no skills, before -> now | Check failures introduced, now (no skills) |
-|---|---|---|---|---|
-| `/kz-uiuxrule` | 7 | 3.35x -> 1.67x | 4.17x -> 1.86x | 0 (55) |
-| `/kz-flashrule` | 5 | 1.56x -> 0.82x | 1.72x -> 1.02x | 0 (26) |
-| `/kz-fastfix` | 4 | 1.70x -> 1.40x | 1.73x -> 1.23x | 6 (14) |
+| Lane | Tasks | Time vs no skills, before -> now | Tokens vs no skills, before -> now | Rubric, now (no skills) | Check failures introduced, now (no skills) |
+|---|---|---|---|---|---|
+| `/kz-uiuxrule` | 8 | 1.45x -> 1.95x | 1.61x -> 1.90x | 43/43 (38.5) | 2.5 (54) |
+| `/kz-flashrule` | 8 | 1.37x now | 1.27x now | 43/43 (38.5) | 8 (54) |
+| `/kz-fastfix` | 4 | 1.51x now | 1.70x now | 22/22 (22) | 1 (14) |
 
-`/kz-uiuxrule` passed 37 of 37 rubric items on Sonnet 5.5 and 36.5 of 37 on Opus 5.5, against 32 and 34 for no skills.
-With the skills only installed, Sonnet 5.5 picked a kz skill in 14 of 21 runs, against 2 of 21 before.
-On Sonnet 5.5 the fast lanes got no faster in the second version: they now run the one named check where before they ran none, and with two or three runs per cell that reads as "no faster", not as a measured slowdown.
-On Opus 5.5 all six `/kz-fastfix` failures were on the build-and-follow-ups task, and in the run that could be traced they were already there after the bare build turn, which the lane does not cover.
-A blind screenshot judge (Opus 5.5) preferred the no-skill page in most pairs on the table build (the kz page won 1 of 10) and the build with follow-ups (2 of 10), and the kz page on the chart filter (10 of 10).
+Type routing did not make the skills faster.
+It moved the reading from one core file to a lookup, a pack and the pack's snippet, which costs about the same on small work and more on toast and table work, where the snippets run 8 to 15 KB.
+It raised the rubric to full marks in every lane, and cut failures introduced on Opus 5.5 (5 to 2.5) but not on Sonnet 5.5 (2 to 8).
+With the skills only installed, Sonnet 5.5 called kz-fastfix in 11 of 24 runs and kz-flashrule in 4, against 4 and 4 before.
+A blind screenshot judge (Opus 5.5) gave 23 of 80 pairs to the kz page, 34 to no skills and called 23 ties.
+It sided with the kz page on the chart filter and Sonnet's form, and with no skills on the table build and on the new toast task, where it preferred a dark toast that also announces a field save to the kz pages' inline "Saved" note.
 
 Every table, the method and the limits: [`docs/benchmark.md`](docs/benchmark.md).
 To run it again, before and after a change of your own: [`scripts/bench/README.md`](scripts/bench/README.md); it spends real money on your account.

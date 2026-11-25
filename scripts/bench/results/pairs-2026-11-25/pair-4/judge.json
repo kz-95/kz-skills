@@ -1,0 +1,8 @@
+{
+ "winner": "A",
+ "reasons": [
+  "A's status filter is a set of clear chips with a count on each (All 8, Running 2, etc.). B puts a generic 'All \u25be' dropdown on every column plus a search box, which is more cluttered and hides the status filter the request asked for.",
+  "On a phone, A reflows cleanly and every status badge stays visible. B's table is cut off at 390px, so the Status, Due and Value columns are clipped and you have to scroll sideways.",
+  "A's detail panel is richer, with a description and a recent log. Its dark mode button switches to 'Light mode' when active, so its state is obvious. B's toggle still says 'Dark mode' after it's turned on, and B's table is left-aligned, leaving a lot of empty space on desktop."
+ ]
+}

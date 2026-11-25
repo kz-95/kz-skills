@@ -67,8 +67,8 @@ and `judge.mjs` stops at its own `--budget` (default USD 25).
   value, submit the empty form, flip the theme, delete a visit and press Undo; `STEPS` per task). Sides are shuffled (seeded) and
   named A and B only; `claude -p --model claude-opus-5-5 --tools Read` in an empty config dir
   answers which a real user would find better, as JSON `{winner, reasons}`. `--save 5` copies
-  five representative pairs to `results/pairs/` for a person to judge blind; the answer key is
-  `results/pairs/key.json`, so do not open it first.
+  five representative pairs to `results/pairs-<date>/` for a person to judge blind; the answer key is
+  that folder's `key.json`, so do not open it first.
 - `report.py` - prints the Markdown tables used in `docs/benchmark.md` from one or more results
   files and a judge file, and times the tool calls that touched the kz skills from transcripts.
 

@@ -10,20 +10,24 @@
      node scripts/bench/judge.mjs scripts/bench/results/after-2026-10-14.json [--save 5] [--budget 25]
 
    Writes results/judge-<date>.json (every comparison, the side mapping, the judge's JSON and
-   cost) and, with --save N, N representative pairs under results/pairs/ for a person to judge
-   blind; the mapping for those is in results/pairs/key.json, so do not open it first.
+   cost) and, with --save N, N representative pairs under results/pairs-<date>/ for a person to judge
+   blind; the mapping for those is in that folder's key.json, so do not open it first.
    This spends real money (one Opus call per comparison). */
 import { readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { STATUSES, SITES, openValueList, untickOne, openDetail, flipTheme, deleteFirstVisit, pressUndos, editFirstVisit } from './helpers.mjs';
+import { pwBrowser, FULL_CHROME, SHELL_CHROME, STATUSES, SITES, openValueList, untickOne, openDetail, flipTheme, deleteFirstVisit, pressUndos, editFirstVisit } from './helpers.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PW = process.env.PLAYWRIGHT || '/opt/node-tools/node_modules/playwright/index.mjs';
 const { chromium } = await import(pathToFileURL(PW).href);
-const CHROME = process.env.CHROME || '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell';
+const CHROME = process.env.CHROME || pwBrowser('chromium-', FULL_CHROME) || pwBrowser('chromium_headless_shell-', SHELL_CHROME);
+if (!CHROME || !existsSync(CHROME)) {
+  console.error('no Chrome found: set CHROME');
+  process.exit(1);
+}
 const JUDGE_MODEL = process.env.JUDGE_MODEL || 'claude-opus-5-5';
 const KZ_SIDE = ['uiuxrule', 'flashrule'];
 const args = process.argv.slice(2);
@@ -183,7 +187,8 @@ if (SAVE) {
     const best = pool.filter(c => !chosen.includes(c)).sort((a, b) => score(b) - score(a) || (a.task + a.rep).localeCompare(b.task + b.rep))[0];
     chosen.push(best);
   }
-  const pdir = opt('--pairs-dir', path.join(HERE, 'results', 'pairs'));
+  // dated, so a new run never replaces the pairs an earlier write-up points to
+  const pdir = opt('--pairs-dir', path.join(HERE, 'results', `pairs-${stamp}`));
   rmSync(pdir, { recursive: true, force: true });
   const key = {};
   chosen.forEach((c, i) => {

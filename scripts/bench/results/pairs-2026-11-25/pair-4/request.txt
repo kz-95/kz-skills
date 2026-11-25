@@ -1,0 +1,1 @@
+Build a single HTML page in index.html: a list of 8 jobs with a status filter and a detail panel that opens on click. Then, one at a time: Make the filter remember its value on reload. Add a dark mode toggle. The detail panel should close on Escape.

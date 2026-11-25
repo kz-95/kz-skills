@@ -1,0 +1,8 @@
+{
+ "winner": "B",
+ "reasons": [
+  "B's site filter updates the whole dashboard. When a site is unticked, the Total revenue card drops to \u00a31,612,083 and the Sites card drops to 5. In A the cards stay at \u00a31,895,063 and 6 while the chart below shows 5 sites, so the page contradicts itself.",
+  "B uses checkbox chips with All and None shortcuts, so it's obvious which sites are selected. In A the selected sites are solid blue pills and an unselected one turns white, which some users may read the wrong way round. A's 'Showing 5 of 6' summary line helps, but only partly makes up for this.",
+  "Both pages work on a phone, but B's phone chart has very few axis labels, and A's phone chart is squeezed narrow with a lot of empty space. B also adds a 'Show table' option for exact figures. Overall B is the more consistent and more useful dashboard."
+ ]
+}
