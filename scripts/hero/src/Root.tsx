@@ -1,5 +1,6 @@
 import React from "react";
 import { Composition, Folder } from "remotion";
+import { Banner, BANNER } from "./Banner";
 import { Hero } from "./Hero";
 import { ChartsC5 } from "./scenes/ChartsC5";
 import { Close } from "./scenes/Close";
@@ -13,6 +14,17 @@ import { TablesT1 } from "./scenes/TablesT1";
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Folder name="Banners">
+        <Composition
+          id="Banner"
+          component={Banner}
+          durationInFrames={1}
+          fps={30}
+          width={BANNER.width}
+          height={BANNER.height}
+          defaultProps={{ text: "MEASURED", shape: "trapezoid" as const, theme: "light" as const, accentFrom: -1, label: "Measured" }}
+        />
+      </Folder>
       <Folder name="Scenes">
         <Composition
           id="Poster"
@@ -90,7 +102,7 @@ export const RemotionRoot: React.FC = () => {
           width={1200}
           height={675}
           defaultProps={{
-            headline: "94 rules. 10 checks. Any stack.",
+            headline: "94 rules. 12 checks. Any stack.",
             install: "npx skills add kz-95/kz-skills",
             posterHeadline: "kz-skills",
             posterLine: "UI rules for AI coding agents, each with a browser check that measures it.",

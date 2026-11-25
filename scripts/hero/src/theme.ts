@@ -6,6 +6,7 @@ import { interpolateColors, staticFile } from "remotion";
 loadFont({ family: "Inter", url: staticFile("inter-latin-400-normal.woff2"), weight: "400" });
 loadFont({ family: "Inter", url: staticFile("inter-latin-600-normal.woff2"), weight: "600" });
 loadFont({ family: "Inter", url: staticFile("inter-latin-700-normal.woff2"), weight: "700" });
+loadFont({ family: "Inter", url: staticFile("inter-latin-900-normal.woff2"), weight: "900" });
 loadFont({ family: "JetBrains Mono", url: staticFile("jetbrains-mono-latin-400-normal.woff2"), weight: "400" });
 loadFont({ family: "JetBrains Mono", url: staticFile("jetbrains-mono-latin-700-normal.woff2"), weight: "700" });
 

@@ -2,7 +2,7 @@
 
 The README's opening animation (`docs/assets/hero.gif`), made with Remotion. The plan it follows is `PLAN.md`.
 
-- `src/scenes/Poster.tsx`: frame 0 and the loop seam.
+- `src/scenes/Poster.tsx`: frame 0 and the loop seam. The name is a poster headline, warped into a perspective rectangle by `src/parts/Warp.tsx`.
 - `src/scenes/TablesT1.tsx`: rule T1; a bare text box per column, `table-check.js` reports BOX, the filter becomes a panel and the check passes.
 - `src/scenes/ContrastY2.tsx`: rule Y2 in the dark theme; a label at 1.05:1, `contrast-check.js` (both themes) reports LOW, the label takes the dark token.
 - `src/scenes/ChartsC5.tsx`: rule C5; a wedge's focus ring is its bounding box, `layout-audit.js` reports FOCUS BOX, the ring follows the wedge.
@@ -10,7 +10,9 @@ The README's opening animation (`docs/assets/hero.gif`), made with Remotion. The
 - `src/scenes/Close.tsx`: the closing card, dissolving into the poster.
 - `src/Frame.tsx`: the shared top bar, stage, console and footer. `src/Hero.tsx` strings the scenes together; `src/Root.tsx` also registers each scene on its own under "Scenes".
 - `src/parts/G6Parts.tsx`: diagram drawing kept from the first hero for the Diagrams scene.
-- `public/`: Inter and JetBrains Mono (woff2, from @fontsource 5.2.8) and their OFL licences, so a render does not depend on installed fonts.
+- `src/parts/Warp.tsx`: the poster-type warp. The word is drawn flat, then copied one pixel column at a time into an envelope (trapezoid, perspective rectangle, butterfly, funnel). Tilting a word in 3D reads as italics and scaling letter by letter breaks the spacing; the column warp is the technique itself.
+- `src/Banner.tsx` and `banners.mjs`: the README section banners, one warped word each, rendered as stills in a light and a dark version (`npm run banners`, into `docs/assets/banners/`). The README shows them in a `<picture>` that follows GitHub's theme, above the real Markdown heading, so links and screen readers keep the section's name.
+- `public/`: Inter (400 to 900) and JetBrains Mono (woff2, from @fontsource 5.2.8) and their OFL licences, so a render does not depend on installed fonts.
 
 ## Console strings
 
