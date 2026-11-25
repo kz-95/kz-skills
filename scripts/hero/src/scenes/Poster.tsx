@@ -1,10 +1,12 @@
 import React from "react";
 import { AbsoluteFill, Interactive, interpolate, useCurrentFrame, useVideoConfig, type InteractivitySchema } from "remotion";
-import { C, CATEGORIES, clamp, MONO, SANS } from "../theme";
+import { Warp } from "../parts/Warp";
+import { C, CATEGORIES, clamp, SANS } from "../theme";
 
 // Frame 0 of the GIF and the loop seam. It is fully drawn on its first frame, because
 // GitHub shows frame 0, paused, to anyone whose system asks for reduced motion.
-// Held 4 s (PLAN.md, "Reading time"), then fades to the background over 0.3 s. The
+// Held 4 s (PLAN.md, "Reading time"), then fades to the background over 0.45 s: the blue
+// headline panel is a third of the frame, and PLAN.md allows no luminance change that big faster than 0.4 s. The
 // Close scene dissolves back into the same card, so the loop joins on the poster.
 
 type Props = {
@@ -31,12 +33,22 @@ export const PosterCard: React.FC<Props & { readonly opacity: number }> = ({ hea
         opacity,
       }}
     >
-      <div style={{ fontFamily: MONO, fontSize: 64, fontWeight: 700, color: C.accent, letterSpacing: -1, lineHeight: "76px" }}>
-        {headline}
+      {/* the name as a perspective-rectangle poster headline: a plane running away to the right */}
+      <div style={{ width: 1104, height: 232, borderRadius: 24, background: C.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Warp
+          text={headline}
+          shape="perspective"
+          width={940}
+          height={190}
+          ink="#ffffff"
+          accent="#c8ff2e"
+          accentAt={(_, ch) => ch === "-"}
+          label={headline}
+        />
       </div>
       <div
         style={{
-          marginTop: 24,
+          marginTop: 28,
           maxWidth: 1000,
           fontSize: 44,
           fontWeight: 600,
@@ -83,7 +95,7 @@ export const PosterCard: React.FC<Props & { readonly opacity: number }> = ({ hea
 const PosterInner: React.FC<Props> = ({ headline, line }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  return <PosterCard headline={headline} line={line} opacity={interpolate(frame, [3.7 * fps, 4 * fps], [1, 0], clamp)} />;
+  return <PosterCard headline={headline} line={line} opacity={interpolate(frame, [3.55 * fps, 4 * fps], [1, 0], clamp)} />;
 };
 
 const schema = {

@@ -53,7 +53,10 @@ GROUPS = [
           js=("var m='Hi {customer}, your quotation for the Taman Sri Indah reroof is ready. Please confirm the start "
               "date, and tell us if the access gate is locked on weekdays.';"
               "['f4Bad','f4Good'].forEach(function(id){var i=document.getElementById(id); i.value=m; i.dispatchEvent(" + EVT + ");});")),
+        # the open panel hangs below the trigger; with the note hidden the card is too short and its
+        # overflow:hidden would cut off Done, the very thing the slide is about, so the card keeps room for it
         S("n2-close", "N2", "A panel can always be closed: its trigger toggles, Done on touch",
+          css="#n2-close .demo .body{min-height:340px}",
           js=("['n2cBadBtn','n2cGoodBtn'].forEach(function(id){document.getElementById(id).dispatchEvent(" + CLICK + ");});")),
         S("f9-enter", "F9", "Enter moves to the next field; the last one submits",
           css="#f9SensForm,#f9SensOut{display:none!important}",
@@ -106,7 +109,8 @@ def find_chrome():
 
 
 def font(names, size):
-    dirs = [r"C:\Windows\Fonts", "/Library/Fonts", "/System/Library/Fonts", "/usr/share/fonts/truetype/dejavu",
+    # the bundled Inter first, so a carousel looks the same whoever builds it; system fonts only as a fallback
+    dirs = [os.path.join(ROOT, "scripts", "fonts"), r"C:\Windows\Fonts", "/Library/Fonts", "/System/Library/Fonts", "/usr/share/fonts/truetype/dejavu",
             "/usr/share/fonts/truetype/liberation"]
     for n in names:
         for d in dirs + [""]:
@@ -119,9 +123,12 @@ def font(names, size):
 
 def render_slide(tmp, chrome, page, sl):
     sid = sl["id"]
-    css = ("<style>.wrap > *:not(#%s){display:none!important}#%s > h2,#%s > p.rule,#%s .note{display:none!important}"
+    # hide everything that neither is the sample, holds it, nor sits inside it: the sample may be nested
+    # (the page wraps its content in <main>), and hiding by depth would hide the wrapper and the sample with it
+    css = ("<style>.wrap *:not(:has(#%s)):not(#%s):not(#%s *){display:none!important}"
+           "#%s > h2,#%s > p.rule,#%s .note{display:none!important}"
            "body{background:var(--bg)}.wrap{padding-top:14px;padding-bottom:14px}"
-           "*,*::before,*::after{transition:none!important;animation:none!important}%s</style></head>") % (sid, sid, sid, sid, sl["css"])
+           "*,*::before,*::after{transition:none!important;animation:none!important}%s</style></head>") % (sid, sid, sid, sid, sid, sid, sl["css"])
     assert page.count("</head>") == 1 and ('id="%s"' % sid) in page, "section %s not found on the page" % sid
     h = page.replace("</head>", css, 1)
     if sl["hover"]:      # show the state the sample is about: the halo on hover
@@ -144,6 +151,8 @@ def render_slide(tmp, chrome, page, sl):
     im = Image.open(png).convert("RGB")
     bg = Image.new("RGB", im.size, im.getpixel((4, 4)))
     box = ImageChops.difference(im, bg).point(lambda v: 255 if v > 10 else 0).getbbox()
+    if box is None:
+        sys.exit("slide %s rendered blank: the sample was hidden or never drew" % sid)
     box = (max(0, box[0] - 16), max(0, box[1] - 16), min(im.width, box[2] + 16), min(im.height, box[3] + 16))
     im = im.crop(box)
     im = im.crop((0, 30, im.width, im.height))              # drop the page's own rule at the top
@@ -163,8 +172,8 @@ def ease(t):
 
 def build(slides, cards):
     n = len(cards)
-    f_cap = font(["seguisb.ttf", "segoeuib.ttf", "Arial Bold.ttf", "arialbd.ttf", "DejaVuSans-Bold.ttf"], 22)
-    f_bold = font(["segoeuib.ttf", "Arial Bold.ttf", "arialbd.ttf", "DejaVuSans-Bold.ttf"], 22)
+    f_cap = font(["Inter-SemiBold.ttf", "seguisb.ttf", "segoeuib.ttf", "Arial Bold.ttf", "arialbd.ttf", "DejaVuSans-Bold.ttf"], 22)
+    f_bold = font(["Inter-Bold.ttf", "segoeuib.ttf", "Arial Bold.ttf", "arialbd.ttf", "DejaVuSans-Bold.ttf"], 22)
 
     def frame(p):
         im = Image.new("RGB", (W, H), BG)

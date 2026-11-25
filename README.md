@@ -2,7 +2,7 @@
 
 **Your agent learns what any interface must do, what breaks when it does not, and runs a browser check that proves it.**
 
-<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html"><img src="docs/assets/hero.gif" alt="kz-skills: UI rules for AI coding agents, each with a browser check that measures it. Tables, rule T1: a bare text box under each column, table-check.js reports BOX (3 of 3 column filters are a bare text box), the filters become buttons with an open value panel, and the check reports no failures. Contrast, rule Y2, dark theme: a card label at 1.05:1, contrast-check.js reports LOW in dark, the label takes the dark-theme token at 7.84:1, and the check is clean in both themes. Charts, rule C5: a focused donut wedge ringed by its bounding box, layout-audit.js reports FOCUS BOX, the ring follows the wedge and shows its value, and the audit is clean. Diagrams, rule G6: the WRITE label sits on its line, diagram-check.js reports LABEL ON LINE, the label moves beside the line, and the check is clean. Closing card: 94 rules. 10 checks. Any stack. npx skills add kz-95/kz-skills." width="100%"></a>
+<a href="https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html"><img src="docs/assets/hero.gif" alt="kz-skills, set as a poster headline on a blue panel: UI rules for AI coding agents, each with a browser check that measures it. Tables, rule T1: a bare text box under each column, table-check.js reports BOX (3 of 3 column filters are a bare text box), the filters become buttons with an open value panel, and the check reports no failures. Contrast, rule Y2, dark theme: a card label at 1.05:1, contrast-check.js reports LOW in dark, the label takes the dark-theme token at 7.84:1, and the check is clean in both themes. Charts, rule C5: a focused donut wedge ringed by its bounding box, layout-audit.js reports FOCUS BOX, the ring follows the wedge and shows its value, and the audit is clean. Diagrams, rule G6: the WRITE label sits on its line, diagram-check.js reports LABEL ON LINE, the label moves beside the line, and the check is clean. Closing card: 94 rules. 12 checks. Any stack. npx skills add kz-95/kz-skills." width="100%"></a>
 
 94 rules (57 UI, 6 motion, 21 chart, 10 diagram) and 16 principles, in thirteen skills, with twelve browser checks.
 A 2 KB lookup sends each type of work to one short generated pack: the rules it needs, a snippet to start from and the exact checks to run.
@@ -111,6 +111,8 @@ Where two approaches compete, the rule says why this one and not that one, so th
 A rule with no check gets broken by the person who wrote it.
 That happened repeatedly while these were written, and each case is recorded as a habit to have (26 lessons, [Appendix Z](skills/kz-uiuxrule/rules/ui-rules.md)).
 
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/banners/covers-dark.png"><img src="docs/assets/banners/covers-light.png" alt="Wrong / right" width="640"></picture></p>
+
 ## What it covers
 
 One right sample per category, from the [live reference page](https://kz-95.github.io/kz-skills/reference/ui-rules-visual.html).
@@ -170,6 +172,8 @@ The downsides are real:
 - **The checks need a browser.** They are console scripts that measure the rendered page; a screenshot or a code review cannot run them, and hover, press and focus states need the live page.
 - **It is slower than no rules.** Reading rules and running checks takes time and tokens; [Measured](#measured-speed-tokens-and-quality) says how much.
 
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/banners/measured-dark.png"><img src="docs/assets/banners/measured-light.png" alt="Measured" width="640"></picture></p>
+
 ## Measured: speed, tokens and quality
 
 These numbers measure the skills as they were on 2026-10-14, before type routing.
@@ -228,6 +232,8 @@ Each skill, and when to reach for it:
 - **[`kz-loopfix`](skills/kz-loopfix/SKILL.md)**: One defect that "fix it and move on" already failed once: critic, fixer, then a gate.
 
 Plus [`ui-glance`](skills/kz-uiuxrule/skills/ui-glance/SKILL.md), a child of `kz-uiuxrule`: a screenshot reviewed in one pass against a 22-point checklist.
+
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/banners/loads-dark.png"><img src="docs/assets/banners/loads-light.png" alt="94 rules to 1 pack" width="640"></picture></p>
 
 ## What loads when
 

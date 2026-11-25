@@ -22,7 +22,9 @@ const CloseInner: React.FC<Props> = ({ headline, install, posterHeadline, poster
       <PosterCard
         headline={posterHeadline}
         line={posterLine}
-        opacity={interpolate(frame, [2.7 * fps, 3.0 * fps], [0, 1], clamp)}
+        // in after the close text has gone, never over it: two layers of words crossing read as noise
+        // (PLAN.md: no UI-to-UI crossfade), and 0.5 s because the blue headline panel is a third of the frame
+        opacity={interpolate(frame, [2.95 * fps, 3.45 * fps], [0, 1], clamp)}
       />
       <Interactive.Div
         name="Close text"
@@ -33,7 +35,7 @@ const CloseInner: React.FC<Props> = ({ headline, install, posterHeadline, poster
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          opacity: interpolate(frame, [0, 0.3 * fps, 2.7 * fps, 3.0 * fps], [0, 1, 1, 0], clamp),
+          opacity: interpolate(frame, [0, 0.3 * fps, 2.7 * fps, 2.95 * fps], [0, 1, 1, 0], clamp),
         }}
       >
         <div style={{ fontSize: 64, fontWeight: 700, letterSpacing: -1, color: C.text, lineHeight: "76px" }}>{headline}</div>
@@ -58,7 +60,7 @@ const CloseInner: React.FC<Props> = ({ headline, install, posterHeadline, poster
 };
 
 const schema = {
-  headline: { type: "string", default: "94 rules. 10 checks. Any stack.", description: "Closing line" },
+  headline: { type: "string", default: "94 rules. 12 checks. Any stack.", description: "Closing line" },
   install: { type: "string", default: "npx skills add kz-95/kz-skills", description: "Install command" },
   posterHeadline: { type: "string", default: "kz-skills", description: "Poster headline" },
   posterLine: { type: "string", default: "", description: "Poster supporting line" },
