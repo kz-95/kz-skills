@@ -17,16 +17,19 @@ Before reading a rule, apply the speed contract in `../kz-skill/SKILL.md` (engin
 
 - **Trivial** (one element or one line, no new behaviour) -> `../kz-fastfix/`: at most the one
   `kz-flashrule` line that applies, at most one check, a one-line report. Do not read on.
-- **Small/medium** (a component or a screen) -> mode 3 below, reading `../kz-flashrule/SKILL.md`
-  first and running only the checks for what was touched.
+- **Small/medium** (a component or a screen) -> mode 3 below: `packs/LOOKUP.md`, the one pack
+  its row names, and only that pack's checks.
 - **Large** (a project, an audit, "make it production", a release) -> the full path: the
-  mode's whole procedure, all checks, mode 4 where asked.
+  mode's whole procedure, the full rule corpus through `rules/INDEX.md`, all checks, mode 4
+  where asked.
 
-**Ask only when genuinely ambiguous.** If the request names the work, say in one line which
-mode and scope you read from it and proceed. A card (`../kz-askcard/`, inline format: the
-answers apply to this run only) is for adopt or review scope, two modes that both fit, or a
-project whose own rules disagree with these. `../kz-askcard/hooks/ui-rule-purpose.mjs` repeats
-this on hosts that can run a command before a skill call (wiring in its `README.md`).
+**The first kz call in a session asks one card** (`../kz-askcard/`): the type of work, from
+the rows of `packs/LOOKUP.md` with the matched one marked (recommended), and the size
+(trivial / component / project). Later calls reuse the answer. After that, ask only when
+genuinely ambiguous: say in one line which mode and scope you read and proceed; a card is for
+adopt or review scope, two modes that both fit, or a project whose own rules disagree with
+these. `../kz-askcard/hooks/ui-rule-purpose.mjs` prints the first-call card on hosts that can
+run a command before a skill call (wiring in its `README.md`).
 
 If `.kz/lessons.jsonl` exists, run `python ../kz-reflect/scripts/reflect.py brief` first: it
 lists what already went wrong here. At close-out, if something was corrected and the fix is
@@ -47,21 +50,27 @@ category tables: `references/modes.md`, the part for your mode, when you are in 
 
 ## Mode 3 - Build
 
-1. **Route.** Read `../kz-flashrule/SKILL.md`. Open `rules/INDEX.md` and the one or two
-   sections its row names only when a flashrule line points there or none covers the work.
-   A rule already read in this session is not read again.
+1. **Route.** Read `packs/LOOKUP.md` (about 2 KB) and the one pack whose words match the
+   work; two match, read both. Each pack is generated from the rule files by
+   `scripts/build-index.py` and holds the rules in full, the appendix it needs, the snippet
+   and the exact check command. Open `rules/INDEX.md` and its sections only when no pack
+   covers the work. A pack or rule already read in this session is not read again.
 2. **Build** what was asked and nothing more: no extra table, sort, empty state or feature
    that was not requested (engineering rule 28). Every rule in the sections read is in force,
    plus the set below. For a table, start from `snippets/filter-table.html`: sort on every
    column, a filter button per column opening a panel, a live count, every way to close the
-   panel; it passes all ten checks.
-3. **Check what you touched, once** (`../kz-uicheck/`): table -> `table-check.js` (+
+   panel; it passes every check.
+3. **Check what you touched, once** (`../kz-uicheck/`), on the screen the work is on: the
+   pack names its checks; in short, table -> `table-check.js` (+
    `popover-check.js`); form -> `form-check.js` (F1, F2) and `typing-check.js` at phone width
    (F8); dropdown -> `popover-check.js` (N2); modal -> `modal-check.js` (N1); controls ->
    `focus-check.js`; colour or theme -> `contrast-check.js` (Y2) in both themes; motion ->
-   `motion-check.js` (M1-M6); diagram -> `diagram-check.js` (G1-G10); then `layout-audit.js`
-   at one wide width and 375px. Without a browser pane:
-   `python ../kz-uicheck/scripts/run-checks.py <page.html> --checks <names> --width 390`.
+   `motion-check.js` (M1-M6); diagram -> `diagram-check.js` (G1-G10); toast ->
+   `toast-check.js` (A1, A2); tooltip or `[?]` -> `explain-check.js` (B2); then
+   `layout-audit.js` at one wide width and 375px. Without a browser pane:
+   `python ../kz-uicheck/scripts/run-checks.py <page.html> --checks <names> --width 390`, with
+   `--hash ROUTE`, `--tap "#tab,#open"` and `--wait SELECTOR` to reach the screen. A run that
+   reports WRONG SCREEN is a failure: the check never saw the work.
    Fix a finding, re-run that check only. Paste the output: measure, do not assert, and check
    the instrument first (a zero-width viewport gives confident, wrong numbers). Generated
    pages are UI too; a page copied from an older one is checked, not trusted.
@@ -96,6 +105,8 @@ line, at the time.
 
 ## Where the rules are
 
+`packs/LOOKUP.md` routes by keyword to one generated pack per type of work (never edit a pack:
+change the rule file and run `python scripts/build-index.py`). For the full path,
 `rules/INDEX.md` routes by keyword to `rules/ui-rules.md` (read by section, never whole;
 Appendix Z before a large build), `chart-rules.md` (C1-C21), `motion-rules.md` (M1-M6),
 `diagram-rules.md` (G1-G10) and `design-principles.md`; S1/S2 are in

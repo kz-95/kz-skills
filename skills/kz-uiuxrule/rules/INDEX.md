@@ -4,9 +4,13 @@ the project README (the reference page and the browser checks in the project thi
 the job being done, so a task can pull the three or four sections it needs instead of
 reading three thousand lines of rules to find them.
 
-**How to use it:** find the row in *Route by keyword* whose words match the task, read the
-sections it names, and run the checks in that category's block. Nothing else in the corpus
-applies unless the work touches a second category, in which case read that one too.
+**How to use it:** find the row in *Route by keyword* whose words match the task. Where the
+row names a pack, read that pack first: it is generated from these rule files and holds the
+rules, the appendix sections and the exact check command for that type of work, and for small
+and medium work it is all you read. [`../packs/LOOKUP.md`](../packs/LOOKUP.md) is the same
+routing in two kilobytes. Read the sections below only when the pack is not enough, or on the
+full path, and run the checks in that category's block. Nothing else in the corpus applies
+unless the work touches a second category, in which case read that one too.
 
 > **Packaged copy.** This is the rule corpus on its own. The project it came from also
 > holds a live reference page (`ui-rules-visual.html`) and three browser-console checks
@@ -30,18 +34,18 @@ scoped out by anything.
 
 | If the task says | Category | Go to |
 |---|---|---|
-| table, list, grid, rows, sort, filter, search, pagination, export, chart filter, dashboard filter, filter dropdown, pick which ... to show, multi-select | Tables | [T](#t-tables-and-columns) |
-| chart, graph, plot, axis, legend, series, KPI, dashboard, data viz, timeline, funnel | Charts | [C](#c-charts-and-data) |
-| form, input, field, validation, required, submit, draft, wizard, steps, regex, pattern, email, phone, postcode, quantity, price, calculator, math, textarea, select on focus, typing, keyboard closes, caret jumps, screen jumps, zoom on focus, re-render | Forms | [F](#f-forms-and-input) |
-| button, delete, remove, clear, reset, save, toast, undo, confirm, loading, progress, hover, halo, clickable, affordance | Actions | [A](#a-actions-and-feedback) |
-| modal, dialog, dropdown, popover, tooltip, sheet, drawer, menu, tab, route, back, deep link | Overlays and navigation | [N](#n-overlays-and-navigation) |
-| layout, responsive, breakpoint, mobile, phone, safe area, bottom bar, scroll, overflow, column, horizontal, sideways, timeline, kanban, carousel, strip, stepper | Layout | [L](#l-layout-spacing-and-the-mobile-shell) |
-| colour, contrast, dark mode, theme, token, font, typography, size, spacing, shadow, elevation | Type, colour, theming | [Y](#y-type-colour-and-theming) |
-| animation, transition, motion, reduced motion, duration, easing, press, scale, stagger, drag, gesture | Motion | [M](#m-motion) |
-| diagram, architecture diagram, flowchart, flow diagram, sequence diagram, state machine, ER diagram, swimlane, boxes and arrows, connector, arrow label, mermaid, draw.io | Diagrams | [G](#g-diagrams) |
+| table, list, grid, rows, sort, filter, search, pagination, export, chart filter, dashboard filter, filter dropdown, pick which ... to show, multi-select | Tables | [packs/table.md](../packs/table.md), then [T](#t-tables-and-columns) |
+| chart, graph, plot, axis, legend, series, KPI, dashboard, data viz, timeline, funnel | Charts | [packs/chart.md](../packs/chart.md), then [C](#c-charts-and-data) |
+| form, input, field, validation, required, submit, draft, wizard, steps, regex, pattern, email, phone, postcode, quantity, price, calculator, math, textarea, select on focus, typing, keyboard closes, caret jumps, screen jumps, zoom on focus, re-render | Forms | [packs/form.md](../packs/form.md), then [F](#f-forms-and-input) |
+| button, delete, remove, clear, reset, save, toast, undo, confirm, loading, progress, hover, halo, clickable, affordance | Actions | [packs/feedback.md](../packs/feedback.md), then [A](#a-actions-and-feedback) |
+| modal, dialog, dropdown, popover, tooltip, sheet, drawer, menu, tab, route, back, deep link | Overlays and navigation | [packs/overlay.md](../packs/overlay.md), then [N](#n-overlays-and-navigation) |
+| layout, responsive, breakpoint, mobile, phone, safe area, bottom bar, scroll, overflow, column, horizontal, sideways, timeline, kanban, carousel, strip, stepper | Layout | [packs/layout.md](../packs/layout.md), then [L](#l-layout-spacing-and-the-mobile-shell) |
+| colour, contrast, dark mode, theme, token, font, typography, size, spacing, shadow, elevation | Type, colour, theming | [packs/theme.md](../packs/theme.md), then [Y](#y-type-colour-and-theming) |
+| animation, transition, motion, reduced motion, duration, easing, press, scale, stagger, drag, gesture | Motion | [packs/motion.md](../packs/motion.md), then [M](#m-motion) |
+| diagram, architecture diagram, flowchart, flow diagram, sequence diagram, state machine, ER diagram, swimlane, boxes and arrows, connector, arrow label, mermaid, draw.io | Diagrams | [packs/diagram.md](../packs/diagram.md), then [G](#g-diagrams) |
 | slow, performance, lazy, skeleton, virtualise, jank, layout shift, images, fonts loading | Performance | [P](#p-performance-and-what-arrives-late) |
 | accessibility, a11y, screen reader, keyboard, focus, aria, label, i18n, translation, RTL | Accessibility | [X](#x-accessibility-semantics-and-language) |
-| copy, wording, label, message, error text, empty state, explainer, tooltip text | Copy | [K](#k-copy-and-explainers) |
+| copy, wording, label, message, error text, empty state, explainer, tooltip text | Copy | [packs/explain.md](../packs/explain.md), then [K](#k-copy-and-explainers) |
 | new component, design system, tokens, "make it look right", styling | Design system fit | [D](#d-fitting-the-design-system) |
 | done, review, verify, check, ship, test | Close-out | [V](#v-before-calling-it-done) |
 | refactor, architecture, naming, dependency, commit, scope | Engineering only | [E](#e-engineering-non-ui) |

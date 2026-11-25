@@ -23,22 +23,25 @@ Then invoke it with `/kz-uiuxrule`, or let it trigger on UI work.
 Markdown with no host-specific syntax. Three ways to use them:
 
 1. **Point the agent at the folder.** Anything that can read files: "read
-   `kz-uiuxrule/rules/INDEX.md`, follow it to the sections that apply to this
-   task, then build."
-2. **Paste the routing file.** `rules/INDEX.md` is short. Paste it, let the model name the
-   sections it needs, paste those.
+   `kz-uiuxrule/packs/LOOKUP.md`, read the one pack it names for this task, build, then
+   run that pack's checks."
+2. **Paste the lookup.** `packs/LOOKUP.md` is about 2 KB. Paste it, let the model name the
+   pack it needs, paste that one pack (3-9 KB). Where no pack covers the work,
+   `rules/INDEX.md` names the rule sections instead.
 3. **Put it in the project's own instruction file** - `AGENTS.md`, `.cursorrules`, a system
    prompt. `SKILL.md` is written to work as that instruction file unchanged.
 
-For a small context window, paste `rules/INDEX.md` alone and let the model ask for the two
-or three sections it needs. The whole corpus is roughly 4,400 lines; almost no task needs
+For a small context window, paste `packs/LOOKUP.md` alone and let the model ask for the one
+pack it needs. The whole corpus is roughly 4,400 lines; almost no task needs
 more than a tenth of it.
 
 ## What it does
 
-The work is sized first (the speed contract in `../kz-skill/SKILL.md`): a one-element change goes to
-`kz-fastfix`, a component reads `kz-flashrule` first and runs only its own checks, and only large work
-takes the full path. Four modes, picked from the request:
+The work is sized first (the speed contract in `../kz-skill/SKILL.md`). The first kz call in a session
+asks one card: the type of work, from the rows of `packs/LOOKUP.md` with the matching one recommended,
+and the size (trivial, component, project); later calls reuse the answer. A one-element change goes to
+`kz-fastfix`, a component reads LOOKUP and the one pack it names and runs only that pack's checks on
+the screen the work is on, and only large work takes the full path. Four modes, picked from the request:
 
 | Mode | Sounds like | Produces |
 |---|---|---|
@@ -48,7 +51,7 @@ takes the full path. Four modes, picked from the request:
 | **Build** | "make this page" | The work built under the rules, checked by the checks for what it touched |
 | **Loop** | "make it right" | Three independent reviewers against a separate fixer, until unanimous |
 
-Where it is genuinely unsure - two modes fit, or the project already has rules that disagree -
+Beyond that first card, where it is genuinely unsure - two modes fit, or the project already has rules that disagree -
 it raises a single **Ask Card** rather than guessing, and a review that names no sections asks
 which of the fourteen to cover. Otherwise it says in one line what it read and proceeds.
 
@@ -62,14 +65,17 @@ than was asked.
 |---|---|
 | `SKILL.md` | The entry point: how to route, the standing rules, the precedence ladder, the close-out list |
 | `skills/ui-glance/SKILL.md` | **Child skill** - paste a screenshot, get three to six findings by rule id in one read. No questions, no rule-set lookup |
-| `rules/INDEX.md` | Keyword to category to rules. Start every task here |
+| `packs/LOOKUP.md` | Keyword to one pack and its checks. Start every task here |
+| `packs/` | Ten generated packs, one per type of work (feedback, explain, table, chart, form, overlay, layout, theme, motion, diagram): the rules in full, the appendix, a snippet and the exact check command. Rebuilt by `scripts/build-index.py`; never edit by hand |
+| `rules/INDEX.md` | Keyword to category to rules, for work no pack covers |
 | `rules/ui-rules.md` | The 57 UI rules and the appendices carrying their detail, including **Appendix Z: twenty-six things not to do**, each one learned by doing it |
 | `rules/chart-rules.md` | C1-C21, for anything that renders data as marks |
 | `rules/motion-rules.md` | M1-M6, for anything that moves; also the whole of the `kz-motionrule` skill |
 | `rules/diagram-rules.md` | G1-G10, for any drawn diagram - boxes, lines and their labels; also the whole of the `kz-diagramrule` skill |
+| `snippets/` | Dependency-free starting points the packs name: `filter-table.html`, `toast-stack.html`, `saved-note.html`, `tooltip.html` |
 | `../kz-engrules/rules/engineering-rules.md` | Sibling skill: non-UI rules for code work, where S1 and S2 are defined |
 | `rules/design-principles.md` | The sixteen principles, and why each rule exists |
-| `../kz-askcard/hooks/ui-rule-purpose.mjs` | Sibling skill. Optional host-neutral hook that repeats the size test before the skill acts, and asks only when the mode or scope is genuinely unclear - stdin JSON, JSON arg or bare name; never blocks |
+| `../kz-askcard/hooks/ui-rule-purpose.mjs` | Sibling skill. Optional host-neutral hook that prints the first-call card (type and size) on the first kz call in a session, repeats the size test before the skill acts, and after that asks only when the mode or scope is genuinely unclear - stdin JSON, JSON arg or bare name; never blocks |
 | `../kz-askcard/hooks/README.md` | How to wire that hook, and which wiring has actually been tested |
 
 ## What it is not

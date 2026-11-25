@@ -536,7 +536,7 @@ tfoot td{font-weight:600;border-top:2px solid var(--line);border-bottom:0;
   max-width:220px}
 #tip[data-show="1"]{opacity:1}
 #tip[data-instant="1"]{transition:none}
-@media (hover:none){#tip{display:none}}
+@media (hover:none){#tip:not([data-touch="1"]){display:none}}
 /* M1: reduced motion keeps the fade and the colour change and drops the travel. A blanket
    transition:none deletes the feedback with the movement. */
 @media (prefers-reduced-motion:reduce){
@@ -1217,6 +1217,17 @@ tbody tr{transition:background var(--mo-state) var(--mo-ease)}
 .mo-tip[data-show="1"]{opacity:1}
 .mo-tip[data-instant="1"]{transition:none}
 .mo-tipwrap{position:relative;padding-top:40px}
+/* B2 pair: the label is hidden only on a fine hovering pointer, where the tooltip replaces it */
+.b2bar{display:flex;gap:var(--s2);flex-wrap:wrap}
+@media (hover:hover) and (pointer:fine){
+  .b2bar .ibtn .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .b2bar .ibtn{gap:0;padding:0 var(--s2)}
+}
+/* A1 pair: the wrong toasts are drawn in their demo, not over the page */
+.a1t-stack{display:grid;gap:6px;margin-top:var(--s3);min-height:8px}
+.a1t-stack .ft{display:flex;gap:var(--s2);align-items:center;border:1px solid var(--line);border-radius:9px;
+  padding:6px 9px;font-size:12px;background:var(--surface-2)}
+.a1t-stack .ft button{font:inherit;color:var(--accent);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
 .mo-muted{color:var(--muted)}
 .toast{animation:mo-toast var(--mo-enter) var(--mo-ease) both}
 @keyframes mo-toast{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
@@ -1753,7 +1764,7 @@ section[id]{scroll-margin-top:56px}
   and collapses when there is not. A tooltip on hover devices, a tappable <code>[?]</code>
   on touch, and an accessible name that never depends on either.</p>
   <div class="pair">
-    <div class="demo wrong">
+    <div class="demo wrong" data-explain-check="skip">
       <div class="tag">Wrong: text only, or a mystery icon</div>
       <div class="body stack">
         <div class="tablebar" style="margin:0">
@@ -1802,6 +1813,52 @@ section[id]{scroll-margin-top:56px}
   </div>
 </section>
 
+
+<section id="b2-explain">
+  <h2>Rule B2: an icon button explains itself on hover, on focus and on touch</h2>
+  <p class="rule">An accessible name is owed, and nobody sighted ever sees it. On a pointer
+  that hovers, the explanation shows on hover and on keyboard focus; on touch, the label
+  stays visible or a <code>[?]</code> sits beside it. A <code>title</code> attribute is none
+  of these: it never shows on focus or touch. Measured by <code>explain-check.js</code>.</p>
+  <div class="pair">
+    <div class="demo wrong" data-explain-check="skip">
+      <div class="tag">Wrong: a title, and a tooltip only the mouse can reach</div>
+      <div class="body mo-tipwrap">
+        <div class="b2bar">
+          <button class="btn" id="b2BadTitle" type="button" aria-label="Refresh" title="Reload inventory from the server"
+                  style="padding:0 var(--s2)"><svg viewBox="0 0 18 18" width="15" height="15" fill="none" stroke="currentColor"
+                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-refresh"></use></svg></button>
+          <button class="btn" id="b2BadHover" type="button" aria-label="Export" data-b2tip="Download the rows as a CSV file"
+                  style="padding:0 var(--s2)"><svg viewBox="0 0 18 18" width="15" height="15" fill="none" stroke="currentColor"
+                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-export"></use></svg></button>
+        </div>
+        <div class="mo-tip" id="b2BadTip"></div>
+      </div>
+      <p class="note">Tab to either one: nothing appears. The first has a name and a title, and
+      a keyboard or touch user still has no idea what it reloads. explain-check reports
+      <code>NO EXPLAIN</code> and <code>HOVER ONLY</code>.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: hover and focus both explain, and touch keeps the label</div>
+      <div class="body">
+        <div class="b2bar" id="b2Good">
+          <button class="btn ibtn" type="button" aria-label="Save" data-tip="Save changes to this quotation (Ctrl+S)">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-save"></use></svg>
+            <span class="lbl">Save</span></button>
+          <button class="btn ibtn" type="button" aria-label="Export" data-tip="Download the current view as a CSV file">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-export"></use></svg>
+            <span class="lbl">Export</span></button>
+          <button class="btn ibtn" type="button" aria-label="Refresh" data-tip="Reload inventory from the server">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-refresh"></use></svg>
+            <span class="lbl">Refresh</span></button>
+        </div>
+      </div>
+      <p class="note">The tooltip opens after a short wait on hover and at once on focus, and
+      once one is open the next opens at once (M6). On touch the labels stay, because
+      nothing can hover there. The snippet is <code>snippets/tooltip.html</code>.</p>
+    </div>
+  </div>
+</section>
 
 <section>
   <h2>Rule B3: a control that cannot act is a key, not a button</h2>
@@ -2620,6 +2677,45 @@ section[id]{scroll-margin-top:56px}
   </div>
 </section>
 
+<section id="a1-toasts">
+  <h2>Rules A1 and A2: the toast system, measured</h2>
+  <p class="rule">A toast is heard as well as seen, can be dismissed, never piles past three,
+  counts a repeat instead of restacking it, never loses an Undo to the next toast, keeps an
+  error longer than a success, and shows above whatever dialog is open. Measured by
+  <code>toast-check.js</code> through the page's toast function.</p>
+  <div class="pair">
+    <div class="demo wrong" data-toast-check="skip">
+      <div class="tag">Wrong: silent to a screen reader, no dismiss, no cap</div>
+      <div class="body">
+        <div class="b2bar">
+          <button class="btn" id="a1tBadSave" type="button" data-tip="Fires a success toast">Save</button>
+          <button class="btn" id="a1tBadArchive" type="button" data-tip="Fires a toast with Undo">Archive</button>
+          <button class="btn" id="a1tBadFail" type="button" data-tip="Fires an error toast">Sync (fails)</button>
+        </div>
+        <div class="a1t-stack" id="a1tBadStack"></div>
+      </div>
+      <p class="note">Archive, then Save: the Undo is gone. Save five times: five boxes, none
+      announced, none dismissable, and the error leaves before the success does.
+      toast-check reports <code>NO LIVE</code>, <code>NO CLOSE</code>, <code>RESTACK</code>,
+      <code>STACK</code>, <code>UNDO GONE</code> and <code>ERROR SHORT</code>.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: the page's own toasts</div>
+      <div class="body">
+        <div class="b2bar">
+          <button class="btn" id="a1tGoodSave" type="button" data-tip="Fires a success toast">Save</button>
+          <button class="btn" id="a1tGoodArchive" type="button" data-tip="Fires a toast with Undo">Archive</button>
+          <button class="btn" id="a1tGoodFail" type="button" data-tip="Fires an error toast">Sync (fails)</button>
+        </div>
+      </div>
+      <p class="note">One <code>role="status"</code> region, a dismiss on every toast, three
+      at most, <code>&times;2</code> on a repeat, Undo kept and never merged, 8s for an error
+      against 3.5s, and the region moves into an open modal so it is never underneath one.
+      The snippet is <code>snippets/toast-stack.html</code>.</p>
+    </div>
+  </div>
+</section>
+
 <section>
   <h2>Rule A3: a control that claims to clear, clears everything it claims</h2>
   <p class="rule">And its label is derived from what it clears. "Clear filters" that leaves
@@ -3116,13 +3212,13 @@ The rules live in <code>motion-rules.md</code>; M1 is shown with Y3 above.</p>
   <p class="rule">The first tooltip waits about 400ms. While one is open, and for about 300ms
   after, a neighbour opens with no delay and no fade.</p>
   <div class="pair">
-    <div class="demo wrong">
+    <div class="demo wrong" data-explain-check="skip">
       <div class="tag">Wrong: every button waits the full delay</div>
       <div class="body mo-tipwrap"><div class="mo-tipbar" id="m6Bad">
         <button type="button" class="btn" data-mtip="Bold">B</button>
         <button type="button" class="btn" data-mtip="Italic">I</button>
         <button type="button" class="btn" data-mtip="Underline">U</button>
-      </div><div class="mo-tip" id="m6BadTip"></div></div>
+      </div><div class="mo-tip" role="tooltip" id="m6BadTip"></div></div>
       <p class="note">Hover B, then slide across. Each button makes you wait again.</p>
     </div>
     <div class="demo right">
@@ -3131,7 +3227,7 @@ The rules live in <code>motion-rules.md</code>; M1 is shown with Y3 above.</p>
         <button type="button" class="btn" data-mtip="Bold">B</button>
         <button type="button" class="btn" data-mtip="Italic">I</button>
         <button type="button" class="btn" data-mtip="Underline">U</button>
-      </div><div class="mo-tip" id="m6GoodTip"></div></div>
+      </div><div class="mo-tip" role="tooltip" id="m6GoodTip"></div></div>
       <p class="note">The first waits; sliding across, each label is there the moment you arrive.</p>
     </div>
   </div>
@@ -3180,6 +3276,26 @@ The rules live in <code>motion-rules.md</code>; M1 is shown with Y3 above.</p>
       if (!e.target.closest('[data-mtip]')) { return; }
       if (tip.getAttribute('data-show') === '1') { warmUntil = Date.now() + 300; }
       clearTimeout(timer); tip.setAttribute('data-show', '0');
+    });
+    /* keyboard focus explains at once (B2); M6 is about the hover delay */
+    $(id).addEventListener('focusin', function (e) {
+      var el = e.target.closest('[data-mtip]'); if (!el) { return; }
+      clearTimeout(timer); tip.setAttribute('data-instant', '1'); show(el);
+    });
+    $(id).addEventListener('focusout', function () { clearTimeout(timer); tip.setAttribute('data-show', '0'); });
+    /* touch cannot hover: a long-press explains the button (B2) */
+    var press = null, linger = null;
+    $(id).addEventListener('pointerdown', function (e) {
+      var el = e.target.closest('[data-mtip]'); if (!el || e.pointerType !== 'touch') { return; }
+      clearTimeout(press); clearTimeout(linger);     /* a new press owns the tooltip; the last one's hide must not close it */
+      press = setTimeout(function () { tip.setAttribute('data-instant', '1'); show(el); }, 500);
+    });
+    ['pointerup', 'pointercancel'].forEach(function (t) {
+      $(id).addEventListener(t, function (e) {
+        if (e.pointerType !== 'touch') { return; }
+        clearTimeout(press); clearTimeout(linger);
+        linger = setTimeout(function () { tip.setAttribute('data-show', '0'); }, 1500);
+      });
     });
   }
   bar('m6Bad', false); bar('m6Good', true);
@@ -4344,9 +4460,9 @@ content was given the whole viewport and the bar was laid on top of it.</p>
         <div class="phone">
           <div class="phone-vp" id="phoneVp">
 <header class="mnav" id="mTopHome">
-              <button class="micon" type="button" data-tip="Home" aria-label="Home"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 8.5 9 3l6 5.5V15a1 1 0 0 1-1 1h-3v-4H7v4H4a1 1 0 0 1-1-1z"/></svg></button>
+              <button class="micon" type="button" data-tip="Go back to the home screen" aria-label="Home"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 8.5 9 3l6 5.5V15a1 1 0 0 1-1 1h-3v-4H7v4H4a1 1 0 0 1-1-1z"/></svg></button>
               <span class="msearch"><svg viewBox="0 0 18 18" aria-hidden="true" style="width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6"><use href="#i-search"></use></svg>Search jobs, sites, invoices</span>
-              <button class="micon" type="button" id="mMenu" data-tip="Menu" aria-label="Menu"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 5h12M3 9h12M3 13h12"/></svg></button>
+              <button class="micon" type="button" id="mMenu" data-tip="Choose which destinations the bottom bar shows" aria-label="Menu"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 5h12M3 9h12M3 13h12"/></svg></button>
             </header>
             <!-- a screen that is a task gets a task bar: back on the left, the thing you
                  came to do named in the middle, and the way out on the right -->
@@ -4466,8 +4582,8 @@ var tip = document.getElementById('tip');
    It opens ABOVE by default: a tooltip below a column header covers the filter row and
    the first data rows, which is exactly the content the header describes. Flips below
    only when there is no room above. */
-function showTipFor(el, text) {
-  if (!HAS_HOVER) { return; }
+function showTipFor(el, text, touch) {
+  if (!HAS_HOVER && !touch) { return; }
   var r = el.getBoundingClientRect();
   tip.textContent = text;
   tip.style.visibility = 'hidden';
@@ -4501,7 +4617,7 @@ function showTip(evt, text) {
   tip.style.top = Math.round(y) + 'px';
   tip.style.visibility = '';
 }
-function hideTip() { tip.removeAttribute('data-show'); }
+function hideTip() { tip.removeAttribute('data-show'); tip.removeAttribute('data-touch'); }
 
 /* ---- the address is the view state -----------------------------------------
    Path names the thing, query names what is selected inside it, hash names the
@@ -5110,6 +5226,7 @@ function toast(opts) {
     toastArm(same, kind, false);
     return same;
   }
+  toastPlace();
   var el = document.createElement('div');
   el.className = 'toast ' + kind;
   el.innerHTML = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-' +
@@ -5135,6 +5252,18 @@ function toast(opts) {
   toastArm(el, kind, !!opts.undo);
   return el;
 }
+/* A modal <dialog> is in the top layer, and no z-index reaches above it: a toast fired while
+   one is open lands underneath and is never seen. So while a modal is open the region moves
+   inside it, and when it closes the region comes back (toast-check: UNDER DIALOG). */
+function toastPlace() {
+  var modal = null;
+  try { modal = document.querySelector('dialog:modal'); } catch (e) { modal = document.querySelector('dialog[open]'); }
+  var parent = modal || document.body;
+  if (toastHost.parentElement !== parent) { parent.appendChild(toastHost); }
+}
+document.addEventListener('close', function (e) {
+  if (e.target.contains && e.target.contains(toastHost)) { document.body.appendChild(toastHost); }
+}, true);
 /* one place owns how long a toast lives, so restarting it cannot drift from setting it */
 function toastArm(el, kind, undoable) {
   clearTimeout(el._t);
@@ -6554,6 +6683,25 @@ document.addEventListener('focusin', function (e) {
   showTipFor(el, el.getAttribute('data-tip'));
 });
 document.addEventListener('focusout', hideTip);
+/* B2 on touch: an icon-only button with no label explains itself on a long-press, and the
+   lift after it does not press the button */
+var lpTimer = null, lpShown = false, lpLinger = null;
+document.addEventListener('pointerdown', function (e) {
+  var el = e.target.closest && e.target.closest('[data-tip]');
+  if (!el || e.pointerType !== 'touch') { return; }
+  lpShown = false; clearTimeout(lpTimer); clearTimeout(lpLinger);
+  lpTimer = setTimeout(function () { lpShown = true; tip.setAttribute('data-touch', '1'); showTipFor(el, el.getAttribute('data-tip'), true); }, 500);
+});
+['pointerup', 'pointercancel', 'pointermove'].forEach(function (t) {
+  document.addEventListener(t, function (e) {
+    if (e.pointerType !== 'touch' || !lpTimer) { return; }
+    clearTimeout(lpTimer); lpTimer = null;
+    if (t !== 'pointermove' && lpShown) { clearTimeout(lpLinger); lpLinger = setTimeout(hideTip, 1500); }
+  });
+});
+document.addEventListener('click', function (e) {
+  if (lpShown && e.target.closest && e.target.closest('[data-tip]')) { e.preventDefault(); e.stopPropagation(); lpShown = false; }
+}, true);
 document.addEventListener('keydown', function (e) {
   if (e.key !== 'Escape') { return; }
   hideTip();
@@ -10893,6 +11041,47 @@ document.getElementById('a2Bad').onclick = function () {
 document.getElementById('a2Good').onclick = function () {
   toast({ text: 'Saved', kind: 'ok' });   /* merges, counts, restarts its own timer */
 };
+
+/* ---------- A1 / A2: the toast system, measured (toast-check.js) ------------ */
+/* The wrong half, on purpose: no live region, no dismiss, no cap, a repeat stacks a copy,
+   the next toast removes any toast carrying Undo, and an error leaves before a success.
+   rules-check.js reads data-ms to assert the last one. */
+function a1tBad(text, opts) {
+  opts = opts || {};
+  var stack = document.getElementById('a1tBadStack');
+  Array.prototype.forEach.call(stack.querySelectorAll('[data-undo]'), function (n) { n.remove(); });
+  var n = document.createElement('div');
+  n.className = 'ft';
+  n.appendChild(document.createElement('span')).textContent = text;
+  if (opts.undo) {
+    n.setAttribute('data-undo', '1');
+    var u = document.createElement('button'); u.type = 'button'; u.textContent = 'Undo';
+    n.appendChild(u);
+  }
+  var ms = opts.kind === 'err' ? 1500 : 4000;
+  n.setAttribute('data-ms', String(ms));
+  stack.appendChild(n);
+  setTimeout(function () { n.remove(); }, ms);
+}
+document.getElementById('a1tBadSave').onclick = function () { a1tBad('Quotation saved.'); };
+document.getElementById('a1tBadArchive').onclick = function () { a1tBad('Quotation Q-1041 archived.', { undo: true }); };
+document.getElementById('a1tBadFail').onclick = function () { a1tBad('Sync failed.', { kind: 'err' }); };
+document.getElementById('a1tGoodSave').onclick = function () { toast({ text: 'Quotation saved.', kind: 'ok' }); };
+document.getElementById('a1tGoodArchive').onclick = function () {
+  toast({ text: 'Quotation Q-1041 archived.', undo: function () {}, undoneText: 'Quotation Q-1041 restored.' });
+};
+document.getElementById('a1tGoodFail').onclick = function () {
+  toast({ text: 'Sync failed: the server did not answer. Your changes are kept here; try again in a minute.', kind: 'err' });
+};
+
+/* ---------- B2: the wrong half's tooltip answers the mouse and nothing else ----- */
+(function () {
+  var b = document.getElementById('b2BadHover'), t = document.getElementById('b2BadTip');
+  b.addEventListener('pointerover', function () {
+    t.textContent = b.getAttribute('data-b2tip'); t.style.left = b.offsetLeft + 'px'; t.setAttribute('data-show', '1');
+  });
+  b.addEventListener('pointerout', function () { t.setAttribute('data-show', '0'); });
+}());
 
 /* ---------- A3: a clear that clears ----------------------------------------- */
 function a3State(api, q, id, btn) {

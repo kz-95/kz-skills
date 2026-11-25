@@ -1,0 +1,184 @@
+<!doctype html>
+<!-- tooltip.html - icon buttons that explain themselves on every device (rules B1, B2, M6; Appendix D).
+
+     Copy the parts you need; it has no dependencies. What it shows:
+       - icon-only buttons on a hovering pointer, each with an accessible name (aria-label) that does not
+         depend on the tooltip, and a tooltip that says more than the name: the consequence and the shortcut
+       - the tooltip opens after about 400ms of hover, at once on keyboard focus, and hides on pointer out,
+         blur, Escape and scroll. It opens above the button, flips below only when there is no room, is
+         clamped inside the viewport, 220px wide at most, and pointer-events: none so it never blocks a click
+       - M6: once one tooltip is open (and for 300ms after it closes) the next one opens at once, with no fade
+       - on touch, where nothing can hover, the labels stay visible under the icons (they never collapse
+         there), a long-press shows the same tooltip without pressing the button, and a [?] explains the
+         one domain term. The [?] is a real button with aria-expanded; its popover closes on outside tap,
+         Escape (focus returns to the [?]) and scroll
+     Checks it passes: explain-check (with pointer emulation, and as touch), layout-audit, contrast-check,
+     focus-check, motion-check, at 1280px and 375px, light and dark.
+
+     YOUR COPY IS NOT CHECKED until you run this on it - "the snippet passes" says nothing about your edits:
+         python ~/.claude/skills/kz-uicheck/scripts/run-checks.py your-page.html --checks explain-check
+         python ~/.claude/skills/kz-uicheck/scripts/run-checks.py your-page.html --checks explain-check,layout-audit --width 375
+     Paste the last line of each ("0 failure(s) across ...") into your report. -->
+<!-- (from the repository: skills/kz-uicheck/scripts/run-checks.py) -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tooltips and the [?]</title>
+<style>
+:root{--bg:#f7f6f4;--surface:#fff;--text:#1c1a18;--muted:#5f5851;--line:#d9d4ce;--field:#8c857e;--accent:#3a6cf1;
+  --tip-bg:#1c1a18;--tip-text:#f7f6f4;--s1:4px;--s2:8px;--s3:12px;--s4:16px}
+@media (prefers-color-scheme:dark){:root{--bg:#141317;--surface:#1e1d23;--text:#ece9e6;--muted:#a09a94;--line:#35333c;--field:#7a7585;--accent:#8aa8ff;
+  --tip-bg:#ece9e6;--tip-text:#141317}}
+*{box-sizing:border-box}
+body{margin:0;padding:var(--s4);background:var(--bg);color:var(--text);font:14px/1.5 system-ui,sans-serif}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:var(--s3);max-width:640px}
+.bar{display:flex;gap:var(--s2);flex-wrap:wrap;align-items:center}
+/* B1: the icon leads; the label is in the DOM always and only hidden on a fine hovering pointer */
+.ib{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:44px;min-height:44px;
+  padding:var(--s1) var(--s2);border:1px solid var(--field);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:12px;cursor:pointer;
+  transition:box-shadow .12s ease-out,transform .08s ease-out}
+.ib svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+/* B4: one halo for hover, focus and press; M5: the press answers at once */
+.ib:hover,.ib:focus-visible{box-shadow:0 0 0 3px var(--accent);outline:none}
+.ib:active{transform:scale(.96)}
+@media (hover:hover) and (pointer:fine){
+  .ib .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
+#tip{position:fixed;z-index:50;left:0;top:0;max-width:220px;padding:6px var(--s2);border-radius:6px;background:var(--tip-bg);color:var(--tip-text);
+  font-size:12px;line-height:1.45;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .1s ease-out}
+#tip[data-show="1"]{opacity:1;visibility:visible}
+#tip[data-instant="1"]{transition:none}
+.term{display:flex;align-items:center;gap:var(--s1);margin-top:var(--s4);border-top:1px solid var(--line);padding-top:var(--s3)}
+/* the [?] glyph stays small; on touch a padded pseudo-element makes the 44px target */
+.help{position:relative;width:20px;height:20px;padding:0;border:1px solid var(--field);border-radius:50%;background:var(--surface);color:var(--text);
+  font:600 12px/1 system-ui,sans-serif;cursor:pointer;transition:box-shadow .12s ease-out}
+.help::after{content:"";position:absolute;inset:-13px}
+.help:hover,.help:focus-visible,.help[aria-expanded="true"]{box-shadow:0 0 0 3px var(--accent);outline:none}
+.help:active{transform:scale(.96)}
+#pop{position:fixed;z-index:60;max-width:min(280px,calc(100vw - 16px));padding:var(--s3);border:1px solid var(--line);border-radius:10px;
+  background:var(--surface);color:var(--text);box-shadow:0 8px 20px rgba(0,0,0,.16)}
+#pop[hidden]{display:none}
+#pop strong{display:block;margin-bottom:var(--s1)}
+#out{color:var(--muted);min-height:1.5em;margin:var(--s3) 0 0}
+@media (prefers-reduced-motion:reduce){.ib,#tip,.help{transition:none}}
+</style>
+</head>
+<body>
+<div class="card">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-save" viewBox="0 0 18 18"><path d="M3 3h9l3 3v9H3z"/><path d="M6 3v4h5V3M6 15v-4h6v4"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 18 18"><rect x="6" y="6" width="9" height="9" rx="1.5"/><path d="M12 6V3H3v9h3"/></symbol>
+    <symbol id="i-export" viewBox="0 0 18 18"><path d="M9 3v8M5.5 7.5 9 11l3.5-3.5M3 13v2h12v-2"/></symbol>
+    <symbol id="i-print" viewBox="0 0 18 18"><path d="M5 7V3h8v4M5 13H3V7h12v6h-2"/><path d="M5 11h8v4H5z"/></symbol>
+  </svg>
+  <div class="bar" role="toolbar" aria-label="Quotation">
+    <button type="button" class="ib" aria-label="Save" data-tip="Save changes to this quotation (Ctrl+S)"><svg aria-hidden="true"><use href="#i-save"/></svg><span class="lbl">Save</span></button>
+    <button type="button" class="ib" aria-label="Copy link" data-tip="Copy a link that opens this quotation with the same filters"><svg aria-hidden="true"><use href="#i-copy"/></svg><span class="lbl">Copy link</span></button>
+    <button type="button" class="ib" aria-label="Export" data-tip="Download the rows as they are filtered, as a CSV file"><svg aria-hidden="true"><use href="#i-export"/></svg><span class="lbl">Export</span></button>
+    <button type="button" class="ib" aria-label="Print" data-tip="Print the quotation as the customer will see it (Ctrl+P)"><svg aria-hidden="true"><use href="#i-print"/></svg><span class="lbl">Print</span></button>
+  </div>
+  <div class="term">
+    <span>Retention margin</span>
+    <button type="button" class="help" aria-label="What is retention margin?" aria-expanded="false" aria-controls="pop">?</button>
+  </div>
+  <p id="out" aria-live="polite"></p>
+</div>
+<div id="tip" role="tooltip"></div>
+<div id="pop" role="dialog" aria-label="Retention margin" hidden>
+  <strong>Retention margin</strong>
+  The share held back from each progress claim until the defects period ends. Set per contract; 5 percent is typical.
+</div>
+<script>
+(function () {
+  var tip = document.getElementById('tip'), pop = document.getElementById('pop'), help = document.querySelector('.help');
+  var hoverMQ = matchMedia('(hover: hover)');
+  var timer = null, warmUntil = 0, owner = null, pressTimer = null, lingerTimer = null, pressed = false;
+
+  /* above the button, flipped below only when there is no room; clamped inside the viewport */
+  function show(el, instant) {
+    tip.textContent = el.getAttribute('data-tip');
+    tip.setAttribute('data-instant', instant ? '1' : '0');
+    tip.setAttribute('data-show', '1');
+    var r = el.getBoundingClientRect(), t = tip.getBoundingClientRect();
+    var x = Math.min(Math.max(8, r.left + r.width / 2 - t.width / 2), innerWidth - t.width - 8);
+    var y = r.top - t.height - 8;
+    if (y < 8) { y = r.bottom + 8; }
+    tip.style.left = Math.round(x) + 'px';
+    tip.style.top = Math.round(y) + 'px';
+    el.setAttribute('aria-describedby', 'tip');
+    owner = el;
+  }
+  function hide() {
+    clearTimeout(timer);
+    if (tip.getAttribute('data-show') === '1') { warmUntil = Date.now() + 300; }   /* M6: stays warm for 300ms */
+    tip.setAttribute('data-show', '0');
+    if (owner) { owner.removeAttribute('aria-describedby'); owner = null; }
+  }
+  function warm() { return tip.getAttribute('data-show') === '1' || Date.now() < warmUntil; }
+
+  /* hover: about 400ms, unless a tooltip is already open (M6) */
+  document.addEventListener('pointerover', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (!el || e.pointerType === 'touch' || !hoverMQ.matches) { return; }
+    clearTimeout(timer);
+    if (warm()) { show(el, true); return; }
+    timer = setTimeout(function () { show(el, false); }, 400);
+  });
+  document.addEventListener('pointerout', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (el && !el.contains(e.relatedTarget) && el !== document.activeElement) { hide(); }
+  });
+  /* focus: at once, on any device (a keyboard can be attached to a tablet) */
+  document.addEventListener('focusin', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (el) { clearTimeout(timer); show(el, warm()); }
+  });
+  document.addEventListener('focusout', function (e) { if (e.target.closest && e.target.closest('[data-tip]')) { hide(); } });
+
+  /* touch: a long-press shows the tooltip and the lift does not press the button */
+  document.addEventListener('pointerdown', function (e) {
+    var el = e.target.closest && e.target.closest('[data-tip]');
+    if (!el || e.pointerType !== 'touch') { return; }
+    pressed = false;
+    clearTimeout(pressTimer); clearTimeout(lingerTimer);   /* a new press owns the tooltip; the last one's hide must not close it */
+    pressTimer = setTimeout(function () { pressed = true; show(el, true); }, 500);
+  });
+  ['pointerup', 'pointercancel', 'pointermove'].forEach(function (t) {
+    document.addEventListener(t, function (e) {
+      if (e.pointerType !== 'touch' || (t === 'pointermove' && !pressTimer)) { return; }
+      clearTimeout(pressTimer); pressTimer = null;
+      if (t !== 'pointermove' && pressed) { clearTimeout(lingerTimer); lingerTimer = setTimeout(hide, 1500); }
+    });
+  });
+  document.addEventListener('click', function (e) {
+    if (pressed && e.target.closest && e.target.closest('[data-tip]')) { e.preventDefault(); e.stopPropagation(); pressed = false; }
+  }, true);
+  document.addEventListener('contextmenu', function (e) { if (pressed) { e.preventDefault(); } });
+
+  /* the [?]: click-driven, so it works on every device */
+  function closePop(back) {
+    if (pop.hidden) { return; }
+    pop.hidden = true; help.setAttribute('aria-expanded', 'false');
+    if (back) { help.focus(); }
+  }
+  help.addEventListener('click', function () {
+    if (!pop.hidden) { closePop(false); return; }
+    pop.hidden = false; help.setAttribute('aria-expanded', 'true');
+    var r = help.getBoundingClientRect(), p = pop.getBoundingClientRect();
+    pop.style.left = Math.round(Math.min(Math.max(8, r.left), innerWidth - p.width - 8)) + 'px';
+    pop.style.top = Math.round(r.bottom + 8 + p.height > innerHeight ? Math.max(8, r.top - p.height - 8) : r.bottom + 8) + 'px';
+  });
+  document.addEventListener('click', function (e) { if (!pop.hidden && e.target !== help && !pop.contains(e.target)) { closePop(false); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { hide(); closePop(true); } });
+  window.addEventListener('scroll', function () { hide(); closePop(false); }, true);
+
+  /* the buttons do something, so a press is visible (rule A1) */
+  var out = document.getElementById('out');
+  Array.prototype.forEach.call(document.querySelectorAll('.ib'), function (b) {
+    b.addEventListener('click', function () { out.textContent = b.getAttribute('aria-label') + ': done (demo)'; });
+  });
+})();
+</script>
+</body>
+</html>

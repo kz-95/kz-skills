@@ -15,13 +15,13 @@ is not a command: its parent reads it.
 |---|---|
 | `../kz-engrules/` | Any code task at all - L0 behaviour, L1 code work, the S standing rules, ASCII discipline and its hook. The floor everything else sits on |
 | `../kz-fastfix/` | One small job: a typo, a label, a style tweak, a column, a doc line, a one-line bug. Size test first; if it passes, changed directly and checked once, no crew, no loop |
-| `../kz-flashrule/` | The rules that break worst when missed, each with its ID and fastest check, on one page. The default first read for small and medium UI work |
+| `../kz-flashrule/` | The core: the twenty-odd rules agents break most, each with its ID and check, on one page. Everything else is one pack per type of work, through `../kz-uiuxrule/packs/LOOKUP.md` |
 | `../kz-askcard/` | About to ask the user something. Three to five decisions, one recommended, a custom option, a default per line, one card per turn |
 | `../kz-crew021/` | A whole project, idea to maintenance: phases, scope relay, PoC spike, contract-first parallel build, dispatch gates, budget, retro |
 | `../kz-uiuxrule/` | Creating, changing, reviewing or standardising UI beyond one element - 57 UI rules, 6 motion, 21 chart, 10 diagram, 16 principles, four modes |
 | `../kz-motionrule/` | Only motion: an animation, a transition, an easing curve, a press or hover effect, an entrance. The six M rules and the motion check |
 | `../kz-diagramrule/` | Only a diagram: architecture, flowchart, sequence, state machine, data model, swimlane. The ten G rules and the diagram check |
-| `../kz-uicheck/` | Measuring UI: ten paste-in console checks (layout, tables, typing, popovers, contrast, modals, focus, forms, motion, diagrams), on any page |
+| `../kz-uicheck/` | Measuring UI: twelve paste-in console checks (layout, tables, typing, popovers, contrast, modals, focus, forms, motion, diagrams, toasts, explainers), on any page |
 | `../kz-judge/` | After `kz-uicheck`: the wording rules a script cannot measure, judged by a local Laya at no cost to the agent's tokens. Skips cleanly when Laya is not present |
 | `../kz-reflect/` | Something went wrong, a person noticed, the fix is verified: log it, classify it, propose the rule or check change for a person to approve. Never edits a shared rule itself |
 | `../kz-loopfix/` | One broken thing where "fix it and move on" already failed once: critic <-> fixer to agreement, then a gate rules on whether the agreement is true |
@@ -35,28 +35,36 @@ from the full check suite on every change and follow-up, a 25-45 KB read whateve
 size, and work nobody asked for. Quality gains (check failures 75 -> 26) came from the scoped
 rules and checks, which this keeps.
 
-1. **Size test first, before reading any rule.**
+0. **First kz call in a session: one card, then the index.**
+   Ask one Ask Card (`../kz-askcard/`) with two lines: the type of work, from the rows of
+   `../kz-uiuxrule/packs/LOOKUP.md` with the one the request's words match marked
+   (recommended), and the size (trivial / component / project), with a custom option open.
+   Then read LOOKUP, read the one pack it names, build, and run that pack's checks on the
+   screen the work is on (`--hash`, `--tap`, `--wait`; a WRONG SCREEN run is a failure).
+   Later calls in the session reuse the answer and ask nothing.
+   `../kz-askcard/hooks/ui-rule-purpose.mjs` prints this card on hosts that run a hook.
+1. **Size test, before reading any rule.**
    - **Trivial** - one element or one line, no new behaviour (a label, a colour, a width, a
      column): read at most the one `kz-flashrule` line that applies, make the change, run at
      most the one check that covers it (or none), report in one line. That is `kz-fastfix`.
-   - **Small/medium** - a component or a screen: read `../kz-flashrule/SKILL.md` first. Open
-     the `rules/INDEX.md` row and the one or two sections it names only when a flashrule line
-     says "see X" or no line covers the work. Build. Run only the checks named for its kind:
-     table -> `table-check` (+ `popover-check` for its panels), form -> `form-check`
-     (+ `typing-check` at 375px), popover/dropdown -> `popover-check`, modal -> `modal-check`,
-     motion -> `motion-check`, diagram -> `diagram-check`, colour/theme -> `contrast-check`
-     in both themes; then `layout-audit` once at 375px. Not every check a touched element
-     could fail, and never `run-checks.py` without `--checks`.
+   - **Small/medium** - a component or a screen: `../kz-uiuxrule/packs/LOOKUP.md` (about
+     2 KB), then the one pack its row names (3-9 KB: the rules in full, the appendix it
+     needs, the snippet and the exact check command), then run only that pack's checks,
+     once, then `layout-audit` at 375px. `../kz-flashrule/SKILL.md` is the core twenty
+     lines; the rule files and `rules/INDEX.md` open only when no pack covers the work.
+     Never `run-checks.py` without `--checks`.
    - **Large** - a project, an audit, "make it production", a release: the full path (all
-     ten checks, both widths, both themes; `kz-uiuxrule` mode 4, `kz-crew021`, `kz-loopfix`).
-2. **No question unless genuinely ambiguous.** State the assumptions in one line and proceed
-   (engineering rule 3). The Ask Card is for adopt or review scope, and for real ambiguity.
+     the checks, both widths, both themes, the full rule corpus; `kz-uiuxrule` mode 4,
+     `kz-crew021`, `kz-loopfix`).
+2. **After the first call, no question unless genuinely ambiguous.** State the assumptions in
+   one line and proceed (engineering rule 3). The first-call card (item 0) is the one
+   exception; beyond it, an Ask Card is for adopt or review scope, and for real ambiguity.
 3. **Checks are scoped and run once.** Fix what a check reports, then re-run only that check;
    never the full suite after a targeted fix. Both themes only when colour or theme changed.
    The full suite only for mode 4, "make it production", or before a release. "To be safe" is
    not a reason to run more; no harness or test script of your own to check a page, either.
-4. **Follow-ups stay light.** Do not re-read rules already read in this session; check only
-   what the follow-up touched.
+4. **Follow-ups stay light.** Do not re-read a pack or rule already read in this session, and
+   do not ask the first-call card again; check only what the follow-up touched.
 5. **Nothing unasked.** A check left behind in the user's project is opt-in (mode 4, or the
    user asks); never write check scripts or test files into it unasked. No feature or UI that
    was not requested (engineering rule 28).
@@ -71,7 +79,7 @@ panel) and `S2` hold at every size.
 ```
 kz-engrules      the floor: applies to every task, UI or not
   kz-fastfix     the lane for one small job; escalates when it grows
-  kz-flashrule   the most critical rules, one page, the first read for small UI work
+  kz-flashrule   the core twenty rules, one page; packs/LOOKUP.md routes the rest
   kz-uiuxrule    adds the interface rules on top of it
     kz-motionrule  its motion rules alone, for work that only moves
     kz-diagramrule its diagram rules alone, for work that is only a diagram

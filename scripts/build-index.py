@@ -4,9 +4,13 @@
     python scripts/build-index.py          write docs/rule-index.md
     python scripts/build-index.py --check  exit 1 if the file on disk is out of date (used by CI)
 
+It also writes (or with --check, checks) the type packs in skills/kz-uiuxrule/packs/, through
+scripts/build-packs.py: LOOKUP.md and one pack per type of work, each copied from the rule files.
+
 It reads the first bold sentence of every table row whose first cell is a rule ID
 (`| T1 | **A filter on a dimension is a panel...** ...`) in ui-rules.md, chart-rules.md, motion-rules.md and diagram-rules.md.
 """
+import importlib.util
 import io
 import os
 import re
@@ -57,18 +61,26 @@ def build():
     return "\n".join(out), total
 
 
+def packs():
+    spec = importlib.util.spec_from_file_location("build_packs", os.path.join(ROOT, "scripts", "build-packs.py"))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def main():
     text, total = build()
+    packs_status = packs().main(sys.argv)
     if "--check" in sys.argv:
         have = io.open(OUT, encoding="utf-8", newline="").read() if os.path.exists(OUT) else ""
         if have != text:
             print("docs/rule-index.md is out of date - run: python scripts/build-index.py")
             return 1
         print("rule index up to date (%d rules)" % total)
-        return 0
+        return packs_status
     io.open(OUT, "w", encoding="utf-8", newline="\n").write(text)
     print("wrote docs/rule-index.md (%d rules)" % total)
-    return 0
+    return packs_status
 
 
 if __name__ == "__main__":

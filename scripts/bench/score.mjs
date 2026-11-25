@@ -16,20 +16,35 @@
    the file, in place. Needs: Python 3, Playwright at PLAYWRIGHT, Chrome for run-checks.py
    (CHROME, default the Playwright headless shell), a full Chromium for Lighthouse (CHROME_PATH),
    and axe-core and lighthouse installed under KZ_BENCH_TOOLS (see README), else npx fetches them. */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { STATUSES, SITES, visibleCount, bodyRows, visibleCheckboxes, openValueList, untickOne, chartSnapshot,
-  jobItems, applyStatusFilter, dialogCount, openDetail, findThemeToggle, flipTheme, installColour, pageLum } from './helpers.mjs';
+  jobItems, applyStatusFilter, dialogCount, openDetail, findThemeToggle, flipTheme, installColour, pageLum,
+  DELETED_RE, SAVED_RE, messages, waitMessage, visitRows, presentNotes, deleteFirstVisit, pressUndos, editFirstVisit } from './helpers.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(HERE, '..', '..');
 const PW = process.env.PLAYWRIGHT || '/opt/node-tools/node_modules/playwright/index.mjs';
 const { chromium } = await import(pathToFileURL(PW).href);
-const CHROME = process.env.CHROME || '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell';
-const CHROME_PATH = process.env.CHROME_PATH || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+/* the newest Playwright browser of a kind under /opt/pw-browsers; a pinned version path goes stale when the
+   image updates, and a missing browser must stop the scoring, not score every page as failed */
+function pwBrowser(prefix, rels) {
+  const root = '/opt/pw-browsers';
+  const dirs = existsSync(root) ? readdirSync(root).filter((d) => d.startsWith(prefix) && /-\d+$/.test(d)).sort().reverse() : [];
+  for (const d of dirs) for (const r of rels) if (existsSync(path.join(root, d, r))) return path.join(root, d, r);
+  return null;
+}
+// the full browser, the same one run.py hands the agents, so a page is scored by what its author could run
+const CHROME = process.env.CHROME || pwBrowser('chromium-', ['chrome-linux64/chrome', 'chrome-linux/chrome'])
+  || pwBrowser('chromium_headless_shell-', ['chrome-headless-shell-linux64/chrome-headless-shell', 'chrome-linux/headless_shell']);
+const CHROME_PATH = process.env.CHROME_PATH || pwBrowser('chromium-', ['chrome-linux64/chrome', 'chrome-linux/chrome']);
+if (!CHROME || !existsSync(CHROME) || !CHROME_PATH || !existsSync(CHROME_PATH)) {
+  console.error('no Chrome found: set CHROME (checks, Playwright) and CHROME_PATH (Lighthouse)');
+  process.exit(1);
+}
 export const AXE_VERSION = '4.10.3';
 export const LIGHTHOUSE_VERSION = '12.8.2';
 const TOOLS = process.env.KZ_BENCH_TOOLS || '/tmp/kzb-tools';
@@ -245,6 +260,83 @@ const RUBRICS = {
       const a = await bg();
       if (!(await flipTheme(p))) return false;
       return (await bg()) !== a;
+    }],
+  ],
+  /* Driven like a user: press a row's Delete (accepting a confirm if the page asks), read what
+     appears, press Undo or a dismiss. Nothing relies on the agent's function or class names. A
+     message is visible text saying deleted, removed or Undo (DELETED_RE), or saved or updated
+     (SAVED_RE), that was not on screen before. */
+  'undo-toast': [
+    ['deleting a row shows a message within 1s (deleted, removed or Undo)', async p => {
+      const base = await messages(p, DELETED_RE);
+      if (!(await deleteFirstVisit(p))) return false;
+      return waitMessage(p, DELETED_RE, base, 1000);
+    }],
+    ['the message offers Undo, and Undo brings the same row back', async p => {
+      const rows = await visitRows(p), notes = await presentNotes(p);
+      if (!(await deleteFirstVisit(p))) return false;
+      await p.waitForTimeout(300);
+      const after = await presentNotes(p);
+      const lost = notes.filter(n => !after.includes(n));
+      if (lost.length !== 1 || !(await pressUndos(p, 1))) return false;
+      await p.waitForTimeout(300);
+      return (await visitRows(p)) === rows && (await presentNotes(p)).includes(lost[0]);
+    }],
+    ['two deletes in a row: both can still be undone (the first Undo was not replaced)', async p => {
+      const rows = await visitRows(p), notes = await presentNotes(p);
+      if (!(await deleteFirstVisit(p))) return false;
+      await p.waitForTimeout(300);
+      if (!(await deleteFirstVisit(p))) return false;
+      await p.waitForTimeout(300);
+      const after = await presentNotes(p);
+      const lost = notes.filter(n => !after.includes(n));
+      if (lost.length !== 2) return false;
+      await pressUndos(p, 4);
+      await p.waitForTimeout(300);
+      const back = await presentNotes(p);
+      return (await visitRows(p)) === rows && lost.every(n => back.includes(n));
+    }],
+    ['the message has a dismiss control that hides it and leaves the row deleted', async p => {
+      const base = await messages(p, DELETED_RE);
+      if (!(await deleteFirstVisit(p))) return false;
+      const rows = await visitRows(p);
+      if (!(await waitMessage(p, DELETED_RE, base, 1000))) return false;
+      await messages(p, DELETED_RE, true);
+      /* the nearest dismiss button around the message: named dismiss or close, or a bare x */
+      const x = await p.evaluateHandle(() => {
+        const DISMISS = /dismiss|close|hide|^\s*[x\u00d7\u2715\u2716]\s*$/i;
+        const name = b => ((b.getAttribute('aria-label') || '') + ' ' + (b.getAttribute('title') || '') + ' ' + b.textContent).trim();
+        for (const m of document.querySelectorAll('[data-kzb-msg]')) {
+          for (let a = m; a && a !== document.body; a = a.parentElement) {
+            const b = [...a.querySelectorAll('button, [role=button]')].find(b => b.getClientRects().length && DISMISS.test(name(b)) && !/undo|restore|delete|remove/i.test(name(b)));
+            if (b) return b;
+          }
+        }
+        return null;
+      });
+      const el = x.asElement();
+      if (!el) return false;
+      await el.click({ timeout: 2000 }).catch(() => {});
+      await p.waitForTimeout(600);
+      return (await messages(p, DELETED_RE)) <= base && (await visitRows(p)) === rows;
+    }],
+    ['the message is in a live region (role=status, role=alert or aria-live)', async p => {
+      const base = await messages(p, DELETED_RE);
+      if (!(await deleteFirstVisit(p))) return false;
+      if (!(await waitMessage(p, DELETED_RE, base, 1000))) return false;
+      await messages(p, DELETED_RE, true);
+      return p.evaluate(() => [...document.querySelectorAll('[data-kzb-msg]')].some(m =>
+        !!m.closest('[aria-live]:not([aria-live=off]), [role=status], [role=alert], [role=log], output')));
+    }],
+    ['editing a row and leaving the field shows a saved confirmation within 2s', async p => {
+      const base = await messages(p, SAVED_RE);
+      if (!(await editFirstVisit(p))) return false;
+      if (await waitMessage(p, SAVED_RE, base, 2000)) return true;
+      /* a page that saves on a button: press the Save nearest the field */
+      const save = p.getByRole('button', { name: /^save\b/i }).filter({ visible: true }).first();
+      if (!(await save.count())) return false;
+      await save.click({ timeout: 2000 }).catch(() => {});
+      return waitMessage(p, SAVED_RE, base, 2000);
     }],
   ],
 };

@@ -1,0 +1,150 @@
+<!doctype html>
+<!-- saved-note.html - "Saved" said where the user is looking, not in a toast (rule A1; Appendix B).
+
+     Copy the parts you need; it has no dependencies. Appendix B: a toast is for an outcome that is
+     off-screen. A field that saves itself has its outcome right there, so the note goes beside it:
+       - each control saves on change (a field when the user leaves it, a switch at once) and shows
+         "Saving..." then "Saved" next to that control, or "Not saved: <why>. Try again" with a Retry
+       - the note is a polite live region (role="status") that is in the page from the start, so a
+         screen reader hears it without moving focus; it is empty, not removed, when there is nothing to say
+       - it stays fully readable for its time (2.5s), then fades over 0.4s and its text is cleared, so it
+         never sits half-transparent and unreadable. A failure stays until the next attempt
+       - the note has a fixed slot, so "Saving..." and "Saved" never move the field beside it
+       - progress goes on the control that was used (aria-busy while saving), not elsewhere
+     Checks it passes: toast-check (no toast region: the note is not a toast), form-check, typing-check,
+     layout-audit, contrast-check, focus-check, motion-check, at 1280px and 375px, light and dark.
+
+     YOUR COPY IS NOT CHECKED until you run this on it - "the snippet passes" says nothing about your edits:
+         python ~/.claude/skills/kz-uicheck/scripts/run-checks.py your-page.html --checks form-check,layout-audit
+         python ~/.claude/skills/kz-uicheck/scripts/run-checks.py your-page.html --checks typing-check,layout-audit --width 375
+     Paste the last line of each ("0 failure(s) across ...") into your report. -->
+<!-- (from the repository: skills/kz-uicheck/scripts/run-checks.py) -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saved note</title>
+<style>
+:root{--bg:#f7f6f4;--surface:#fff;--text:#1c1a18;--muted:#5f5851;--line:#d9d4ce;--field:#8c857e;--accent:#3a6cf1;--accent-ink:#2a51b8;
+  --ok:#1f7a4d;--err:#b3261e;--s1:4px;--s2:8px;--s3:12px;--s4:16px}
+@media (prefers-color-scheme:dark){:root{--bg:#141317;--surface:#1e1d23;--text:#ece9e6;--muted:#a09a94;--line:#35333c;--field:#7a7585;--accent:#8aa8ff;--accent-ink:#8aa8ff;
+  --ok:#6fcf97;--err:#ff8a80}}
+*{box-sizing:border-box}
+body{margin:0;padding:var(--s4);background:var(--bg);color:var(--text);font:14px/1.5 system-ui,sans-serif}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:var(--s4);max-width:560px}
+h1{font-size:16px;margin:0 0 var(--s3)}
+.row{display:grid;grid-template-columns:1fr;gap:var(--s1);margin-bottom:var(--s4)}
+.row label{font-weight:600}
+.ctl{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap}
+.ctl input[type=text],.ctl input[type=email]{flex:1 1 200px;min-width:0;min-height:44px;padding:0 var(--s2);border:1px solid var(--field);border-radius:8px;
+  background:var(--surface);color:var(--text);font:inherit;font-size:16px}
+.ctl input:focus-visible,.switch:focus-visible,.retry:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.switch{position:relative;width:52px;height:32px;flex:none;border:1px solid var(--field);border-radius:999px;background:var(--surface);cursor:pointer;
+  transition:background-color .15s ease-out}
+.switch::before{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--muted);transition:transform .15s ease-out}
+.switch[aria-checked="true"]{background:var(--accent)}
+.switch[aria-checked="true"]::before{transform:translateX(20px);background:var(--surface)}
+.switch:active{transform:scale(.97)}
+.switch::after{content:"";position:absolute;inset:-8px}
+/* the note: a fixed slot, so its words never move the control; readable, then a short fade, then empty */
+.note{min-width:9em;min-height:1.5em;font-size:13px;color:var(--muted);opacity:1;transition:opacity .4s ease-out}
+.note[data-state="ok"]{color:var(--ok)}
+.note[data-state="err"]{color:var(--err)}
+.note[data-fade="1"]{opacity:0}
+.retry{min-height:44px;margin-left:var(--s1);padding:0 var(--s2);border:1px solid var(--field);border-radius:6px;background:var(--surface);color:var(--accent-ink);font:inherit;font-size:13px;cursor:pointer}
+.retry:active{transform:scale(.97)}
+.hint{color:var(--muted);font-size:13px;margin:0}
+@media (prefers-reduced-motion:reduce){.note,.switch,.switch::before{transition:none}}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Profile</h1>
+  <div class="row">
+    <label for="name">Display name</label>
+    <div class="ctl">
+      <input id="name" type="text" value="Aisyah Rahman" autocomplete="name" data-save>
+      <span class="note" id="name-note" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+  <div class="row">
+    <label for="email">Email for receipts</label>
+    <div class="ctl">
+      <input id="email" type="email" value="aisyah@example.com" autocomplete="email" inputmode="email" data-save data-fail-on="fail">
+      <span class="note" id="email-note" role="status" aria-live="polite"></span>
+    </div>
+    <p class="hint">Type an address containing "fail" to see the failure note.</p>
+  </div>
+  <div class="row">
+    <span id="digest-label" style="font-weight:600">Weekly digest</span>
+    <div class="ctl">
+      <button type="button" class="switch" id="digest" role="switch" aria-checked="false" aria-labelledby="digest-label" data-save></button>
+      <span class="note" id="digest-note" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var SHOW = 2500;               /* fully readable for this long, then a 0.4s fade */
+
+  function noteFor(ctl) { return document.getElementById(ctl.id + '-note'); }
+  function say(note, state, text, retry) {
+    clearTimeout(note._t);
+    note.removeAttribute('data-fade');
+    note.setAttribute('data-state', state);
+    note.textContent = text;
+    if (retry) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'retry'; b.textContent = 'Retry';
+      b.addEventListener('click', retry);
+      note.appendChild(b);
+    }
+    if (state === 'ok') {
+      note._t = setTimeout(function () {
+        note.setAttribute('data-fade', '1');
+        note._t = setTimeout(function () { note.textContent = ''; note.removeAttribute('data-state'); note.removeAttribute('data-fade'); }, 400);
+      }, SHOW);
+    }
+  }
+  /* stands in for the network: replace with your request */
+  function send(ctl, value) {
+    return new Promise(function (ok, fail) {
+      setTimeout(function () {
+        var bad = ctl.getAttribute('data-fail-on');
+        if (bad && String(value).indexOf(bad) > -1) { fail(new Error('the server refused it')); } else { ok(); }
+      }, 500);
+    });
+  }
+  function save(ctl, value) {
+    var note = noteFor(ctl);
+    ctl.setAttribute('aria-busy', 'true');
+    say(note, 'busy', 'Saving...');
+    send(ctl, value).then(function () {
+      ctl.removeAttribute('aria-busy');
+      say(note, 'ok', 'Saved');
+    }, function (err) {
+      ctl.removeAttribute('aria-busy');
+      say(note, 'err', 'Not saved: ' + err.message + '.', function () { save(ctl, ctl.value); });
+    });
+  }
+
+  /* a field saves when the user leaves it having changed it, never while they type */
+  Array.prototype.forEach.call(document.querySelectorAll('input[data-save]'), function (input) {
+    var last = input.value;
+    input.addEventListener('change', function () {
+      if (input.value === last) { return; }
+      last = input.value;
+      save(input, input.value);
+    });
+  });
+  /* a switch saves at once: its new position is the change */
+  var sw = document.getElementById('digest');
+  sw.addEventListener('click', function () {
+    var on = sw.getAttribute('aria-checked') !== 'true';
+    sw.setAttribute('aria-checked', String(on));
+    save(sw, on);
+  });
+})();
+</script>
+</body>
+</html>

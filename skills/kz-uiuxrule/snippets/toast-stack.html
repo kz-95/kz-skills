@@ -1,0 +1,199 @@
+<!doctype html>
+<!-- toast-stack.html - a toast system that passes the feedback rules (A1, A2; Appendix B).
+
+     Copy the parts you need; it has no dependencies. One function, kzToast(text, { kind, undo }), and:
+       - one region, role="status" aria-live="polite", in the page from the start (a live region added at
+         the moment it speaks is often not announced), anchored to one edge, the same on every screen
+       - every toast has a dismiss button; the glyph stays small and a padded pseudo-element makes the
+         44px target on touch
+       - the same message again keeps the node on screen, adds a count (x2, x3) and restarts its timer:
+         nothing is removed and re-added, so nothing replays or reflows (A2)
+       - at most three on screen; the oldest toast WITHOUT Undo goes first, so an Undo is never pushed
+         out by a later "Saved". An undoable toast is never merged with another
+       - one function owns how long a toast lives: 3.5s ordinary, 7s with Undo, 8s for an error
+       - above anything open: the region sits over the sheet by z-index, and while a modal <dialog> is
+         open it moves inside it, because a modal is in the top layer and no z-index reaches above it
+       - the region is pointer-events: none and the toasts are pointer-events: auto, so the strip never
+         swallows a click meant for the page under it
+       - errors say what failed and what to do next; nothing ever says only "Success"
+     Checks it passes: toast-check, layout-audit, contrast-check, focus-check, motion-check, modal-check,
+     at 1280px and 375px, light and dark.
+
+     YOUR COPY IS NOT CHECKED until you run this on it - "the snippet passes" says nothing about your edits:
+         python ~/.claude/skills/kz-uicheck/scripts/run-checks.py your-page.html --checks toast-check
+         python ~/.claude/skills/kz-uicheck/scripts/run-checks.py your-page.html --checks toast-check,layout-audit --width 375
+     toast-check measures through window.kzToast; keep it exposed, or mark a safe trigger data-kz-toast-test.
+     Paste the last line of each ("0 failure(s) across ...") into your report. -->
+<!-- (from the repository: skills/kz-uicheck/scripts/run-checks.py) -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toast stack</title>
+<style>
+:root{--bg:#f7f6f4;--surface:#fff;--text:#1c1a18;--muted:#5f5851;--line:#d9d4ce;--field:#8c857e;--accent:#3a6cf1;--accent-ink:#2a51b8;
+  --ok:#1f7a4d;--err:#b3261e;--s1:4px;--s2:8px;--s3:12px;--s4:16px}
+@media (prefers-color-scheme:dark){:root{--bg:#141317;--surface:#1e1d23;--text:#ece9e6;--muted:#a09a94;--line:#35333c;--field:#7a7585;--accent:#8aa8ff;--accent-ink:#8aa8ff;
+  --ok:#6fcf97;--err:#ff8a80}}
+*{box-sizing:border-box}
+body{margin:0;padding:var(--s4);background:var(--bg);color:var(--text);font:14px/1.5 system-ui,sans-serif}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:var(--s3);max-width:640px}
+.bar{display:flex;gap:var(--s2);flex-wrap:wrap}
+.btn{min-height:44px;padding:0 var(--s3);border:1px solid var(--field);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;cursor:pointer;
+  transition:box-shadow .12s ease-out,transform .08s ease-out}
+.btn:hover,.btn:focus-visible{box-shadow:0 0 0 3px var(--accent);outline:none}
+.btn:active{transform:scale(.97)}
+ul.rows{list-style:none;margin:var(--s3) 0 0;padding:0}
+ul.rows li{display:flex;justify-content:space-between;align-items:center;gap:var(--s2);min-height:44px;border-top:1px solid var(--line)}
+/* the region: one edge, the same everywhere; it never takes a click meant for the page */
+#toasts{position:fixed;left:0;right:0;bottom:0;z-index:1000;display:flex;flex-direction:column-reverse;align-items:center;gap:var(--s2);
+  padding:var(--s4);pointer-events:none}
+.toast{pointer-events:auto;width:min(380px,100%);display:flex;align-items:center;gap:var(--s2);padding:var(--s2) var(--s2) var(--s2) var(--s3);
+  background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.12);
+  animation:toast-in .18s ease-out}
+/* status by a glyph; an error colours the whole border, never a left stripe (Appendix B) */
+.toast.err{border-color:var(--err)}
+.toast .ico{flex:none;font-weight:700}
+.toast.ok .ico{color:var(--ok)}
+.toast.err .ico{color:var(--err)}
+.toast .msg{flex:1;min-width:0}
+.toast .n{flex:none;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:0 6px;font-variant-numeric:tabular-nums}
+.toast .undo{flex:none;min-height:32px;padding:0 var(--s2);border:0;border-radius:6px;background:none;color:var(--accent-ink);font:inherit;font-weight:600;text-decoration:underline;cursor:pointer}
+.toast .x{flex:none;position:relative;width:28px;height:28px;padding:0;border:0;border-radius:6px;background:none;color:var(--muted);font:inherit;font-size:16px;cursor:pointer}
+.toast .x::after{content:"";position:absolute;inset:-8px}
+.toast .undo:hover,.toast .undo:focus-visible,.toast .x:hover,.toast .x:focus-visible{box-shadow:0 0 0 3px var(--accent);outline:none}
+.toast .undo:active,.toast .x:active{transform:scale(.96)}
+@keyframes toast-in{from{opacity:0;transform:translateY(12px)}}
+/* a sheet, to show the toast lands above it */
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:100;max-height:60vh;padding:var(--s4);background:var(--surface);color:var(--text);
+  border-top:1px solid var(--line);border-radius:14px 14px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.16)}
+.sheet[hidden]{display:none}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text);padding:var(--s4);max-width:min(420px,calc(100vw - 32px))}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+@media (prefers-reduced-motion:reduce){.toast{animation:none}.btn{transition:none}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="bar">
+    <button class="btn" type="button" id="save" data-kz-toast-test>Save</button>
+    <button class="btn" type="button" id="copy">Copy link</button>
+    <button class="btn" type="button" id="fail">Sync (fails)</button>
+    <button class="btn" type="button" id="openSheet" aria-expanded="false" aria-controls="sheet">Open sheet</button>
+    <button class="btn" type="button" id="openDlg" aria-haspopup="dialog">Open dialog</button>
+  </div>
+  <ul class="rows" id="rows"></ul>
+</div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="false" aria-label="Details" hidden>
+  <p>A sheet. Press Save in the page behind and the toast lands above it.</p>
+  <button class="btn" type="button" id="closeSheet">Done</button>
+</div>
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <p id="dlgTitle">A modal dialog. A toast fired now still shows above it.</p>
+  <div class="bar"><button class="btn" type="button" id="dlgToast">Save from here</button><button class="btn" type="button" id="dlgClose">Close</button></div>
+</dialog>
+<!-- in the page from the start, so the first toast is announced -->
+<div id="toasts" role="status" aria-live="polite"></div>
+<script>
+(function () {
+  var host = document.getElementById('toasts');
+  var LIFE = { info: 3500, ok: 3500, undo: 7000, err: 8000 };
+
+  /* one place owns how long a toast lives, so restarting it cannot drift from setting it */
+  function arm(el) {
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.remove(); }, el._undo ? LIFE.undo : (LIFE[el._kind] || LIFE.info));
+  }
+  /* a modal dialog is in the top layer: the only way above it is inside it */
+  function place() {
+    var modal = null;
+    try { modal = document.querySelector('dialog:modal'); } catch (e) { modal = document.querySelector('dialog[open]'); }
+    var parent = modal || document.body;
+    if (host.parentElement !== parent) { parent.appendChild(host); }
+  }
+  document.addEventListener('close', function (e) {
+    if (e.target.contains && e.target.contains(host)) { document.body.appendChild(host); }
+  }, true);
+
+  function kzToast(text, opts) {
+    opts = opts || {};
+    var kind = opts.kind === 'error' || opts.type === 'error' ? 'err' : (opts.kind || 'info');
+    place();
+    /* A2: the same message (and kind) again keeps its node, counts, restarts its timer. Never an undo. */
+    if (!opts.undo) {
+      var same = Array.prototype.filter.call(host.children, function (t) {
+        return !t._undo && t._kind === kind && t.querySelector('.msg').textContent === text;
+      })[0];
+      if (same) {
+        same._n += 1;
+        var n = same.querySelector('.n');
+        if (!n) { n = document.createElement('span'); n.className = 'n'; same.insertBefore(n, same.querySelector('.x')); }
+        n.textContent = 'x' + same._n;
+        n.setAttribute('aria-label', 'happened ' + same._n + ' times');
+        arm(same);
+        return same;
+      }
+    }
+    var el = document.createElement('div');
+    el.className = 'toast ' + kind;
+    el._kind = kind; el._n = 1; el._undo = !!opts.undo;
+    el.innerHTML = '<span class="ico" aria-hidden="true">' + (kind === 'err' ? '!' : '&#10003;') + '</span><span class="msg"></span>';
+    el.querySelector('.msg').textContent = text;
+    if (opts.undo) {
+      var u = document.createElement('button');
+      u.type = 'button'; u.className = 'undo'; u.textContent = opts.undoText || 'Undo';
+      u.addEventListener('click', function () { opts.undo(); el.remove(); kzToast(opts.undoneText || 'Restored.'); });
+      el.appendChild(u);
+    }
+    var x = document.createElement('button');
+    x.type = 'button'; x.className = 'x'; x.setAttribute('aria-label', 'Dismiss'); x.textContent = '\u00d7';
+    x.addEventListener('click', function () { clearTimeout(el._t); el.remove(); });
+    el.appendChild(x);
+    host.appendChild(el);
+    /* at most three: drop the oldest without Undo; only if all three carry Undo, the oldest of those */
+    while (host.children.length > 3) {
+      var drop = Array.prototype.filter.call(host.children, function (t) { return !t._undo; })[0] || host.firstElementChild;
+      clearTimeout(drop._t); drop.remove();
+    }
+    arm(el);
+    return el;
+  }
+  window.kzToast = kzToast;
+
+  /* ---- the demo ---- */
+  var rows = document.getElementById('rows');
+  ['Quotation Q-1041', 'Quotation Q-1042', 'Quotation Q-1043'].forEach(function (name) {
+    var li = document.createElement('li');
+    li.innerHTML = '<span></span><button class="btn" type="button">Archive</button>';
+    li.firstChild.textContent = name;
+    li.querySelector('button').addEventListener('click', function () {
+      var at = Array.prototype.indexOf.call(rows.children, li);
+      li.remove();
+      kzToast(name + ' archived.', { undo: function () { rows.insertBefore(li, rows.children[at] || null); }, undoneText: name + ' restored.' });
+    });
+    rows.appendChild(li);
+  });
+  document.getElementById('save').addEventListener('click', function () { kzToast('Quotation saved.', { kind: 'ok' }); });
+  document.getElementById('copy').addEventListener('click', function () { kzToast('Link copied. Paste it anywhere to open this view.', { kind: 'ok' }); });
+  document.getElementById('fail').addEventListener('click', function () {
+    kzToast('Sync failed: the server did not answer. Your changes are kept here; try again in a minute.', { kind: 'err' });
+  });
+  var sheet = document.getElementById('sheet'), openSheet = document.getElementById('openSheet');
+  function setSheet(open) { sheet.hidden = !open; openSheet.setAttribute('aria-expanded', String(open)); if (!open) { openSheet.focus(); } }
+  openSheet.addEventListener('click', function () { setSheet(sheet.hidden); });
+  document.getElementById('closeSheet').addEventListener('click', function () { setSheet(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !sheet.hidden) { setSheet(false); } });
+  document.addEventListener('click', function (e) {
+    if (!sheet.hidden && !sheet.contains(e.target) && e.target !== openSheet && !host.contains(e.target)) { setSheet(false); }
+  });
+  var dlg = document.getElementById('dlg'), openDlg = document.getElementById('openDlg');
+  openDlg.addEventListener('click', function () { dlg.showModal(); });
+  document.getElementById('dlgClose').addEventListener('click', function () { dlg.close(); });
+  document.getElementById('dlgToast').addEventListener('click', function () { kzToast('Quotation saved.', { kind: 'ok' }); });
+  /* N1: the page behind a modal does not scroll, and focus goes back to the opener */
+  dlg.addEventListener('close', function () { document.documentElement.style.overflow = ''; openDlg.focus(); });
+  openDlg.addEventListener('click', function () { document.documentElement.style.overflow = 'hidden'; });
+})();
+</script>
+</body>
+</html>

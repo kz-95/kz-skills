@@ -15,9 +15,15 @@ and `judge.mjs` stops at its own `--budget` (default USD 25).
   `iterate-html` also has `followups.json`: three short follow-ups sent in the same session with
   `--resume`, to time the iteration loop turn by turn. Every starter passes the kz checks with
   0 failures at 1280 and 390, so a failure in a result is one the agent introduced.
-  Seven tasks: `trivial-label`, `small-column`, `dark-mode` ("Add a dark mode toggle" to a page
-  with a table, a form and a chart), `table-build`, `chart-filter`, `form-build`, `iterate-html`.
-  The first three and `iterate-html` are the small tasks (`SMALL_TASKS`).
+  Eight tasks: `trivial-label`, `small-column`, `dark-mode` ("Add a dark mode toggle" to a page
+  with a table, a form and a chart), `table-build`, `chart-filter`, `form-build`, `undo-toast`
+  (a list of site visits, editable inline, that deletes and saves silently: make delete undoable
+  and confirm a save; the feedback rules A1, A2 and Appendix B), `iterate-html`.
+  The first three and `iterate-html` are the small tasks (`SMALL_TASKS`). `undo-toast`'s starter
+  has no toast region at all, so `toast-check` reports it clean (static only, with a NO HOOK
+  advisory, which does not fail a run); a toast the agent adds is measured statically (NO LIVE,
+  NO CLOSE, STACK) and, through `window.kzToast` if the agent exposes it, live. Either way its
+  failures count as introduced, since the starter has none.
 - `run.py` - copies each task into a fresh git repo, gives it a fresh `CLAUDE_CONFIG_DIR`, and
   runs `claude -p "<prompt>" --output-format json --permission-mode acceptEdits --allowedTools ...`
   (file tools, Skill, subagents and Bash; no web tools; the same for every condition).
@@ -58,7 +64,7 @@ and `judge.mjs` stops at its own `--budget` (default USD 25).
 - `judge.mjs` - blind pairwise judge. For each model, task and repeat k it pairs `none` with
   `after` /kz-uiuxrule and with `after` /kz-flashrule. Each page gets a full-page screenshot at
   1280 and 390 and a strip of frames from a short scripted interaction (open the filter, tick a
-  value, submit the empty form, flip the theme; `STEPS` per task). Sides are shuffled (seeded) and
+  value, submit the empty form, flip the theme, delete a visit and press Undo; `STEPS` per task). Sides are shuffled (seeded) and
   named A and B only; `claude -p --model claude-opus-5-5 --tools Read` in an empty config dir
   answers which a real user would find better, as JSON `{winner, reasons}`. `--save 5` copies
   five representative pairs to `results/pairs/` for a person to judge blind; the answer key is
@@ -74,6 +80,9 @@ npm install --prefix /tmp/kzb-tools axe-core@4.10.3 lighthouse@12.8.2
 
 # the AFTER matrix, then score, judge and print the tables
 python scripts/bench/run.py --plan full --label full --budget 140 --no-score
+# if runs died mid-way (a lost login: they end with an error and 0 tokens), finish the same file;
+# after 6 such runs in a row run.py stops starting new ones, so nothing more is wasted
+python scripts/bench/run.py --plan full --label full --out scripts/bench/results/full-<date>.json --resume --no-score
 node scripts/bench/score.mjs scripts/bench/results/full-<date>.json
 node scripts/bench/judge.mjs scripts/bench/results/full-<date>.json --save 5
 python scripts/bench/report.py scripts/bench/results/full-<date>.json --judge scripts/bench/results/judge-<date>.json

@@ -20,12 +20,36 @@ check started while another was scrolling the page reported fields "moved" by 26
 colour read in the middle of a transition reported "none". Wait for the page to settle; switch
 transitions off where a check reads a computed style. Colour checks run in **both** themes.
 
+## Point the check at the screen you changed
+
+A check measures whatever is on screen after load, which is usually the first tab.
+If the work is on a second tab, a sheet or a gated view, a clean result says nothing about it.
+`run-checks.py` takes the route to that screen:
+
+```
+python run-checks.py app.html --hash orders --storage state.json --tap "#tab-open,#new-order" --wait ".sheet" --expect "New order"
+```
+
+- `--hash ROUTE` opens `app.html#ROUTE`.
+- `--storage FILE` writes a JSON object of keys to localStorage before any page script runs; a value that is not a string is stored as JSON.
+- `--tap SELECTORS` clicks each selector in order after load, about 150ms apart; each target must be visible, as it would have to be for a person.
+- `--wait SELECTOR` must exist and be visible before the check runs.
+- `--expect TEXT` must be visible text on the page before the check runs.
+
+If a tap target is missing or hidden, or the wait or the text never shows within about 3s, the run fails with `WRONG SCREEN: ...` and exits 1.
+A check that saw the wrong screen counts as failed, never as clean.
+The header line names the screen used, so the report shows what was measured.
+
 ## Widths
 
 The full close-out runs the layout audit at a wide width, a narrow one, and **375px with touch
 emulation**. A scoped run uses 375px alone. 375px is never optional: it is the only
 width that exercises the 44px tap-target rule, and the width at which the typing check finds
 anything at all - the defects it reports do not exist on a desktop.
+
+`run-checks.py` emulates the pointer to match: a mouse that hovers above 480px, touch at 480px and below.
+Pass `--pointer fine` or `--pointer touch` to choose.
+Without emulation headless Chrome reports no pointer at all, so a hover tooltip could never be tested and a phone's tap targets never measured.
 
 ## Instrument traps (read before trusting a result)
 

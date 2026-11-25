@@ -2,7 +2,7 @@
 
    state-check.js drives the charts and the tables bound to them. This one covers the
    rule demonstrations that have behaviour of their own - the tables in T, the clear in
-   A3, the modal in N1, the popovers in N2, the fields in F2 F4 F5 F6 F7 F8 F9, the draft in F3 - plus the
+   A3, the toasts in A1 and A2, the icon buttons in B2, the modal in N1, the popovers in N2, the fields in F2 F4 F5 F6 F7 F8 F9, the draft in F3 - plus the
    geometric claims the rules make as figures (L3's two comparisons, L4's offset, L6's
    cap, L11's wrap-only-while-it-fits, Y1's tabular figures, P1's zero shift), the
    motion samples in M2-M6, and the diagrams in G, measured as drawn (a slanted run,
@@ -117,6 +117,95 @@
        'three identical toasts produced ' + host.children.length + ' nodes');
     ok('A2', /3/.test(host.textContent), 'the merged toast carries no count');
     Array.prototype.slice.call(host.children).forEach(function (n) { n.remove(); });
+  })();
+
+  /* ---- A1 / A2: the toast system (toast-check.js measures the right half live) ----
+     The wrong half opts out of toast-check (data-toast-check="skip"), so it is asserted here:
+     each defect toast-check names must still be there, or the pair stops teaching it. */
+  (function () {
+    var sec = $('a1-toasts');
+    if (!sec) { bad('A1', 'the toast pair (#a1-toasts) is missing'); return; }
+    var LIVE = '[aria-live]:not([aria-live="off"]), [role="status"], [role="alert"], [role="log"]';
+    var wrong = sec.querySelector('.demo.wrong'), stack = $('a1tBadStack');
+    function bits(text) { return Array.prototype.filter.call(stack.children, function (n) { return n.textContent.indexOf(text) > -1; }); }
+    ok('A1 (wrong sample)', wrong.getAttribute('data-toast-check') === 'skip',
+       'the wrong half lost data-toast-check="skip", so toast-check would count the sample as a page defect');
+    stack.innerHTML = '';
+    $('a1tBadSave').click(); $('a1tBadSave').click();
+    var saved = bits('Quotation saved.');
+    ok('A2 (wrong sample)', saved.length === 2, 'the wrong half no longer restacks a repeat (RESTACK): ' + saved.length + ' nodes');
+    ok('A1 (wrong sample)', !stack.closest(LIVE) && !stack.querySelector(LIVE), 'the wrong stack became a live region (NO LIVE would pass)');
+    ok('A1 (wrong sample)', saved.length > 0 && !saved[0].querySelector('button'), 'the wrong toast gained a dismiss (NO CLOSE would pass)');
+    $('a1tBadSave').click(); $('a1tBadSave').click();
+    ok('A1 (wrong sample)', stack.children.length > 3, 'the wrong stack is capped at ' + stack.children.length + ' (STACK would pass)');
+    stack.innerHTML = '';
+    $('a1tBadArchive').click();
+    var had = !!stack.querySelector('button');
+    $('a1tBadSave').click();
+    ok('A1 (wrong sample)', had && !stack.querySelector('button'), 'the next toast no longer removes the Undo (UNDO GONE would pass)');
+    $('a1tBadFail').click();
+    var last = stack.lastElementChild, first = stack.firstElementChild;
+    ok('A1 (wrong sample)', last && first && +last.getAttribute('data-ms') < +first.getAttribute('data-ms'),
+       'the wrong error toast no longer leaves before the success (ERROR SHORT would pass)');
+    stack.innerHTML = '';
+
+    /* the right half drives the page's real toast(): one region, merged repeat, Undo kept and never merged */
+    var host = $('toasts');
+    ok('A1', !!host && host.getAttribute('role') === 'status' && host.getAttribute('aria-live') === 'polite',
+       'the toast region is not role="status" aria-live="polite"');
+    if (!host) { return; }
+    function mine(text) { return Array.prototype.filter.call(host.children, function (n) { return n.textContent.indexOf(text) > -1; }); }
+    Array.prototype.slice.call(host.children).forEach(function (n) { n.remove(); });
+    $('a1tGoodSave').click(); $('a1tGoodSave').click();
+    var s1 = mine('Quotation saved.');
+    ok('A2', s1.length === 1 && /2/.test((s1[0].querySelector('.n') || {}).textContent || ''),
+       'two identical toasts gave ' + s1.length + ' node(s), or the node carries no x2');
+    ok('A1', s1.length > 0 && !!s1[0].querySelector('.x'), 'the toast has no dismiss');
+    $('a1tGoodArchive').click(); $('a1tGoodSave').click();
+    var u1 = mine('archived.');
+    ok('A1', u1.length === 1 && !!u1[0].querySelector('.undo'), 'the next toast removed or replaced the toast carrying Undo');
+    $('a1tGoodArchive').click();
+    ok('A2', mine('archived.').filter(function (n) { return n.querySelector('.undo'); }).length === 2,
+       'two undoable toasts with the same words were merged, so the first undo is lost');
+    ok('A1', host.children.length <= 3, 'the stack holds ' + host.children.length + ' toasts, past three');
+    Array.prototype.slice.call(host.children).forEach(function (n) { n.remove(); });
+  })();
+
+  /* ---- B2: an icon button explains itself on hover and on focus (explain-check.js) ----
+     The wrong half opts out of explain-check, so its two defects are asserted here. */
+  (function () {
+    var sec = $('b2-explain');
+    if (!sec) { bad('B2', 'the explainer pair (#b2-explain) is missing'); return; }
+    var tip = $('tip'), HOVER = matchMedia('(hover: hover)').matches;
+    function over(el) { el.dispatchEvent(new PointerEvent('pointerover', { bubbles: true, pointerType: 'mouse' })); }
+    function out(el) { el.dispatchEvent(new PointerEvent('pointerout', { bubbles: true, pointerType: 'mouse' })); }
+    function up(el) { return !!el && el.getAttribute('data-show') === '1'; }
+    ok('B2 (wrong sample)', sec.querySelector('.demo.wrong').getAttribute('data-explain-check') === 'skip',
+       'the wrong half lost data-explain-check="skip", so explain-check would count the sample as a page defect');
+    var t = $('b2BadTitle'), h = $('b2BadHover'), hb = $('b2BadTip');
+    ok('B2 (wrong sample)', t.hasAttribute('title') && !!t.getAttribute('aria-label') && !t.hasAttribute('data-tip') && !t.hasAttribute('aria-describedby'),
+       'the title-only button gained a real explainer, or lost its title or its name (NO EXPLAIN would pass)');
+    t.focus();
+    ok('B2 (wrong sample)', !up(tip) && !up(hb), 'focusing the title-only button now shows an explanation');
+    t.blur();
+    over(h);
+    ok('B2 (wrong sample)', up(hb), 'hovering the wrong export button no longer shows its tooltip, so it is no longer HOVER ONLY');
+    out(h); h.focus();
+    ok('B2 (wrong sample)', !up(hb), 'focusing the wrong export button now shows its tooltip (HOVER ONLY would pass)');
+    h.blur();
+    Array.prototype.forEach.call($('b2Good').querySelectorAll('button'), function (b) {
+      var nm = b.getAttribute('aria-label') || '', said = b.getAttribute('data-tip') || '';
+      ok('B2', nm && said.length > nm.length && said.toLowerCase() !== nm.toLowerCase(),
+         nm + ': no name, or a tooltip that only repeats it');
+      if (HOVER) {
+        b.focus();
+        ok('B2', up(tip) && tip.textContent === said, nm + ': keyboard focus did not show its tooltip');
+        b.blur();
+      } else {
+        var l = b.querySelector('.lbl');
+        ok('B2', !!l && l.getBoundingClientRect().width > 2, nm + ': on touch its label is hidden, so nothing explains it');
+      }
+    });
   })();
 
   /* ---- N1: the modal locks, and releases on every path out ---------------- */
