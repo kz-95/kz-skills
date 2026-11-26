@@ -1,6 +1,7 @@
 # Rule questions: the ledger
 
-Every rule as one yes/no question, for the full path (a project, an audit, "make it production", a
+Every rule as one yes/no question, and after them the chart types, chart nevers, generated-UI
+tells, things not to do and design principles the rule files carry beside the rules, for the full path (a project, an audit, "make it production", a
 release). A long read of the whole rule corpus loses the rules in its middle; a question per rule,
 each decided on its own line and written down, does not.
 
@@ -199,3 +200,120 @@ fails when a rule has no question here or a question names no rule.
 | G8 | a diagram is wide | Does it keep its size on a narrow screen, scroll inside its own box, and say so? | diagram-check SHRUNK, PAGE SCROLL, CLIPPED |
 | G9 | there is a diagram | Is the SVG a named figure with a title and a description, unique ids? | diagram-check NO NAME, DUP ID |
 | G10 | there is a diagram | Is emphasis on one or two things, with states written as words rather than colour or motion alone? | diagram-check EMPHASIS; read |
+
+## Beyond the numbered rules
+
+The rows below are not rules with IDs; they are the designs and lessons the rule files carry
+beside them, which a long read loses first. Their keys name their source and are never cited as
+rule IDs. `validate.py` counts each group against its source, so an item added there without a
+question here fails.
+
+## CH - Chart types (chart-rules.md, Appendix CH)
+
+| ID | Applies when | Question (yes = holds) | Check |
+|---|---|---|---|
+| CH-pie | a donut or pie is drawn | Is it a composition of a whole in six slices or fewer, with the total in a donut's centre? | read |
+| CH-ranked-bar | the question is "which are biggest" | Is it a horizontal bar, sorted, with labels readable beside the bars? | read |
+| CH-stacked-bar | a split is shown over time | Is it a stacked bar (or 100 percent stacked for share), not a pie per period? | read |
+| CH-trend | one measure moves over time | Are discrete periods bars and a continuous trend a line, never a line over unordered categories? | read |
+| CH-multi-line | several measures move together | Is it one multi-series line with legend toggling, and no dual y-axis? | read |
+| CH-candlestick | open, high, low and close are shown | Is it a candlestick, aggregated first / max / min / last? | read |
+| CH-bullet | progress against a target is shown | Is it a bullet or a progress bar with the target marked, on one shared scale, not a gauge? | read |
+| CH-waterfall | a change from A to B is explained | Is it a waterfall in its own order, opening and closing bars at the ends and the steps between? | read |
+| CH-funnel | a pipeline is shown | Is it a funnel that shows the drop-off between stages? | read |
+| CH-gantt | things run over time and overlap | Is it a Gantt or timeline, not a table of dates? | read |
+| CH-scatter | a relationship between two measures is shown | Is it a scatter (bubble for a third measure), with no line implying an order? | read |
+| CH-histogram | a distribution is shown | Is it a histogram with continuous bins, or a box plot to compare distributions? | read |
+| CH-kpi | a single current number is shown | Is it a KPI tile: the number, a delta naming its comparison period, and a sparkline? | read |
+| CH-heatmap | hot cells are shown | Is it a heatmap or shading inside the existing table, never a 3D surface? | read |
+| CH-stacked-area | a mix moves over time | Is it a stacked area (a stream only when shape alone matters), not a stacked bar with many periods? | read |
+| CH-stream | a stream graph is drawn | Does it say it shows shape only, and pair with a table for the values? | read |
+| CH-step | a value jumps and then holds | Is it a step line, not a straight line claiming gradual change? | read |
+| CH-bump | the question is who overtook whom | Is it a bump chart of ranks, not a multi-line of amounts? | read |
+| CH-diverging | values sit above and below a baseline | Is it a diverging bar around that baseline? | read |
+| CH-sunburst | a hierarchy that sums is shown | Is it a sunburst (a treemap when leaves are many), never nested pies? | read |
+| CH-sankey | flows from sources to outcomes are shown | Is it a Sankey whose flows balance, with any imbalance stated? | read |
+| CH-tile-map | something is shown by place | Is it a tile map shading a normalised measure, not a choropleth of a raw total? | read |
+| CH-radar | one subject is scored on several criteria | Is it a single-series radar that states its axis order? | read |
+
+## CHN - Chart nevers (chart-rules.md, Appendix CH, "Never")
+
+| ID | Applies when | Question (yes = holds) | Check |
+|---|---|---|---|
+| CHN-3d | there is a chart | Is nothing drawn in 3D? | read |
+| CHN-dual-axis | two measures share a chart | Is there no dual y-axis? | read |
+| CHN-radar-series | there is a radar | Does the radar carry one series only? | read |
+| CHN-rose-radius | there is a nightingale rose | Is the radius the square root of the value, not linear? | read |
+| CHN-raw-choropleth | there is a map | Does no map shade a raw total on real borders? | read |
+| CHN-unbalanced-flow | there is a flow diagram or Sankey | Does what leaves the sources equal what arrives, or is the difference stated? | read |
+| CHN-pie-slices | there is a pie or donut | Does it have six slices or fewer, and no pie nested in a pie? | read |
+| CHN-empty-donut | there is a donut | Does the donut's centre hold the total? | read |
+| CHN-truncated-bar | there is a bar chart | Does the bar axis start at zero where the measure has one (C9)? | read |
+| CHN-unrelated-motion | a chart animates between data sets | Does motion only join data sets that are related? | read |
+
+## TELL - Generated-UI tells (ui-rules.md, Appendix C, rule D6)
+
+| ID | Applies when | Question (yes = holds) | Check |
+|---|---|---|---|
+| TELL-stripe | any style is written | Is there no coloured stripe down one side of any box? | layout-audit STRIPE |
+| TELL-emoji | there are icons | Are icons from a real icon set or a text glyph, never emoji, in a business app? | read |
+| TELL-gradient-text | there are headings or decoration | Is there no gradient on a heading or on anything that is not a chart? | read |
+| TELL-glow | there is an accent or a floating panel | Is there no purple-to-blue gradient, decorative glass or heavy blur, except a frosted readout with a solid fallback? | read |
+| TELL-radius | elements are rounded | Are there two radii at most, tied to element size, not one large radius on everything? | read |
+| TELL-shadow | shadows are used | Do only things that genuinely float carry a shadow? | read |
+| TELL-hero | it is an internal tool screen | Is the text left-aligned and dense, with no centred hero? | read |
+| TELL-three-cards | there is a row of cards | Is the layout what the content needs, not three equal icon-heading-two-lines cards? | read |
+| TELL-filler | there is copy | Is there no filler copy ("Powerful", "Seamless", "Effortless", "Blazing fast")? | read |
+
+## Z - Things not to do (ui-rules.md, Appendix Z)
+
+| ID | Applies when | Question (yes = holds) | Check |
+|---|---|---|---|
+| Z1 | you write or change a rule | Does every rule you wrote state a figure or a quick observation, not a judgement? | read |
+| Z2 | you write a figure into rules or docs | Does each figure live in one place, with everything else pointing at it? | read |
+| Z3 | you add a rule for a defect | Did you check no existing rule already covers it, and add an assertion instead of a firmer sentence? | read |
+| Z4 | you write a colour | Is every colour a token, a foreground on a coloured surface included, even right after fixing one? | layout-audit UNDEFINED TOKEN; contrast-check both schemes |
+| Z5 | elements share a box | Do they share one inset, set once on the box, not on each sibling? | read |
+| Z6 | a box must stretch | Is it sized by its content and capped by a maximum, not pinned to two edges? | read |
+| Z7 | you write an override | Does each override come after the rule it overrides at equal specificity? | read |
+| Z8 | you generate text with special characters | Is every special character generated from its code point, with no escape inside a non-raw string? | read |
+| Z9 | you edit files with a script | Does every scripted edit assert how many times it matched? | read |
+| Z10 | you mark a "current" section on scroll | Is "current" decided where reading happens, about a third down, not by what scrolled past? | read |
+| Z11 | a repaint waits on an asynchronous source | Does a second path (a timer, a return to the tab) also repaint? | read |
+| Z12 | you list destinations | Is no destination inside another destination? | read |
+| Z13 | you rely on a check | Did you break what each check guards and watch it fail before trusting it? | read |
+| Z14 | you take a measurement | Was the surface visible, sized and settled, and was it the page you think it is? | read |
+| Z15 | you reference an asset, token, font or id | Does every reference resolve? | layout-audit UNDEFINED TOKEN; read |
+| Z16 | a container holds labels | Does the longest label wrap or size the container, never get clipped? | layout-audit CLIPPED |
+| Z17 | something animates | Is no layout property animated, and does `getAnimations()` explain a value that matches no rule? | motion-check LAYOUTPROP |
+| Z18 | you judge an animated state | Were end states tested with transitions off, and the animation where it paints? | read |
+| Z19 | you test a focus behaviour | Did you take the focus away first, and confirm `document.hasFocus()`? | read |
+| Z20 | a value pays something back (scrollbar, header, keyboard) | Is it read and added to, never overwritten? | modal-check SHIFT |
+| Z21 | there is an interaction | Was it checked at phone width as well, by typing into things? | typing-check at 375 |
+| Z22 | a rule is summarised in an always-on line | Does the short form keep the clause that separates the right reading from the cheap one? | read |
+| Z23 | a sample or reference is shipped | Does the sample pass the check written for it? | read |
+| Z24 | you verify a colour | Was it measured against everything it can land on, in both themes? | contrast-check both schemes |
+| Z25 | you use a token | Did you find where the token is defined before using it? | layout-audit UNDEFINED TOKEN |
+| Z26 | a check reports clean | Can the check say what it measured, failing when it finds no subject? | read |
+| Z-diagnose | you diagnose a defect | Did you measure the thing on screen before naming the rule that caused it? | read |
+
+## PR - Design principles (design-principles.md)
+
+| ID | Applies when | Question (yes = holds) | Check |
+|---|---|---|---|
+| PR1 | a pattern is fixed or added | Is it applied on every screen that has the same thing, not only this one? | read |
+| PR2 | a choice is made by hand | Is it derived in code from the data, so it cannot go stale? | read |
+| PR3 | anything is shown | Does every element explain itself, with nothing the reader must guess? | read |
+| PR4 | anything looks or is clickable | Does affordance match behaviour exactly, both ways? | focus-check; read |
+| PR5 | the screen holds a lot | Is it dense in information with air around each piece? | read |
+| PR6 | space is laid out | Is there no dead space and no runaway growth? | layout-audit; read |
+| PR7 | data is displayed | Does it show the truth, partial periods and awkward figures included? | read |
+| PR8 | an option is added | Was the right default chosen first, so the option is rarely needed? | read |
+| PR9 | a defect is fixed | Did the fix also become a rule or an assertion? | read |
+| PR9a | a control changes state | Does no control depend on state that using it destroys? | read |
+| PR9b | a rule or a claim is written | Is it a figure, not a judgement? | read |
+| PR9c | a figure comes from a subset | Does the figure say so where it is shown? | read |
+| PR10 | work is called done | Was the rendered result looked at, not only the claim? | read |
+| PR11 | two things look alike | Was the difference between them stated and kept? | read |
+| PR12 | a value is displayed | Is it recomputed from what is on screen now? | read |
+| PR13 | anything moves | Does motion narrate a change the user can follow without words? | motion-check; read |

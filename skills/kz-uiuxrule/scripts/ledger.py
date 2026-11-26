@@ -26,14 +26,14 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 QUESTIONS = os.path.join(HERE, "..", "rules", "questions.md")
-ROW = re.compile(r"^\|\s*([A-Z]\d+[a-z]?)\s*\|(.*)\|\s*$")
+ROW = re.compile(r"^\|\s*([A-Z][A-Z]*\d*[a-z]?(?:-[a-z0-9-]+)?)\s*\|(.*)\|\s*$")
 HEAD = "| ID | Applies when | Question (yes = holds) | Check | Applies | Verdict | Evidence |"
 RULE = "|---|---|---|---|---|---|---|"
 
 
 def cells(line):
     m = ROW.match(line)
-    if not m:
+    if not m or m.group(1) == "ID":
         return None
     return [m.group(1)] + [c.strip() for c in m.group(2).split("|")]
 
@@ -109,7 +109,7 @@ def status(path):
     overrides = [i for i in want if i in rows and rows[i][4].lower() == "yes"
                  and rows[i][6].lower().startswith("override:")]
     yes = [i for i in want if i in rows and rows[i][4].lower() == "yes"]
-    print("%d rules, %d apply, %d do not" % (len(want), len(yes),
+    print("%d questions, %d apply, %d do not" % (len(want), len(yes),
           sum(1 for i in want if i in rows and rows[i][4].lower() == "no")))
     report = [("not in the ledger (run init again)", missing), ("Applies left empty", unmarked),
               ("Applies is not yes, no or ?", bad), ("still ? - decide yes or no", unsure),

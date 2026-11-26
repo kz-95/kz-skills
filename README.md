@@ -254,7 +254,7 @@ A one-line edit goes to `kz-fastfix`, a component reads LOOKUP and the one pack 
 | "Draw our checkout flow" | `kz-diagramrule` SKILL.md, `diagram-rules.md`, then `diagram-check.js` at a wide width and at 375px |
 | "Review this signup form" | `kz-uiuxrule` SKILL.md (review mode), then the `form` pack (F1-F9 and the form appendix), then `form-check.js` and `typing-check.js` |
 | "Is this chart right?" | `kz-uiuxrule` SKILL.md (review mode), then the `chart` pack (the core C rules in full, the rest one line each), `chart-rules.md` only for the appendix of that chart, then `table-check.js` and `layout-audit.js` |
-| "Audit the whole UI" or "Make it production" | `kz-uiuxrule` SKILL.md and `references/modes.md`, then the rule ledger: every rule as one yes/no question (`rules/questions.md`, written to `.kz/ledger.md` by `scripts/ledger.py`), the full text only of the rules that apply, then all twelve checks at both widths and in both themes; done when `ledger.py status` prints `complete` |
+| "Audit the whole UI" or "Make it production" | `kz-uiuxrule` SKILL.md and `references/modes.md`, then the rule ledger: every rule, chart type, generated-UI tell, lesson and principle as one yes/no question, 179 in all (`rules/questions.md`, written to `.kz/ledger.md` by `scripts/ledger.py`), the full text only of the rules that apply, then all twelve checks at both widths and in both themes; done when `ledger.py status` prints `complete` |
 | "What's wrong with this screenshot?" | `ui-glance` SKILL.md only: one read, no rule files |
 | "Is this ready to ship?" | `kz-flashrule` SKILL.md, then the checks its lines name |
 | "Check the error messages" | `kz-judge` SKILL.md and `scripts/judge.py` |

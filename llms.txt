@@ -18,7 +18,7 @@ This file is served at https://kz-95.github.io/kz-skills/llms.txt and at https:/
 - [Pack lookup](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/packs/LOOKUP.md): task words to one pack and its checks; the first read for UI work
 - [Keyword index](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/INDEX.md): task words to the rule sections, when no pack covers the work
 - [Rule index](https://raw.githubusercontent.com/kz-95/kz-skills/main/docs/rule-index.md): every rule, one line each
-- [Rule questions](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/questions.md): every rule as one yes/no question, the ledger for the full path
+- [Rule questions](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/questions.md): every rule, chart type, generated-UI tell, lesson and principle as one yes/no question (179), the ledger for the full path
 
 ## Skills
 

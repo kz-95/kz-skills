@@ -164,7 +164,7 @@ checks_dir = os.path.join(skills_dir, "kz-uicheck", "checks")
 asked = []
 for n, line in enumerate(read(os.path.join(rd, "questions.md")).splitlines(), 1):
     m = re.match(r"^\| ([A-Z]\d+[a-z]?) \| (.*) \|$", line)
-    if not m:
+    if not m or m.group(1).startswith("Z"):   # Z1-Z26 are Appendix Z items, counted in 1d
         continue
     cols = [c.strip() for c in m.group(2).split(" | ")]
     if len(cols) != 3 or not all(cols):
@@ -190,6 +190,52 @@ for i in sorted(ui_ids - set(asked)):
     fail("questions.md: rule %s has no question - add one" % i)
 for i in sorted(set(asked) - ui_ids):
     fail("questions.md: %s is asked but no rule file defines it" % i)
+
+# 1d. the rows beyond the numbered rules match their sources item for item ----------------------
+# Chart types and nevers (Appendix CH), generated-UI tells (Appendix C), things not to do
+# (Appendix Z) and the design principles each get one question per item in their source.
+qtext = read(os.path.join(rd, "questions.md"))
+extra = re.findall(r"^\| ((?:CH|CHN|TELL|Z|PR)[A-Za-z0-9-]*) \| (.*) \|$", qtext, re.M)
+for k, rest in extra:
+    cols = [c.strip() for c in rest.split(" | ")]
+    if len(cols) != 3 or not all(cols):
+        fail("questions.md: %s needs three filled columns (applies when, question, check)" % k)
+keys = [k for k, _ in extra]
+for k in sorted(set(keys)):
+    if keys.count(k) > 1:
+        fail("questions.md: %s is asked %d times" % (k, keys.count(k)))
+
+
+def table_rows(text, start, stop):
+    """Body rows of the first Markdown table between two headings."""
+    body = text[text.index(start):]
+    body = body[:body.index(stop, len(start))] if stop in body[len(start):] else body
+    rows = [ln for ln in body.splitlines() if ln.startswith("| ")]
+    return max(0, len(rows) - 1)   # minus the header row; the |---| row does not start with "| "
+
+
+chart = read(os.path.join(rd, "chart-rules.md"))
+ui = read(os.path.join(rd, "ui-rules.md"))
+appz = ui[ui.index("## Appendix Z"):]
+groups = [
+    ("CH-", table_rows(chart, "## Appendix CH", "### Defaults when two fit"), "chart types in Appendix CH"),
+    ("CHN-", table_rows(chart, "### Never", "### Before building"), "nevers in Appendix CH"),
+    ("TELL-", table_rows(ui, "## Appendix C - Generated-UI tells", "The test:"), "tells in Appendix C"),
+]
+for prefix, want, what in groups:
+    have = len([k for k in keys if k.startswith(prefix)])
+    if have != want:
+        fail("questions.md: %d %s rows for %d %s" % (have, prefix.rstrip("-"), want, what))
+znums = sorted(int(n) for n in re.findall(r"^\*\*(\d+)\. ", appz, re.M))
+zkeys = sorted(int(k[1:]) for k in keys if re.match(r"^Z\d+$", k))
+if znums != zkeys:
+    fail("questions.md: Z rows %s do not match Appendix Z items %s" % (zkeys, znums))
+if ("Never diagnose from the rule" in appz) != ("Z-diagnose" in keys):
+    fail("questions.md: Z-diagnose and Appendix Z's closing item must both exist or neither")
+pnums = re.findall(r"^## (\d+[a-z]?)\. ", read(os.path.join(rd, "design-principles.md")), re.M)
+pkeys = [k[2:] for k in keys if re.match(r"^PR\d", k)]
+if sorted(pnums) != sorted(pkeys):
+    fail("questions.md: PR rows %s do not match the principles %s" % (sorted(pkeys), sorted(pnums)))
 
 # 1b. no merge conflict left in any text file -----------------------------------------------
 for base, _, files in os.walk(ROOT):
