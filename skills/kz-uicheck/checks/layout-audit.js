@@ -458,5 +458,60 @@
     });
   })();
 
+  /* 15. no coloured side stripe on a box (rule D6, Appendix C). A card, panel, list item,
+     callout or toast whose left or right edge is drawn thicker and in a colour of its own
+     is the most recognisable generated-UI tell. It comes three ways: a border wider on one
+     side, an absolutely placed ::before or ::after bar down one edge, and an inset
+     box-shadow. Status is carried by a glyph; an error may colour the whole border, all four
+     sides one width. A state indicator is not a stripe: the current item in a nav
+     ([aria-current], [aria-selected=true], [aria-pressed=true]) and a blockquote keep theirs,
+     and table cells and form fields are left to their own checks. Opt a deliberately wrong
+     sample out with data-layout-check="skip". */
+  (function () {
+    var SKIP = 'td, th, input, select, textarea, hr, blockquote, [aria-current]:not([aria-current="false"]), ' +
+      '[aria-selected="true"], [aria-pressed="true"], [data-layout-check="skip"]';
+    function shown(c) { return c && c !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(c); }
+    function px(v) { return parseFloat(v) || 0; }
+    Array.prototype.forEach.call(document.querySelectorAll('body *'), function (el) {
+      if (el.closest(SKIP)) { return; }
+      var r = el.getBoundingClientRect();
+      if (r.width < 80 || r.height < 24) { return; }
+      var s = getComputedStyle(el);
+      if (s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0) { return; }
+      var w = { top: px(s.borderTopWidth), right: px(s.borderRightWidth), bottom: px(s.borderBottomWidth), left: px(s.borderLeftWidth) };
+      ['left', 'right'].forEach(function (side) {
+        var other = side === 'left' ? 'right' : 'left';
+        var rest = Math.max(w.top, w.bottom, w[other]);
+        var col = s['border' + side[0].toUpperCase() + side.slice(1) + 'Color'];
+        var style = s['border' + side[0].toUpperCase() + side.slice(1) + 'Style'];
+        if (w[side] >= 2 && w[side] >= rest + 2 && style !== 'none' && shown(col)) {
+          note('STRIPE', el, w[side] + 'px ' + side + ' border in ' + col + ' against ' + rest +
+            'px on the other sides - a coloured side stripe is the generated-UI tell (D6); carry status with a glyph, keep all four borders one width');
+        }
+      });
+      var m = /inset\s+(-?\d+(?:\.\d+)?)px\s+0(?:px)?\s+0(?:px)?\s+(rgb[a]?\([^)]*\)|#\w+)|(rgb[a]?\([^)]*\))\s+(-?\d+(?:\.\d+)?)px\s+0(?:px)?\s+0(?:px)?(?:\s+0(?:px)?)?\s+inset/.exec(s.boxShadow);
+      if (m) {
+        var dx = parseFloat(m[1] || m[4]), sc = m[2] || m[3];
+        if (Math.abs(dx) >= 2 && shown(sc)) {
+          note('STRIPE', el, Math.abs(dx) + 'px inset shadow down the ' + (dx > 0 ? 'left' : 'right') + ' edge in ' + sc +
+            ' - a coloured side stripe is the generated-UI tell (D6); carry status with a glyph');
+        }
+      }
+      ['::before', '::after'].forEach(function (pe) {
+        var p = getComputedStyle(el, pe);
+        if (p.content === 'none' || p.content === 'normal' || p.display === 'none') { return; }
+        if (p.position !== 'absolute' && p.position !== 'fixed') { return; }
+        var pw = px(p.width), ph = px(p.height);
+        if (!ph && p.top !== 'auto' && p.bottom !== 'auto') { ph = r.height - px(p.top) - px(p.bottom); }
+        var paint = shown(p.backgroundColor) ? p.backgroundColor : (p.backgroundImage !== 'none' ? 'a gradient' : '');
+        if (!paint || pw < 2 || pw > 8 || ph < r.height * 0.6) { return; }
+        var atLeft = p.left !== 'auto' && px(p.left) <= 2, atRight = p.right !== 'auto' && px(p.right) <= 2;
+        if (!atLeft && !atRight) { return; }
+        note('STRIPE', el, pw + 'px ' + pe + ' bar down the ' + (atLeft ? 'left' : 'right') + ' edge in ' + paint +
+          ' - a coloured side stripe is the generated-UI tell (D6); carry status with a glyph');
+      });
+    });
+  })();
+
   return problems.length ? problems : ['clean'];
 })();

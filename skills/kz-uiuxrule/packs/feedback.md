@@ -91,7 +91,7 @@ move nothing:
 
 #### Appearance and stacking (ui-rules.md)
 
-- **No coloured left stripe on a card.** A 3-4px accent border down the left edge of a
+- **No coloured left stripe on a card** (rule D6, Appendix C). A 3-4px accent border down the left edge of a
   white toast or alert is the single most recognisable generated-UI tell. Carry status
   with a small glyph (check / cross / spinner) and, for errors only, the border colour of
   the whole card. Keep all four borders the same width.

@@ -2,7 +2,7 @@
 
    state-check.js drives the charts and the tables bound to them. This one covers the
    rule demonstrations that have behaviour of their own - the tables in T, the clear in
-   A3, the toasts in A1 and A2, the icon buttons in B2, the modal in N1, the popovers in N2, the fields in F2 F4 F5 F6 F7 F8 F9, the draft in F3 - plus the
+   A3, the toasts in A1 and A2, the icon buttons in B2, the side stripe in D6, the modal in N1, the popovers in N2, the fields in F2 F4 F5 F6 F7 F8 F9, the draft in F3 - plus the
    geometric claims the rules make as figures (L3's two comparisons, L4's offset, L6's
    cap, L11's wrap-only-while-it-fits, Y1's tabular figures, P1's zero shift), the
    motion samples in M2-M6, and the diagrams in G, measured as drawn (a slanted run,
@@ -20,7 +20,7 @@
   function ok(rule, cond, detail) { if (!cond) { bad(rule, detail); } }
   function $(id) { return document.getElementById(id); }
   function rows(id) { return $(id).querySelectorAll('tbody tr[data-id]').length; }
-  function cs(el) { return getComputedStyle(el); }
+  function cs(el, pe) { return getComputedStyle(el, pe || null); }
   function px(v) { return parseFloat(v) || 0; }
 
   /* ---- S1 / T1 / T2: the table earns its controls ------------------------- */
@@ -879,6 +879,31 @@
     ok('L11 (fits)', wraps(fits) && fits.getBoundingClientRect().height <= room(fits) + 1 &&
        fits.getAttribute('data-orientation') === 'horizontal' && fits.getAttribute('data-sequence') !== 'line',
        'the short grid no longer shows the allowed case: a marked sequence that wraps and still fits');
+  })();
+
+  /* ---- D6: no coloured stripe down one side of a card ---------------------- */
+  (function () {
+    /* the test layout-audit.js runs for STRIPE: a left or right border at least 2px and 2px
+       wider than the widest other side, in a colour that shows */
+    function stripe(el) {
+      var s = cs(el), l = px(s.borderLeftWidth), r = px(s.borderRightWidth);
+      var t = Math.max(px(s.borderTopWidth), px(s.borderBottomWidth));
+      return (l >= 2 && l >= Math.max(t, r) + 2) || (r >= 2 && r >= Math.max(t, l) + 2);
+    }
+    function even(el) {
+      var s = cs(el);
+      return [s.borderTopWidth, s.borderRightWidth, s.borderBottomWidth].every(function (w) { return w === s.borderLeftWidth; }) &&
+        !/inset/.test(s.boxShadow) && cs(el, '::before').content === 'none';
+    }
+    ['d6Good', 'd6Err'].forEach(function (k) {
+      ok('D6', !stripe($(k)) && even($(k)), '#' + k + ' is no longer one border width on every side');
+    });
+    ok('D6', $('d6Good').querySelector('.d6ico'), 'the right sample lost the glyph that carries its status');
+    ok('D6', cs($('d6Err')).borderLeftColor === cs($('d6Err').querySelector('.d6ico')).backgroundColor,
+       'the error card does not colour its whole border in the error colour');
+    ok('D6 (wrong sample)', stripe($('d6Bad')), 'the wrong sample no longer draws a side stripe, so it no longer shows the defect');
+    ok('D6 (wrong sample)', $('d6Bad').getAttribute('data-layout-check') === 'skip',
+       'the wrong sample is not opted out, so layout-audit.js fails the reference page itself');
   })();
 
   /* ---- Y1: tabular figures where numbers stack ---------------------------- */

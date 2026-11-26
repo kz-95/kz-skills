@@ -1,6 +1,6 @@
 ---
 name: kz-flashrule
-description: "The core of the kz rules on one page - the twenty-odd lines agents break most (layout at 375px, motion, tables and the T1 filter panel, contrast in both themes, typing in a field, modals), plus one line each for toasts, the Saved note and tooltips, each with its rule ID and the one check that catches it. Everything else is one generated pack per type of work, found through kz-uiuxrule/packs/LOOKUP.md. The default first read for small and medium UI work and a fast rule check of finished work; not a copy of every rule. The source rule always wins. Triggers on \"/kz-flashrule\", \"flash rule\", \"fast rule check\", \"critical rules\", \"quick check\"."
+description: "The core of the kz rules on one page - the twenty-odd lines agents break most (layout at 375px, motion, tables and the T1 filter panel, contrast in both themes, typing in a field, modals, the coloured side stripe), plus one line each for toasts, the Saved note and tooltips, each with its rule ID and the one check that catches it. Everything else is one generated pack per type of work, found through kz-uiuxrule/packs/LOOKUP.md. The default first read for small and medium UI work and a fast rule check of finished work; not a copy of every rule. The source rule always wins. Triggers on \"/kz-flashrule\", \"flash rule\", \"fast rule check\", \"critical rules\", \"quick check\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 
@@ -46,6 +46,7 @@ The "Fast check" column names what to look for, not extra checks to run; write n
 | M3 | Nothing enters from `scale(0)`; a popover grows from the side facing its trigger. | `motion-check` `SCALE0`, `ORIGIN`. |
 | M4 | Never `transition: all`, never ease-in on interface motion. | `motion-check` `ALL`, `EASEIN`. |
 | M5 | Every button shows a pressed state while held, with no delay. | `motion-check` `NOPRESS`. |
+| D6 | No coloured stripe down one side of a card, toast, list item or callout (border, `::before` bar or inset shadow); status is a glyph, and an error colours the whole border, one width on every side. | `layout-audit` `STRIPE`. |
 
 ## One line each, the pack has the rest
 
