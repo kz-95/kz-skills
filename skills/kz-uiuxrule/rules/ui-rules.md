@@ -79,7 +79,7 @@ Where the values come from, and what to build out of.
 | D3 | **Compose from existing components first.** New component only when nothing existing can be reasonably parameterized. |
 | D4 | **Match the surrounding UI.** Before adding this screen's first table, toolbar or empty state, open the two nearest screens that already have one and copy what they do. Where they are consistent and disagree with this file, they win - this is the visual half of engineering rules 12 and 13, and it is the tie-breaker the precedence ladder points at; where they are inconsistent, this file decides. Nearby inconsistencies get fixed when obvious, safe and related (engineering rule 27), and mentioned. |
 | D5 | **Production-ready and precise** unless explicitly told it is a prototype: spacing, alignment, typography, proportions, polish. This one owns no check of its own - it is the conjunction of the ones that do: the geometry audit passes at every width (V3), nothing in Appendix C's list of tells is present (D6), and every spacing step, type size, duration and contrast in it has a figure behind it (35, 74, 43, 68). A screen that fails none of those checks and still looks unfinished is a rule that has not been written yet, so say which. |
-| D6 | **No generic AI-default styling.** Avoid the tells that mark a screen as machine-generated rather than designed. See Appendix C. |
+| D6 | **No generic AI-default styling.** Avoid the tells that mark a screen as machine-generated rather than designed. See Appendix C. The one measured: no coloured stripe down one side of any box - a border wider on one side, a `::before` bar or an inset shadow (`layout-audit` `STRIPE`). |
 
 ### L: Layout, spacing and hierarchy
 
@@ -531,7 +531,7 @@ move nothing:
 
 ### Appearance and stacking
 
-- **No coloured left stripe on a card.** A 3-4px accent border down the left edge of a
+- **No coloured left stripe on a card** (rule D6, Appendix C). A 3-4px accent border down the left edge of a
   white toast or alert is the single most recognisable generated-UI tell. Carry status
   with a small glyph (check / cross / spinner) and, for errors only, the border colour of
   the whole card. Keep all four borders the same width.
@@ -577,7 +577,7 @@ forbidden by physics; all of them are defaults that nobody chose.
 
 | Tell | Instead |
 |---|---|
-| Coloured left stripe on a white card (toast, alert, callout) | A small status glyph; colour the whole border only for errors |
+| A coloured stripe down one side of any box - card, panel, list item, toast, alert, callout, light or dark theme - whether it is a wider border, a `::before` bar or an inset shadow | A small status glyph; colour the whole border only for errors, the same width on every side. The current item in a navigation list (`aria-current`) and a blockquote may keep a side rule: there it marks a state or a quotation, not decoration. `layout-audit` reports the rest as `STRIPE`. |
 | Emoji as UI iconography in a business app | A real icon set, or a text glyph |
 | Gradient headings, or a gradient on anything that is not a chart | Flat type; hierarchy from size and weight (rule L1) |
 | Purple-to-blue accent gradient, decorative glassmorphism, heavy `blur()` | The project's own accent token. **Exception:** a panel that genuinely floats over content it must not hide, such as a chart readout, may be frosted so the marks underneath stay visible. That is glass doing a job, not glass as styling. Keep a solid fallback under `@supports`, because unreadable text is worse than a covered mark. |

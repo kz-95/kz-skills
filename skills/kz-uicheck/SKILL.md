@@ -24,7 +24,7 @@ Every finding code and skip attribute (`data-*-check="skip"`) in full: `referenc
 
 | Check | Catches | Rule |
 |---|---|---|
-| `checks/layout-audit.js` | Page overflow, overlap, clipped text, ragged control rows, tap targets under 44px, SVG text out of its viewBox, `FOCUS BOX`, `UNDEFINED TOKEN`, `WRAPPED SEQUENCE`, `COVERED` | `V3`, `L5`, `L8`, `L10`, `L11` |
+| `checks/layout-audit.js` | Page overflow, overlap, clipped text, ragged control rows, tap targets under 44px, SVG text out of its viewBox, `FOCUS BOX`, `UNDEFINED TOKEN`, `WRAPPED SEQUENCE`, `COVERED`, `STRIPE` | `V3`, `L5`, `L8`, `L10`, `L11`, `D6` |
 | `checks/table-check.js` | A column filter that is a bare text box or select instead of a panel, a column with no filter, a table with no sort, a header whose title and filter rows are split by a line or whose filter sits under 4px from one (`FILTERGAP`, measured in px), a filter that drives a chart built as a select, a text box, or chips or tick boxes past 6 values or with no count or clear, instead of the panel (`CHARTBOX`); and, as advisories, no search, no live count, headers with no explainer. Skip a deliberately wrong sample with `data-table-check="skip"` | `S1`, `T1`-`T3` |
 | `checks/typing-check.js` | A field rebuilt mid-word, a caret thrown to the end, a field that moves while typed into, text under 16px that zooms on focus | `F8` |
 | `checks/popover-check.js` | A panel that cannot be closed: trigger only opens (`STUCK`), Escape or outside click does nothing, no Done on touch | `N2` |

@@ -34,6 +34,7 @@ Run only these, once, on the screen the work is on, from this folder:
 | L10 | **A control strip that will not fit across can fit down, and which side it takes is a measurement.** (brief) |
 | L11 | **A sequence wraps only while all of it stays in view.** (brief) |
 | P1 | **Anything that arrives late reserves its space before it arrives.** (brief) |
+| D6 | **No generic AI-default styling.** (brief) |
 
 A row marked (brief) is the rule's first sentence only; the full rule is in [ui-rules.md](../rules/ui-rules.md).
 
@@ -59,3 +60,24 @@ block box. If a filter row suddenly renders as a vertical stack, this is why.
 
 The check: measure the bounding boxes of every child of the toolbar. Equal heights and
 equal tops, or it is wrong.
+
+### Appendix C - Generated-UI tells (rule D6) (ui-rules.md)
+
+Patterns that make a screen read as machine-produced rather than designed. None is
+forbidden by physics; all of them are defaults that nobody chose.
+
+| Tell | Instead |
+|---|---|
+| A coloured stripe down one side of any box - card, panel, list item, toast, alert, callout, light or dark theme - whether it is a wider border, a `::before` bar or an inset shadow | A small status glyph; colour the whole border only for errors, the same width on every side. The current item in a navigation list (`aria-current`) and a blockquote may keep a side rule: there it marks a state or a quotation, not decoration. `layout-audit` reports the rest as `STRIPE`. |
+| Emoji as UI iconography in a business app | A real icon set, or a text glyph |
+| Gradient headings, or a gradient on anything that is not a chart | Flat type; hierarchy from size and weight (rule L1) |
+| Purple-to-blue accent gradient, decorative glassmorphism, heavy `blur()` | The project's own accent token. **Exception:** a panel that genuinely floats over content it must not hide, such as a chart readout, may be frosted so the marks underneath stay visible. That is glass doing a job, not glass as styling. Keep a solid fallback under `@supports`, because unreadable text is worse than a covered mark. |
+| Rounded-everything at the same large radius on every element | Two radii at most, tied to element size |
+| A shadow on every surface | Shadow only on things that genuinely float |
+| Centred hero text on an internal tool screen | Left-aligned, dense, scannable |
+| Three evenly-spaced feature cards with an icon, a heading and two lines each | Whatever the actual content needs |
+| Filler copy: "Powerful", "Seamless", "Effortless", "Blazing fast" | Say the specific thing (rule K1) |
+
+The test: **would someone have chosen this, or is it just what appeared?** If the second,
+it is a tell. This matters most on the surfaces a user sees every day, where the default
+look quietly says the screen was not thought about.
