@@ -1,0 +1,2708 @@
+{
+ "date": "2026-11-25",
+ "judge_model": "claude-opus-5-5",
+ "seed": 20261014,
+ "comparisons": [
+  {
+   "model": "claude-opus-5-5",
+   "task": "chart-filter",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/chart-filter/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/chart-filter/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__chart-filter__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Opened the site filter",
+     "Unticked one site"
+    ],
+    "B": [
+     "Opened the site filter",
+     "Unticked one site"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B's site filter updates the whole dashboard. When a site is unticked, the Total revenue card drops to \u00a31,612,083 and the Sites card drops to 5. In A the cards stay at \u00a31,895,063 and 6 while the chart below shows 5 sites, so the page contradicts itself.",
+     "B uses checkbox chips with All and None shortcuts, so it's obvious which sites are selected. In A the selected sites are solid blue pills and an unselected one turns white, which some users may read the wrong way round. A's 'Showing 5 of 6' summary line helps, but only partly makes up for this.",
+     "Both pages work on a phone, but B's phone chart has very few axis labels, and A's phone chart is squeezed narrow with a lot of empty space. B also adds a 'Show table' option for exact figures. Overall B is the more consistent and more useful dashboard."
+    ]
+   },
+   "result": "none",
+   "cost": 0.09173139999999999,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "chart-filter",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/chart-filter/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/chart-filter/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__chart-filter__flashrule__r0",
+   "captions": {
+    "A": [
+     "Opened the site filter",
+     "Unticked one site"
+    ],
+    "B": [
+     "Opened the site filter",
+     "Unticked one site"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "In B the site filter updates the whole dashboard: after unticking North depot, the Total revenue card drops to \u00a31,612,083 and Sites drops to 5. In A the top cards stay at \u00a31,895,063 and 6 sites while the chart shows 5, so the page contradicts itself and the real total is only in a small line under the chart.",
+     "B places the filter at the top of the page as clear checkbox chips with All/None, so it reads as a page-wide control. A's filter chips sit inside the chart card and look good, but on a phone they wrap onto four rows and the Select all/Clear buttons get split across lines.",
+     "B's chart is easier to read on a phone because it spaces out the axis labels (\u00a30, \u00a3200K, \u00a3400K). A's phone axis squeezes \u00a3100k\u2013\u00a3400k so tightly that the labels nearly run together. B also adds a 'Show table' option for exact figures."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0910356,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "chart-filter",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/chart-filter/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/after/flashrule/chart-filter/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__chart-filter__flashrule__r1",
+   "captions": {
+    "A": [
+     "Opened the site filter",
+     "Unticked one site"
+    ],
+    "B": [
+     "Opened the site filter",
+     "Unticked one site"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A shows the site filter as a row of always-visible checkbox chips, each with a colour key, plus All/None links. Unticking a site takes one click, and you can still see the chart change as you do it. B hides the filter in a dropdown that covers the chart and adds sort buttons, a search box and Select all/Clear for only six sites.",
+     "In A, filtering updates the whole dashboard: total revenue drops to \u00a31,612,083 and the Sites card changes to 5 of 6. In B, the cards above the chart still show \u00a31,895,063 and 6 sites after a site is unticked, so the page contradicts itself.",
+     "A's line chart shows month-by-month trends, works on a phone and has a data table to fall back on, though six crossing lines are busy. B's bar chart is easy to read, but its axis runs to \u00a3500k, which leaves a lot of empty space. B also has a confusing second 'tap bars to select' feature next to the filter."
+    ]
+   },
+   "result": "none",
+   "cost": 0.09185879999999999,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "chart-filter",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/chart-filter/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/chart-filter/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__chart-filter__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Opened the site filter",
+     "Unticked one site"
+    ],
+    "B": [
+     "Opened the site filter",
+     "Unticked one site"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A shows total revenue per site as a sorted horizontal bar chart with value labels, so you can compare sites at a glance. B draws six overlapping, zig-zagging monthly lines that are hard to tell apart and hard to read.",
+     "A stays readable on a phone because the bars and labels are still clear at 390px. B's six-line chart gets squeezed into a tangle on the narrow screen.",
+     "Both filters work well and update the chart right away. B also updates the top KPI cards (5 of 6 sites, new total), which A doesn't, though A updates the total in the chart's subtitle. That plus isn't enough to make up for B's much harder-to-read chart."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0797724,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "dark-mode",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/dark-mode/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/after/flashrule/dark-mode/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__dark-mode__flashrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "The two versions work the same way: one click switches the whole page to a matching dark theme, and the cards, form fields, chart and table all stay easy to read.",
+     "B's button has an icon that changes from a moon in light mode to a sun in dark mode. That shows the current state and what a click will do. A's plain 'Dark mode' text looks the same in both modes, so it's less clear.",
+     "The phone layouts are the same. Both have the same table cut-off on the right edge of the Cost column at 390px, so the deciding difference is B's clearer toggle."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0870588,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "dark-mode",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/dark-mode/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/dark-mode/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__dark-mode__flashrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "Both toggles work the same way: one click switches the whole page (cards, form fields, table, chart bars and buttons) to a readable dark theme, and both follow the system dark preference on the phone view.",
+     "A's button has a sun/moon icon that changes with the theme, so you can see the current mode at a glance. B's button is plain text that always says 'Dark mode', so it gives no sign of which mode is on.",
+     "Everything else is essentially the same, including the same small flaw on the phone: the Cost column in the jobs table runs off the right edge. That leaves A's clearer toggle as the only real difference, so it edges ahead."
+    ]
+   },
+   "result": "none",
+   "cost": 0.08846699999999999,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "dark-mode",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/dark-mode/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/dark-mode/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__dark-mode__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "Both toggles work the same way. One click switches the whole page to a consistent dark theme with readable text, lighter blue chart bars and buttons, and dark form fields and table.",
+     "The layouts on desktop and phone are almost identical. Both phone versions cut off the Cost column in the jobs table, so neither handles narrow screens better.",
+     "The only visible difference is the icon on the toggle. A uses a sharper sun and moon icon, while B uses thinner text symbols. That is too small to change how usable either page is."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.0839926,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "form-build",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/form-build/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/form-build/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__form-build__flashrule__r0",
+   "captions": {
+    "A": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ],
+    "B": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "When the empty form is submitted, A shows a summary box at the top ('2 fields still need attention') with links to each problem field, plus an error under each field. B only shows the errors under the fields. Both put focus on the Site field.",
+     "A gives useful help under the fields: the budget hint explains that a sum like 1200+350 is accepted, and the note hint suggests what to write (access details, urgency). B only has a '0 / 1000' character counter and a '$ 0.00' placeholder.",
+     "B puts a Clear button right next to Submit, so one wrong click on a phone or desktop wipes everything typed. A has no such button. B's layout is tighter, but A's extra spacing still fits fine on a phone. Both show the same clear confirmation summary after a successful submit."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0815502,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "dark-mode",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/dark-mode/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/after/uiuxrule/dark-mode/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__dark-mode__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "Both versions give the same complete dark theme. Cards, form fields, the chart and the table all switch cleanly with good contrast, so the core feature works equally well in each.",
+     "B's toggle has a moon icon in light mode that changes to a sun in dark mode. This shows the current or next theme at a glance. A's toggle is a plain 'Dark mode' text button whose label stays the same in both themes, so its state is unclear.",
+     "On phones the two are otherwise the same: both follow the system dark setting, and both cut off the Cost column in the jobs table. B's icon is the only real difference, which makes B slightly more polished."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0833604,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "form-build",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/form-build/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/after/flashrule/form-build/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__form-build__flashrule__r1",
+   "captions": {
+    "A": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ],
+    "B": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A's confirmation lists everything that was sent (site, work type, a formatted $1,500.00 budget and the note), so the user can check their request. B only says 'Request sent: Electrical at North depot.', which leaves out the budget and the note.",
+     "A's budget field is clear: it shows a '$ 0.00' placeholder and the hint 'Leave blank if unknown'. B's placeholder 'e.g. 1200 or 1850-150' and its 'type a sum, such as 12*40' hint are confusing (1850-150 reads like a price range), and the field shows no currency.",
+     "Both forms catch the empty required fields with clear red inline messages, and B adds a useful '2 fields still need attention' line. A balances that with clearer optional-field labels, a character counter on the note, and the same tidy layout on desktop and phone."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0775988,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "form-build",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/form-build/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/form-build/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__form-build__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ],
+    "B": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "When the form goes through, B swaps it for a clear confirmation panel that lists site, work type, budget and note, with a 'New request' button. A only shows one small green line under a form that has already been reset, so it's easy to miss.",
+     "Both versions flag the empty required fields inline. B is tighter: it explains the asterisk up front and uses a '$ 0.00' placeholder, so it's obvious the budget is money. A repeats the same errors in an extra summary list at the bottom, which is redundant.",
+     "B looks cleaner and more compact on desktop and phone, with even spacing, a character counter on the note and a Clear button. A has uneven gaps between fields and an odd 'sum such as 1200+350' hint for the budget."
+    ]
+   },
+   "result": "none",
+   "cost": 0.07491120000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "form-build",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/form-build/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/form-build/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__form-build__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ],
+    "B": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "After a successful submit, B shows a clear 'Request submitted' card that repeats the site, work type, budget ($1,500.00) and note, so the user can check what was sent. A only shows a small green line next to the button, which is easy to miss once the form has reset.",
+     "B's budget field shows a '$ 0.00' placeholder and says 'Leave blank if unknown', so it's obvious a currency amount is expected. A's hint ('A number or a sum, e.g. 1200+150') is unusual and could confuse people.",
+     "Both forms catch the empty submit well with red inline messages on the two required fields; A also adds an error summary at the top. B's layout has more breathing room and a note character counter, and works cleanly on a phone. The one downside of B is a Clear button right next to Submit, which could wipe the form by accident."
+    ]
+   },
+   "result": "none",
+   "cost": 0.078108,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "iterate-html",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/iterate-html/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/iterate-html/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__iterate-html__flashrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A's status filter is a set of clear chips with a count on each (All 8, Running 2, etc.). B puts a generic 'All \u25be' dropdown on every column plus a search box, which is more cluttered and hides the status filter the request asked for.",
+     "On a phone, A reflows cleanly and every status badge stays visible. B's table is cut off at 390px, so the Status, Due and Value columns are clipped and you have to scroll sideways.",
+     "A's detail panel is richer, with a description and a recent log. Its dark mode button switches to 'Light mode' when active, so its state is obvious. B's toggle still says 'Dark mode' after it's turned on, and B's table is left-aligned, leaving a lot of empty space on desktop."
+    ]
+   },
+   "result": "none",
+   "cost": 0.08686959999999999,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "iterate-html",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/na/none/iterate-html/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/iterate-html/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__iterate-html__flashrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A's selected filter is a solid blue pill, so it is easy to see which filter is on. B's selected pill is pale blue and looks a lot like the others, and the filter row is also what gets remembered on reload.",
+     "A's dark mode button has a sun/moon icon that changes between themes, so the toggle is clear at a glance. B's button is only text and reads 'Dark mode' in both themes. Both themes look clean in both versions.",
+     "Both versions open the detail panel on click and close it on Escape. A's panel is simpler, with no extra buttons, and includes a log excerpt that fits CI jobs well. B has both a 'Close' and a 'Done' button, and 'Done' can be confused with the 'Done' status. B's panel does show richer details, so the gap here is small."
+    ]
+   },
+   "result": "none",
+   "cost": 0.085086,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "iterate-html",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/iterate-html/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/iterate-html/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__iterate-html__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "In dark mode, B's toggle changes to 'Light mode' with a sun icon, so the button says what it will do next. A's button still says 'Dark mode' while dark mode is on, which is unclear.",
+     "B's detail panel has more useful content: job ID, owner, duration, a description and a recent log. It also keeps the selected row highlighted behind the panel. A's panel is plainer, with a list of fields and a one-line description.",
+     "B adds a subtitle telling users to 'Select a job to see its details', which makes the click-to-open feature easy to find. Both versions handle Escape, focus return and the phone layout equally well, so the extra polish puts B ahead."
+    ]
+   },
+   "result": "none",
+   "cost": 0.08381860000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "iterate-html",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/na/none/iterate-html/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/after/uiuxrule/iterate-html/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__iterate-html__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "Both pass the scripted steps: clicking a job opens a side detail panel over a dimmed list, Escape closes it and leaves focus on the clicked row, and the toggle switches the whole page to a clean dark theme.",
+     "B's dark mode control is a real on/off switch, so you can see whether it's on, and B shows an '8 jobs' count with a 'Status' label on the filter. A's 'Dark mode' button only changes its icon, which makes its state less obvious.",
+     "B's detail panel has more useful content (company, location, pay, description and responsibilities) and its cards stay roomy and readable on a phone. A also works well on a phone but is more compact and its details are thinner, so B is slightly better for a real user."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0854942,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "small-column",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/small-column/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/small-column/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__small-column__flashrule__r0",
+   "captions": {
+    "A": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ],
+    "B": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "The desktop screenshots of A and B look the same. Both add a Status column between Site and Amount, with the same values (In progress, Open, On hold, Cancelled, Done) and an 'All \u25be' filter matching the other columns.",
+     "The interaction steps are the same too. In both, the Status filter opens a menu with sort options, a search box, Select all/Clear, a checkbox and count for each status, and a Done button. Unticking Cancelled cuts the list from 40 to 34 orders and changes the button label to 'Filtered'.",
+     "At phone width both pages have the same problem: the table runs off the right edge, so Status and Amount are hidden unless you scroll sideways. Neither handles phones better than the other."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.1097312,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "small-column",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/small-column/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/after/flashrule/small-column/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__small-column__flashrule__r1",
+   "captions": {
+    "A": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ],
+    "B": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "The desktop pages look the same: both add a Status column between Site and Amount, with the same values (In progress, Open, On hold, Cancelled, Done) and the same 'All \u25be' filter button.",
+     "The interaction steps match too: in both, opening the Status filter shows sort options, search, Select all/Clear and status checkboxes with counts, and unticking Cancelled drops the list to 34 of 40 orders and changes the button to 'Filtered'.",
+     "The phone layouts are also the same: both tables scroll sideways and cut off the Site column, so you have to scroll to reach the Status column in either version. Neither handles small screens better."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.10416940000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "small-column",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/small-column/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/small-column/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__small-column__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ],
+    "B": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "On desktop, A and B look the same: both put a Status column between Site and Amount, with the same values, filter button, spacing and '40 of 40 orders' count.",
+     "The scripted interaction plays out the same way in both. Opening the Status filter shows the same sort, search, Select all/Clear and checkbox menu with counts. Unticking Cancelled drops the count to 34 of 40 and the button changes to 'Filtered'.",
+     "On a phone, both clip the table the same way: Site is cut off and Status is off-screen to the right. Neither version handles small screens better."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.1041146,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "small-column",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/small-column/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/small-column/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__small-column__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ],
+    "B": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "The desktop screenshots of A and B look the same: the same Status column sits between Site and Amount, with the same values (Open, In progress, On hold, Done, Cancelled) and the same 'All \u25be' filter buttons.",
+     "The filter steps behave the same in both. Opening the Status filter shows sort options, search, select all/clear and checkboxes with counts. Unticking Cancelled cuts the list from 40 to 34 orders and changes the button to 'Filtered'.",
+     "The phone layouts are also the same. In both, the table runs off the right edge of the screen and Status is cut off, so neither works better on a phone."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.10446640000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "table-build",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/table-build/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/table-build/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__table-build__flashrule__r0",
+   "captions": {
+    "A": [
+     "Opened a column filter",
+     "Unticked one value - could not find the control to do this"
+    ],
+    "B": [
+     "Opened a column filter",
+     "Unticked one value"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B's column filter works as you'd expect: opening Status shows a checklist with counts, sort A\u2013Z/Z\u2013A, value search and Select all/Clear. Unticking Cancelled cut the rows to 34, updated the total to \u00a3162,133.98 and changed the header button to '4 of 5'. In A, the scripted test couldn't find any per-column control to untick a value, and the table didn't change.",
+     "A looks more polished, with coloured status badges, readable dates, newest orders first and a total row. It also has a full filter panel with customer and site dropdowns, date and amount ranges, and status chips. But that panel was never shown filtering anything, so its value is unproven. B is plainer, uses raw ISO dates and has odd '[?]' marks in the headers, but its filters were shown to work.",
+     "Neither works well on a phone, because both tables run off the right edge and need sideways scrolling. A stacks its filter panel neatly on a phone, and B keeps the live order count and total next to search. The phone views don't separate them, so B's working filter decides it."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.11710259999999999,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 9
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "table-build",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/na/none/table-build/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/table-build/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__table-build__flashrule__r1",
+   "captions": {
+    "A": [
+     "Opened a column filter",
+     "Unticked one value - could not find the control to do this"
+    ],
+    "B": [
+     "Opened a column filter",
+     "Unticked one value"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A puts all its filters in one clear panel above the table: search, customer and site dropdowns, a From/To date range, min/max amount, and status chips that show counts. Users can see every way to narrow the list without opening anything, and date and amount ranges suit those columns better than ticking values in a list.",
+     "A is easier to scan. Status values have coloured badges, every column shows a sort arrow, the newest orders come first, and the 'X of 40 orders' count and total sit right above the table. B shows status as plain text and sorts by order ID, so its table looks flatter and is harder to read.",
+     "B's dropdown under each column works well: unticking 'Cancelled' gave '4 of 5' and the count changed to 34 orders. But those filters stay hidden behind small 'All' buttons. A's scripted step failed only because A has no dropdown inside the column headers, and its status chips do the same job. On a phone the two are about equal, since both make you scroll the table sideways."
+    ]
+   },
+   "result": "none",
+   "cost": 0.1166788,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 9
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "table-build",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/table-build/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/table-build/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__table-build__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Opened a column filter",
+     "Unticked one value"
+    ],
+    "B": [
+     "Opened a column filter",
+     "Unticked one value - could not find the control to do this"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B shows all its filters up front in one panel: customer and site dropdowns, date and amount ranges, and status chips with counts. In A, each filter is a small 'All \u25be' button under a column header, so filtering by a date or amount range is less obvious.",
+     "B is easier to scan. Status is shown as coloured badges, dates are readable ('18 Sept 2026'), amounts carry the \u00a3 sign, the table is sorted newest first, and both the header and a footer row show the order count and total value. A is a plain grid with ISO dates and no totals.",
+     "A's column-filter popup clearly works: it has sorting, a value search, select-all and clear, and checkboxes with counts, and it updated the button to '4 of 5' and the summary to '34 of 40'. B's status chips don't show whether they are on or off, so the script couldn't untick a value. On phones, B stacks its filters neatly while both tables get cut off at the right edge."
+    ]
+   },
+   "result": "none",
+   "cost": 0.1174316,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 9
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "table-build",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/na/none/table-build/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/table-build/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__table-build__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Opened a column filter",
+     "Unticked one value"
+    ],
+    "B": [
+     "Opened a column filter",
+     "Unticked one value - could not find the control to do this"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B puts all its filters in plain view above the table: text search, customer and site dropdowns, a date range, a min/max amount range and status chips with counts. A hides every filter behind an identical 'All \u25be' button in each column header, so users have to open each one to find out what it does.",
+     "B is easier to read at a glance. It has coloured status badges, \u00a3-prefixed amounts, a '40 of 40 orders' count with a running \u00a3 total, and sortable headers with clear arrows. A's table is plain text with no status colours or totals. A's Excel-style checklist popover does work well (it showed '34 of 40' after unticking one value), but it's a power-user pattern.",
+     "On a phone, B's filter panel reflows neatly into two columns while its table scrolls sideways. A's table is also cut off at 390px, and its filters are just tiny 'All' buttons. The scripted 'untick a value' step failed on B only because B uses toggle chips instead of column checklists, not because filtering is missing."
+    ]
+   },
+   "result": "none",
+   "cost": 0.11842639999999999,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 9
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "trivial-label",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/trivial-label/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/trivial-label/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__trivial-label__flashrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the Save button"
+    ],
+    "B": [
+     "Clicked the Save button"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "Both versions look the same on desktop and phone: the button reads \"Save draft\", has the solid blue primary style, and sits to the right of an outlined Cancel button.",
+     "After clicking, A shows \"Draft saved.\", which matches the new button label. B shows only \"Saved.\", which could make a user think the item was fully saved rather than kept as a draft.",
+     "The only difference is that one confirmation message, so A is better only slightly, because its feedback matches the draft meaning of the button."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0707356,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "trivial-label",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/trivial-label/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/trivial-label/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__trivial-label__flashrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the Save button"
+    ],
+    "B": [
+     "Clicked the Save button"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "At 1280px, A and B look the same: both buttons say 'Save draft' in the same filled blue primary style, next to an outlined Cancel button.",
+     "At 390px on a phone, both lay out the same way, and the Cancel and Save draft buttons are the same size and in the same place.",
+     "Clicking the Save button gives the same result in both: a 'Saved.' message appears under the buttons, so a user would notice no difference in use."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.0661036,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "trivial-label",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/trivial-label/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/trivial-label/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__trivial-label__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the Save button"
+    ],
+    "B": [
+     "Clicked the Save button"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "Both versions look the same on desktop and phone: the button now says 'Save draft', uses the solid blue primary style, and sits to the right of a secondary Cancel button.",
+     "After clicking, B shows 'Draft saved.', which matches the new button label and tells the user exactly what happened. A shows only a generic 'Saved.', which could suggest the changes were saved for good rather than as a draft.",
+     "Neither version has any layout, spacing or mobile problems, so B's clearer, matching confirmation message is the only real difference and gives it a small edge."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0678324,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "trivial-label",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/trivial-label/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/after/uiuxrule/trivial-label/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__trivial-label__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the Save button"
+    ],
+    "B": [
+     "Clicked the Save button"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "In both versions the button reads 'Save draft' and has the same solid blue primary style, next to an outlined Cancel button, so both fully meet the request.",
+     "The desktop and phone screenshots look the same: same layout, spacing, labels and button placement, with no visible difference at either width.",
+     "Clicking the button gives the same result in both: a 'Saved.' message under the buttons, so the interaction feels the same to a user."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.0663848,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "undo-toast",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/undo-toast/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/undo-toast/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__undo-toast__flashrule__r0",
+   "captions": {
+    "A": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ],
+    "B": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A's delete toast is a dark, high-contrast bar with a clear 'Undo' button, so it's hard to miss. B's toast is pale with a small underlined 'Undo' link, which is easier to overlook at the bottom of the screen.",
+     "A shows a green checkmark and 'Inspector saved' right under the visit's ID and date, where it's easy to notice. B's 'Inspector saved' is plain faint text placed lower in the card, so it reads more weakly.",
+     "A's cards are compact. B leaves empty space at the bottom of every card to hold the status message, which makes the list taller and more scrolling on phone and desktop. B's 'restored' toast and close button are nice extras, but they don't make up for this."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0941202,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 8
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "undo-toast",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/na/none/undo-toast/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/flashrule/undo-toast/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__undo-toast__flashrule__r1",
+   "captions": {
+    "A": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ],
+    "B": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "After Undo, A shows a 'Restored visit SV-2041, North depot' message, so the user knows the undo worked. B's toast just disappears and the user has to spot the returning row themselves.",
+     "A's toast has a dismiss (\u00d7) button and names the visit fully. B's dark toast is easier to see, but it can't be dismissed and gives no feedback after Undo.",
+     "Both show a small green 'Saved' next to the edited field and lay out the same way on phone. B's bold text in every input looks heavy, while A's normal-weight text reads more cleanly."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.08392460000000002,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "undo-toast",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/na/none/undo-toast/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/opus-5-5/after/uiuxrule/undo-toast/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__undo-toast__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ],
+    "B": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "After Undo, B shows a toast saying 'Visit SV-2041, North depot restored.', so the user knows the undo worked. In A the delete toast just disappears and the row quietly comes back.",
+     "B shows 'Inspector saved' right under the field that was edited, so the confirmation sits where the user is looking. A puts its '\u2713 Inspector saved' under the visit title, away from the field.",
+     "B's toasts have a close (\u00d7) button and an underlined Undo link, which makes them easier to act on. The cost is extra empty space inside each card on both desktop and phone, while A's layout is tighter."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.08704400000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 8
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "chart-filter",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/chart-filter/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/chart-filter/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__chart-filter__flashrule__r0",
+   "captions": {
+    "A": [
+     "Opened the site filter",
+     "Unticked one site"
+    ],
+    "B": [
+     "Opened the site filter",
+     "Unticked one site"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A's filter works: unticking North depot removes its bar, the count changes to \"5 of 6 sites shown\" and the total shown updates to \u00a31,612,083. In B, unticking a site changed nothing: all six lines stay and the label still reads \"6 of 6 sites\".",
+     "A's bar chart answers \"revenue by site\" directly, with each site's total printed by its bar. B's six overlapping monthly lines are a tangle that's hard to compare by site, and B shows no site totals.",
+     "B looks more polished (colour-coded chips that act as a legend, All/None shortcuts, a table view), and both layouts work on a phone. But a filter that doesn't filter fails the main request, so A is more useful."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0776636,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-opus-5-5",
+   "task": "undo-toast",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/na/none/undo-toast/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/opus-5-5/after/uiuxrule/undo-toast/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-opus-5-5__undo-toast__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ],
+    "B": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B's undo toast is dark and high-contrast with a clear 'Undo' action, so it stands out more after a delete than A's pale white toast, which blends into the light page.",
+     "B shows '\u2713 Saved' right beside the Inspector label of the field that was edited, so the confirmation is tied to that field. A puts 'Inspector saved' in small text under the visit's date, away from the field.",
+     "This one is close. A does add a 'restored' confirmation and a dismiss button, and both versions undo correctly and lay out the same on desktop and phone. B wins because its two main pieces of feedback are easier to notice."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0872214,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "chart-filter",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/chart-filter/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/chart-filter/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__chart-filter__flashrule__r1",
+   "captions": {
+    "A": [
+     "Opened the site filter",
+     "Unticked one site"
+    ],
+    "B": [
+     "Opened the site filter",
+     "Unticked one site"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "B's bar chart shows the data wrongly. South yard, East works, West plant and Harbour (\u00a3329k\u2013\u00a3360k) have identical bar lengths because the bars are capped at the container width. On the phone, all six bars are the same length, so the chart no longer compares sites at all. A's line chart plots every value correctly.",
+     "Both filters work when a site is unticked. A uses compact coloured legend chips with All/None, and the chips double as the chart's colour key. B's chips are large and include totals and a helpful '5 of 6 sites shown' summary, but they take up a lot of space, especially on the phone.",
+     "A has its own weaknesses: six overlapping lines are busy, and on the phone the chart shrinks until its axis labels can't be read. It still shows monthly trends accurately and offers a 'Show as table' fallback. That is more trustworthy than B's misleading bars, despite B's clean layout and value labels."
+    ]
+   },
+   "result": "none",
+   "cost": 0.08279179999999998,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "chart-filter",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/chart-filter/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/chart-filter/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__chart-filter__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Opened the site filter",
+     "Unticked one site"
+    ],
+    "B": [
+     "Opened the site filter",
+     "Unticked one site"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "In A, unticking a site works as you'd expect. North depot's bar disappears, the chip turns to an unselected style, and the counts change to '5 of 6' with a new total of \u00a31,612,083. In B, nothing changes after unticking a site: all six lines still show and it still says '6 of 6 sites'.",
+     "A's sorted horizontal bar chart with values on each bar answers 'revenue by site' at a glance. B's six overlapping monthly lines are a tangle, so comparing sites is hard.",
+     "A works well on a phone: the chips wrap, the bars stack with labels above them, and there's a 'View values as text' fallback. B's phone chart is cramped and the lines are hard to read at that width, and its working filter is no help when it doesn't actually filter."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.07746420000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "chart-filter",
+   "rep": 2,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/chart-filter/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/flashrule/chart-filter/scored-r2/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__chart-filter__flashrule__r2",
+   "captions": {
+    "A": [
+     "Opened the site filter",
+     "Unticked one site"
+    ],
+    "B": [
+     "Opened the site filter",
+     "Unticked one site"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "In A, unticking a site works: North depot leaves the chart, the label changes to '5 of 6 sites', and total revenue and site count update. In B, nothing visibly changes after unticking. All six chips stay ticked and the chart and totals stay the same, so the filter seems broken.",
+     "A's sorted horizontal bars with value labels make it easy to compare revenue by site at a glance. B's six overlapping monthly lines are a tangled spaghetti chart that makes it hard to compare sites, especially on a phone.",
+     "A works well on a phone: the chips wrap neatly and the bars and values stay readable. On B's phone layout the 'Clear' link is left alone on its own line, and the crowded line chart is hard to read at 390px."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0768712,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "chart-filter",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/chart-filter/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/chart-filter/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__chart-filter__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Opened the site filter",
+     "Unticked one site"
+    ],
+    "B": [
+     "Opened the site filter",
+     "Unticked one site"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A's sorted horizontal bar chart answers 'revenue by site' directly: each site's total is labelled, so you can compare sites at a glance. B's six overlapping monthly lines are a tangled spaghetti chart, and you can't read off a site's revenue.",
+     "On a phone, A's bars and value labels stay large and readable. B's chart shrinks so much that the axis labels can't be read and the lines blur together.",
+     "Both filters work, but A gives clearer feedback when a site is unticked: the chip turns from filled to outlined, the summary changes to 'Showing 5 of 6 sites, \u00a31,612,063 total', and the bar disappears. In B, removing one line from the tangle is hard to notice, and the only cue is a subtly hollow legend dot."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.07651720000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "dark-mode",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/dark-mode/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/dark-mode/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__dark-mode__flashrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "A and B look the same on desktop: same layout, same light theme, and the same 'Dark mode' button in the top-right corner.",
+     "Clicking the toggle gives the same result in both: a full dark theme with lighter blue bars and buttons, readable text, and cards, fields and the table header all switching over.",
+     "The phone screenshots are also the same. Both open in dark mode, both keep the label 'Dark mode' even while dark mode is on, and in both the Cost column is cut off on the right."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.0810772,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "chart-filter",
+   "rep": 2,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/chart-filter/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/uiuxrule/chart-filter/scored-r2/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__chart-filter__uiuxrule__r2",
+   "captions": {
+    "A": [
+     "Opened the site filter",
+     "Unticked one site"
+    ],
+    "B": [
+     "Opened the site filter",
+     "Unticked one site"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "In B the filter works: after unticking North depot, its bar disappears, its pill turns white, and the caption changes to '5 of 6 sites shown \u00b7 total \u00a31,612,083'. In A's step 2, all six chips still show ticks and the chart looks the same, so the filter seems to do nothing.",
+     "B's chart is easier to read. Each site gets one labelled horizontal bar with its total, so comparing sites is quick. A draws six crossing monthly lines whose colours are hard to tell apart (two of them are both green), so it's a tangle, especially at phone width.",
+     "B places the filter inside the chart card and shows each site's revenue on its pill, so the filter clearly belongs to the chart. A's chips sit above the KPI cards, and on phone they wrap with 'Clear' alone on its own line. B's pills also take up a lot of vertical space on phone, but the page is still clear to use."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0797134,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "dark-mode",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/dark-mode/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/dark-mode/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__dark-mode__flashrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "The desktop light-mode layouts of A and B look the same: same cards, chart, form and jobs table, with the 'Dark mode' button in the same top-right spot.",
+     "Clicking the toggle gives the same full dark theme in both. Cards, inputs, chart bars and the table all switch with good contrast, and neither leaves light patches behind.",
+     "On a phone both look the same: both are in dark mode, and both have the same Cost column cut off on the right. Neither version is easier to use."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.0810004,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "dark-mode",
+   "rep": 2,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/dark-mode/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/flashrule/dark-mode/scored-r2/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__dark-mode__flashrule__r2",
+   "captions": {
+    "A": [
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "The desktop screenshots of A and B look exactly the same. Both have the same light layout, chart, form and jobs table, with a 'Dark mode' button in the top right.",
+     "After the toggle is clicked, both switch to the same full dark theme. Cards, form fields, bars and the table all change to dark colours with good contrast, and neither leaves any part of the page unstyled.",
+     "The phone views are identical too. Both show the dark theme, and both cut off the Cost column on the right side of the table. In both, the button still says 'Dark mode' after switching, so neither handles that better than the other."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.08257260000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "dark-mode",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/dark-mode/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/dark-mode/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__dark-mode__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "Both versions have the same light layout and the same dark theme, with the same dark card surfaces, light-blue bars and readable form fields, so the main experience is nearly identical.",
+     "In dark mode, B's toggle gets a blue accent border and blue text, so it's clear the toggle is on. A's button looks the same in both modes, so its state is harder to tell.",
+     "Both have the same phone problem: the Cost column of the jobs table is cut off. B's clearer toggle state is the only real difference, which gives it a slight edge."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.08303840000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "dark-mode",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/dark-mode/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/dark-mode/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__dark-mode__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A and B are almost the same: the same layout, the same dark palette after the click, the same readable chart, form and table colours, and the same phone view.",
+     "When dark mode is on, A gives the toggle an accent-coloured border and text, so the user can see it is switched on. B's button looks the same in both modes, so the user can't tell its state.",
+     "Both keep the label 'Dark mode' after it is turned on, and on the phone both cut off the Cost column the same way. A's clearer toggle state is the only real difference, and it gives A a small edge."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.08384140000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "dark-mode",
+   "rep": 2,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/dark-mode/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/uiuxrule/dark-mode/scored-r2/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__dark-mode__uiuxrule__r2",
+   "captions": {
+    "A": [
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "The desktop screenshots look the same for A and B: same light layout, same 'Dark mode' button in the top right, same chart, form and jobs table.",
+     "Clicking the toggle gives the same result in both: a full dark theme with readable light text, lighter blue bars and a matching dark form and table.",
+     "On the phone, both versions load in dark mode with the same layout, and in both the Cost column is cut off on the right, so neither one handles small screens better."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.081101,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "form-build",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/form-build/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/form-build/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__form-build__flashrule__r0",
+   "captions": {
+    "A": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ],
+    "B": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A has a finished, consistent layout: full-width styled fields, a clear 'required/optional' legend, helper text for budget, and a prominent primary submit button. B is nearly unstyled, with mismatched field widths and default browser controls.",
+     "On empty submit, A shows an error summary ('2 fields still need attention'), red-bordered fields and messages under each field. B's small inline red text is easy to miss.",
+     "A's success message is green and shown near the top of the form, so it's easy to see. B's is plain unstyled text below the button. A also uses its space better on a phone, with full-width tap targets."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0740594,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "form-build",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/form-build/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/form-build/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__form-build__flashrule__r1",
+   "captions": {
+    "A": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ],
+    "B": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B labels fields more clearly: there's a red asterisk with a '* required' legend, 'optional' tags, and a placeholder plus a hint for the budget format ('Numbers only, up to 2 decimals'). A gives no guidance on the budget at all.",
+     "On an empty submit, B shows a summary ('2 fields need fixing'), outlines the invalid fields in red and puts a message under each one. A only shows small red text under each field. After a valid submit, B's success message is green and stands out more than A's plain line of text.",
+     "B looks more finished and is easier to tap on a phone: the controls are larger, it uses bold labels, and the submit button is a full-width blue button. A has default browser styling, labels that sit tight against their fields, and a small grey button that's harder to hit on a 390px screen."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0753876,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "form-build",
+   "rep": 2,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/form-build/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/flashrule/form-build/scored-r2/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__form-build__flashrule__r2",
+   "captions": {
+    "A": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ],
+    "B": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B's layout is cleaner and easier to use: bold labels, larger touch-friendly inputs, a prominent blue Submit button, and 'optional' tags plus a '* required' legend. A uses tiny default browser buttons and unstyled labels.",
+     "B's validation is clearer: it shows an error summary ('2 fields need attention'), red borders on the invalid fields and an inline message under each one. A only shows small red text under the fields.",
+     "B confirms a successful submission with a readable green message ('Request submitted: Electrical at North depot, budget 1500'). A dumps raw JSON, which means little to a typical user."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0742312,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "form-build",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/form-build/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/form-build/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__form-build__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ],
+    "B": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A's form is easier to read and fill in. The fields are full-width with clear labels marked 'required' or 'optional', and the budget field has a hint showing the number format. B is unstyled browser defaults: narrow, mismatched controls and cramped labels.",
+     "A gives better error feedback on an empty submit. It shows a summary ('2 fields need fixing'), outlines the problem fields in red, puts the message under each field and focuses the first one. B only puts small red text next to the fields.",
+     "A works better on a phone, with full-width inputs and a large primary button. B keeps its small, uneven controls on a phone. B's success message names the site and work type, which is a nice touch, but it doesn't make up for the weaker layout and styling."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.07528460000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "form-build",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/form-build/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/form-build/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__form-build__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ],
+    "B": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B labels each field as required or optional, adds a format hint for the budget ('Numbers only, e.g. 2500 or 2,500.50') and has a large, prominent blue submit button. A is plain unstyled HTML with cramped labels and a small grey button.",
+     "When the empty form is submitted, B shows a summary ('2 fields need attention'), outlines the bad fields in red and puts a message under each one. A only shows small red text under the fields.",
+     "Both work on a phone, but B's taller fields and full-width button are easier to tap. A's success message names the site and work type, which is a small plus, but B's green confirmation is clearer, and B is better overall."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0748046,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "iterate-html",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/iterate-html/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/iterate-html/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__iterate-html__flashrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A's phone layout fits the 390px screen: the filter chips wrap and the job cards stack. B's table runs off the right edge, so the Status and Amount columns are cut off and you have to scroll sideways.",
+     "A has a simple status filter with a count on each button, which is what the request asked for. B puts a dropdown filter on every column plus a search box, which is more to deal with, and its status values aren't color-coded.",
+     "A's layout is centered and balanced, with a detail panel that always stays in place and colored status badges that stay readable in dark mode. B's table is pushed to the left with empty space on the right, and its detail panel is a plain slide-over."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0816664,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "form-build",
+   "rep": 2,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/form-build/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/uiuxrule/form-build/scored-r2/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__form-build__uiuxrule__r2",
+   "captions": {
+    "A": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ],
+    "B": [
+     "Submitted the empty form",
+     "Filled the form in and submitted it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B is easier to read and use on both desktop and phone. Its labels are bold, its inputs are larger, there is more space between fields, and the Submit button is prominent. A uses default browser styling, with a tiny Submit button and labels crammed against the fields.",
+     "B makes clear what is expected. It has a legend explaining the required marker, marks the optional fields, and gives a format hint for the budget ('Numbers only, e.g. 1500'). A shows only asterisks and gives no guidance on the budget.",
+     "B gives better feedback. On an empty submit it shows a summary ('2 fields need attention'), red borders and messages next to the fields, and moves focus to the first problem. On success it shows a plain-language green confirmation. A shows small red text on errors and, on success, a raw JSON dump."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0757446,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "iterate-html",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/iterate-html/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/iterate-html/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__iterate-html__flashrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the first job - could not find the control to do this",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "Clicking the first job in A opens a clear detail panel with the owner, start time, duration, ID and latest log, and pressing Escape closes it. In B, clicking the first job showed no detail panel at all, so a core requirement is missing or can't be found.",
+     "A has an obvious status filter: pill buttons with a count on each (Running 2, Queued 2, and so on). B hides status filtering in a small 'All \u25be' dropdown under the column header, next to unrequested search, type and amount filters.",
+     "On a phone, A's cards and filter pills wrap cleanly. B's table drops the Amount column, its filter controls look cramped, and the dark mode button lands awkwardly beside the job count. Both dark modes work, but A's state is clearer because its toggle relabels to 'Light mode'."
+    ]
+   },
+   "result": "none",
+   "cost": 0.08735620000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "iterate-html",
+   "rep": 2,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/iterate-html/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/flashrule/iterate-html/scored-r2/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__iterate-html__flashrule__r2",
+   "captions": {
+    "A": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A shows the detail panel beside the list, so the job list, status badges and Dark toggle all stay visible. B's drawer slides over the page and cuts off the status badges and the Dark mode button.",
+     "A has a clear 'All' filter chip that is shown as active, so it's obvious how to reset the filter. B has no 'All' option, so it's unclear how to clear a filter, though its per-status counts are a nice touch.",
+     "In A, the dark mode button changes to '\u2600 Light' so you can tell what it will do next. B's 'Dark mode' label never changes, and the 'Done' close button in B's panel is easy to confuse with the 'Done' job status."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0833424,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "iterate-html",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/iterate-html/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/iterate-html/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__iterate-html__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B's desktop layout is centered and balanced, while A pins a half-width list to the left and leaves a large empty area on the right until the detail panel opens.",
+     "B opens a slide-over drawer with a dimmed backdrop, an obvious Close button and richer details (ID, full timestamp, notes); A's small inline card with a tiny \u00d7 is easier to miss. Both close correctly on Escape.",
+     "B's job rows are more scannable, with filled status pills, job IDs and full names, and it shows a live job count. A's toggle label does switch to 'Light mode', which is a nice touch, but it doesn't outweigh B's stronger overall layout and panel."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.084287,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "iterate-html",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/iterate-html/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/iterate-html/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__iterate-html__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B opens details in a slide-over drawer with a dimmed backdrop. On a phone it would cover the screen, so the details appear right where the user tapped. A puts its detail panel below all 8 jobs on a phone, so after tapping a job the user has to scroll down to see anything.",
+     "B's list is easier to scan: one bordered list with bolder titles, filled status pills, real job IDs and names, and a '8 jobs' count. A uses separate small cards with thin outlined badges, and its filters and dark-mode button run together in a single row of pills.",
+     "Both handle Escape and dark mode correctly in the scripted steps. A has a small edge because its toggle label changes to 'Light', while B's still says 'Dark mode' when dark mode is on. That small point doesn't outweigh B's better layout and phone behaviour."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.08555120000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "iterate-html",
+   "rep": 2,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/iterate-html/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/uiuxrule/iterate-html/scored-r2/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__iterate-html__uiuxrule__r2",
+   "captions": {
+    "A": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ],
+    "B": [
+     "Clicked the first job",
+     "Pressed Escape",
+     "Clicked the dark mode toggle"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A's filter chips show a count for each status (Queued (2), Running (2), and so on) plus an '8 jobs' total, so users can see the breakdown before filtering. B shows plain labels and only a total in the title.",
+     "A's detail panel has a clearly labelled 'Close' button and a neat key/value layout. B closes with a small '\u00d7' that is easier to miss, though both panels close correctly on Escape.",
+     "On a phone, A's header and filter chips wrap tidily. B's filter row breaks so 'Failed' sits alone on its own line and the Dark toggle drops to a third row, which looks messier. B's one advantage is that its toggle label switches between Dark and Light."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.0847024,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "small-column",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/small-column/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/small-column/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__small-column__flashrule__r1",
+   "captions": {
+    "A": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ],
+    "B": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "The desktop screenshots of A and B look the same: both add a Status column between Site and Amount, with the same values (In progress, Open, On hold, Cancelled, Done) and an 'All' filter button styled like the other columns.",
+     "The interaction frames match too. In both, the Status filter opens with sort options, a search box, checkboxes with counts, and Select all/Clear. Unticking Cancelled changes the count to 34 of 40 and the button label to 'Filtered'.",
+     "On a 390px phone, both cut the table off after Site, so neither one shows the new Status column without scrolling sideways. Neither handles small screens better than the other."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.1045664,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "small-column",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/small-column/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/small-column/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__small-column__flashrule__r0",
+   "captions": {
+    "A": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ],
+    "B": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "The desktop screenshots look the same in both versions. Each adds a Status column with the same values (Open, In progress, On hold, Done, Cancelled), placed between Site and Amount, with an 'All' filter button.",
+     "The filter interaction is also the same in both. The Status filter opens with sort options, search, select all, clear and a count for each value. Unticking 'Cancelled' brings both tables down to 34 of 40 orders, and the button changes to 'Filtered'.",
+     "On a phone, both versions show the same layout: the table scrolls sideways and the Status column is off-screen at first. Neither one handles mobile any better."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.10448640000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "small-column",
+   "rep": 2,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/small-column/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/flashrule/small-column/scored-r2/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__small-column__flashrule__r2",
+   "captions": {
+    "A": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ],
+    "B": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "The desktop screenshots look the same in both versions. Each adds a Status column between Site and Amount, with the same values (Open, In progress, On hold, Done, Cancelled) and the same 'All \u25be' filter button.",
+     "The Status filter works the same way in both. The dropdown has sort, search, select all/clear and per-value counts, and unticking 'Cancelled' brings the count down to '34 of 40 orders' and changes the button to 'Filtered'.",
+     "The phone layouts are also the same. Both tables overflow horizontally at 390px, so Status and Amount sit off-screen in both, and neither version handles small screens any better."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.10458279999999999,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "small-column",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/small-column/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/uiuxrule/small-column/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__small-column__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ],
+    "B": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "On desktop, A and B look the same: both have a Status column between Site and Amount with the same values (Open, In progress, On hold, Done, Cancelled) and the same 'All \u25be' filter buttons.",
+     "The Status filter works the same way in both. It has sort options, a search box, Select all / Clear, and a checkbox with a count for each status. Unticking Cancelled drops the table to 34 of 40 orders and changes the button to 'Filtered'.",
+     "Both phone layouts have the same problem: the table gets cut off after the Site column, so Status is only reachable by scrolling sideways. Neither version is better to use."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.10484339999999999,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "small-column",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/small-column/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/small-column/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__small-column__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ],
+    "B": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "The desktop screenshots look the same in both versions. Each adds a Status column between Site and Amount, with the same values (Open, In progress, On hold, Done, Cancelled), the same 'All \u25be' filter button and the same layout.",
+     "The filter works the same way in both. The Status dropdown has sorting, search, Select all and Clear, plus value counts. Unticking 'Cancelled' brings the list to 34 of 40 orders, and the button changes to 'Filtered'.",
+     "Both phone layouts have the same flaw. The table is cut off at 390px, so the Status and Amount columns can't be seen without scrolling sideways, and nothing hints that you can scroll. Neither version handles mobile better."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.1062944,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "small-column",
+   "rep": 2,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/small-column/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/uiuxrule/small-column/scored-r2/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__small-column__uiuxrule__r2",
+   "captions": {
+    "A": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ],
+    "B": [
+     "Opened the Status column filter",
+     "Unticked one status"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "The desktop screenshots of A and B look the same. Both show a Status column between Site and Amount, with the same values (Open, In progress, On hold, Done, Cancelled) and an 'All \u25be' filter like the other columns.",
+     "The interaction behaves the same in both. Opening the Status filter shows sort options, a search box, Select all/Clear and a checkbox for each status with its count. Unticking Cancelled changes the count from 40 to 34 orders and the button label to 'Filtered'.",
+     "The phone layouts are also the same. In both, the table scrolls sideways and Status sits off-screen past Site, so neither handles small screens better."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.1056318,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "table-build",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/table-build/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/table-build/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__table-build__flashrule__r0",
+   "captions": {
+    "A": [
+     "Opened a column filter",
+     "Unticked one value"
+    ],
+    "B": [
+     "Opened a column filter - could not find the control to do this",
+     "Unticked one value - could not find the control to do this"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B puts all its filters in plain view above the table: search, Status, Site and Customer dropdowns, a From/To date range and a min/max amount. These suit dates and money far better than A's tick-a-value lists, which A also uses for its Date and Amount columns. The scripted step failed on B only because B has no per-column filter popups, not because filtering is broken.",
+     "B is more finished as an orders view. It formats amounts in \u00a3, adds a Total row, starts sorted with the newest orders first, and shows 'Showing X of 40' with a clear button. A shows unformatted 'Amount (GBP)' numbers and leaves the table squeezed to the left of the desktop page with empty space on the right.",
+     "On a phone, B's filter controls fit in a tidy two-column grid. In A, the small 'All \u25be' buttons scroll off-screen along with the columns they belong to, so Status and Amount can't be filtered without scrolling sideways. A's Excel-style popups, with value counts, sort and multi-select, are a real strength for advanced use, but most users will find B more intuitive."
+    ]
+   },
+   "result": "none",
+   "cost": 0.1186374,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "table-build",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/table-build/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/table-build/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__table-build__flashrule__r1",
+   "captions": {
+    "A": [
+     "Opened a column filter - could not find the control to do this",
+     "Unticked one value - could not find the control to do this"
+    ],
+    "B": [
+     "Opened a column filter",
+     "Unticked one value"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A shows all its filters in one bar above the table: search, Status, Site and Customer dropdowns, a From/To date range and a Min/Max \u00a3 amount range. Date and amount ranges are what people usually need for orders. B puts an 'All \u25be' value-list button on every column, which is awkward for dates and amounts.",
+     "A is easier to read: amounts show the \u00a3 sign, statuses appear as small badges, the active sort is marked on the column header, and a Total row sums the orders shown. B has no total and shows bare numbers, with the currency only in the 'Amount (GBP)' header.",
+     "B's real strength is its Excel-style column menus, with sort, search, tick boxes and a count for each value, so you can exclude a single status. The scripted test found this and could not find the same kind of control in A, whose dropdowns pick only one value. Even so, A's filter bar is simpler and covers more ways to filter. Neither fits a phone well: both tables scroll sideways, and some columns are hidden off-screen."
+    ]
+   },
+   "result": "none",
+   "cost": 0.12007280000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 8
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "table-build",
+   "rep": 2,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/table-build/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/flashrule/table-build/scored-r2/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__table-build__flashrule__r2",
+   "captions": {
+    "A": [
+     "Opened a column filter - could not find the control to do this",
+     "Unticked one value - could not find the control to do this"
+    ],
+    "B": [
+     "Opened a column filter",
+     "Unticked one value"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A puts every filter in plain view above the table: search, Status, Customer and Site dropdowns, a From/To date range, min/max amount and a Reset button. B hides its filters behind small 'All \u25be' buttons under each column header, which are easy to miss.",
+     "A filters each column in a way that suits its data: a date range for dates and min/max for amounts. B uses the same tick-list menu for every column. That works well for picking several statuses at once (with counts), but a tick list of 40 separate dates or amounts is awkward.",
+     "A is more polished and easier to scan: dates like '18 Sept 2026', \u00a3 amounts, status badges, newest orders first, and a filter area that stacks neatly on a phone. B shows ISO dates and amounts without \u00a3, fills only part of the desktop width, and cuts columns off on a phone with no clear way to reach the filters for them."
+    ]
+   },
+   "result": "none",
+   "cost": 0.1137154,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 8
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "table-build",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/table-build/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/table-build/scored-r0/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__table-build__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Opened a column filter",
+     "Unticked one value"
+    ],
+    "B": [
+     "Opened a column filter - could not find the control to do this",
+     "Unticked one value - could not find the control to do this"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B puts all its filters in one labelled bar above the table: search, Status, Site and Customer dropdowns, a From/To date range and a min/max amount range. A user can see every way to narrow the orders at a glance. A hides its filters behind small identical 'All \u25be' buttons under each header, and the '?' icons on every column add clutter.",
+     "B's filter types fit the data better. Date and amount ranges are what people actually use for dates and money, while A offers a checkbox list for every column, including Date and Amount. B also shows a live 'Showing X of 40' count, a Total row for the amount, and a clear sort arrow on Date. A's checkbox popover is powerful: it has per-value counts, sorting and lets you pick several values. But it is more of a spreadsheet tool than most users need.",
+     "On a phone, B rearranges its filters into a neat two-column grid that is easy to tap. A only wraps the search box and Clear button, so the per-column filter buttons scroll sideways with the table. Both tables cut off columns at 390px. The scripted test couldn't find a column filter in B only because B uses a filter bar instead of header menus; its filters are visible and work."
+    ]
+   },
+   "result": "none",
+   "cost": 0.11511260000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "table-build",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/table-build/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/table-build/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__table-build__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Opened a column filter - could not find the control to do this",
+     "Unticked one value - could not find the control to do this"
+    ],
+    "B": [
+     "Opened a column filter",
+     "Unticked one value"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B has a filter dropdown on every column with checkboxes for each value, a value search, select-all/clear and counts per value. Unticking 'Cancelled' worked: the count changed to '34 of 40' and the button changed to 'Filtered'. A only has single-select dropdowns at the top of the page, so you can't untick one value, and the scripted test couldn't find a control to do it.",
+     "A has some things B lacks: date-range and min/max amount filters, a total row, status pills and a \u00a3 sign on amounts. These help with scanning, but B's per-column multi-select filtering is the more useful filter model for this request.",
+     "On a phone, both tables run off the right edge. B's filter bar is compact (a search box plus Clear all). A's filter fields stack up and push the table down, so neither is much better on mobile and B's advantage on desktop decides it."
+    ]
+   },
+   "result": "kz",
+   "cost": 0.1088244,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 8
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "trivial-label",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/trivial-label/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/trivial-label/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__trivial-label__flashrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the Save button"
+    ],
+    "B": [
+     "Clicked the Save button"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "In both versions the button reads 'Save draft' and uses the same filled blue primary style, sitting next to an outlined Cancel button, so both fully meet the request.",
+     "The desktop and phone layouts look the same in A and B. The form, labels and buttons are the same size and in the same place at 1280px and 390px.",
+     "Clicking the button gives the same result in both: a 'Saved.' confirmation appears below the buttons. A user would notice no difference in how either one behaves."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.06675239999999999,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "trivial-label",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/trivial-label/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/trivial-label/scored-r1/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__trivial-label__flashrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the Save button"
+    ],
+    "B": [
+     "Clicked the Save button"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "In both versions the button says 'Save draft' and uses the same solid blue primary style, next to the same outlined Cancel button, so both handle the request the same way.",
+     "The desktop (1280px) and phone (390px) screenshots look the same for A and B, with the same layout, spacing and fully visible buttons.",
+     "Clicking the button gives the same 'Saved.' confirmation in both versions, so there's no difference in how the page responds."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.0664356,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "table-build",
+   "rep": 2,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/table-build/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/uiuxrule/table-build/scored-r2/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__table-build__uiuxrule__r2",
+   "captions": {
+    "A": [
+     "Opened a column filter - could not find the control to do this",
+     "Unticked one value - could not find the control to do this"
+    ],
+    "B": [
+     "Opened a column filter",
+     "Unticked one value"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A puts all its filters in a clear bar above the table: Status, Customer and Site dropdowns, a From/To date range, min/max amount and a Reset button. They're all visible straight away. B hides its filters behind small 'All \u25be' buttons on each column, and you have to open them to find out what they do.",
+     "A is easier to scan. It shows a 'Showing X of 40 orders' count, a running \u00a3 total, status badges, readable dates like '18 Sept 2026' and \u00a3 amounts, and it's sorted newest first. B shows ISO dates, plain numbers without the \u00a3 sign, and plain-text statuses. On desktop it also sits in a narrow card that leaves a third of the screen empty.",
+     "B's per-column multi-select works well in the interaction test: it can untick one status, search values and sort, which A's single-value dropdowns can't do. The test couldn't untick a value in A because A has no checkbox lists. Still, most users will get more from A's date and amount ranges. On phones, both tables scroll sideways and cut off columns."
+    ]
+   },
+   "result": "none",
+   "cost": 0.1142642,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 8
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "trivial-label",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/trivial-label/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/trivial-label/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__trivial-label__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Clicked the Save button"
+    ],
+    "B": [
+     "Clicked the Save button"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "Both versions change the button text to 'Save draft' and give it the same filled blue primary style, placed to the right of an outlined Cancel button.",
+     "The desktop and phone layouts look the same in both: same form, spacing and button placement, with nothing cut off on the 390px screen.",
+     "Clicking Save shows the same small 'Saved.' message in both, so there is no difference in how the interaction behaves."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.06665360000000001,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "trivial-label",
+   "rep": 2,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/trivial-label/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/flashrule/trivial-label/scored-r2/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__trivial-label__flashrule__r2",
+   "captions": {
+    "A": [
+     "Clicked the Save button"
+    ],
+    "B": [
+     "Clicked the Save button"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "Both versions change the button label to 'Save draft' and give it the same filled blue primary style, next to an outlined Cancel button, on desktop.",
+     "The phone layouts at 390px look the same: the buttons are the same size, sit in the same right-aligned spot and are easy to tap.",
+     "Clicking the button shows the same 'Saved.' confirmation below the buttons in both versions, so they behave the same."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.0663324,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "trivial-label",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/trivial-label/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/trivial-label/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__trivial-label__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Clicked the Save button"
+    ],
+    "B": [
+     "Clicked the Save button"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "Both versions change the button text to 'Save draft' and give it the same filled blue primary style, placed to the right of a secondary 'Cancel' button.",
+     "The desktop and phone layouts look the same in A and B: same form, same spacing, and the buttons fit well at 390px.",
+     "Clicking the button gives the same result in both: a small 'Saved.' confirmation appears below the buttons, so neither behaves differently."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.0667818,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "trivial-label",
+   "rep": 2,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/trivial-label/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/uiuxrule/trivial-label/scored-r2/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__trivial-label__uiuxrule__r2",
+   "captions": {
+    "A": [
+     "Clicked the Save button"
+    ],
+    "B": [
+     "Clicked the Save button"
+    ]
+   },
+   "verdict": {
+    "winner": "tie",
+    "reasons": [
+     "Both versions label the button 'Save draft' and give it the same filled blue primary style, next to an outlined Cancel button, so they fully meet the request.",
+     "The desktop (1280px) and phone (390px) screenshots look the same for A and B, with the same layout, spacing and readable button sizes.",
+     "When the Save button is clicked, both show the same 'Saved.' message below the buttons, so a user gets the same feedback in each."
+    ]
+   },
+   "result": "tie",
+   "cost": 0.0668418,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "undo-toast",
+   "rep": 0,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/undo-toast/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/flashrule/undo-toast/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__undo-toast__flashrule__r0",
+   "captions": {
+    "A": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ],
+    "B": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "After the edit, A shows one clear toast at the bottom: \"Saved inspector for SV-2041\". B confirms the save only with small green \"Inspector saved\" text under the visit's date, which is easy to miss.",
+     "In B, the toast still says \"Restored visit.\" after the edit is saved, so the user sees an old message next to the new save notice. A replaces its toast with the latest action, so there's only one message to read.",
+     "Both offer a clear Undo after deleting. A's toast is compact and centered with a single Undo link, and its phone layout is tighter. B's phone cards have an awkward empty gap between the date line and the Inspector field."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0875214,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "undo-toast",
+   "rep": 1,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/undo-toast/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/flashrule/undo-toast/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__undo-toast__flashrule__r1",
+   "captions": {
+    "A": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ],
+    "B": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "Both versions do what was asked. Deleting a visit shows a message with an Undo link, and pressing Undo puts North depot back in its first position with the count back at 6. Both pages look the same on desktop and phone, so the save confirmation is what separates them.",
+     "B confirms an edit with a high-contrast dark message at the bottom of the screen that says what was saved: 'Saved inspector for SV-2041'. A only shows a tiny green 'Saved' next to the Inspector label, which is easy to miss, especially once focus has moved to the next field.",
+     "B uses the same dark bottom message for both the delete-undo notice and the save confirmation, so the feedback feels consistent and reliable. A's light delete message has a close button, which is nice, but it's plainer and less noticeable, and it uses a different style from its inline save note."
+    ]
+   },
+   "result": "none",
+   "cost": 0.087549,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "undo-toast",
+   "rep": 2,
+   "kz_condition": "flashrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/undo-toast/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/flashrule/undo-toast/scored-r2/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__undo-toast__flashrule__r2",
+   "captions": {
+    "A": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ],
+    "B": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "B confirms the edit with a clear, high-contrast toast that names what was saved: 'Saved inspector for SV-2041'. A shows only a small, faint green 'Saved' label above the field, which is easy to miss.",
+     "After the edit, A's toast still says 'Visit SV-2041 restored.', which talks about the earlier undo rather than the save. B's message always matches the user's most recent action.",
+     "Both versions handle delete well: the row is removed, the visit count updates, a toast names the visit with an Undo link, and Undo restores the row in its original spot. B's dark toast stands out more from the light page, so the Undo option is easier to notice. The layouts are otherwise nearly identical on desktop and phone."
+    ]
+   },
+   "result": "none",
+   "cost": 0.08825759999999999,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "undo-toast",
+   "rep": 0,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/undo-toast/scored-r0/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/undo-toast/scored-r0/w",
+   "kz_is": "B",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__undo-toast__uiuxrule__r0",
+   "captions": {
+    "A": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ],
+    "B": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ]
+   },
+   "verdict": {
+    "winner": "A",
+    "reasons": [
+     "A's layout is cleaner: each Delete button lines up with its input fields. In B the Delete buttons sit lower than the fields, and every card has empty space set aside under the inputs, which makes the list look uneven on desktop and adds gaps on phone.",
+     "Both versions handle undo well. Each shows a toast that names the deleted visit and has an Undo link, and the visit comes back in its original place. B adds a 'restored' message and a close button, but these are small extras.",
+     "Both confirm the save after the edit. A shows a clear toast reading 'Saved inspector for SV-2041'. B's small 'Saved' under the field sits next to the edit but is faint and easy to miss. B's extra feedback doesn't make up for its less polished layout."
+    ]
+   },
+   "result": "none",
+   "cost": 0.090014,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 8
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "undo-toast",
+   "rep": 1,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/na/none/undo-toast/scored-r1/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-032315/sonnet-5-5/after/uiuxrule/undo-toast/scored-r1/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__undo-toast__uiuxrule__r1",
+   "captions": {
+    "A": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ],
+    "B": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "After a delete, B shows a dark toast at the bottom with a clear Undo link that's easy to spot. A's toast is a small white box with tiny low-contrast text, so it's easy to miss.",
+     "After the edit, B shows 'Saved inspector for SV-2041' in the same noticeable toast style. A shows its save message as tiny green text squeezed under the visit's date, which makes that card taller and is easy to overlook.",
+     "Both versions get the basics right: Undo brings the visit back with the count returning to 6, saving works, and both phone layouts are clean. B's single, consistent toast for both messages makes it slightly clearer to use, even though A's toast adds a close button and its save note sits next to the edited visit."
+    ]
+   },
+   "result": "none",
+   "cost": 0.08789019999999999,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "task": "undo-toast",
+   "rep": 2,
+   "kz_condition": "uiuxrule",
+   "none_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/na/none/undo-toast/scored-r2/w",
+   "kz_dir": "/tmp/kzb/typerouting-2026-11-20-041111/sonnet-5-5/after/uiuxrule/undo-toast/scored-r2/w",
+   "kz_is": "A",
+   "dir": "/tmp/kzb/judge-2026-11-25/claude-sonnet-5-5__undo-toast__uiuxrule__r2",
+   "captions": {
+    "A": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ],
+    "B": [
+     "Deleted the first visit",
+     "Pressed Undo, then edited the first field and left it"
+    ]
+   },
+   "verdict": {
+    "winner": "B",
+    "reasons": [
+     "Both versions do what was asked. Deleting the first visit shows a toast with Undo, Undo brings the row back, and editing the inspector field then leaving it shows a 'Saved inspector for SV-2041' message. The desktop and phone layouts are identical.",
+     "B's toast is dark with high contrast against the light gray page, so the delete and save messages are easy to notice. A's white toast with a thin shadow blends into the background and is easier to miss.",
+     "B shows one toast at a time, so the save message replaces the earlier one and the feedback stays clear. A stacks 'Restored visit' and 'Saved inspector' on top of each other, which adds clutter, though A's close buttons are a small plus."
+    ]
+   },
+   "result": "none",
+   "cost": 0.0859094,
+   "judge_model_ids": [
+    "claude-opus-5-5"
+   ],
+   "num_turns": 7
+  }
+ ],
+ "total_cost_usd": 7.0342
+}

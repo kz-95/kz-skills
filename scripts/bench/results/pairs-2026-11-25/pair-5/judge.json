@@ -1,0 +1,8 @@
+{
+ "winner": "tie",
+ "reasons": [
+  "The desktop screenshots of A and B look the same. Both add a Status column between Site and Amount, with the same values (In progress, Open, On hold, Cancelled, Done) and an 'All \u25be' filter matching the other columns.",
+  "The interaction steps are the same too. In both, the Status filter opens a menu with sort options, a search box, Select all/Clear, a checkbox and count for each status, and a Done button. Unticking Cancelled cuts the list from 40 to 34 orders and changes the button label to 'Filtered'.",
+  "At phone width both pages have the same problem: the table runs off the right edge, so Status and Amount are hidden unless you scroll sideways. Neither handles phones better than the other."
+ ]
+}

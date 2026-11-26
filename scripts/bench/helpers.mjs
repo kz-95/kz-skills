@@ -3,6 +3,20 @@
    ("the site filter", "the dark mode toggle"), so an unusual control can be missed: a miss
    scores a fail, and the item's name says what was looked for. */
 
+import { existsSync, readdirSync } from 'node:fs';
+import path from 'node:path';
+
+// the newest Playwright browser under /opt/pw-browsers whose folder starts with prefix, so a
+// browser upgrade never leaves a hard-coded version path behind
+export function pwBrowser(prefix, rels) {
+  const root = '/opt/pw-browsers';
+  const dirs = existsSync(root) ? readdirSync(root).filter((d) => d.startsWith(prefix) && /-\d+$/.test(d)).sort().reverse() : [];
+  for (const d of dirs) for (const r of rels) if (existsSync(path.join(root, d, r))) return path.join(root, d, r);
+  return null;
+}
+export const FULL_CHROME = ['chrome-linux64/chrome', 'chrome-linux/chrome'];
+export const SHELL_CHROME = ['chrome-headless-shell-linux64/chrome-headless-shell', 'chrome-linux/headless_shell'];
+
 export const STATUSES = ['Open', 'In progress', 'On hold', 'Done', 'Cancelled'];
 export const SITES = ['North depot', 'South yard', 'East works', 'West plant', 'Harbour', 'Airport'];
 

@@ -1,8 +1,7 @@
 # Skill benchmark: BEFORE
 
-> **Pending:** the rerun on the type-routing skills (LOOKUP, one pack per type, twelve checks, the `undo-toast` task) is recorded in `scripts/bench/results/typerouting-2026-11-20.json`: 228 runs, not yet scored.
-> Every number below is for the skills before that change.
-> Score it with `node scripts/bench/score.mjs` on that file, then `judge.mjs` and `report.py`.
+> **Latest:** [AFTER 3: type routing (2026-11-20)](#after-3-type-routing-2026-11-20), at the end, measures the current skills on eight tasks.
+> The sections before it measure earlier versions of the skills; compare factors within one section only.
 
 Baseline numbers for the kz skills on small single-file HTML tasks, taken on 2026-10-14 before
 any change to the skills. The harness is `scripts/bench/` (see its README); re-run it for AFTER.
@@ -165,7 +164,7 @@ In `none`, chart-filter invoked the built-in `dataviz` skill both times; in `kz`
 The same question after the speed contract (commit 62aa905) and the T1 chart-filter change (commit 2eb8758), with a stricter harness.
 `before` is `skills/` as on origin/main (1bbb54d), the version the BEFORE section measured; `after` is this branch (2eb8758).
 Both were re-run in one shuffled batch with the same harness, so the AFTER tables compare like with like; do not compare them number for number with the BEFORE tables above.
-Raw results: `scripts/bench/results/after-2026-10-14.json` (none and after), `before-v2-2026-10-14.json` (before), `judge-2026-10-14.json` (judge), and five blind pairs in `scripts/bench/results/pairs/`.
+Raw results: `scripts/bench/results/after-2026-10-14.json` (none and after), `before-v2-2026-10-14.json` (before), `judge-2026-10-14.json` (judge), and five blind pairs in `scripts/bench/results/pairs-2026-10-14/`.
 
 ### Method changes
 
@@ -499,7 +498,7 @@ On Opus's form-build kz lost 4 of 4: none's Opus build showed a fuller confirmat
 The small edits were mostly ties (25 of 30 on trivial-label, small-column and dark-mode), as they should be.
 Two Opus trivial-label verdicts named a winner while their reasons said the pages look the same; treat a single verdict as noise.
 The judge sees screenshots and a scripted trace, not code, keyboard paths or screen-reader output, which is where most of the kz checks' findings live.
-The five pairs in `scripts/bench/results/pairs/` (chart-filter, dark-mode, form-build, iterate-html, small-column; both lanes, both models, all three outcomes) are for a person to judge blind; `key.json` holds the answers, so open it last.
+The five pairs in `scripts/bench/results/pairs-2026-10-14/` (chart-filter, dark-mode, form-build, iterate-html, small-column; both lanes, both models, all three outcomes) are for a person to judge blind; `key.json` holds the answers, so open it last.
 
 ### What changed and why
 
@@ -611,3 +610,380 @@ Opus's no-skill pages built six chips with a count and a clear, which now pass; 
 ### Spend
 
 AFTER 2: 36 agent runs, 12.2M tokens_total, USD 9.82 (CLI estimate). Scoring and the re-scoring use no model.
+
+## AFTER 3: type routing (2026-11-20)
+
+The question: did type routing (LOOKUP, one generated pack per type of work, twelve checks, `run-checks.py` screen targeting, the first-call card) make the skills faster, and did it fix toasts and tooltips?
+`before` is `skills/` as on origin/main before type routing (ae18341, the AFTER 2 skills); `after` is the type-routing working tree (ef2f5df, merged as f1def74).
+Raw results: `scripts/bench/results/typerouting-2026-11-20.json` (agent runs and scores), `judge-2026-11-25.json` (judge), five blind pairs in `scripts/bench/results/pairs-2026-11-25/`.
+
+### Method changes
+
+Eight tasks: the seven above plus `undo-toast`, "Delete a visit shows a toast with Undo; editing the inspector field confirms the save", on a starter list of six visits.
+Its rubric (6 items) asks for one toast region with a live role, an Undo that puts the row back where it was, a manual dismiss, no restack on a repeat, a save confirmation, and no toast under a dialog.
+Same conditions and repeats as AFTER: Sonnet 5.5 3 runs per cell with installed before and after; Opus 5.5 2 runs per cell, no installed. 228 agent runs, Claude Code 2.1.329, 4 at a time, shuffled with seed 20261014.
+Every prompt ends "If you would ask me something, assume the recommended option and proceed.", so the first-call card costs one assumed answer, not a wait.
+Every page, `before` included, is scored with the current twelve checks (`toast-check` and `explain-check` are new), so `before` can fail checks its skills did not know about.
+Every starter passes all twelve checks at 1280 and 390, except form-build, which fails one at 390 under the touch emulation `run-checks.py` now applies; it is subtracted like any starter failure.
+The judge is unchanged: `none` against `after` /kz-uiuxrule and against `after` /kz-flashrule, per model, task and repeat, 80 comparisons.
+`before` and `after` were run in one batch, so they compare with each other; across sections the CLI version and machine load differ (the same `before` skills measured 1.31x wall time on Sonnet here and 1.52x in AFTER), so compare factors within this section only.
+
+### claude-sonnet-5-5
+
+#### Summary
+
+| condition | skills | tasks | wall time vs none | tokens_total vs none | cost vs none | kz-check failures introduced | rubric | axe serious+critical | Lighthouse a11y | judge: kz preferred (W-L-T) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 8 | 1.00x (1.00x-1.00x) | 1.00x (1.00x-1.00x) | 1.00x (1.00x-1.00x) | 48 | 37/43 | 1 | 1.00 | - |
+| none (small tasks only) | - | 4 | 1.00x (1.00x-1.00x) | 1.00x (1.00x-1.00x) | 1.00x (1.00x-1.00x) | 10 | 22/22 | 1 | 1.00 | - |
+| installed | before | 8 | 1.07x (0.41x-1.40x) | 1.09x (0.57x-2.28x) | 1.34x (0.46x-2.00x) | 14 | 39/43 | 0 | 1.00 | - |
+| installed | after | 8 | 1.41x (0.48x-1.64x) | 1.46x (0.43x-2.40x) | 1.67x (0.47x-2.21x) | 9 | 42/43 | 0 | 1.00 | - |
+| /kz-uiuxrule | before | 8 | 1.31x (0.50x-2.91x) | 1.42x (0.67x-2.12x) | 1.79x (0.68x-3.15x) | 2 | 42/43 | 0 | 1.00 | - |
+| /kz-uiuxrule | after | 8 | 1.63x (0.78x-2.74x) | 1.46x (0.83x-3.33x) | 1.99x (0.80x-3.32x) | 8 | 43/43 | 0 | 1.00 | 50% (12-5-7 of 24) |
+| /kz-flashrule | after | 8 | 1.35x (0.53x-2.42x) | 1.43x (0.67x-2.52x) | 1.80x (0.78x-3.15x) | 8 | 43/43 | 0 | 1.00 | 21% (5-10-9 of 24) |
+| /kz-fastfix | after | 4 | 1.50x (1.31x-2.10x) | 1.76x (1.44x-1.97x) | 1.76x (1.60x-2.29x) | 0 | 22/22 | 0 | 1.00 | - |
+
+#### Per task
+
+Medians over the runs in each cell (n); wall time range in brackets.
+Failures are those the agent introduced (run minus starter), at 1280 + 390.
+LH is Lighthouse mobile accessibility / best practices.
+
+##### trivial-label
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 3 | 6 (6-7) | 3 | 112k | 0.036 | 0.0 | 0 | 5/5 | 0 | 1.00/0.96 | 0/3 |
+| installed | before | 3 | 6 (6-7) | 3 | 121k | 0.051 | 0.0 | 0 | 5/5 | 0 | 1.00/0.96 | 0/3 |
+| installed | after | 3 | 6 (6-7) | 3 | 121k | 0.049 | 0.0 | 0 | 5/5 | 0 | 1.00/0.96 | 0/3 |
+| /kz-uiuxrule | before | 3 | 7 (6-7) | 3 | 130k | 0.064 | 6.1 | 0 | 5/5 | 0 | 1.00/0.96 | 0/3 |
+| /kz-uiuxrule | after | 3 | 7 (7-8) | 3 | 131k | 0.066 | 7.0 | 0 | 5/5 | 0 | 1.00/0.96 | 0/3 |
+| /kz-flashrule | after | 3 | 7 (7-8) | 3 | 130k | 0.065 | 6.2 | 0 | 5/5 | 0 | 1.00/0.96 | 0/3 |
+| /kz-fastfix | after | 3 | 13 (11-13) | 6 | 218k | 0.083 | 6.8 | 0 | 5/5 | 0 | 1.00/0.96 | 1/3 |
+
+##### small-column
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 3 | 8 (8-8) | 4 | 158k | 0.059 | 0.0 | 0 | 5/5 | 0 | 1.00/0.96 | 0/3 |
+| installed | before | 3 | 8 (8-10) | 4 | 171k | 0.075 | 0.0 | 0 | 5/5 | 0 | 1.00/0.96 | 1/3 |
+| installed | after | 3 | 12 (11-12) | 7 | 230k | 0.101 | 6.6 | 0 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+| /kz-uiuxrule | before | 3 | 11 (8-14) | 5 | 155k | 0.120 | 7.1 | 0 | 5/5 | 0 | 1.00/0.96 | 2/3 |
+| /kz-uiuxrule | after | 3 | 12 (11-12) | 5 | 149k | 0.107 | 9.5 | 0 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+| /kz-flashrule | after | 3 | 10 (9-11) | 4 | 144k | 0.096 | 6.4 | 0 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+| /kz-fastfix | after | 3 | 12 (12-14) | 6 | 247k | 0.114 | 7.0 | 0 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+
+##### dark-mode
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 3 | 17 (15-17) | 3 | 128k | 0.086 | 0.0 | 0 | 6/6 | 0 | 1.00/0.96 | 0/3 |
+| installed | before | 3 | 21 (20-25) | 6 | 195k | 0.121 | 6.0 | 0 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+| installed | after | 3 | 28 (27-28) | 8 | 308k | 0.157 | 13.8 | 0 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+| /kz-uiuxrule | before | 3 | 23 (22-24) | 5 | 216k | 0.151 | 17.9 | 0 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+| /kz-uiuxrule | after | 3 | 27 (27-27) | 5 | 203k | 0.155 | 16.0 | 0 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+| /kz-flashrule | after | 3 | 24 (23-25) | 4 | 201k | 0.132 | 8.6 | 0 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+| /kz-fastfix | after | 3 | 26 (15-26) | 6 | 253k | 0.136 | 6.9 | 0 | 6/6 | 0 | 1.00/0.96 | 2/3 |
+
+##### table-build
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 3 | 24 (24-26) | 4 | 158k | 0.086 | 0.0 | 16 | 2/5 | 0 | 1.00/0.96 | 0/3 |
+| installed | before | 3 | 27 (23-35) | 9 | 361k | 0.173 | 27.3 | 2 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+| installed | after | 3 | 38 (34-44) | 9 | 364k | 0.190 | 31.1 | 0 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+| /kz-uiuxrule | before | 3 | 32 (32-56) | 8 | 336k | 0.180 | 33.9 | 0 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+| /kz-uiuxrule | after | 3 | 40 (38-43) | 6 | 212k | 0.186 | 38.3 | 0 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+| /kz-flashrule | after | 3 | 28 (23-29) | 5 | 206k | 0.160 | 30.8 | 0 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+
+##### chart-filter
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 3 | 52 (37-55) | 8 | 306k | 0.211 | 0.0 | 12 | 3/5 | 0 | 1.00/0.96 | 0/3 |
+| installed | before | 3 | 22 (18-43) | 4 | 175k | 0.097 | 0.0 | 12 | 3/5 | 0 | 1.00/0.96 | 0/3 |
+| installed | after | 3 | 25 (21-29) | 5 | 133k | 0.100 | 0.0 | 8 | 4/5 | 0 | 1.00/0.96 | 1/3 |
+| /kz-uiuxrule | before | 3 | 26 (24-32) | 7 | 204k | 0.145 | 17.9 | 2 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+| /kz-uiuxrule | after | 3 | 41 (40-41) | 6 | 254k | 0.168 | 18.6 | 4 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+| /kz-flashrule | after | 3 | 28 (26-29) | 5 | 205k | 0.165 | 30.2 | 0 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+
+##### form-build
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 3 | 13 (13-13) | 4 | 114k | 0.054 | 0.0 | 6 | 5/5 | 0 | 1.00/0.96 | 0/3 |
+| installed | before | 3 | 18 (13-39) | 4 | 125k | 0.076 | 0.0 | 0 | 5/5 | 0 | 1.00/0.96 | 1/3 |
+| installed | after | 3 | 18 (18-21) | 3 | 125k | 0.077 | 0.0 | 0 | 5/5 | 0 | 1.00/0.96 | 0/3 |
+| /kz-uiuxrule | before | 3 | 38 (37-40) | 5 | 204k | 0.169 | 18.1 | 0 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+| /kz-uiuxrule | after | 3 | 28 (28-30) | 4 | 188k | 0.127 | 16.7 | 0 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+| /kz-flashrule | after | 3 | 31 (27-34) | 5 | 186k | 0.129 | 13.9 | 4 | 5/5 | 0 | 1.00/0.96 | 3/3 |
+
+##### undo-toast
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 3 | 19 (18-20) | 4 | 156k | 0.072 | 0.0 | 4 | 5/6 | 0 | 1.00/0.96 | 0/3 |
+| installed | before | 3 | 18 (15-19) | 4 | 170k | 0.087 | 0.0 | 0 | 4/6 | 0 | 1.00/0.96 | 0/3 |
+| installed | after | 3 | 23 (21-26) | 8 | 227k | 0.118 | 6.8 | 0 | 6/6 | 0 | 1.00/0.96 | 2/3 |
+| /kz-uiuxrule | before | 3 | 21 (19-26) | 4 | 148k | 0.121 | 17.8 | 0 | 5/6 | 0 | 1.00/0.96 | 3/3 |
+| /kz-uiuxrule | after | 3 | 51 (26-92) | 10 | 519k | 0.239 | 39.1 | 0 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+| /kz-flashrule | after | 3 | 44 (40-61) | 9 | 394k | 0.227 | 36.2 | 4 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+
+##### iterate-html
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 3 | 46 (46-48) | 11 | 336k | 0.136 | 0.0 | 10 | 6/6 | 1 | 0.95/0.96 | 0/3 |
+| installed | before | 3 | 55 (50-56) | 10 | 324k | 0.157 | 0.0 | 0 | 6/6 | 0 | 1.00/0.96 | 0/3 |
+| installed | after | 3 | 69 (67-107) | 15 | 618k | 0.244 | 18.8 | 1 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+| /kz-uiuxrule | before | 3 | 68 (67-75) | 12 | 592k | 0.245 | 18.1 | 0 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+| /kz-uiuxrule | after | 3 | 86 (75-93) | 15 | 725k | 0.293 | 19.8 | 4 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+| /kz-flashrule | after | 3 | 74 (67-76) | 12 | 542k | 0.245 | 22.2 | 0 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+| /kz-fastfix | after | 3 | 61 (51-62) | 14 | 485k | 0.218 | 20.2 | 0 | 6/6 | 0 | 1.00/0.96 | 3/3 |
+
+#### Iteration loop, per turn (medians over runs)
+
+| condition | skills | turn | prompt | wall s | turns | tokens_total | cost USD | skill KB |
+|---|---|---|---|---|---|---|---|---|
+| none | - | 1 | Build a single HTML page in index | 22 | 2 | 79k | 0.069 | 0.0 |
+| none | - | 2 | Make the filter remember its value on reload | 7 | 3 | 83k | 0.021 | 0.0 |
+| none | - | 3 | Add a dark mode toggle | 12 | 4 | 87k | 0.033 | 0.0 |
+| none | - | 4 | The detail panel should close on Escape | 5 | 2 | 88k | 0.015 | 0.0 |
+| installed | before | 1 | Build a single HTML page in index | 26 | 2 | 87k | 0.089 | 0.0 |
+| installed | before | 2 | Make the filter remember its value on reload | 7 | 3 | 90k | 0.022 | 0.0 |
+| installed | before | 3 | Add a dark mode toggle | 14 | 4 | 95k | 0.039 | 0.0 |
+| installed | before | 4 | The detail panel should close on Escape | 6 | 1 | 49k | 0.008 | 0.0 |
+| installed | after | 1 | Build a single HTML page in index | 39 | 7 | 284k | 0.159 | 17.4 |
+| installed | after | 2 | Make the filter remember its value on reload | 8 | 2 | 109k | 0.026 | 0.4 |
+| installed | after | 3 | Add a dark mode toggle | 15 | 2 | 113k | 0.038 | 0.8 |
+| installed | after | 4 | The detail panel should close on Escape | 6 | 2 | 114k | 0.017 | 0.0 |
+| /kz-uiuxrule | before | 1 | /kz-uiuxrule Build a single HTML page in index | 38 | 6 | 251k | 0.164 | 17.9 |
+| /kz-uiuxrule | before | 2 | Make the filter remember its value on reload | 9 | 2 | 111k | 0.027 | 0.1 |
+| /kz-uiuxrule | before | 3 | Add a dark mode toggle | 15 | 2 | 115k | 0.037 | 0.2 |
+| /kz-uiuxrule | before | 4 | The detail panel should close on Escape | 6 | 2 | 116k | 0.017 | 0.0 |
+| /kz-uiuxrule | after | 1 | /kz-uiuxrule Build a single HTML page in index | 48 | 8 | 252k | 0.186 | 18.5 |
+| /kz-uiuxrule | after | 2 | Make the filter remember its value on reload | 11 | 4 | 172k | 0.037 | 0.3 |
+| /kz-uiuxrule | after | 3 | Add a dark mode toggle | 17 | 2 | 119k | 0.035 | 0.4 |
+| /kz-uiuxrule | after | 4 | The detail panel should close on Escape | 6 | 2 | 122k | 0.019 | 0.2 |
+| /kz-flashrule | after | 1 | /kz-flashrule Build a single HTML page in inde | 39 | 5 | 195k | 0.154 | 21.8 |
+| /kz-flashrule | after | 2 | Make the filter remember its value on reload | 12 | 2 | 113k | 0.032 | 0.1 |
+| /kz-flashrule | after | 3 | Add a dark mode toggle | 16 | 2 | 116k | 0.040 | 0.2 |
+| /kz-flashrule | after | 4 | The detail panel should close on Escape | 8 | 2 | 118k | 0.020 | 0.0 |
+| /kz-fastfix | after | 1 | Build a single HTML page in index | 28 | 4 | 168k | 0.102 | 0.0 |
+| /kz-fastfix | after | 2 | /kz-fastfix Make the filter remember its value | 10 | 3 | 145k | 0.042 | 6.7 |
+| /kz-fastfix | after | 3 | /kz-fastfix Add a dark mode toggle | 12 | 2 | 107k | 0.041 | 6.9 |
+| /kz-fastfix | after | 4 | /kz-fastfix The detail panel should close on E | 5 | 2 | 113k | 0.026 | 6.5 |
+
+#### Routing and asking
+
+| condition | skills | runs | skills the model invoked (runs) | runs that asked | runs with a permission denial | runs that ran kz-uicheck | median kz-uicheck calls |
+|---|---|---|---|---|---|---|---|
+| none | - | 24 | dataviz (3) | 0 | 0 | 0 | 0 |
+| installed | before | 24 | kz-fastfix (4); kz-flashrule (4); dataviz (1) | 0 | 0 | 8 | 0 |
+| installed | after | 24 | kz-fastfix (11); kz-flashrule (4) | 0 | 0 | 15 | 1 |
+| /kz-uiuxrule | before | 24 | none | 0 | 0 | 20 | 1 |
+| /kz-uiuxrule | after | 24 | none | 1 | 0 | 21 | 1 |
+| /kz-flashrule | after | 24 | none | 0 | 0 | 21 | 1 |
+| /kz-fastfix | after | 12 | kz-fastfix (1) | 0 | 0 | 9 | 1 |
+
+### claude-opus-5-5
+
+#### Summary
+
+| condition | skills | tasks | wall time vs none | tokens_total vs none | cost vs none | kz-check failures introduced | rubric | axe serious+critical | Lighthouse a11y | judge: kz preferred (W-L-T) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 8 | 1.00x (1.00x-1.00x) | 1.00x (1.00x-1.00x) | 1.00x (1.00x-1.00x) | 54 | 38.5/43 | 1.5 | 1.00 | - |
+| none (small tasks only) | - | 4 | 1.00x (1.00x-1.00x) | 1.00x (1.00x-1.00x) | 1.00x (1.00x-1.00x) | 14 | 22/22 | 0.5 | 1.00 | - |
+| /kz-uiuxrule | before | 8 | 1.45x (1.06x-2.06x) | 1.61x (1.15x-2.21x) | 1.73x (1.07x-2.38x) | 5 | 41.5/43 | 0 | 1.00 | - |
+| /kz-uiuxrule | after | 8 | 1.95x (0.97x-2.56x) | 1.90x (0.64x-3.43x) | 1.93x (0.90x-3.05x) | 2.5 | 43/43 | 0 | 1.00 | 19% (3-9-4 of 16) |
+| /kz-flashrule | after | 8 | 1.37x (1.00x-2.05x) | 1.27x (0.85x-2.55x) | 1.68x (1.03x-2.41x) | 8 | 43/43 | 0 | 1.00 | 19% (3-10-3 of 16) |
+| /kz-fastfix | after | 4 | 1.51x (1.01x-1.93x) | 1.70x (0.92x-2.13x) | 1.78x (1.08x-1.99x) | 1 | 22/22 | 0 | 1.00 | - |
+
+#### Per task
+
+Medians over the runs in each cell (n); wall time range in brackets.
+Failures are those the agent introduced (run minus starter), at 1280 + 390.
+LH is Lighthouse mobile accessibility / best practices.
+
+##### trivial-label
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 2 | 12 (11-13) | 4.5 | 132k | 0.088 | 0.0 | 0 | 5/5 | 0 | 1.00/0.96 | 0/2 |
+| /kz-uiuxrule | before | 2 | 17 (16-17) | 4.5 | 196k | 0.150 | 6.3 | 0 | 5/5 | 0 | 1.00/0.96 | 1/2 |
+| /kz-uiuxrule | after | 2 | 21 (21-22) | 6 | 266k | 0.180 | 7.4 | 0.5 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+| /kz-flashrule | after | 2 | 18 (18-19) | 4 | 175k | 0.151 | 6.5 | 0 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+| /kz-fastfix | after | 2 | 24 (22-26) | 6.5 | 220k | 0.175 | 6.8 | 0 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+
+##### small-column
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 2 | 13 (12-14) | 3 | 126k | 0.137 | 0.0 | 0 | 5/5 | 0 | 1.00/0.96 | 0/2 |
+| /kz-uiuxrule | before | 2 | 16 (16-16) | 4 | 144k | 0.196 | 6.5 | 0 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+| /kz-uiuxrule | after | 2 | 27 (26-28) | 6.5 | 223k | 0.251 | 17.9 | 0 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+| /kz-flashrule | after | 2 | 21 (20-22) | 5 | 171k | 0.229 | 11.1 | 0 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+| /kz-fastfix | after | 2 | 19 (19-19) | 5.5 | 217k | 0.223 | 6.8 | 0 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+
+##### dark-mode
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 2 | 42 (41-43) | 6.5 | 275k | 0.270 | 0.0 | 0 | 6/6 | 0 | 1.00/0.96 | 0/2 |
+| /kz-uiuxrule | before | 2 | 56 (55-58) | 6.5 | 368k | 0.406 | 39.1 | 0 | 6/6 | 0 | 1.00/0.96 | 2/2 |
+| /kz-uiuxrule | after | 2 | 61 (61-61) | 10 | 297k | 0.397 | 12.0 | 0 | 6/6 | 0 | 1.00/0.96 | 2/2 |
+| /kz-flashrule | after | 2 | 42 (41-43) | 4.5 | 235k | 0.319 | 26.2 | 0 | 6/6 | 0 | 1.00/0.96 | 2/2 |
+| /kz-fastfix | after | 2 | 42 (39-46) | 5 | 254k | 0.291 | 14.8 | 0 | 6/6 | 0 | 1.00/0.96 | 2/2 |
+
+##### table-build
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 2 | 80 (73-86) | 9 | 338k | 0.373 | 0.0 | 18 | 4/5 | 0.5 | 0.97/0.96 | 0/2 |
+| /kz-uiuxrule | before | 2 | 124 (124-124) | 12.5 | 703k | 0.723 | 9.1 | 0 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+| /kz-uiuxrule | after | 2 | 93 (82-104) | 6 | 217k | 0.530 | 28.0 | 0 | 5/5 | 0 | 1.00/0.96 | 1/2 |
+| /kz-flashrule | after | 2 | 100 (95-105) | 8 | 413k | 0.588 | 6.5 | 0 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+
+##### chart-filter
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 2 | 114 (103-126) | 18 | 637k | 0.662 | 0.0 | 14 | 3.5/5 | 0.5 | 0.97/0.96 | 0/2 |
+| /kz-uiuxrule | before | 2 | 121 (116-126) | 18.5 | 786k | 0.707 | 34.3 | 2 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+| /kz-uiuxrule | after | 2 | 111 (92-131) | 13 | 549k | 0.592 | 29.1 | 2 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+| /kz-flashrule | after | 2 | 116 (98-133) | 11.5 | 596k | 0.679 | 16.5 | 2 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+
+##### form-build
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 2 | 42 (41-42) | 4 | 160k | 0.195 | 0.0 | 8 | 5/5 | 0 | 1.00/0.96 | 0/2 |
+| /kz-uiuxrule | before | 2 | 85 (82-89) | 7.5 | 351k | 0.462 | 19.0 | 0 | 4/5 | 0 | 1.00/0.96 | 2/2 |
+| /kz-uiuxrule | after | 2 | 106 (77-136) | 10 | 483k | 0.522 | 24.8 | 0 | 5/5 | 0 | 1.00/0.96 | 1/2 |
+| /kz-flashrule | after | 2 | 85 (79-92) | 6.5 | 306k | 0.443 | 12.7 | 2 | 5/5 | 0 | 1.00/0.96 | 2/2 |
+
+##### undo-toast
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 2 | 54 (53-55) | 7 | 273k | 0.259 | 0.0 | 0 | 4/6 | 0 | 1.00/0.96 | 0/2 |
+| /kz-uiuxrule | before | 2 | 92 (84-100) | 10.5 | 603k | 0.558 | 21.7 | 3 | 5.5/6 | 0 | 1.00/0.96 | 2/2 |
+| /kz-uiuxrule | after | 2 | 138 (115-162) | 16 | 937k | 0.791 | 41.6 | 0 | 6/6 | 0 | 1.00/0.96 | 2/2 |
+| /kz-flashrule | after | 2 | 65 (62-68) | 4.5 | 244k | 0.437 | 36.1 | 4 | 6/6 | 0 | 1.00/0.96 | 2/2 |
+
+##### iterate-html
+
+| condition | skills | n | wall s | turns | tokens_total | cost USD | skill KB | failures introduced | rubric | axe s+c | LH a11y/bp | ran kz-uicheck |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| none | - | 2 | 126 (125-127) | 19 | 688k | 0.527 | 0.0 | 14 | 6/6 | 0.5 | 0.97/0.96 | 0/2 |
+| /kz-uiuxrule | before | 2 | 204 (199-210) | 27 | 1185k | 0.927 | 24.5 | 0 | 6/6 | 0 | 1.00/0.96 | 2/2 |
+| /kz-uiuxrule | after | 2 | 305 (303-308) | 36 | 1904k | 1.363 | 46.8 | 0 | 6/6 | 0 | 1.00/0.96 | 2/2 |
+| /kz-flashrule | after | 2 | 239 (228-249) | 38.5 | 1751k | 1.271 | 37.9 | 0 | 6/6 | 0 | 1.00/0.96 | 2/2 |
+| /kz-fastfix | after | 2 | 190 (164-217) | 31 | 1467k | 1.020 | 47.1 | 1 | 6/6 | 0 | 1.00/0.96 | 2/2 |
+
+#### Iteration loop, per turn (medians over runs)
+
+| condition | skills | turn | prompt | wall s | turns | tokens_total | cost USD | skill KB |
+|---|---|---|---|---|---|---|---|---|
+| none | - | 1 | Build a single HTML page in index | 63 | 5.5 | 226k | 0.271 | 0.0 |
+| none | - | 2 | Make the filter remember its value on reload | 15 | 4 | 137k | 0.066 | 0.0 |
+| none | - | 3 | Add a dark mode toggle | 29 | 6 | 147k | 0.112 | 0.0 |
+| none | - | 4 | The detail panel should close on Escape | 19 | 3.5 | 177k | 0.079 | 0.0 |
+| /kz-uiuxrule | before | 1 | /kz-uiuxrule Build a single HTML page in index | 93 | 9 | 378k | 0.478 | 20.6 |
+| /kz-uiuxrule | before | 2 | Make the filter remember its value on reload | 29 | 6 | 218k | 0.122 | 0.0 |
+| /kz-uiuxrule | before | 3 | Add a dark mode toggle | 39 | 6.5 | 233k | 0.161 | 0.3 |
+| /kz-uiuxrule | before | 4 | The detail panel should close on Escape | 43 | 5.5 | 357k | 0.166 | 3.5 |
+| /kz-uiuxrule | after | 1 | /kz-uiuxrule Build a single HTML page in index | 168 | 17.5 | 887k | 0.791 | 34.3 |
+| /kz-uiuxrule | after | 2 | Make the filter remember its value on reload | 36 | 5.5 | 323k | 0.163 | 1.5 |
+| /kz-uiuxrule | after | 3 | Add a dark mode toggle | 46 | 6.5 | 354k | 0.204 | 6.7 |
+| /kz-uiuxrule | after | 4 | The detail panel should close on Escape | 55 | 6.5 | 341k | 0.206 | 4.4 |
+| /kz-flashrule | after | 1 | /kz-flashrule Build a single HTML page in inde | 124 | 12 | 530k | 0.680 | 25.9 |
+| /kz-flashrule | after | 2 | Make the filter remember its value on reload | 28 | 6 | 258k | 0.129 | 0.5 |
+| /kz-flashrule | after | 3 | Add a dark mode toggle | 35 | 8 | 236k | 0.151 | 0.3 |
+| /kz-flashrule | after | 4 | The detail panel should close on Escape | 52 | 12.5 | 727k | 0.312 | 11.3 |
+| /kz-fastfix | after | 1 | Build a single HTML page in index | 102 | 12.5 | 516k | 0.538 | 26.4 |
+| /kz-fastfix | after | 2 | /kz-fastfix Make the filter remember its value | 27 | 6 | 302k | 0.150 | 6.7 |
+| /kz-fastfix | after | 3 | /kz-fastfix Add a dark mode toggle | 46 | 9.5 | 448k | 0.237 | 6.9 |
+| /kz-fastfix | after | 4 | /kz-fastfix The detail panel should close on E | 16 | 3 | 200k | 0.095 | 7.1 |
+
+#### Routing and asking
+
+| condition | skills | runs | skills the model invoked (runs) | runs that asked | runs with a permission denial | runs that ran kz-uicheck | median kz-uicheck calls |
+|---|---|---|---|---|---|---|---|
+| none | - | 16 | dataviz (2) | 1 | 0 | 0 | 0 |
+| /kz-uiuxrule | before | 16 | none | 0 | 0 | 15 | 3 |
+| /kz-uiuxrule | after | 16 | none | 1 | 0 | 14 | 2 |
+| /kz-flashrule | after | 16 | none | 0 | 0 | 16 | 1 |
+| /kz-fastfix | after | 8 | kz-flashrule (2) | 0 | 0 | 8 | 1 |
+
+### Blind judge, per task (kz preferred W-L-T)
+
+| model | task | /kz-uiuxrule vs none | /kz-flashrule vs none |
+|---|---|---|---|
+| claude-sonnet-5-5 | chart-filter | 3-0-0 | 2-1-0 |
+| claude-sonnet-5-5 | dark-mode | 2-0-1 | 0-0-3 |
+| claude-sonnet-5-5 | form-build | 3-0-0 | 3-0-0 |
+| claude-sonnet-5-5 | iterate-html | 3-0-0 | 0-3-0 |
+| claude-sonnet-5-5 | small-column | 0-0-3 | 0-0-3 |
+| claude-sonnet-5-5 | table-build | 1-2-0 | 0-3-0 |
+| claude-sonnet-5-5 | trivial-label | 0-0-3 | 0-0-3 |
+| claude-sonnet-5-5 | undo-toast | 0-3-0 | 0-3-0 |
+| claude-opus-5-5 | chart-filter | 1-1-0 | 0-2-0 |
+| claude-opus-5-5 | dark-mode | 0-1-1 | 0-2-0 |
+| claude-opus-5-5 | form-build | 0-2-0 | 1-1-0 |
+| claude-opus-5-5 | iterate-html | 1-1-0 | 0-2-0 |
+| claude-opus-5-5 | small-column | 0-0-2 | 0-0-2 |
+| claude-opus-5-5 | table-build | 0-2-0 | 1-1-0 |
+| claude-opus-5-5 | trivial-label | 0-1-1 | 0-1-1 |
+| claude-opus-5-5 | undo-toast | 1-1-0 | 1-1-0 |
+
+
+Over all 80 comparisons the judge gave 23 to the kz page, 34 to none and called 23 ties.
+
+### What the transcripts showed
+
+1. **Routing did not shrink what is read; it changed what is read.**
+   `before` /kz-uiuxrule read `kz-flashrule/SKILL.md` (11.4 KB) and little else; `after` reads LOOKUP (2 KB), one or two packs (5 to 8 KB each) and the pack's snippet.
+   The snippets are the weight: `filter-table.html` 15 KB, `toast-stack.html` 13 KB, `tooltip.html` 12 KB, `saved-note.html` 8 KB.
+   On undo-toast, Sonnet `/kz-uiuxrule` read 39 KB after against 18 KB before (the feedback pack and both of its snippets), and took 51 s against 21 s.
+   On the small tasks skill text is unchanged (6 to 7 KB on trivial-label in every kz cell).
+2. **Time went up on the build tasks.**
+   Sonnet `/kz-uiuxrule` 1.31x to 1.63x wall time and 1.42x to 1.46x tokens; Opus 1.45x to 1.95x and 1.61x to 1.90x.
+   Most of the rise is two tasks: undo-toast (new pack, new snippets, a new check to pass) and Opus iterate-html, whose build turn went from 93 s to 168 s and 9 to 17.5 turns.
+   `/kz-flashrule` is the cheaper full lane on both models (Sonnet 1.35x wall and 1.43x tokens, Opus 1.37x and 1.27x).
+3. **Quality rose a little where it was not already full.**
+   Every `after` lane passed 43 of 43 rubric items on both models, against 42 (Sonnet) and 41.5 (Opus) for `before` /kz-uiuxrule and 37 and 38.5 for no skills.
+   On undo-toast, `after` /kz-uiuxrule passed 6 of 6 on both models (`before` 5 and 5.5, no skills 5 and 4).
+   Check failures introduced did not improve on Sonnet (`before` /kz-uiuxrule 2, `after` 8: 4 on chart-filter, 4 on iterate-html) and halved on Opus (5 to 2.5); no skills introduced 48 and 54.
+4. **Installed routing improved.**
+   With the skills only installed, Sonnet invoked kz-fastfix in 11 runs and kz-flashrule in 4 of 24 after, against 4 and 4 before, and introduced 9 failures against 14 before and 48 without skills, at 1.41x wall time against 1.07x.
+5. **The judge disagreed with the toast rules.**
+   On undo-toast the judge preferred no skills in 8 of 10 pairs (Sonnet 6 of 6).
+   Its reasons: the kz pages confirmed a field save with an inline "Saved" note (rule A2 sends a field save to the field, not to a toast), which it found easy to miss next to a dark toast; and the `toast-stack.html` toast is drawn on the page's surface colour, which it called pale.
+   One reason was a real defect: in two of the three Sonnet `/kz-flashrule` pages the "restored" toast was still on screen after the next edit was saved, so the user saw an old message next to a new one; no check catches a toast outliving the state it describes.
+   Elsewhere the judge agreed as before on chart-filter and Sonnet form-build, and again preferred visible filter bars to T1 panels on table-build.
+
+### Limits and what is unreliable
+
+- Two or three runs per cell: a factor moves 0.2x to 0.3x between batches on the same skills, so read 1.6x against 1.3x as "slower", not as a measured 25%.
+- The undo-toast rubric was written with the toast rules in mind; the judge is the independent read of that task, and it disagreed.
+- Scoring `before` with checks it never saw favours `after` on undo-toast and tooltips; the rubric and the judge do not have that bias.
+- Lighthouse saturates (accessibility 1.00, best practices 0.96 everywhere), and axe serious+critical is 0 to 1.5 per condition, too few to rank.
+- Spend: USD 55.29 for 228 agent runs (75.0M tokens_total), USD 7.03 for 80 judge calls; scoring uses no model.
+
+### Headline numbers for the README warning
+
+Sonnet 5.5, against no skills, eight tasks:
+- `/kz-uiuxrule`: 1.6x the time, 1.5x the tokens; 8 check failures introduced against 48; rubric 43 of 43 (no skills 37); the judge preferred it in 50% of pairs (12 won, 5 lost, 7 tied).
+- `/kz-flashrule`: 1.4x the time, 1.4x the tokens; 8 failures against 48; rubric 43 of 43; the judge preferred it in 21% of pairs (5 won, 10 lost, 9 tied).
+- `/kz-fastfix` on the four small tasks: 1.5x the time, 1.8x the tokens; 0 failures against 10.
+- Installed, model chooses: 1.4x the time, 1.5x the tokens; 9 failures against 48.
+
+Opus 5.5, against no skills, eight tasks:
+- `/kz-uiuxrule`: 2.0x the time, 1.9x the tokens; 2.5 failures against 54; rubric 43 of 43 (no skills 38.5); the judge preferred it in 19% of pairs (3 won, 9 lost, 4 tied).
+- `/kz-flashrule`: 1.4x the time, 1.3x the tokens; 8 failures against 54; rubric 43 of 43; the judge preferred it in 19% of pairs (3 won, 10 lost, 3 tied).
+- `/kz-fastfix` on the four small tasks: 1.5x the time, 1.7x the tokens; 1 failure against 14.
+
+Plainly: type routing did not make the skills faster.
+It moved the reading from one core file to a lookup, a pack and a snippet, which costs about the same on small work and more on toast and table work, where the snippets are large.
+It raised the rubric to full marks in every lane and cut failures on Opus, not on Sonnet.

@@ -1,0 +1,8 @@
+{
+ "winner": "A",
+ "reasons": [
+  "When the empty form is submitted, A shows a summary box at the top ('2 fields still need attention') with links to each problem field, plus an error under each field. B only shows the errors under the fields. Both put focus on the Site field.",
+  "A gives useful help under the fields: the budget hint explains that a sum like 1200+350 is accepted, and the note hint suggests what to write (access details, urgency). B only has a '0 / 1000' character counter and a '$ 0.00' placeholder.",
+  "B puts a Clear button right next to Submit, so one wrong click on a phone or desktop wipes everything typed. A has no such button. B's layout is tighter, but A's extra spacing still fits fine on a phone. Both show the same clear confirmation summary after a successful submit."
+ ]
+}

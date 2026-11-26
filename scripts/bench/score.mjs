@@ -16,12 +16,12 @@
    the file, in place. Needs: Python 3, Playwright at PLAYWRIGHT, Chrome for run-checks.py
    (CHROME, default the Playwright headless shell), a full Chromium for Lighthouse (CHROME_PATH),
    and axe-core and lighthouse installed under KZ_BENCH_TOOLS (see README), else npx fetches them. */
-import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { STATUSES, SITES, visibleCount, bodyRows, visibleCheckboxes, openValueList, untickOne, chartSnapshot,
+import { pwBrowser, FULL_CHROME, SHELL_CHROME, STATUSES, SITES, visibleCount, bodyRows, visibleCheckboxes, openValueList, untickOne, chartSnapshot,
   jobItems, applyStatusFilter, dialogCount, openDetail, findThemeToggle, flipTheme, installColour, pageLum,
   DELETED_RE, SAVED_RE, messages, waitMessage, visitRows, presentNotes, deleteFirstVisit, pressUndos, editFirstVisit } from './helpers.mjs';
 
@@ -31,16 +31,10 @@ const PW = process.env.PLAYWRIGHT || '/opt/node-tools/node_modules/playwright/in
 const { chromium } = await import(pathToFileURL(PW).href);
 /* the newest Playwright browser of a kind under /opt/pw-browsers; a pinned version path goes stale when the
    image updates, and a missing browser must stop the scoring, not score every page as failed */
-function pwBrowser(prefix, rels) {
-  const root = '/opt/pw-browsers';
-  const dirs = existsSync(root) ? readdirSync(root).filter((d) => d.startsWith(prefix) && /-\d+$/.test(d)).sort().reverse() : [];
-  for (const d of dirs) for (const r of rels) if (existsSync(path.join(root, d, r))) return path.join(root, d, r);
-  return null;
-}
 // the full browser, the same one run.py hands the agents, so a page is scored by what its author could run
-const CHROME = process.env.CHROME || pwBrowser('chromium-', ['chrome-linux64/chrome', 'chrome-linux/chrome'])
-  || pwBrowser('chromium_headless_shell-', ['chrome-headless-shell-linux64/chrome-headless-shell', 'chrome-linux/headless_shell']);
-const CHROME_PATH = process.env.CHROME_PATH || pwBrowser('chromium-', ['chrome-linux64/chrome', 'chrome-linux/chrome']);
+const CHROME = process.env.CHROME || pwBrowser('chromium-', FULL_CHROME)
+  || pwBrowser('chromium_headless_shell-', SHELL_CHROME);
+const CHROME_PATH = process.env.CHROME_PATH || pwBrowser('chromium-', FULL_CHROME);
 if (!CHROME || !existsSync(CHROME) || !CHROME_PATH || !existsSync(CHROME_PATH)) {
   console.error('no Chrome found: set CHROME (checks, Playwright) and CHROME_PATH (Lighthouse)');
   process.exit(1);
