@@ -49,7 +49,9 @@ before a skill call; where none is wired, this section is the requirement.
 
 Anything that renders is built and reviewed against `kz-uiuxrule` (57 UI, 6 motion, 21 chart,
 10 diagram rules, 16 principles), routed by its `../kz-uiuxrule/rules/INDEX.md`, never copied
-here. Two rules are never scoped out of a dispatch, at any phase or tier:
+here. A crew run is the full path, so it keeps the rule ledger (`../kz-uiuxrule/scripts/ledger.py`):
+every rule decided applies or not, each that applies passed with its evidence, and the run is not
+done until `ledger.py status` prints `complete`. Two rules are never scoped out of a dispatch, at any phase or tier:
 
 - **S1** - every table ships a search, sort on every column and a filter per column, with a
   live count and a no-matches state. **A "filter" is the T1 panel** (a button per column

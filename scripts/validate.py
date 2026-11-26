@@ -154,6 +154,43 @@ for line in read(os.path.join(skills_dir, "kz-flashrule", "SKILL.md")).splitline
     elif not cell.startswith("kz-") and cell not in ids:
         fail("kz-flashrule: cites rule %s, which no rule file defines" % cell)
 
+# 1c. the rule ledger asks exactly one question per rule, and each names a check that exists ------
+# The UI rules are the four corpora ledger.py covers (not the engineering rules). A failure code
+# named in the Check column must appear in that check's source, so a renamed code cannot leave a
+# question pointing at nothing.
+ui_ids = set(re.findall(r"^\| ([A-Z]\d+[a-z]?) \| \*\*", "\n".join(
+    read(os.path.join(rd, f)) for f in ("ui-rules.md", "motion-rules.md", "chart-rules.md", "diagram-rules.md")), re.M))
+checks_dir = os.path.join(skills_dir, "kz-uicheck", "checks")
+asked = []
+for n, line in enumerate(read(os.path.join(rd, "questions.md")).splitlines(), 1):
+    m = re.match(r"^\| ([A-Z]\d+[a-z]?) \| (.*) \|$", line)
+    if not m:
+        continue
+    cols = [c.strip() for c in m.group(2).split(" | ")]
+    if len(cols) != 3 or not all(cols):
+        fail("questions.md:%d: %s needs three filled columns (applies when, question, check)" % (n, m.group(1)))
+        continue
+    asked.append(m.group(1))
+    for part in cols[2].split(";"):
+        words = part.strip().split()
+        if not words or words[0] == "read":
+            continue
+        src = os.path.join(checks_dir, words[0] + ".js")
+        if not os.path.isfile(src):
+            fail("questions.md:%d: %s names check %s, which kz-uicheck does not have" % (n, m.group(1), words[0]))
+            continue
+        body = read(src)
+        for code in re.findall(r"\b[A-Z][A-Z0-9]+(?: [A-Z][A-Z0-9]+)*\b", " ".join(words[1:])):
+            if code not in body:
+                fail("questions.md:%d: %s names code %s, which %s.js never reports" % (n, m.group(1), code, words[0]))
+for i in sorted(set(asked)):
+    if asked.count(i) > 1:
+        fail("questions.md: %s is asked %d times" % (i, asked.count(i)))
+for i in sorted(ui_ids - set(asked)):
+    fail("questions.md: rule %s has no question - add one" % i)
+for i in sorted(set(asked) - ui_ids):
+    fail("questions.md: %s is asked but no rule file defines it" % i)
+
 # 1b. no merge conflict left in any text file -----------------------------------------------
 for base, _, files in os.walk(ROOT):
     if ".git" in base.split(os.sep):

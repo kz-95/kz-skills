@@ -52,6 +52,10 @@ Then, for each chosen section:
   is an opinion, and opinions are what this corpus exists to replace.
 - Say what to do, in one line, and stop. The fix belongs to mode 3.
 - **Documented departures are not findings.** Undocumented departures are.
+- **Depth "full" goes through the ledger** (`../scripts/ledger.py`, questions in
+  `../rules/questions.md`): every rule of the chosen sections is marked applies or not, and
+  each that applies gets a verdict and the measurement behind it. A finding is a row with
+  Verdict `fail`; the report lists them by rule id. `ledger.py status` prints what is left.
 
 ## Mode 4 - Loop: when it has to be right
 
@@ -71,7 +75,8 @@ build/fix  ->  3 reviewers, independently, against named rule ids
 - **A debugger joins when a finding survives one fix.** A defect that comes back is a
   root-cause problem, not a patch problem.
 - **Exit on the gate, never on a round count.** The loop ends when the reviewers are unanimous
-  on the actual text or screen - not after three passes.
+  on the actual text or screen - not after three passes - and `../scripts/ledger.py status`
+  prints `complete`: every rule decided, every one that applies passed with its evidence.
 - **Where the host has a workflow for this, use it:** `kz-crew021` (dispatch, budget gate,
   per-task verification) or a gauntlet-style loop skill (`kz-loopfix`). This skill supplies
   the rules and the verdict criteria; the workflow supplies the agents and the budget.
