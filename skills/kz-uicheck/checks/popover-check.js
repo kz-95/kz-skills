@@ -21,7 +21,10 @@
 
    A trigger is any visible element with aria-expanded, or aria-haspopup other than "false". A tap is
    sent as the whole pointer sequence, because handlers hang off pointerdown, mousedown or click.
-   A trigger that does not open anything is skipped. Opt a trigger out with data-popover-check="skip".
+   A trigger that does not open anything is skipped, and so is one that opens a modal dialog
+   (aria-modal="true" or a <dialog> shown modally): modal-check measures those (rule N1). The
+   outside click lands on whatever a person would hit at an empty point, a scrim included.
+   Opt a trigger out with data-popover-check="skip".
    Restores the page: everything it opened is closed again. Returns a promise of the problem list. */
 (async function popoverCheck() {
   var problems = [], advisory = [], wait = function (ms) {
@@ -73,6 +76,23 @@
     if (trigger.hasAttribute('aria-expanded')) { return trigger.getAttribute('aria-expanded') === 'true'; }
     return openPanels().some(function (p) { return before.indexOf(p) < 0; });
   }
+  /* What a person's click outside lands on: the topmost element at a point clear of the panel
+     and its trigger. Dispatching on document.body skipped any scrim or backdrop laid over the
+     page, so a panel that closes on its scrim was reported as never closing outside. */
+  function outside(panel, trigger) {
+    var w = window.innerWidth, h = window.innerHeight;
+    var pts = [[4, h - 4], [w - 4, h - 4], [4, 4], [w - 4, 4], [w / 2, h - 4], [4, h / 2], [w - 4, h / 2]];
+    for (var k = 0; k < pts.length; k++) {
+      var e = document.elementFromPoint(pts[k][0], pts[k][1]);
+      if (e && !(panel && panel.contains(e)) && !trigger.contains(e) && !e.contains(trigger)) { return e; }
+    }
+    return document.body;
+  }
+  function modal(panel) {          /* a modal dialog is modal-check's to measure (rule N1), not this check's */
+    if (!panel) { return false; }
+    if (panel.getAttribute('aria-modal') === 'true') { return true; }
+    try { return panel.matches('dialog:modal'); } catch (e) { return false; }
+  }
   async function close(trigger, before) {
     for (var i = 0; i < 3 && isOpen(trigger, before); i++) { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await wait(40); }
     if (isOpen(trigger, before)) { tap(document.body); await wait(40); }
@@ -93,6 +113,7 @@
     if (!isOpen(t, before)) { continue; }                          /* it opens nothing: not a popover */
     var panel = openPanels().filter(function (p) { return before.indexOf(p) < 0; })[0] ||
                 (t.getAttribute('aria-controls') && document.getElementById(t.getAttribute('aria-controls')));
+    if (modal(panel)) { await close(t, before); continue; }
 
     /* a visible close control on touch - looked for while the panel is OPEN, not after the toggle tests closed it */
     if (TOUCH && panel) {
@@ -164,7 +185,7 @@
     /* 3. a click on empty page */
     tap(t); await wait(60);
     if (isOpen(t, before)) {
-      tap(document.body); await wait(60);
+      tap(outside(panel, t)); await wait(60);
       if (isOpen(t, before)) { problems.push('OUTSIDE | ' + label(t) + ' | a click outside did not close it'); await close(t, before); }
     }
     if (isOpen(t, before)) { await close(t, before); }

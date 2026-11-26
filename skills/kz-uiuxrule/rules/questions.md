@@ -15,6 +15,9 @@ How to use it, through `../scripts/ledger.py`:
 4. Before calling the work done, fill **Verdict** (`pass` or `fail`) and **Evidence** for every
    `yes`: the check and what it printed (`layout-audit: clean at 375`), or, where Check says
    `read`, the file and line that shows it.
+   A row whose named check failed is never `pass`. If you judge the check wrong for this page,
+   the Evidence starts with `override:` and says why; `status` lists every override, and the
+   report names them, so a disagreement with a check is visible and never silent.
 5. `python ../scripts/ledger.py status` must print `complete`. It fails while any row has no
    Applies, any `?` is left, any `yes` has no Verdict or no Evidence, or any Verdict is `fail`.
 

@@ -13,7 +13,9 @@ The questions live in ../rules/questions.md. A ledger row is
     | ID | Applies when | Question | Check | Applies | Verdict | Evidence |
 
 Applies is yes, no or ?. Verdict is pass or fail. Evidence is the check and what it printed, or
-for a "read" check the file and line that shows the rule holds. `init` never overwrites a ledger
+for a "read" check the file and line that shows the rule holds. A pass against a check that
+failed starts its Evidence with "override:" and the reason; status lists every override. `init`
+never overwrites a ledger
 that has answers in it; it adds rows for rules the ledger does not have yet and leaves the rest.
 """
 import argparse
@@ -104,6 +106,8 @@ def status(path):
                 open_.append(i)
             elif verdict == "fail":
                 failed.append(i)
+    overrides = [i for i in want if i in rows and rows[i][4].lower() == "yes"
+                 and rows[i][6].lower().startswith("override:")]
     yes = [i for i in want if i in rows and rows[i][4].lower() == "yes"]
     print("%d rules, %d apply, %d do not" % (len(want), len(yes),
           sum(1 for i in want if i in rows and rows[i][4].lower() == "no")))
@@ -115,6 +119,8 @@ def status(path):
         if ids:
             left = True
             print("  %s: %s" % (label, ", ".join(ids)))
+    if overrides:
+        print("  overrides (passed against a failing check; name them in the report): %s" % ", ".join(overrides))
     if left:
         return 1
     print("complete")
