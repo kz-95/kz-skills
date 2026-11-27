@@ -25,7 +25,7 @@ Later calls reuse the answer.
 
 - **Trivial**, one element or one line with no new behaviour: `kz-fastfix`, at most the one `kz-flashrule` line that applies, at most the one check that covers it, a one-line report.
 - **Small or medium**, a component or a screen: `packs/LOOKUP.md`, then the one pack its row names (the rules in full, the appendix it needs, a snippet and the exact check command), then only that pack's checks, once, on the screen the work is on, and `layout-audit` once at 375px. A run that prints `WRONG SCREEN` is a failure. The rule files open only when no pack covers the work.
-- **Large**, a project, an audit, "make it production" or a release: the full path, with all twelve checks at both widths and in both themes (`kz-uiuxrule` mode 4, `kz-crew021`, `kz-loopfix`).
+- **Large**, a project, an audit, "make it production" or a release: the full path, with every rule decided one question at a time in the rule ledger (`kz-uiuxrule/scripts/ledger.py`) and all twelve checks at both widths and in both themes (`kz-uiuxrule` mode 4, `kz-crew021`, `kz-loopfix`).
 
 Follow-ups stay light, nothing is written into the user's project unasked, and after the first-call card the agent asks only when the request is genuinely ambiguous.
 What each lane costs and buys, measured on two models, is in [`benchmark.md`](benchmark.md).

@@ -9,7 +9,9 @@ row names a pack, read that pack first: it is generated from these rule files an
 rules, the appendix sections and the exact check command for that type of work, and for small
 and medium work it is all you read. [`../packs/LOOKUP.md`](../packs/LOOKUP.md) is the same
 routing in two kilobytes. Read the sections below only when the pack is not enough, or on the
-full path, and run the checks in that category's block. Nothing else in the corpus applies
+full path, and run the checks in that category's block. On the full path, decide which rules
+apply through [`questions.md`](questions.md) first (one yes/no question per rule, chart type, tell, lesson and principle, written to
+the project's ledger by `../scripts/ledger.py`), then read here only the rules marked yes. Nothing else in the corpus applies
 unless the work touches a second category, in which case read that one too.
 
 > **Packaged copy.** This is the rule corpus on its own. The project it came from also

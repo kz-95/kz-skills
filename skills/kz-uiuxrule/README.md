@@ -68,6 +68,8 @@ than was asked.
 | `packs/LOOKUP.md` | Keyword to one pack and its checks. Start every task here |
 | `packs/` | Ten generated packs, one per type of work (feedback, explain, table, chart, form, overlay, layout, theme, motion, diagram): the rules in full, the appendix, a snippet and the exact check command. Rebuilt by `scripts/build-index.py`; never edit by hand |
 | `rules/INDEX.md` | Keyword to category to rules, for work no pack covers |
+| `rules/questions.md` | 179 yes/no questions, each with when it applies and its check: the 94 rules, then the chart types and nevers, the generated-UI tells, Appendix Z's things not to do and the design principles. The rule ledger for the full path |
+| `scripts/ledger.py` | `init` writes the questions to the project's `.kz/ledger.md`; `status` prints `complete` only when every rule is decided and every one that applies passed with evidence |
 | `rules/ui-rules.md` | The 57 UI rules and the appendices carrying their detail, including **Appendix Z: twenty-six things not to do**, each one learned by doing it |
 | `rules/chart-rules.md` | C1-C21, for anything that renders data as marks |
 | `rules/motion-rules.md` | M1-M6, for anything that moves; also the whole of the `kz-motionrule` skill |

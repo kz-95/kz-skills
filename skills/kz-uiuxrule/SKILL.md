@@ -20,8 +20,17 @@ Before reading a rule, apply the speed contract in `../kz-skill/SKILL.md` (engin
 - **Small/medium** (a component or a screen) -> mode 3 below: `packs/LOOKUP.md`, the one pack
   its row names, and only that pack's checks.
 - **Large** (a project, an audit, "make it production", a release) -> the full path: the
-  mode's whole procedure, the full rule corpus through `rules/INDEX.md`, all checks, mode 4
-  where asked.
+  mode's whole procedure, the rule ledger (below), all checks, mode 4 where asked.
+
+**The rule ledger, on the full path only.** Reading the whole corpus at once loses the rules
+in its middle, so the full path goes through it one question at a time:
+`python scripts/ledger.py init` writes every question of `rules/questions.md` (the 94 rules, then the chart types, chart
+nevers, generated-UI tells, things not to do and principles, 179 in all) into `.kz/ledger.md`
+in the project; mark each row Applies yes / no from its "Applies when" alone, read the full text
+only of the rules marked yes (by `rules/INDEX.md` or the pack that holds them), and before
+saying done give each yes a Verdict and its Evidence (the check and what it printed, or the file
+and line). `python scripts/ledger.py status` must print `complete`. The ledger is the one file
+the full path writes into the project; say so when you create it, and a later run reuses it.
 
 **The first kz call in a session asks one card** (`../kz-askcard/`): the type of work, from
 the rows of `packs/LOOKUP.md` with the matched one marked (recommended), and the size
@@ -107,6 +116,8 @@ line, at the time.
 
 `packs/LOOKUP.md` routes by keyword to one generated pack per type of work (never edit a pack:
 change the rule file and run `python scripts/build-index.py`). For the full path,
+`rules/questions.md` asks every rule, chart type, tell, lesson and principle as one yes/no
+question (the ledger), and
 `rules/INDEX.md` routes by keyword to `rules/ui-rules.md` (read by section, never whole;
 Appendix Z before a large build), `chart-rules.md` (C1-C21), `motion-rules.md` (M1-M6),
 `diagram-rules.md` (G1-G10) and `design-principles.md`; S1/S2 are in

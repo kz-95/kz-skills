@@ -54,8 +54,9 @@ rules and checks, which this keeps.
      lines; the rule files and `rules/INDEX.md` open only when no pack covers the work.
      Never `run-checks.py` without `--checks`.
    - **Large** - a project, an audit, "make it production", a release: the full path (all
-     the checks, both widths, both themes, the full rule corpus; `kz-uiuxrule` mode 4,
-     `kz-crew021`, `kz-loopfix`).
+     the checks, both widths, both themes, every rule decided one question at a time in the
+     rule ledger, `kz-uiuxrule/scripts/ledger.py`; `kz-uiuxrule` mode 4, `kz-crew021`,
+     `kz-loopfix`).
 2. **After the first call, no question unless genuinely ambiguous.** State the assumptions in
    one line and proceed (engineering rule 3). The first-call card (item 0) is the one
    exception; beyond it, an Ask Card is for adopt or review scope, and for real ambiguity.
