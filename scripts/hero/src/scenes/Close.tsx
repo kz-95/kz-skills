@@ -60,7 +60,7 @@ const CloseInner: React.FC<Props> = ({ headline, install, posterHeadline, poster
 };
 
 const schema = {
-  headline: { type: "string", default: "94 rules. 12 checks. Any stack.", description: "Closing line" },
+  headline: { type: "string", default: "96 rules. 14 checks. Any stack.", description: "Closing line" },
   install: { type: "string", default: "npx skills add kz-95/kz-skills", description: "Install command" },
   posterHeadline: { type: "string", default: "kz-skills", description: "Poster headline" },
   posterLine: { type: "string", default: "", description: "Poster supporting line" },

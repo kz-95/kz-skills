@@ -8,12 +8,12 @@ Two rows match: read both packs. None matches: `../rules/INDEX.md`.
 |---|---|---|
 | toast, snackbar, notification, undo, saved, save, loading, progress, delete, remove, confirm | [feedback](feedback.md) | toast-check |
 | tooltip, icon button, [?], hint, help, explainer, hover, halo | [explain](explain.md) | explain-check |
-| table, list, grid, rows, column, filter, sort, search, pagination, total | [table](table.md) | table-check, popover-check |
+| table, list, grid, rows, column, filter, sort, search, pagination, total, balance, budget, split, money | [table](table.md) | table-check, popover-check, agree-check |
 | chart, graph, plot, legend, axis, series, KPI, dashboard, data viz | [chart](chart.md) | table-check, layout-audit |
 | form, field, input, validation, required, submit, draft, wizard, amount, typing | [form](form.md) | form-check, typing-check |
 | modal, dialog, sheet, drawer, popover, dropdown, menu, tab, back, route, deep link | [overlay](overlay.md) | modal-check, popover-check, focus-check |
 | layout, spacing, mobile, phone, responsive, breakpoint, card, page, scroll, overflow | [layout](layout.md) | layout-audit |
-| colour, color, dark mode, theme, contrast, token, font, typography | [theme](theme.md) | contrast-check (both themes) |
+| colour, color, dark mode, theme, contrast, token, font, typography, palette, status colour | [theme](theme.md) | contrast-check (both themes), colour-check (both themes) |
 | animation, transition, motion, easing, hover effect, press, reduced motion | [motion](motion.md) | motion-check |
 | diagram, flowchart, architecture, sequence, state machine, swimlane, boxes and arrows | [diagram](diagram.md) | diagram-check |
 

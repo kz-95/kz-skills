@@ -169,6 +169,7 @@ The figures behind text and surfaces.
 | Y1 | **Type is a role scale, not a set of sizes.** Name the roles the screen needs - heading, body, label, metadata, data - and give each one size, weight and spacing that tell it apart at a glance from the one next to it. Body prose stays between 45 and 75 characters per line and floors at 16px, and so does any input the user can focus on a phone - below that the browser zooms the page as the field takes focus and moves the form out from under the finger. Numbers that sit in a column, a total or a readout use tabular figures, or the digits shift under their own sort. See Appendix Q. |
 | Y2 | **Text over a variable background needs a contrast decision, and there are only two.** Either raise the contrast of the text or the background, or give the text an outline, shadow or backing. A label that can land on a filled mark, an image or a chart series gets one of them, chosen deliberately. Muted grey for something that names a thing is the default that fails both ways: it is chrome colour doing content work. **The pass mark is a number, and the numbers live in Appendix Q** - one place, so they cannot drift apart. On a coloured surface, tint secondary text from that hue rather than reaching for grey. See Appendix Q. |
 | Y3 | **A theme is derived from tokens, and it covers the chrome as well as the content.** Never a second hand-written stylesheet for dark mode. Scrollbar, selection, caret, focus ring, placeholder, autofill and form controls all take theme tokens - and the scrollbar is the one that is missed, on every long page, which makes it the thing to check before calling a theme finished. See Appendix E. |
+| Y4 | **A colour means one thing.** Status colours (good, warning, bad) carry status and nothing else; the accent means "you can act on this" and sits only on what can be acted on; an identity colour (a category, a currency, a person) stays at least 30 degrees of hue from every status colour and at least delta-E 18 from every other identity, so nothing reads as an alert and no two neighbours blur. An identity colour is stored with the record it marks: reordering a palette never recolours existing data. A colour the user picks near a status hue gets a warning, never a ban. `colour-check.js` measures it (`ACCENT STATIC`, `NEAR STATUS`, `TOO CLOSE`). See Appendix Y. |
 
 ### M: Motion
 
@@ -213,6 +214,7 @@ What has to be true on every path, and what is checked before done.
 | V1 | **Paint state from the state, not at the event that changed it.** `aria-sort`, `aria-pressed`, a caption, a count, a highlight: they are derived from the one variable that holds the truth, wherever that derivation happens for this stack - inside the draw in an imperative renderer, in the render from props or state in a declarative one. What is forbidden is assigning them from the handler that changed the state, because every other path to that state - a reset, a keyboard shortcut, a restore from the address - then leaves the old rendering behind. **The test:** if the state can be changed by more than one path, is the rendering done by all of them, or once where they all end up? See Appendix M. |
 | V2 | **An early return is a path.** Whatever a render owns has to happen on every path through it, including the one that draws nothing. Shared state that several parts read - a selection, a readout, a count, a highlight - is maintained in the one place they all pass through, not in each part where an empty guard can return before it. Rule V1 says where a rendering is derived from; this says which paths have to reach it. **The test:** does the empty path leave the screen as true as the path that draws? See Appendix M. |
 | V3 | **Verify the layout, not only the behaviour.** Behaviour tests pass while the layout silently breaks: overflow, collisions, clipped text. Run the layout audit at every width the README names, the narrowest of them being the narrowest the project supports, before saying done. That pass is not a later one: it is where this entire class of defect hides, and every defect listed in Appendix K was invisible at the comfortable width. See Appendix K. |
+| V4 | **One quantity, one value, on every screen, and the parts add up.** A figure the user can see in two places - a balance, the amount left, a total, a share - is read from one function, never recomputed per screen, so the two cannot disagree. Shown parts add up to the shown total after rounding: round the parts, then derive the last one from the rounded others (or the total from the rounded parts), never round each on its own. Mark every element that shows a quantity `data-quantity="<name>"`, a total `data-total="<name>"` and its parts `data-part-of="<name>"`; `agree-check.js` fails a mismatch (`DISAGREE`, `SUM`). See Appendix V. |
 
 ## Open questions
 
@@ -2277,6 +2279,87 @@ check that reads the mark in the same tick that moved the page will report every
 broken and be wrong; wait for it to settle. And a programmatic scroll does not always emit
 the event the handler listens for, so a sweep that passes by setting a scroll position can
 still be broken for a human - dispatch the event, or scroll for real.
+
+---
+
+## Appendix V: One quantity, one value (rule V4)
+
+The costliest defect in the offline currency app was not a layout or a colour. The amount left
+today read "W12,500 left" on one screen and "W10,400 over" on another, the ring and the card
+under it disagreed by 0.01, and it took eight build and review rounds to stop finding new
+ones, because every reviewer found the next mismatch, never the cause.
+
+### Two causes, and only two
+
+- **The figure is computed more than once.** Each screen derives "left" from the trip, the day
+  and the carry-over in its own way - one includes yesterday's overspend, one does not; one
+  rounds before subtracting, one after. Each is plausible on its own screen. The fix is one
+  function per quantity, called by every screen that shows it, never a second formula.
+- **The parts are rounded on their own.** Three people split RM 100.00: 33.333 rounds to 33.33
+  three times, and the parts on screen add up to 99.99 under a total of 100.00. Round the
+  parts, then derive the last one from the rounded others (100.00 - 33.33 - 33.33 = 33.34), or
+  derive the total from the rounded parts; the shown figures then add up by construction.
+
+```js
+/* split a total into shown parts that add up to it: round all but the last, derive the last */
+function splitShown(total, weights, dp) {
+  var f = Math.pow(10, dp), sum = weights.reduce(function (a, w) { return a + w; }, 0);
+  var parts = weights.slice(0, -1).map(function (w) { return Math.round(total * w / sum * f) / f; });
+  parts.push(Math.round((total - parts.reduce(function (a, p) { return a + p; }, 0)) * f) / f);
+  return parts;
+}
+```
+
+### Mark it, so it can be measured
+
+`data-quantity="left-today"` on every element that shows that figure, on every screen;
+`data-total="split"` on a total and `data-part-of="split"` on each of its parts. `agree-check.js`
+reads the first number in each marked element's text, hidden screens included, and fails
+`DISAGREE` when one quantity shows two values and `SUM` when the parts do not add up at the
+most decimals any of them shows. A page that marks nothing gets an advisory, not a pass.
+
+### Test it with data nobody chose
+
+The mismatches the session found lived in seeded states: a split bill, an overspent day, a
+settled debt. A test that seeds random records, renders every screen and compares each marked
+figure with the model's own value finds them in one run; a reviewer reading screens finds them
+one at a time. Write that test outside the project unless the project asked for one (29e).
+
+---
+
+## Appendix Y: A colour means one thing (rule Y4)
+
+Contrast (Y2) says whether a colour can be read. This says what it is allowed to say. The
+offline currency app had to invent these rules mid-build: a pink currency read as "over budget"
+red, the accent teal sat on static totals so users tapped them, and reordering the palette
+recoloured every existing currency because the colour was taken from the list position.
+
+### Three jobs, kept apart
+
+- **Status** - good, warning, bad - is carried by the status tokens and nothing else. A status
+  hue on a category makes the category read as an alert.
+- **The accent** means "you can act on this": buttons, links, selected controls, focus. On a
+  static figure it teaches users to tap things that do nothing (rule B3 from the other side).
+  A status shown in the accent - "Status: pending" in brand teal - is the commonest case.
+- **Identity** - a currency, a category, a person - gets its own palette: at least 30 degrees
+  of hue from every status colour, and at least delta-E 18 (CIE76, in Lab) between any two
+  identities, so neighbours in a list or a legend never blur.
+
+### Identity belongs to the record
+
+Store the identity colour with the record it marks, the moment it is assigned. A colour derived
+from a palette position changes when the palette is reordered or an item is removed, and
+existing data silently changes colour. A colour the user picks is theirs: near a status hue it
+gets a warning ("this reads like Over"), never a refusal, and never a quiet replacement.
+
+### Mark it, so it can be measured
+
+`data-identity="<name>"` on each element that shows an identity colour (a swatch, a dot, a
+chip); `data-user-colour` on one the user picked. `colour-check.js` resolves the page's own
+tokens (`--accent`, and `--ok`, `--warn`, `--danger` and their usual synonyms) through the
+cascade, so it measures the theme on screen, and reports `ACCENT STATIC`, `NEAR STATUS` (an
+advisory for a user's own colour) and `TOO CLOSE`. Chart marks drawn in SVG or canvas are left
+to C7.
 
 ---
 

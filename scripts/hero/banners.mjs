@@ -7,7 +7,7 @@ const OUT = "../../docs/assets/banners";
 const BANNERS = [
   { name: "covers", text: "WRONG / RIGHT", shape: "butterfly", accentFrom: 8, label: "Wrong / right" },
   { name: "measured", text: "MEASURED", shape: "trapezoid", accentFrom: -1, label: "Measured" },
-  { name: "loads", text: "94 RULES > 1 PACK", shape: "funnel", accentFrom: 11, label: "94 rules to 1 pack" },
+  { name: "loads", text: "96 RULES > 1 PACK", shape: "funnel", accentFrom: 11, label: "96 rules to 1 pack" },
 ];
 
 mkdirSync(OUT, { recursive: true });

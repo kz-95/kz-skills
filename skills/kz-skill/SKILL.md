@@ -18,10 +18,10 @@ is not a command: its parent reads it.
 | `../kz-flashrule/` | The core: the twenty-odd rules agents break most, each with its ID and check, on one page. Everything else is one pack per type of work, through `../kz-uiuxrule/packs/LOOKUP.md` |
 | `../kz-askcard/` | About to ask the user something. Three to five decisions, one recommended, a custom option, a default per line, one card per turn |
 | `../kz-crew021/` | A whole project, idea to maintenance: phases, scope relay, PoC spike, contract-first parallel build, dispatch gates, budget, retro |
-| `../kz-uiuxrule/` | Creating, changing, reviewing or standardising UI beyond one element - 57 UI rules, 6 motion, 21 chart, 10 diagram, 16 principles, four modes |
+| `../kz-uiuxrule/` | Creating, changing, reviewing or standardising UI beyond one element - 59 UI rules, 6 motion, 21 chart, 10 diagram, 16 principles, four modes |
 | `../kz-motionrule/` | Only motion: an animation, a transition, an easing curve, a press or hover effect, an entrance. The six M rules and the motion check |
 | `../kz-diagramrule/` | Only a diagram: architecture, flowchart, sequence, state machine, data model, swimlane. The ten G rules and the diagram check |
-| `../kz-uicheck/` | Measuring UI: twelve paste-in console checks (layout, tables, typing, popovers, contrast, modals, focus, forms, motion, diagrams, toasts, explainers), on any page |
+| `../kz-uicheck/` | Measuring UI: fourteen paste-in console checks (layout, tables, typing, popovers, contrast, modals, focus, forms, motion, diagrams, toasts, explainers, figures that must agree, what a colour means), on any page |
 | `../kz-judge/` | After `kz-uicheck`: the wording rules a script cannot measure, judged by a local Laya at no cost to the agent's tokens. Skips cleanly when Laya is not present |
 | `../kz-reflect/` | Something went wrong, a person noticed, the fix is verified: log it, classify it, propose the rule or check change for a person to approve. Never edits a shared rule itself |
 | `../kz-loopfix/` | One broken thing where "fix it and move on" already failed once: critic <-> fixer to agreement, then a gate rules on whether the agreement is true |

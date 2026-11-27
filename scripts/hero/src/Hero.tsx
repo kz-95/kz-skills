@@ -53,7 +53,7 @@ export const Hero: React.FC = () => {
       </TransitionSeries.Sequence>
       <TransitionSeries.Sequence name="Close" durationInFrames={3.5 * fps} premountFor={fps}>
         <Close
-          headline="94 rules. 12 checks. Any stack."
+          headline="96 rules. 14 checks. Any stack."
           install="npx skills add kz-95/kz-skills"
           posterHeadline="kz-skills"
           posterLine="UI rules for AI coding agents, each with a browser check that measures it."

@@ -102,7 +102,7 @@ export const RemotionRoot: React.FC = () => {
           width={1200}
           height={675}
           defaultProps={{
-            headline: "94 rules. 12 checks. Any stack.",
+            headline: "96 rules. 14 checks. Any stack.",
             install: "npx skills add kz-95/kz-skills",
             posterHeadline: "kz-skills",
             posterLine: "UI rules for AI coding agents, each with a browser check that measures it.",

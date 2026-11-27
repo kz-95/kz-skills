@@ -1075,6 +1075,12 @@ tbody tr.offrow td:first-child::after{content:" (not drawn)";color:var(--muted);
   font-size:12px;font-weight:700;color:var(--surface);background:var(--up)}
 .d6err{border-color:var(--down)}
 .d6err .d6ico{background:var(--down)}
+.v4card,.y4row{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);align-items:baseline;padding:var(--s2) var(--s3);
+  border:1px solid var(--line);border-radius:var(--r);background:var(--surface-2)}
+.v4card b,.y4row b{font-variant-numeric:tabular-nums}
+.v4parts{display:flex;gap:var(--s3);color:var(--muted);font-variant-numeric:tabular-nums}
+.y4sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px}
+.y4bad-total{color:var(--accent)}
 .rhythm-bad h3,.rhythm-bad p{margin:0 0 var(--s3)}
 .rhythm-good h3{margin:var(--s5) 0 var(--s2)}
 .rhythm-good h3:first-child{margin-top:0}
@@ -1405,7 +1411,7 @@ section[id]{scroll-margin-top:56px}
       <div class="tag">Right: scale and tokens</div>
       <div class="body spacing-good">
         <div>Row one</div><div>Row two</div><div>Row three</div>
-        <div style="color:var(--accent)">Status: pending</div>
+        <div style="color:var(--muted)">Status: pending</div>
       </div>
       <div class="body" style="padding-top:0"><div class="sw">
         <span style="background:var(--bg)"></span><span style="background:var(--surface)"></span>
@@ -1413,7 +1419,8 @@ section[id]{scroll-margin-top:56px}
         <span style="background:var(--up)"></span><span style="background:var(--down)"></span>
       </div></div>
       <p class="note">Every gap is <code>var(--s3)</code>; the colour is
-      <code>var(--accent)</code>, redefined once for dark mode.</p>
+      <code>var(--muted)</code>, redefined once for dark mode - not the accent, which means
+      "you can act on this" (Y4).</p>
     </div>
   </div>
 </section>
@@ -3155,6 +3162,39 @@ section[id]{scroll-margin-top:56px}
   </div>
 </section>
 
+<section id="y4-meaning">
+  <h2>Rule Y4: a colour means one thing</h2>
+  <p class="rule">Status colours carry status, the accent marks what can be acted on, and an
+  identity colour stays 30 degrees of hue from every status colour and delta-E 18 from every
+  other identity. It is stored with its record, so reordering a palette recolours nothing.</p>
+  <div class="pair">
+    <div class="demo wrong">
+      <div class="tag">Wrong: three meanings for one colour</div>
+      <div class="body stack" id="y4Bad" data-colour-check="skip">
+        <div class="y4row">Spent this trip <b class="y4bad-total" id="y4BadTotal" data-contrast-check="skip">W54,000</b></div>
+        <div class="y4row"><span><span class="y4sw" data-identity="y4-krw" style="background:#d6336c"></span>KRW</span>
+          <span><span class="y4sw" data-identity="y4-jpy" style="background:#3b5bdb"></span>JPY</span>
+          <span><span class="y4sw" data-identity="y4-usd" style="background:#4263eb"></span>USD</span></div>
+      </div>
+      <p class="note">The total is in the accent, so it looks tappable and is not. KRW's pink
+      is 27 degrees from the red that means "over", so the currency reads as an alert. JPY and
+      USD are delta-E 5 apart. <code>colour-check.js</code> reports <code>ACCENT STATIC</code>,
+      <code>NEAR STATUS</code> and <code>TOO CLOSE</code>.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: status, action and identity kept apart</div>
+      <div class="body stack" id="y4Good">
+        <div class="y4row">Spent this trip <b>W54,000</b> <button class="btn" type="button" data-tip="Add an expense to this trip">Add expense</button></div>
+        <div class="y4row"><span><span class="y4sw" data-identity="y4ok-krw" style="background:#7048e8"></span>KRW</span>
+          <span><span class="y4sw" data-identity="y4ok-jpy" style="background:#0c8599"></span>JPY</span>
+          <span><span class="y4sw" data-identity="y4ok-usd" style="background:#ae3ec9"></span>USD</span></div>
+      </div>
+      <p class="note">The figure is in the text colour; the accent is on the one thing you can
+      press. The three identities sit well clear of green and red and of each other.</p>
+    </div>
+  </div>
+</section>
+
 <h2 class="grp-hd" id="m">M - Motion</h2>
 <p class="grp-lede">Whether something moves, how it moves, and how fast the interface answers.
 The rules live in <code>motion-rules.md</code>; M1 is shown with Y3 above.</p>
@@ -3734,6 +3774,38 @@ bigger than the mock.</p>
         compare <code>scrollHeight</code> against <code>clientHeight</code> - the same
         comparison <code>layout-audit.js</code> makes across the whole page.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="v4-agree">
+  <h2>Rule V4: one quantity, one value, and the parts add up</h2>
+  <p class="rule">A figure shown in two places is read from one function, so the two cannot
+  disagree. Shown parts add up to the shown total: round the parts, then derive the last one
+  from the rounded others.</p>
+  <div class="pair">
+    <div class="demo wrong">
+      <div class="tag">Wrong: two formulas, three roundings</div>
+      <div class="body stack" id="v4Bad" data-agree-check="skip">
+        <div class="v4card">Today <b data-quantity="v4-left">W12,500 left</b></div>
+        <div class="v4card">Budget card <b data-quantity="v4-left">W12,400 left</b></div>
+        <div class="v4card">Dinner for three <b data-total="v4-split">RM 100.00</b>
+          <span class="v4parts"><span data-part-of="v4-split">33.33</span><span data-part-of="v4-split">33.33</span><span data-part-of="v4-split">33.33</span></span></div>
+      </div>
+      <p class="note">The budget card computes "left" without yesterday's carry-over, and each
+      share is rounded on its own, so the three add up to 99.99 under a total of 100.00.
+      <code>agree-check.js</code> reports <code>DISAGREE</code> and <code>SUM</code>.</p>
+    </div>
+    <div class="demo right">
+      <div class="tag">Right: one function, the last part derived</div>
+      <div class="body stack" id="v4Good">
+        <div class="v4card">Today <b data-quantity="v4ok-left">W12,500 left</b></div>
+        <div class="v4card">Budget card <b data-quantity="v4ok-left">W12,500 left</b></div>
+        <div class="v4card">Dinner for three <b data-total="v4ok-split">RM 100.00</b>
+          <span class="v4parts"><span data-part-of="v4ok-split">33.33</span><span data-part-of="v4ok-split">33.33</span><span data-part-of="v4ok-split">33.34</span></span></div>
+      </div>
+      <p class="note">Both cards call the same <code>leftToday()</code>; the last share is
+      100.00 - 33.33 - 33.33. Every figure is marked, so the check can compare them.</p>
     </div>
   </div>
 </section>
