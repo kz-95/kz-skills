@@ -2,6 +2,7 @@
 
 > **Latest:** [AFTER 3: type routing (2026-11-20)](#after-3-type-routing-2026-11-20), at the end, measures the current skills on eight tasks.
 > The sections before it measure earlier versions of the skills; compare factors within one section only.
+> **Every "390px" check result in this file was measured at 500px.** Headless Chrome would not size its window below 500px and `run-checks.py` sized the window, so defects that only appear between 390 and 500px were not counted, in every condition alike. `run-checks.py` now runs the page in a frame of the exact width; the numbers here are not re-scored.
 
 Baseline numbers for the kz skills on small single-file HTML tasks, taken on 2026-10-14 before
 any change to the skills. The harness is `scripts/bench/` (see its README); re-run it for AFTER.
@@ -966,6 +967,7 @@ Over all 80 comparisons the judge gave 23 to the kz page, 34 to none and called 
 ### Limits and what is unreliable
 
 - Two or three runs per cell: a factor moves 0.2x to 0.3x between batches on the same skills, so read 1.6x against 1.3x as "slower", not as a measured 25%.
+- The kz checks "at 390" ran at 500px (a headless Chrome window limit, since fixed in `run-checks.py`); phone-only defects narrower than 500px are missing from every condition's count.
 - The undo-toast rubric was written with the toast rules in mind; the judge is the independent read of that task, and it disagreed.
 - Scoring `before` with checks it never saw favours `after` on undo-toast and tooltips; the rubric and the judge do not have that bias.
 - Lighthouse saturates (accessibility 1.00, best practices 0.96 everywhere), and axe serious+critical is 0 to 1.5 per condition, too few to rank.

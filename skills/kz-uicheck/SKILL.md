@@ -48,6 +48,23 @@ Headless Chrome on a local HTML file (needs only Python and Chrome); exits 1 if 
 fails, so a generated page can be checked in a script or pre-commit step. One width per run.
 Without `--checks` it runs all twelve: the large path only (a release, an audit, mode 4). The fast
 lanes (`kz-fastfix`, `kz-flashrule`) pass `--checks <the one check>` and never call it bare.
+The page runs in a frame of exactly `--width` by `--height`, so 375px is 375px on any Chrome.
+`--setup state.js` runs a script after load and before the taps, to seed records or open a state
+no URL reaches; a setup that throws fails the run with `WRONG SCREEN`.
+
+## Inside a Playwright test: `scripts/kz-checks.mjs`
+
+```js
+import { runChecks, assertClean } from '<path>/kz-uicheck/scripts/kz-checks.mjs';
+await page.setViewportSize({ width: 375, height: 800 });   // a context with hasTouch for touch
+const results = await runChecks(page, ['layout-audit', 'popover-check']);
+assertClean(results);   // throws with every finding
+```
+
+The same check files, run in the page your test already drove into the state the bug lives in
+(a split bill, an open sheet, a filter on). Checks run one after another on that live page; the
+ones that type or press (`form-check`, `typing-check`, `toast-check`) run last. A CommonJS test
+loads it with `await import()`.
 
 ## What these cannot measure
 

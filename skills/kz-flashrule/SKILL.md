@@ -38,7 +38,7 @@ The "Fast check" column names what to look for, not extra checks to run; write n
 | F9 | Enter moves to the next field; only the last submits. | `typing-check` `ENTER`. |
 | N1 | A modal locks scroll, focus and clicks behind it; Escape closes it and focus returns to the trigger. | `modal-check` `SCROLL`, `BACKDROP`, `ESCAPE`, `FOCUS`, `RETURN`. |
 | N2 | Every panel closes by its trigger, an outside tap, Escape, and Done on touch. | `popover-check` `STUCK`, `OUTSIDE`, `ESCAPE`, `NODONE`. |
-| V3 | The layout holds at 375px with touch: nothing overflows, clips or overlaps; tap targets are 44px. | `layout-audit` `OVERFLOW`, `CLIPPED`, `TEXT OVERLAP`, `SMALL TOUCH TARGET`. |
+| V3 | The layout holds at 375px with touch: nothing overflows, clips or overlaps (text into text included); tap targets are 44px. | `layout-audit` `OVERFLOW`, `CLIPPED`, `TEXT OVERLAP`, `SMALL TOUCH TARGET`. |
 | L5 | Controls in one row share one height. | `layout-audit` `RAGGED ROW`. |
 | Y2 | Text meets 4.5:1 (3:1 large) on its real background, in both themes. | `contrast-check` `LOW`, with `--scheme both`. |
 | Y3 | A theme is derived from tokens and covers the chrome, scrollbar included; no undefined `var(--x)`. | `layout-audit` `UNDEFINED TOKEN`; `contrast-check` in the other theme. |

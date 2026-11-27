@@ -35,6 +35,9 @@ python run-checks.py app.html --hash orders --storage state.json --tap "#tab-ope
 - `--tap SELECTORS` clicks each selector in order after load, about 150ms apart; each target must be visible, as it would have to be for a person.
 - `--wait SELECTOR` must exist and be visible before the check runs.
 - `--expect TEXT` must be visible text on the page before the check runs.
+- `--setup FILE` runs a script after load and before the taps; it may be async. Use it to seed records through the page's own functions or open a state no URL reaches. A setup that throws fails the run with `WRONG SCREEN: setup failed`.
+
+A state only a test can build (records created through the UI, a sheet opened after a filter) is reached from the test itself: `scripts/kz-checks.mjs` runs the same checks inside a Playwright page as it is (`runChecks(page, [...])`, `assertClean(results)`).
 
 If a tap target is missing or hidden, or the wait or the text never shows within about 3s, the run fails with `WRONG SCREEN: ...` and exits 1.
 A check that saw the wrong screen counts as failed, never as clean.
@@ -46,6 +49,8 @@ The full close-out runs the layout audit at a wide width, a narrow one, and **37
 emulation**. A scoped run uses 375px alone. 375px is never optional: it is the only
 width that exercises the 44px tap-target rule, and the width at which the typing check finds
 anything at all - the defects it reports do not exist on a desktop.
+
+**Headless Chrome will not make a window narrower than 500px**, so a 375px run that sizes the window measures a 500px page and misses every phone-width defect while reporting clean. `run-checks.py` loads the page in a frame of exactly the asked size instead (before this fix, its 375px and 390px runs were 500px). In your own harness, size the viewport (Playwright `viewport`, CDP `Emulation.setDeviceMetricsOverride`), never only the window, and assert `innerWidth` before trusting a narrow-width result.
 
 `run-checks.py` emulates the pointer to match: a mouse that hovers above 480px, touch at 480px and below.
 Pass `--pointer fine` or `--pointer touch` to choose.

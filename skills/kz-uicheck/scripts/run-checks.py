@@ -14,6 +14,9 @@ Screen targeting: a check measures whatever screen is showing, so point it at th
     --tap SELECTORS   comma list, clicked in order after load, about 150ms apart
     --wait SELECTOR   must exist and be visible before the check runs
     --expect TEXT     visible text that must be on screen before the check runs
+    --setup FILE      a script run after load and before the taps (it may be async): seed records
+                      through the page's own functions, open a state no URL reaches. A setup that
+                      throws fails the run with WRONG SCREEN
 A tap target that is missing, or a --wait / --expect that never shows within about 3s, makes the
 run FAIL with "WRONG SCREEN: ...". A check that saw the wrong screen is never a silent clean.
 
@@ -100,8 +103,10 @@ def main():
     ap.add_argument("--tap", default="", help="comma list of selectors clicked in order after load, about 150ms apart")
     ap.add_argument("--wait", help="selector that must exist and be visible before the check runs")
     ap.add_argument("--expect", help="visible text that must be on screen before the check runs")
+    ap.add_argument("--setup", help="JS file run after load, before the taps; may be async; a throw fails the run")
     a = ap.parse_args()
     a.hash = a.hash.lstrip("#")
+    setup_src = open(a.setup, encoding="utf-8").read() if a.setup else ""
     taps = [t.strip() for t in a.tap.split(",") if t.strip()]
 
     page = os.path.abspath(a.page)
@@ -133,7 +138,9 @@ def main():
                  " function kzSleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }"
                  " async function kzPoll(test) { for (var i = 0; i < 30; i++) { if (test()) return true;"
                  " await kzSleep(100); } return test(); }"
-                 " async function kzScreen() { var taps = %s, wait = %s, expect = %s;"
+                 " async function kzScreen() { var taps = %s, wait = %s, expect = %s, setup = %s;"
+                 " if (setup) { try { await (0, eval)(setup); } catch (e) { return 'WRONG SCREEN: setup failed: ' + e; }"
+                 " await kzSleep(150); }"
                  " for (var i = 0; i < taps.length; i++) { var sel = taps[i];"
                  " var ok = await kzPoll(function () { return document.querySelector(sel); });"
                  " if (!ok) return 'WRONG SCREEN: tap target ' + sel + ' not found';"
@@ -148,15 +155,17 @@ def main():
                  " return 'WRONG SCREEN: ' + wait + ' never appeared';"
                  " if (expect && !(await kzPoll(function () { return (document.body.innerText || '').indexOf(expect) >= 0; })))"
                  " return 'WRONG SCREEN: text \"' + expect + '\" never appeared';"
-                 " return ''; }" % (js(taps), js(a.wait or ""), js(a.expect or "")))
+                 " return ''; }" % (js(taps), js(a.wait or ""), js(a.expect or ""), js(setup_src)))
 
     def with_runner(src):
         """The page with one check appended, run once it has loaded."""
         runner = ("<script>" + screen_js + " window.addEventListener('load', function () { (async function () {"
+                  " try { window.focus(); } catch (e) {}"
                   " var out; try { var bad = await kzScreen(); out = bad ? bad : await (0, eval)(%s); }"
                   " catch (e) { out = 'ERROR ' + e; }"
                   " var pre = document.createElement('pre'); pre.id = 'kz-check-results';"
-                  " pre.textContent = JSON.stringify(out); document.body.appendChild(pre); })(); });</script>"
+                  " pre.textContent = JSON.stringify(out); document.body.appendChild(pre);"
+                  " if (window.parent !== window) window.parent.postMessage({ kz: JSON.stringify(out) }, '*'); })(); });</script>"
                   % js(src))     # a "</script>" inside a check must not end this tag
         k = raw.lower().rfind("</body>")
         return raw[:k] + runner + raw[k:] if k >= 0 else raw + runner
@@ -168,14 +177,26 @@ def main():
         try:
             f = os.path.join(tmp, "page.html")
             open(f, "w", encoding="utf-8").write(with_runner(src))
+            # Headless Chrome will not make a window narrower than 500px (or quite as tall as asked),
+            # so --window-size=375 measured a 500px page and every phone-width finding was silently
+            # missed. The page runs in a frame of exactly the asked size instead: its width, height
+            # and media queries are the asked ones on any Chrome, and the frame posts the result up.
+            frame = os.path.join(tmp, "frame.html")
+            open(frame, "w", encoding="utf-8").write(
+                "<!doctype html><html><head><meta charset='utf-8'><style>html,body{margin:0;overflow:hidden}"
+                "iframe{border:0;display:block}</style></head><body><iframe width='%d' height='%d' src='page.html%s'"
+                " onload='this.contentWindow.focus()'>"
+                "</iframe><script>addEventListener('message', function (e) { if (e.data && e.data.kz) {"
+                " var p = document.createElement('pre'); p.id = 'kz-check-results'; p.textContent = e.data.kz;"
+                " document.body.appendChild(p); } });</script></body></html>"
+                % (a.width, a.height, ("#" + html.escape(a.hash, quote=True)) if a.hash else ""))
             flags = [find_chrome(), "--headless=new", "--disable-gpu", "--no-first-run", "--hide-scrollbars",
-                     "--window-size=%d,%d" % (a.width, a.height),
+                     "--window-size=%d,%d" % (max(a.width, 500) + 40, a.height + 200),
                      # headless Chrome reports pointer: none and hover: none unless told otherwise, so a check
                      # that tests the hover path (explain-check) would never see one
                      "--blink-settings=preferredColorScheme=%d,%s" % (0 if scheme == "dark" else 1, POINTER[pointer]),
                      "--user-data-dir=" + os.path.join(tmp, "profile"),
-                     "--virtual-time-budget=300000", "--dump-dom",
-                     Path(f).as_uri() + ("#" + a.hash if a.hash else "")]
+                     "--virtual-time-budget=300000", "--dump-dom", Path(frame).as_uri()]
             if a.local_fetch:
                 flags.insert(1, "--allow-file-access-from-files")
             if hasattr(os, "geteuid") and os.geteuid() == 0:
@@ -184,6 +205,7 @@ def main():
             r = subprocess.run(flags, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
         finally:
             shutil.rmtree(tmp, ignore_errors=True)    # leave nothing behind, even when Chrome fails
+        # the frame's copy, posted up by the page; the dump holds only the top document
         m = re.search(r'<pre id="kz-check-results">(.*?)</pre>', r.stdout, re.S)
         if not m:
             return "ERROR the check did not finish. Chrome said: " + r.stderr[-400:]
@@ -194,6 +216,7 @@ def main():
     screen = ", ".join(x for x in [
         "#" + a.hash if a.hash else "",
         "storage " + os.path.basename(a.storage) if a.storage else "",
+        "setup " + os.path.basename(a.setup) if a.setup else "",
         "tap " + " > ".join(taps) if taps else "",
         "wait " + a.wait if a.wait else "",
         'expect "%s"' % a.expect if a.expect else ""] if x) or "first screen after load"
