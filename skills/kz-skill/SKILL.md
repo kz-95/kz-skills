@@ -62,7 +62,8 @@ rules and checks, which this keeps.
 3. **Checks are scoped and run once.** Fix what a check reports, then re-run only that check;
    never the full suite after a targeted fix. Both themes only when colour or theme changed.
    The full suite only for mode 4, "make it production", or before a release. "To be safe" is
-   not a reason to run more; no harness or test script of your own to check a page, either.
+   not a reason to run more. A scratch probe outside the project is for reproducing a reported
+   bug or reaching a state no check can, never a second copy of a check that covers the change.
 4. **Follow-ups stay light.** Do not re-read a pack or rule already read in this session, and
    do not ask the first-call card again; check only what the follow-up touched.
 5. **Nothing unasked.** A check left behind in the user's project is opt-in (mode 4, or the
@@ -70,9 +71,37 @@ rules and checks, which this keeps.
    was not requested (engineering rule 28).
 6. **Small work goes to `kz-fastfix`.** A one-element or one-line change does not open the
    rule corpus.
+7. **A correction becomes a lesson.** When the user corrects the work and the fix is verified,
+   offer `kz-reflect` in one line before moving on. A long session never reaches a close-out,
+   so a correction not logged when it happens is lost. The purpose hook reminds you
+   (`../kz-askcard/hooks/`).
 
 Speed never scales the floor down: the safety floor, `S1` (a table still ships the T1 filter
 panel) and `S2` hold at every size.
+
+## Delegating to subagents
+
+A builder or reviewer you dispatch has not read these skills, and rules copied into its brief
+from memory drift and lose the ones you forgot. Paste this block into every brief for UI work
+instead, with the type and size you already decided:
+
+```
+UI RULES (kz-skills). Before any work, read kz-flashrule/SKILL.md (one page), then
+kz-uiuxrule/packs/LOOKUP.md and the one pack for: <type>. Size: <trivial|component|project>.
+Cite rule IDs (T1, F8, N1) in what you report; the rule text wins over this brief.
+Always: ASCII only; 44px targets and 16px inputs at 375px; contrast in both themes; a modal
+or panel closes by its trigger, an outside tap, Escape and Done; no transition: all, no
+ease-in; nothing written into the project that was not asked for.
+Check with kz-uicheck: python kz-uicheck/scripts/run-checks.py <page> --checks <the pack's>
+--width 375, on the screen the work is on (--hash/--storage/--tap/--wait). Paste what it
+printed. A scratch probe outside the project is fine to reach a state no check can.
+Project size: keep the rule ledger (kz-uiuxrule/scripts/ledger.py) and report its status.
+```
+
+**Money, totals and anything that must add up get a reviewer that did not build it.** It
+seeds data, recomputes every figure from the model, and reports each mismatch with the screen
+and the number. In the session that taught this, a fresh reviewer found a real money bug in
+every round, and a builder reviewing its own work found none.
 
 ## How they stack
 

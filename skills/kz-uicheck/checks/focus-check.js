@@ -101,6 +101,9 @@
         if (first && !el.matches('[role="option"]') && ti === null) { add('UNREACH|' + kind(el), 'UNREACHABLE | ' + kind(el) + ' | role=' + (el.getAttribute('role') || '?') + ' but no tabindex: the keyboard cannot reach it', el); }
         return;
       }
+      /* A control that already holds the focus (autofocus, a deep link that opened a panel) would be
+         snapped focused as its own "before" and read as NOFOCUS: take the focus away first. */
+      if (document.activeElement === el) { el.blur(); void el.offsetWidth; }
       var wraps = [], up = el.parentElement;
       for (var h = 0; h < 3 && up && up !== document.body; h++, up = up.parentElement) { wraps.push({ n: up, s: snap(up) }); }
       var a = snap(el);

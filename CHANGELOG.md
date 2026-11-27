@@ -4,6 +4,16 @@ All notable changes to this repository. Format follows [Keep a Changelog](https:
 
 ## [Unreleased]
 
+### Changed (lessons from the offline currency app session)
+- **A scratch probe is allowed for reproducing a bug.** `kz-flashrule`, `kz-fastfix`, `kz-skill` and rule 29e said "write no harness, test or scratch copy of your own", which forbade the end-to-end reproduction a bug fix starts with. Now: nothing goes into the user's project unasked; a probe outside it, removed after, is right for reproducing a reported bug or reaching a state no check can, and never a second copy of a check that covers the change.
+- **Delegating to subagents** (`kz-skill`). A copy-paste brief block for every UI builder or reviewer, so helpers read kz-flashrule and the one pack instead of rules copied from memory; money, totals and anything that must add up get a reviewer that did not build it. `kz-crew021` points at it.
+- **A correction becomes a lesson.** Speed contract item 7 offers `kz-reflect` after a user correction is fixed and verified, and the purpose hook reminds the agent when a prompt after kz work reads like a correction.
+- **Rule 33 has one exception**: when the host refuses a push to any other branch, or the user names the branch, work on it and say so once in the pull request. `check-branch.py` reports the shapes hosts hand out (`claude/<words>-<id>`, `ccr-<hex>-<id>`, `codex/`, `copilot/`, `cursor/`) as a note; a made-up tool name still fails.
+- **K1 covers counts and money between people**: a count agrees with its noun, who owes whom is said in words, opposite-direction amounts are never joined by a minus, and a settled debt stops showing as owed.
+
+### Fixed
+- **`focus-check` no longer fails a control that already has the focus** when the check starts (autofocus, or a deep link that opened a panel). It snapped the focused state as its own "before" and reported `NOFOCUS`; it now takes the focus away first. A control with no focus indicator still fails.
+
 ### Changed
 - **The README reads like a poster.** The hero GIF opens on the name set as a poster headline, warped into a perspective rectangle on a blue panel, and closes on "94 rules. 12 checks. Any stack." Three sections open with a warped banner: a butterfly for wrong / right, a trapezoid for Measured, a funnel for 94 rules to 1 pack. Each banner has a light and a dark version that follows the reader's GitHub theme, alt text, and the real Markdown heading under it. Made by `scripts/hero` (`src/parts/Warp.tsx`, `npm run banners`).
 - **Type routing: one lookup, one pack, that pack's checks.** `skills/kz-uiuxrule/packs/LOOKUP.md` (about 2 KB) matches the task's words to one of ten generated packs (feedback, explain, table, chart, form, overlay, layout, theme, motion, diagram). Each pack holds its rules in full, the appendix it needs, the snippet to start from and the exact check command. `scripts/build-packs.py` writes them from the rule files, `scripts/build-index.py` calls it, and `scripts/validate.py` fails when a pack is out of date. Small and medium work now reads LOOKUP and one pack instead of `kz-flashrule` followed by `rules/INDEX.md`; `rules/INDEX.md` opens only when no pack covers the work.

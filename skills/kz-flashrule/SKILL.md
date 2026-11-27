@@ -15,7 +15,7 @@ Never run `run-checks.py` without `--checks`, never all checks, never a check th
 Label, text or style -> none, or `contrast-check` with `--scheme both` if a colour changed; table -> `table-check`; filter or dropdown -> `popover-check` (a chart filter -> `table-check`); form field -> `form-check`; toast -> `toast-check`; tooltip -> `explain-check`; layout -> `layout-audit` at 375px.
 A new screen: the check for its kind, then `layout-audit` at 375px; nothing else.
 **A check that saw the wrong screen counts as failed.** Point it at the work with `--hash ROUTE`, `--tap "#tab,#open"` and `--wait SELECTOR`; a run that prints WRONG SCREEN is a failure, never a clean result.
-The "Fast check" column names what to look for, not extra checks to run; write no harness, test or scratch copy of your own to check a page.
+The "Fast check" column names what to look for, not extra checks to run. Nothing is written into the user's project unasked. A scratch probe outside the project (the OS temp or a scratch folder, removed after) is fine to reproduce a reported bug end to end, or to reach a state no check can (a seeded record, an open sheet, a filter on); never as a second copy of a check that already covers the change.
 
 ## Floor
 

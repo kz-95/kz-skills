@@ -202,7 +202,7 @@ The words on the screen.
 
 | # | Rule |
 |---|---|
-| K1 | **UI copy is part of the design.** Buttons name the verb, errors say what to do next, empty states say how to start. No "Something went wrong" when the cause is known. |
+| K1 | **UI copy is part of the design.** Buttons name the verb, errors say what to do next, empty states say how to start. No "Something went wrong" when the cause is known. A count agrees with its noun ("1 day", "2 days"). Money between people says who owes whom in words ("Mina owes you W12,500"); two amounts that run in opposite directions are never joined by a minus sign, and a debt that was settled stops being shown as owed. |
 
 ### V: Verification
 

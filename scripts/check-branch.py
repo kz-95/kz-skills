@@ -4,6 +4,11 @@
 A branch is named after the work: feat/, fix/, docs/ or chore/ plus the work in
 kebab-case. Never a tool, model, agent or session name, and never a generated id.
 
+A branch a host assigns is the one exception: when the host refuses a push to any other
+branch, or the user names the branch, the work goes there and the pull request says so once.
+Such a name is reported as a note, not a failure. Only the shapes hosts actually hand out
+count (HOST below); a tool name an agent made up itself still fails.
+
 Usage: python scripts/check-branch.py [branch]
 With no argument it reads GITHUB_HEAD_REF (a pull request in CI), then the
 current git branch. main is allowed; it is never pushed to directly (rule 33),
@@ -22,6 +27,19 @@ TOOLS = (
     "cursor", "gemini", "bard", "devin", "aider", "windsurf", "cline", "amp",
     "opus", "sonnet", "haiku", "fable", "llm", "agent", "bot", "ai", "ccr",
 )
+
+
+# Shapes a host hands out: Claude Code on the web (claude/<words>-<id>), its cloud sessions
+# (ccr-<hex>-<id>), and the codex/, copilot/ and cursor/ prefixes those tools assign.
+HOST = (
+    r"claude/[a-z]+(?:-[a-z]+)+-[a-z0-9]{6}",
+    r"ccr-[0-9a-f]{8}-[a-z0-9]{5,}",
+    r"(?:codex|copilot|cursor)/[a-z0-9._-]+",
+)
+
+
+def host_assigned(name):
+    return any(re.fullmatch(h, name) for h in HOST)
 
 
 def problems(name):
@@ -62,6 +80,11 @@ if __name__ == "__main__":
         print("check-branch: detached HEAD, nothing to check")
         sys.exit(0)
     found = problems(name)
+    if found and host_assigned(name):
+        print("note: branch '%s' has the shape a host assigns. Allowed only when the host refuses" % name)
+        print("  pushes to any other branch or the user named it (rule 33); say so once in the pull")
+        print("  request. Otherwise rename it: git branch -m <prefix>/<the-work>")
+        sys.exit(0)
     if found:
         print("branch '%s' breaks rule 33 (skills/kz-engrules/rules/engineering-rules.md):" % name)
         for p in found:
