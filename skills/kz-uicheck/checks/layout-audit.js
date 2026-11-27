@@ -513,5 +513,59 @@
     });
   })();
 
+  /* 16. HTML text running into other HTML text (rules V3, P2). Section 9 measures text inside an
+     SVG; this measures every other text run. Two flex sides that each refuse to shrink, an
+     absolutely placed label over a long name, a badge laid on a heading: both runs are painted and
+     neither is readable, and it shows only with real content at a narrow width. Each run is one
+     text node's own box (a Range, so a wide parent does not count). Overlap under 3px each way is
+     kerning, not a collision. An overlay with its own background between the two (a sheet, a
+     modal, a tooltip) hides what is under it, which is not a collision either. Opt a deliberately
+     wrong sample out with data-layout-check="skip". */
+  (function () {
+    var runs = [], walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (!n.nodeValue.trim()) { return NodeFilter.FILTER_REJECT; }
+        var el = n.parentElement;
+        if (!el || el.closest('svg, script, style, noscript, template, [data-layout-check="skip"], [aria-hidden="true"]')) { return NodeFilter.FILTER_REJECT; }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    for (var n = walker.nextNode(); n && runs.length < 3000; n = walker.nextNode()) {
+      var r = document.createRange(); r.selectNodeContents(n);
+      var b = r.getBoundingClientRect();
+      if (b.width < 2 || b.height < 2) { continue; }
+      var cs = getComputedStyle(n.parentElement);
+      if (cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) { continue; }
+      runs.push({ n: n, el: n.parentElement, b: b });
+    }
+    function opaque(el) { var c = getComputedStyle(el).backgroundColor; return c && c !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(c); }
+    /* true when something with a background sits between the top run and the one under it */
+    function covered(top, under) {
+      for (var e = top; e && !e.contains(under); e = e.parentElement) { if (opaque(e)) { return true; } }
+      return false;
+    }
+    runs.sort(function (x, y) { return x.b.top - y.b.top; });
+    var seen = 0;
+    for (var i = 0; i < runs.length && seen < 10; i++) {
+      for (var j = i + 1; j < runs.length && runs[j].b.top < runs[i].b.bottom; j++) {
+        var a = runs[i], c = runs[j];
+        if (a.el === c.el || a.el.contains(c.el) || c.el.contains(a.el)) { continue; }
+        var ox = Math.min(a.b.right, c.b.right) - Math.max(a.b.left, c.b.left);
+        var oy = Math.min(a.b.bottom, c.b.bottom) - Math.max(a.b.top, c.b.top);
+        if (ox <= 3 || oy <= 3) { continue; }
+        var x = Math.max(a.b.left, c.b.left) + ox / 2, y = Math.max(a.b.top, c.b.top) + oy / 2;
+        var hit = document.elementFromPoint(x, y);
+        if (!hit) { continue; }
+        var top = a.el.contains(hit) || hit.contains(a.el) ? a : c.el.contains(hit) || hit.contains(c.el) ? c : null;
+        if (!top) { continue; }                           /* a third element covers both */
+        var under = top === a ? c : a;
+        if (covered(top.el, under.el)) { continue; }
+        seen++;
+        note('TEXT OVERLAP', a.el, JSON.stringify(a.n.nodeValue.trim().slice(0, 18)) + ' runs into ' +
+          JSON.stringify(c.n.nodeValue.trim().slice(0, 18)) + ' by ' + Math.round(ox) + 'x' + Math.round(oy) + 'px');
+      }
+    }
+  })();
+
   return problems.length ? problems : ['clean'];
 })();
