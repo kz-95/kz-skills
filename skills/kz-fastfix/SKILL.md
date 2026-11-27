@@ -21,8 +21,10 @@ style -> none, or `contrast-check.js` (`--scheme both`) if a colour changed; tab
 spacing, size or a new control -> `layout-audit.js` at 375px; a theme toggle -> `contrast-check`
 both themes, then `layout-audit` at 375px for the toggle. Run it on the screen the change is on
 (`--hash ROUTE`, `--tap "#tab,#open"`, `--wait SELECTOR`): a run that reports WRONG SCREEN
-is a failure, not a clean result. Write no harness, test or scratch copy of your own to check a
-page, in the project or a scratch folder.
+is a failure, not a clean result. Nothing is written into the user's project unasked. A scratch probe
+outside the project (the OS temp or a scratch folder, removed after) is fine to reproduce a
+reported bug end to end or to reach a state no check can; never as a second copy of a check
+that already covers the change.
 
 **First kz call in a session.** When this lane is the session's first kz call, the one card
 (type from `../kz-uiuxrule/packs/LOOKUP.md`, size) comes first, as the speed contract in

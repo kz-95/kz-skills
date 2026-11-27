@@ -63,6 +63,11 @@ phases (build = mode 3, CR = mode 2, preview = `ui-glance`, a Must at Production
 kickoff with existing rules = mode 1), the check list, Appendix Z (read before the first UI
 task) and `V3`/`N4`: `references/08-ui.md`.
 
+**Every brief for UI work carries the block in `../kz-skill/SKILL.md` ("Delegating to
+subagents")**, not rules copied from memory: a builder that never read kz-flashrule misses the
+rules its brief forgot. Money, totals and anything that must add up get a reviewer that did
+not build it.
+
 ## Sibling skill and script
 
 `../kz-loopfix/` - critic <-> fixer to agreement, then a gate rules whether it is true. For a

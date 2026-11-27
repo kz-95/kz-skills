@@ -185,20 +185,21 @@ function firstCallCard(skill, text) {
   ].join("\n");
 }
 
-function emit(payload) {
-  const skill = shortName(skillNameOf(payload));
-  if (!/^kz-/.test(skill)) { process.exit(0); }   /* every other skill passes through */
+/* A correction after kz work: "still", "wrong", "doesn't", "broken" in a prompt that is not a
+   slash command, in a session that already used a kz skill. A long session never reaches a
+   close-out step, so without this the corrections are fixed and forgotten. */
+const CORRECTION = /\b(still|wrong|broken|bug|not working|doesn'?t|didn'?t|isn'?t|won'?t|can'?t|missing|again|should(n'?t)? (be|have|not))\b/;
+const REFLECT = "AFTER THIS FIX IS VERIFIED, offer kz-reflect in one line (\"record this so it does not " +
+  "happen again?\"): a correction the user had to make is a lesson, and it is lost at the end of " +
+  "the session unless it is logged.";
 
-  const parts = [];
-  if (firstCall(payload)) {
-    let card = firstCallCard(skill, promptTextOf(payload));
-    if (CARDS[skill]) { card += "\nPut both lines on the same card as the one below: one card per turn."; }
-    parts.push(card);
-  }
-  if (CARDS[skill]) { parts.push(CARDS[skill]); }
-  if (!parts.length) { process.exit(0); }
-  const text = parts.join("\n\n");
+function kzUsed(payload) {
+  const id = payload.session_id || payload.sessionId || payload.conversation_id || "";
+  if (typeof id !== "string" || !id) { return false; }
+  return fs.existsSync(path.join(os.tmpdir(), "kz-first-call-" + id.replace(/[^\w.-]/g, "_").slice(0, 120)));
+}
 
+function say(payload, text) {
   const claudeShaped = "hook_event_name" in payload || "tool_name" in payload;
   if (claudeShaped) {
     process.stdout.write(JSON.stringify({
@@ -211,6 +212,27 @@ function emit(payload) {
     process.stdout.write(text + "\n");
   }
   process.exit(0);
+}
+
+function emit(payload) {
+  const skill = shortName(skillNameOf(payload));
+  if (!/^kz-/.test(skill)) {
+    const prompt = typeof payload.prompt === "string" ? payload.prompt : "";
+    if (prompt && !/^\s*\//.test(prompt) && kzUsed(payload) && CORRECTION.test(prompt.toLowerCase())) {
+      say(payload, REFLECT);
+    }
+    process.exit(0);   /* every other skill passes through */
+  }
+
+  const parts = [];
+  if (firstCall(payload)) {
+    let card = firstCallCard(skill, promptTextOf(payload));
+    if (CARDS[skill]) { card += "\nPut both lines on the same card as the one below: one card per turn."; }
+    parts.push(card);
+  }
+  if (CARDS[skill]) { parts.push(CARDS[skill]); }
+  if (!parts.length) { process.exit(0); }
+  say(payload, parts.join("\n\n"));
 }
 
 function safeEmit(payload) {
