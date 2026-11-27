@@ -49,7 +49,7 @@ POINTER = {"fine": "primaryHoverType=2,primaryPointerType=4,availableHoverTypes=
            "touch": "primaryHoverType=1,primaryPointerType=2,availableHoverTypes=1,availablePointerTypes=2"}
 ALL = ["layout-audit", "table-check", "typing-check", "popover-check", "contrast-check",
        "modal-check", "focus-check", "form-check", "motion-check", "diagram-check",
-       "toast-check", "explain-check"]
+       "toast-check", "explain-check", "agree-check", "colour-check"]
 
 
 def js(value):

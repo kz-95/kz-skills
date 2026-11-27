@@ -34,13 +34,13 @@ scoped out by anything.
 
 | If the task says | Category | Go to |
 |---|---|---|
-| table, list, grid, rows, sort, filter, search, pagination, export, chart filter, dashboard filter, filter dropdown, pick which ... to show, multi-select | Tables | [packs/table.md](../packs/table.md), then [T](#t-tables-and-columns) |
+| table, list, grid, rows, sort, filter, search, pagination, export, chart filter, dashboard filter, filter dropdown, pick which ... to show, multi-select, total, balance, budget, split, amount left | Tables | [packs/table.md](../packs/table.md), then [T](#t-tables-and-columns) |
 | chart, graph, plot, axis, legend, series, KPI, dashboard, data viz, timeline, funnel | Charts | [packs/chart.md](../packs/chart.md), then [C](#c-charts-and-data) |
 | form, input, field, validation, required, submit, draft, wizard, steps, regex, pattern, email, phone, postcode, quantity, price, calculator, math, textarea, select on focus, typing, keyboard closes, caret jumps, screen jumps, zoom on focus, re-render | Forms | [packs/form.md](../packs/form.md), then [F](#f-forms-and-input) |
 | button, delete, remove, clear, reset, save, toast, undo, confirm, loading, progress, hover, halo, clickable, affordance | Actions | [packs/feedback.md](../packs/feedback.md), then [A](#a-actions-and-feedback) |
 | modal, dialog, dropdown, popover, tooltip, sheet, drawer, menu, tab, route, back, deep link | Overlays and navigation | [packs/overlay.md](../packs/overlay.md), then [N](#n-overlays-and-navigation) |
 | layout, responsive, breakpoint, mobile, phone, safe area, bottom bar, scroll, overflow, column, horizontal, sideways, timeline, kanban, carousel, strip, stepper | Layout | [packs/layout.md](../packs/layout.md), then [L](#l-layout-spacing-and-the-mobile-shell) |
-| colour, contrast, dark mode, theme, token, font, typography, size, spacing, shadow, elevation | Type, colour, theming | [packs/theme.md](../packs/theme.md), then [Y](#y-type-colour-and-theming) |
+| colour, contrast, dark mode, theme, token, font, typography, size, spacing, shadow, elevation, palette, status colour, accent | Type, colour, theming | [packs/theme.md](../packs/theme.md), then [Y](#y-type-colour-and-theming) |
 | animation, transition, motion, reduced motion, duration, easing, press, scale, stagger, drag, gesture | Motion | [packs/motion.md](../packs/motion.md), then [M](#m-motion) |
 | diagram, architecture diagram, flowchart, flow diagram, sequence diagram, state machine, ER diagram, swimlane, boxes and arrows, connector, arrow label, mermaid, draw.io | Diagrams | [packs/diagram.md](../packs/diagram.md), then [G](#g-diagrams) |
 | slow, performance, lazy, skeleton, virtualise, jank, layout shift, images, fonts loading | Performance | [P](#p-performance-and-what-arrives-late) |
@@ -139,11 +139,13 @@ emulation** - only the last exercises tap-target size.
 ## Y. Type, colour and theming
 
 **Rules:** D2 (no raw values where a token exists), Y3 (a theme is derived from tokens and
-covers the chrome, scrollbar included), Y2 (contrast decision, with figures), Y1 (type is a
-role scale), L4 (depth comes from light).
+covers the chrome, scrollbar included), Y2 (contrast decision, with figures), Y4 (a colour
+means one thing: status, accent and identity kept apart), Y1 (type is a role scale), L4
+(depth comes from light).
 **Read:** Appendix E (the chrome that gets forgotten - scrollbar, selection, caret, focus
 ring, placeholder, autofill), Appendix Q (the figures: contrast floors, measure, tabular
-figures).
+figures), Appendix Y (what a colour may say). **Run:** `contrast-check.js` and `colour-check.js`,
+both themes.
 **The trap:** dark mode measured by assumption rather than measured at all, and grey
 secondary text on a coloured surface.
 
@@ -225,7 +227,8 @@ project decision recorded where the project's rules live (see README).
 ## V. Before calling it done
 
 **Rules:** V3 (verify the layout, not only the behaviour), V1 and V2 (render the truth on
-every path), engineering 29, 29a, 29b, 29c, 30, 32.
+every path), V4 (one quantity, one value on every screen, and the parts add up - Appendix V,
+`agree-check.js`), engineering 29, 29a, 29b, 29c, 30, 32.
 **Read:** [design-principles.md](design-principles.md) close-out checklist, Appendix K.
 **Run:** `layout-audit.js` at three widths, `state-check.js` and `rules-check.js`, served - not opened from
 disk, and with the cache buster (see README).

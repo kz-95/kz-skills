@@ -12,7 +12,7 @@ Trivial work reads only the one line that applies (speed contract, [kz-skill](..
 
 **Hard rule for this lane.** Run only the one [kz-uicheck](../kz-uicheck/SKILL.md) check named for the change, once, on a settled page, on the screen the work is on: `python ../kz-uicheck/scripts/run-checks.py page.html --checks <that one> --width 375 --scheme light`.
 Never run `run-checks.py` without `--checks`, never all checks, never a check the change did not touch.
-Label, text or style -> none, or `contrast-check` with `--scheme both` if a colour changed; table -> `table-check`; filter or dropdown -> `popover-check` (a chart filter -> `table-check`); form field -> `form-check`; toast -> `toast-check`; tooltip -> `explain-check`; layout -> `layout-audit` at 375px.
+Label, text or style -> none, or `contrast-check` with `--scheme both` if a colour changed; table -> `table-check`; filter or dropdown -> `popover-check` (a chart filter -> `table-check`); form field -> `form-check`; toast -> `toast-check`; tooltip -> `explain-check`; layout -> `layout-audit` at 375px; a figure shown twice or a total of parts -> `agree-check`; a palette or status colours -> `colour-check`.
 A new screen: the check for its kind, then `layout-audit` at 375px; nothing else.
 **A check that saw the wrong screen counts as failed.** Point it at the work with `--hash ROUTE`, `--tap "#tab,#open"` and `--wait SELECTOR`; a run that prints WRONG SCREEN is a failure, never a clean result.
 The "Fast check" column names what to look for, not extra checks to run; write no harness, test or scratch copy of your own to check a page.
@@ -42,6 +42,8 @@ The "Fast check" column names what to look for, not extra checks to run; write n
 | L5 | Controls in one row share one height. | `layout-audit` `RAGGED ROW`. |
 | Y2 | Text meets 4.5:1 (3:1 large) on its real background, in both themes. | `contrast-check` `LOW`, with `--scheme both`. |
 | Y3 | A theme is derived from tokens and covers the chrome, scrollbar included; no undefined `var(--x)`. | `layout-audit` `UNDEFINED TOKEN`; `contrast-check` in the other theme. |
+| Y4 | A colour means one thing: status colours only for status, the accent only on what can be acted on, identity colours 30 degrees from status and delta-E 18 apart, stored with the record. | `colour-check` `ACCENT STATIC`, `NEAR STATUS`, `TOO CLOSE`, both themes. |
+| V4 | One quantity shows one value on every screen, read from one function; shown parts add up to the shown total (round the parts, derive the last). Mark them `data-quantity`, `data-total`, `data-part-of`. | `agree-check` `DISAGREE`, `SUM`. |
 | M1 | Motion explains a state change or is absent; reduced motion keeps the change; never a layout property. | `motion-check` `LAYOUTPROP`, `NOREDUCE`. |
 | M3 | Nothing enters from `scale(0)`; a popover grows from the side facing its trigger. | `motion-check` `SCALE0`, `ORIGIN`. |
 | M4 | Never `transition: all`, never ease-in on interface motion. | `motion-check` `ALL`, `EASEIN`. |

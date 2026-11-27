@@ -1,6 +1,6 @@
 ---
 name: kz-uicheck
-description: "Twelve runnable browser checks that measure an interface instead of judging it: layout audit (overflow, overlap, clipped text, tap targets, SVG focus ring, undefined CSS variable), table check (text-box filters, missing filter or sort), typing check (field rebuilt or caret jumped), popover check (a panel that cannot be closed), contrast check (under 4.5:1, both themes), modal check (scroll lock, focus, backdrop, Escape), focus check, form check, motion check (transition all, ease-in, no press state), diagram check (slanted or stacked lines, a label on its line, shrunk on a phone), toast check (no live region or dismiss, a repeat restacked, an Undo lost, under a dialog) and explain check (an icon button unexplained on hover, focus or touch). Paste into the console; no build step. Run only the checks for what changed, once; all twelve only for a release or a full audit. Triggers on \"/kz-uicheck\", \"check this page\", \"layout audit\", \"table check\", \"contrast check\", \"toast check\", \"verify the UI\"."
+description: "Fourteen runnable browser checks that measure, not judge: layout audit (overflow, overlap, clipped text, tap targets, undefined CSS variable, side stripe), table check (text-box filters, missing filter or sort), typing check (field rebuilt, caret jumped), popover check (a panel that cannot be closed), contrast check (both themes), modal check (scroll lock, focus, backdrop, Escape), focus check, form check, motion check (transition all, ease-in, no press), diagram check (slanted, stacked or labelled lines), toast check (live region, dismiss, restack, Undo), explain check (icon buttons on hover, focus, touch), agree check (one figure, two values; parts that do not add up) and colour check (accent on static text, identity colours near a status hue). Paste into the console; no build step. Run only the checks for what changed, once; all fourteen only for a release or a full audit. Triggers on \"/kz-uicheck\", \"check this page\", \"layout audit\", \"table check\", \"contrast check\", \"toast check\", \"verify the UI\"."
 license: Apache-2.0 with Commons Clause (see LICENSE in the repository)
 ---
 
@@ -15,8 +15,9 @@ Nothing to install, no selectors to configure, no framework assumed.
 checks (table -> `table-check` + `popover-check`, form -> `form-check` + `typing-check` at
 375px, dropdown -> `popover-check`, modal -> `modal-check`, motion -> `motion-check`, diagram
 -> `diagram-check`, colour/theme -> `contrast-check` in both themes, toasts or saved notes -> `toast-check`,
-icon buttons or tooltips -> `explain-check`), then `layout-audit` once
-at 375px. After a fix, re-run only the check that failed. All twelve, at three
+icon buttons or tooltips -> `explain-check`, a figure shown twice or a total of parts ->
+`agree-check`, a palette or status colours -> `colour-check` in both themes), then
+`layout-audit` once at 375px. After a fix, re-run only the check that failed. All fourteen, at three
 widths and both themes: mode 4, "make it production", a release. Never copy a check into the
 user's project unless asked.
 
@@ -36,17 +37,19 @@ Every finding code and skip attribute (`data-*-check="skip"`) in full: `referenc
 | `checks/form-check.js` | No label, phone or email typed as text, error while typing, no nudge on a required field, refused submit not landing on the first empty field. Types: reload after | `F1` `F2` |
 | `checks/toast-check.js` | `NO LIVE`, `NO CLOSE`, `STACK` (over three), `RESTACK`, `REMOUNT`, `NO COUNT`, `UNDO GONE`, `UNDO MERGED`, `ERROR SHORT`, `TOO FAST`, `UNDER DIALOG`. Measures through `window.kzToast` / `toast` / `showToast` or `[data-kz-toast-test]`; never presses anything else (`NO HOOK` advisory) | `A1` `A2` |
 | `checks/explain-check.js` | Icon-only buttons: `NO EXPLAIN`, `HOVER ONLY`, `FOCUS ONLY`, `NO TOUCH PATH`, `NO NAME`, `SLOW NEXT`; a title or an accessible name alone is not an explanation | `B1` `B2` `M6` |
+| `checks/agree-check.js` | One quantity, one value: elements marked `data-quantity` that show different numbers (`DISAGREE`), parts marked `data-part-of` that do not add up to their `data-total` at the shown decimals (`SUM`), a marked element with no number (`NO NUMBER`), a total with no parts (`NO PARTS`); `NO MARKS` advisory | `V4` |
+| `checks/colour-check.js` | A colour means one thing: text in the accent colour on something that cannot be acted on (`ACCENT STATIC`), an identity colour (`data-identity`) within 30 degrees of a status hue (`NEAR STATUS`, advisory for `data-user-colour`), two identities under delta-E 18 (`TOO CLOSE`); reads the page's own tokens, both themes | `Y4` |
 
 ## Without a browser window: `scripts/run-checks.py`
 
 ```bash
-python scripts/run-checks.py page.html                         # all twelve, at 1280px (large work only)
+python scripts/run-checks.py page.html                         # all fourteen, at 1280px (large work only)
 python scripts/run-checks.py page.html --checks table-check,popover-check --width 390
 ```
 
 Headless Chrome on a local HTML file (needs only Python and Chrome); exits 1 if any check
 fails, so a generated page can be checked in a script or pre-commit step. One width per run.
-Without `--checks` it runs all twelve: the large path only (a release, an audit, mode 4). The fast
+Without `--checks` it runs all fourteen: the large path only (a release, an audit, mode 4). The fast
 lanes (`kz-fastfix`, `kz-flashrule`) pass `--checks <the one check>` and never call it bare.
 
 ## What these cannot measure

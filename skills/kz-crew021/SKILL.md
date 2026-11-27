@@ -47,7 +47,7 @@ before a skill call; where none is wired, this section is the requirement.
 
 ## The UI rules this crew builds under
 
-Anything that renders is built and reviewed against `kz-uiuxrule` (57 UI, 6 motion, 21 chart,
+Anything that renders is built and reviewed against `kz-uiuxrule` (59 UI, 6 motion, 21 chart,
 10 diagram rules, 16 principles), routed by its `../kz-uiuxrule/rules/INDEX.md`, never copied
 here. Two rules are never scoped out of a dispatch, at any phase or tier:
 

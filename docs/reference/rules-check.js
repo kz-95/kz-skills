@@ -2,7 +2,7 @@
 
    state-check.js drives the charts and the tables bound to them. This one covers the
    rule demonstrations that have behaviour of their own - the tables in T, the clear in
-   A3, the toasts in A1 and A2, the icon buttons in B2, the side stripe in D6, the modal in N1, the popovers in N2, the fields in F2 F4 F5 F6 F7 F8 F9, the draft in F3 - plus the
+   A3, the toasts in A1 and A2, the icon buttons in B2, the side stripe in D6, the agreeing figures in V4, the colour meanings in Y4, the modal in N1, the popovers in N2, the fields in F2 F4 F5 F6 F7 F8 F9, the draft in F3 - plus the
    geometric claims the rules make as figures (L3's two comparisons, L4's offset, L6's
    cap, L11's wrap-only-while-it-fits, Y1's tabular figures, P1's zero shift), the
    motion samples in M2-M6, and the diagrams in G, measured as drawn (a slanted run,
@@ -904,6 +904,66 @@
     ok('D6 (wrong sample)', stripe($('d6Bad')), 'the wrong sample no longer draws a side stripe, so it no longer shows the defect');
     ok('D6 (wrong sample)', $('d6Bad').getAttribute('data-layout-check') === 'skip',
        'the wrong sample is not opted out, so layout-audit.js fails the reference page itself');
+  })();
+
+  /* ---- V4: one quantity, one value, and the parts add up ------------------ */
+  (function () {
+    /* the reading agree-check.js makes: the first number in the text, compared at the shown decimals */
+    function n(el) { var m = /(\d[\d,]*(?:\.\d+)?)/.exec(el.textContent); return m ? Math.round(parseFloat(m[1].replace(/,/g, '')) * 100) : null; }
+    function agrees(box, key) {
+      var v = Array.prototype.map.call(box.querySelectorAll('[data-quantity="' + key + '"]'), n);
+      return v.length > 1 && v.every(function (x) { return x === v[0]; });
+    }
+    function adds(box, key) {
+      var t = n(box.querySelector('[data-total="' + key + '"]'));
+      var sum = Array.prototype.reduce.call(box.querySelectorAll('[data-part-of="' + key + '"]'), function (a, el) { return a + n(el); }, 0);
+      return t === sum;
+    }
+    var good = $('v4Good'), wrong = $('v4Bad');
+    ok('V4', agrees(good, 'v4ok-left'), 'the right sample shows the amount left as two different figures');
+    ok('V4', adds(good, 'v4ok-split'), 'the right sample\'s shares no longer add up to its total');
+    ok('V4 (wrong sample)', !agrees(wrong, 'v4-left') && !adds(wrong, 'v4-split'),
+       'the wrong sample no longer disagrees or no longer fails to add up, so it no longer shows the defect');
+    ok('V4 (wrong sample)', wrong.getAttribute('data-agree-check') === 'skip',
+       'the wrong sample is not opted out, so agree-check.js fails the reference page itself');
+  })();
+
+  /* ---- Y4: a colour means one thing ---------------------------------------- */
+  (function () {
+    function rgb(c) { var m = /(\d+),\s*(\d+),\s*(\d+)/.exec(c); return m ? [+m[1], +m[2], +m[3]] : null; }
+    function hue(c) {
+      var r = c[0] / 255, g = c[1] / 255, b = c[2] / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+      if (!d) { return 0; }
+      var h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+      return (h * 60 + 360) % 360;
+    }
+    function gap(a, b) { var d = Math.abs(a - b) % 360; return d > 180 ? 360 - d : d; }
+    function lab(c) {
+      var v = c.map(function (x) { x /= 255; return x > 0.04045 ? Math.pow((x + 0.055) / 1.055, 2.4) : x / 12.92; });
+      var X = (v[0] * 0.4124 + v[1] * 0.3576 + v[2] * 0.1805) / 0.95047, Y = v[0] * 0.2126 + v[1] * 0.7152 + v[2] * 0.0722,
+        Z = (v[0] * 0.0193 + v[1] * 0.1192 + v[2] * 0.9505) / 1.08883;
+      var f = function (t) { return t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116; };
+      return [116 * f(Y) - 16, 500 * (f(X) - f(Y)), 200 * (f(Y) - f(Z))];
+    }
+    function dE(a, b) { var p = lab(a), q = lab(b); return Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]); }
+    var probe = document.createElement('i'); document.body.appendChild(probe);
+    function tok(name) { probe.style.color = 'var(' + name + ')'; return rgb(cs(probe).color); }
+    var accent = tok('--accent'), status = [tok('--up'), tok('--down')];
+    probe.remove();
+    function ids(box) { return Array.prototype.map.call(box.querySelectorAll('[data-identity]'), function (el) { return rgb(cs(el).backgroundColor); }); }
+    function clear(box) {
+      var c = ids(box), okHue = c.every(function (x) { return status.every(function (st) { return gap(hue(x), hue(st)) >= 30; }); });
+      var okDist = c.every(function (x, i) { return c.every(function (y, j) { return i === j || dE(x, y) >= 18; }); });
+      return okHue && okDist;
+    }
+    var good = $('y4Good'), wrong = $('y4Bad');
+    ok('Y4', clear(good), 'the right sample\'s identity colours sit near a status hue or too close to each other');
+    ok('Y4', Array.prototype.every.call(good.querySelectorAll('b'), function (b) { return rgb(cs(b).color).join() !== accent.join(); }),
+       'the right sample shows a static figure in the accent colour');
+    ok('Y4 (wrong sample)', !clear(wrong) && rgb(cs($('y4BadTotal')).color).join() === accent.join(),
+       'the wrong sample no longer puts the accent on a static figure or an identity near a status hue, so it no longer shows the defect');
+    ok('Y4 (wrong sample)', wrong.getAttribute('data-colour-check') === 'skip',
+       'the wrong sample is not opted out, so colour-check.js fails the reference page itself');
   })();
 
   /* ---- Y1: tabular figures where numbers stack ---------------------------- */

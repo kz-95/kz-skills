@@ -116,7 +116,7 @@ The full checklist is in `../rules/design-principles.md`.
 | `../packs/LOOKUP.md` | Route by keyword: one pack and its checks per type of work. The first read |
 | `../packs/` | Ten generated packs: the rules in full, the appendix, a snippet and the exact check command |
 | `../rules/INDEX.md` | Route by keyword to rule sections, for work no pack covers |
-| `../rules/ui-rules.md` | The 57 UI rules by category and the appendices. Appendix Z is twenty-six mistakes to have read before a large build |
+| `../rules/ui-rules.md` | The 59 UI rules by category and the appendices. Appendix Z is twenty-six mistakes to have read before a large build |
 | `../rules/chart-rules.md` | `C1-C21`: anything that renders data as marks, and the table bound to it |
 | `../rules/motion-rules.md` | `M1-M6`, with durations, curves and mechanics. Also read alone by `../../kz-motionrule/` |
 | `../rules/diagram-rules.md` | `G1-G10`, with the budget and the line and label numbers. Also read alone by `../../kz-diagramrule/` |

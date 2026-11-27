@@ -63,7 +63,7 @@ The skills are plain Markdown. There is no build step.
 1. Give your agent the repository, or the `skills/` folder, wherever it reads skills or instructions.
 2. Point it at [`AGENTS.md`](../AGENTS.md), which says how to use the rules without Claude Code, and at [`llms.txt`](../llms.txt).
 3. For a UI task it sizes the change and names its type first (the speed contract in `skills/kz-skill/SKILL.md`): on the first kz call in a session it asks one card, the type of work from `skills/kz-uiuxrule/packs/LOOKUP.md` and the size. A one-line edit follows `skills/kz-fastfix/SKILL.md`. Everyday building reads `LOOKUP.md` and the one pack its row names. Only when no pack covers the work does it open `skills/kz-uiuxrule/rules/INDEX.md`, match the task's words to a section, and read only that.
-4. The checks in `skills/kz-uicheck/checks/` are plain JavaScript. Paste the ones the pack names into the browser console of the page being checked, on the screen the work is on; all twelve are for an audit or a release. `skills/kz-uicheck/scripts/run-checks.py` runs them in headless Chrome and reaches that screen with `--hash`, `--tap` and `--wait`.
+4. The checks in `skills/kz-uicheck/checks/` are plain JavaScript. Paste the ones the pack names into the browser console of the page being checked, on the screen the work is on; all fourteen are for an audit or a release. `skills/kz-uicheck/scripts/run-checks.py` runs them in headless Chrome and reaches that screen with `--hash`, `--tap` and `--wait`.
 
 ## The purpose hook (optional)
 

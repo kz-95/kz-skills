@@ -1,6 +1,6 @@
 # kz-uiuxrule
 
-Stack-neutral, style-neutral UI rules: 57 UI rules, 6 motion rules, 21 chart rules, 10 diagram rules, two standing rules and
+Stack-neutral, style-neutral UI rules: 59 UI rules, 6 motion rules, 21 chart rules, 10 diagram rules, two standing rules and
 sixteen principles. Each rule states an obligation and the failure that follows when it is
 missed. Nothing here names a framework, a component library, a palette or a typeface.
 
@@ -68,7 +68,7 @@ than was asked.
 | `packs/LOOKUP.md` | Keyword to one pack and its checks. Start every task here |
 | `packs/` | Ten generated packs, one per type of work (feedback, explain, table, chart, form, overlay, layout, theme, motion, diagram): the rules in full, the appendix, a snippet and the exact check command. Rebuilt by `scripts/build-index.py`; never edit by hand |
 | `rules/INDEX.md` | Keyword to category to rules, for work no pack covers |
-| `rules/ui-rules.md` | The 57 UI rules and the appendices carrying their detail, including **Appendix Z: twenty-six things not to do**, each one learned by doing it |
+| `rules/ui-rules.md` | The 59 UI rules and the appendices carrying their detail, including **Appendix Z: twenty-six things not to do**, each one learned by doing it |
 | `rules/chart-rules.md` | C1-C21, for anything that renders data as marks |
 | `rules/motion-rules.md` | M1-M6, for anything that moves; also the whole of the `kz-motionrule` skill |
 | `rules/diagram-rules.md` | G1-G10, for any drawn diagram - boxes, lines and their labels; also the whole of the `kz-diagramrule` skill |

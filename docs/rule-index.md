@@ -8,7 +8,7 @@ the check that catches it, is in [`ui-rules.md`](../skills/kz-uiuxrule/rules/ui-
 [`chart-rules.md`](../skills/kz-uiuxrule/rules/chart-rules.md). To find a rule by the words of your task rather
 than its letter, use the keyword router, [`INDEX.md`](../skills/kz-uiuxrule/rules/INDEX.md).
 
-94 rules. Each category links to its live wrong/right samples.
+96 rules. Each category links to its live wrong/right samples.
 
 ## D - Fitting the design system
 
@@ -111,6 +111,7 @@ Live samples: [Type, colour and theming](https://kz-95.github.io/kz-skills/refer
 | Y1 | Type is a role scale, not a set of sizes. |
 | Y2 | Text over a variable background needs a contrast decision, and there are only two. |
 | Y3 | A theme is derived from tokens, and it covers the chrome as well as the content. |
+| Y4 | A colour means one thing. |
 
 ## M - Motion
 
@@ -178,6 +179,7 @@ Live samples: [Verification](https://kz-95.github.io/kz-skills/reference/ui-rule
 | V1 | Paint state from the state, not at the event that changed it. |
 | V2 | An early return is a path. |
 | V3 | Verify the layout, not only the behaviour. |
+| V4 | One quantity, one value, on every screen, and the parts add up. |
 
 ## S - Standing rules
 

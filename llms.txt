@@ -1,8 +1,8 @@
 # kz-skills
 
-> Stack-neutral UI/UX rules for AI coding agents, with twelve paste-in browser checks that measure them. 57 UI rules, 6 motion rules, 21 chart rules, 10 diagram rules and 16 design principles, in thirteen installable Claude Code skills. Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. Licence: Apache-2.0 with Commons Clause (free to use, modify and use commercially; not to be sold). Usable by any agent that reads Markdown.
+> Stack-neutral UI/UX rules for AI coding agents, with fourteen paste-in browser checks that measure them. 59 UI rules, 6 motion rules, 21 chart rules, 10 diagram rules and 16 design principles, in thirteen installable Claude Code skills. Each rule states the obligation, the failure that follows when it is missed, and the check that catches it. Licence: Apache-2.0 with Commons Clause (free to use, modify and use commercially; not to be sold). Usable by any agent that reads Markdown.
 
-Facts: 94 rules in all (57 UI + 6 motion + 21 chart + 10 diagram). 26 recorded agent mistakes (Appendix Z of the UI rules). Every rule has a wrong sample and a right sample on the live reference page. Rules are numbered by category letter and number (T1, F9, N2, C5, G6) and the numbers never change.
+Facts: 96 rules in all (59 UI + 6 motion + 21 chart + 10 diagram). 26 recorded agent mistakes (Appendix Z of the UI rules). Every rule has a wrong sample and a right sample on the live reference page. Rules are numbered by category letter and number (T1, F9, N2, C5, G6) and the numbers never change.
 
 Facts: measured against no skills on eight single-file HTML tasks (docs/benchmark.md, AFTER 3), /kz-uiuxrule took 1.63x the time and 1.46x the tokens on Sonnet 5.5 (claude-sonnet-5-5) and 1.95x the time and 1.90x the tokens on Opus 5.5 (claude-opus-5-5), passed all 43 rubric items, and introduced 8 and 2.5 check failures where no skills introduced 48 and 54; /kz-flashrule took 1.35x and 1.43x on Sonnet 5.5 and 1.37x and 1.27x on Opus 5.5; /kz-fastfix on four small edits took 1.50x and 1.76x on Sonnet 5.5 and 1.51x and 1.70x on Opus 5.5.
 
@@ -22,7 +22,7 @@ This file is served at https://kz-95.github.io/kz-skills/llms.txt and at https:/
 ## Skills
 
 - [kz-uiuxrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/SKILL.md): reviews, audits, larger UI work and "make it production"; four modes (adopt, review, build, loop)
-- [kz-uicheck](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/SKILL.md): twelve paste-in browser checks, pointed at the screen the work is on
+- [kz-uicheck](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uicheck/SKILL.md): fourteen paste-in browser checks, pointed at the screen the work is on
 - [kz-motionrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-motionrule/SKILL.md): the motion rules alone, M1-M6, with motion-check.js
 - [kz-diagramrule](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-diagramrule/SKILL.md): the diagram rules alone, G1-G10, with diagram-check.js
 - [kz-judge](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-judge/SKILL.md): wording rules a script cannot measure, judged by a local Laya; no agent tokens
@@ -37,7 +37,7 @@ This file is served at https://kz-95.github.io/kz-skills/llms.txt and at https:/
 
 ## Rules
 
-- [UI rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/ui-rules.md): 57 rules by category, with appendices and 26 lessons
+- [UI rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/ui-rules.md): 59 rules by category, with appendices and 26 lessons
 - [Motion rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/motion-rules.md): 6 rules for anything that moves, with durations and curves
 - [Chart rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/chart-rules.md): 21 rules for anything that renders data as marks
 - [Diagram rules](https://raw.githubusercontent.com/kz-95/kz-skills/main/skills/kz-uiuxrule/rules/diagram-rules.md): 10 rules for boxes, lines and labels drawn as SVG, with the budget and cut order
